@@ -1,4 +1,4 @@
-BASE_IMAGE_TAG="dockerregistry.ondewo.com:5000/pytorch:19.11-py3"
+BASE_IMAGE_TAG="nvcr.io/nvidia/pytorch:19.10-py3"
 IMAGE_TAG="dockerregistry.ondewo.com:5000/nvidia-nemo-tts"
 CONTAINER_NAME="local-t2s-server"
 

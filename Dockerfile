@@ -1,4 +1,4 @@
-FROM dockerregistry.ondewo.com:5000/pytorch:19.11-py3
+FROM nvcr.io/nvidia/pytorch:19.10-py3
 
 RUN apt-get -y update && apt-get -y upgrade
 
