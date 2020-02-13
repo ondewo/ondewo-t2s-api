@@ -1,0 +1,23 @@
+<html>
+<div align="center">
+   <img align="center" src="static/images/ondewo.png" alt="ONDEWO logo" width="500" height="130">
+</div>
+<h1 align="center">Text-2-Speech Demo</h1>
+<h4 align="center">Model: ondewo-t2s-stella</h4>
+   <body>
+   <div align="center">
+   <p></p>
+      <form action = "http://0.0.0.0:5003/text2speech" method = "POST"
+         enctype = "multipart/form-data">
+         <div align="center">
+            <!--<b>Text:</b><br/> <input type = "text" name = "text"  size="70"/> -->
+            <b>Text:</b><br/> <textarea name="text" rows="6" cols="80"></textarea>
+            <br/><br/>
+            <b>Language:</b><br/> <input type="radio" name="language" value="de" disabled> German
+            <input type="radio" name="language" value="en" checked> English<br/><br/>
+            <input type = "submit"/>
+         </div>
+      </form>
+   </div>
+   </body>
+</html>

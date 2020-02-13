@@ -6,7 +6,7 @@ import wave
 import logging
 import librosa
 
-from flask import request, send_from_directory
+from flask import request, send_file
 from werkzeug.utils import secure_filename
 from ruamel.yaml import YAML
 from scipy.io.wavfile import write
@@ -77,10 +77,25 @@ def get_audio(sample_path):
     return save_file
 
 RESULT: str = """
-<audio controls>
-    <source src="tmp/tmp.wav" type="audio/wav">
-  Your browser does not support the audio element.
-</audio>
+<html>
+<div align="center">
+   <img align="center" src="static/images/ondewo.png" alt="ONDEWO logo" width="500" height="130">
+</div>
+<h1 align="center">Text-2-Speech Demo</h1>
+<h4 align="center">Model: ondewo-t2s-stella</h4>
+   <body>
+   <div align="center">
+     <b> Time: {0:.3f} seconds </b> <br/><br/>
+     <b> Result: </b> <br/>
+     <audio controls>
+     <source src="wav_file" type="audio/wav">
+     Your browser does not support the audio element.
+     </audio> 
+     <br/> </br>
+     <button onclick="window.location.href = 'wav_file_attachment';">Download audio</button>
+   </div>
+   </body>
+</html>
 """
 
 @t2s_server.route('/text2speech', methods=['POST'])
@@ -99,7 +114,7 @@ def text_2_speech():
         save_file = get_audio(sample_path)
         total_t = time.time() - start_t
 
-        return RESULT
+        return RESULT.format(total_t)
         #send_file(
         #    save_file, 
         #    mimetype="audio/wav")
@@ -109,9 +124,23 @@ def text_2_speech():
   #      except Exception as e:
    #         return str(e)
 
-@t2s_server.route('/tmp/<path:filepath>')
-def data(filepath):
-    return send_from_directory('tmp', filepath)
+@t2s_server.route('/wav_file')
+def tmp_wav():
+    return send_file(
+        "tmp/tmp.wav",
+        mimetype="audio/wav",
+        cache_timeout=0
+    )
+
+@t2s_server.route('/wav_file_attachment')
+def tmp_wav_attachment():
+    return send_file(
+        "tmp/tmp.wav",
+        mimetype="audio/wav",
+        as_attachment=True,
+        attachment_filename="demo.wav",
+        cache_timeout=0
+    )  
 
 @t2s_server.route('/audiofile')
 def audiofile():
