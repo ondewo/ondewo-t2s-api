@@ -142,6 +142,7 @@ def tmp_wav_attachment():
         cache_timeout=0
     )  
 
+@t2s_server.route('/')
 @t2s_server.route('/audiofile')
 def audiofile():
     return t2s_server.send_static_file('audiofile.html')
