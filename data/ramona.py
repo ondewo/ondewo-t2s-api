@@ -22,7 +22,7 @@ def main():
 
     for sample in train_list:
         if 'ramona_deininger' in sample['audio_filepath']:
-            sample['audio_filepath'].replace('/opt/nemo_v/data/mailabs/raw/by_book/female/', '/opt/stella/data/')
+            sample['audio_filepath'] = sample['audio_filepath'].replace('/opt/nemo_v/data/mailabs/raw/by_book/female/', '/opt/stella/data/')
             train_list_tts.append(sample)
     for sample in test_list:
         if 'ramona_deininger' in sample['audio_filepath']:
