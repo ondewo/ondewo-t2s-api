@@ -27,8 +27,8 @@ def parse_args():
     )
     args = parser.parse_args()
 
-    if args.lr_policy:
-        raise NotImplementedError("Tacotron 2 does not support lr policy arg")
+    #if args.lr_policy:
+    #    raise NotImplementedError("Tacotron 2 does not support lr policy arg")
     if args.eval_freq % 25 != 0:
         raise ValueError("eval_freq should be a multiple of 25.")
 
@@ -251,12 +251,12 @@ def main():
     TRAIN_DATASET = '/opt/stella/data/ramona_train.json'
     TEST_DATASET = '/opt/stella/data/ramona_test.json'
     model_config = "/opt/stella/models/tacotron2/de/tacotron2.yaml"
-    checkpoint_dir= 'checkpoints_de1',
+    checkpoint_dir= 'checkpoints_de1'
 
     log_dir = name
     if args.work_dir:
         log_dir = os.path.join(args.work_dir, name)
-       
+    print(args.tensorboard_dir) 
     # hyperparams
     max_steps=30000
     num_epochs=50
@@ -284,7 +284,7 @@ def main():
         create_tb_writer=create_tb_writer,
         files_to_copy=[model_config, __file__],
         cudnn_benchmark=args.cudnn_benchmark,
-        tensorboard_dir=args.tensorboard_dir,
+        tensorboard_dir=None
     )
 
     if args.local_rank is not None:
@@ -306,7 +306,7 @@ def main():
         eval_freq=eval_freq,
         checkpoint_save_freq=checkpoint_save_freq,
         eval_datasets=[TEST_DATASET],
-        eval_batch_size=eval_batch_size,
+        eval_batch_size=eval_batch_size
     )
 
     # train model
@@ -324,7 +324,7 @@ def main():
             "betas": (beta1, beta2),
             "grad_norm_clip": grad_norm_clip,
         },
-        batches_per_step=args.iter_per_step,
+        batches_per_step=args.iter_per_step
     )
 
 
