@@ -26,7 +26,7 @@ def parse_args():
         parents=[nm_argparse.NemoArgParser()], description='Tacotron2', conflict_handler='resolve',
     )
     parser.set_defaults(
-        checkpoint_dir=None,
+        checkpoint_dir='checkpoints_de1',
         optimizer="adam",
         batch_size=48,
         eval_batch_size=32,
@@ -39,13 +39,13 @@ def parse_args():
 
     # Overwrite default args
     parser.add_argument(
-        "--max_steps", type=int, default=None, required=False, help="max number of steps to train",
+        "--max_steps", type=int, default=30000, required=False, help="max number of steps to train",
     )
     parser.add_argument(
         "--num_epochs", type=int, default=None, required=False, help="number of epochs to train",
     )
     parser.add_argument(
-        "--model_config", type=str, required=True, help="model configuration file: model.yaml",
+        "--model_config", type=str, default="/opt/stella/models/tacotron2/de/tacotron2.yaml", required=False, help="model configuration file: model.yaml",
     )
     parser.add_argument("--grad_norm_clip", type=float, default=1.0, help="gradient clipping")
     parser.add_argument(
@@ -59,23 +59,23 @@ def parse_args():
 
     if args.lr_policy:
         raise NotImplementedError("Tacotron 2 does not support lr policy arg")
-    if args.max_steps is not None and args.num_epochs is not None:
-        raise ValueError("Either max_steps or num_epochs should be provided.")
+    #if args.max_steps is not None and args.num_epochs is not None:
+    #    raise ValueError("Either max_steps or num_epochs should be provided.")
     if args.eval_freq % 25 != 0:
         raise ValueError("eval_freq should be a multiple of 25.")
 
-    exp_directory = [
-        f"{args.exp_name}-lr_{args.lr}-bs_{args.batch_size}",
-        "",
-        (f"-wd_{args.weight_decay}-opt_{args.optimizer}" f"-ips_{args.iter_per_step}"),
-    ]
-    if args.max_steps:
-        exp_directory[1] = f"-s_{args.max_steps}"
-    elif args.num_epochs:
-        exp_directory[1] = f"-e_{args.num_epochs}"
-    else:
-        raise ValueError("Both max_steps and num_epochs were None.")
-    return args, "".join(exp_directory)
+    #exp_directory = [
+    #    f"{args.exp_name}-lr_{args.lr}-bs_{args.batch_size}",
+    #    "",
+    #    (f"-wd_{args.weight_decay}-opt_{args.optimizer}" f"-ips_{args.iter_per_step}"),
+    #]
+    #if args.max_steps:
+    #    exp_directory[1] = f"-s_{args.max_steps}"
+    #elif args.num_epochs:
+    #    exp_directory[1] = f"-e_{args.num_epochs}"
+    #else:
+    #    raise ValueError("Both max_steps and num_epochs were None.")
+    return args, "tacotron2_de_exp"#"".join(exp_directory)
 
 
 def create_NMs(tacotron2_params, decoder_infer=False):
@@ -118,7 +118,7 @@ def create_train_dag(
     batch_size,
     log_freq,
     checkpoint_save_freq,
-    cpu_per_dl=1,
+    cpu_per_dl=5,
 ):
     (data_preprocessor, text_embedding, t2_enc, t2_dec, t2_postnet, t2_loss, makegatetarget,) = neural_modules
 
@@ -135,6 +135,7 @@ def create_train_dag(
         pad_id=len(tacotron2_params['labels']) + 2,
         batch_size=batch_size,
         num_workers=cpu_per_dl,
+        trim_silence = True,
         **train_dl_params,
     )
 
@@ -290,6 +291,9 @@ def create_all_dags(
 def main():
     args, name = parse_args()
 
+    TRAIN_DATASET = '/opt/stella/data/ramona_train.json'
+    TEST_DATASET = '/opt/stella/data/ramona_test.json'
+
     log_dir = name
     if args.work_dir:
         log_dir = os.path.join(args.work_dir, name)
@@ -321,11 +325,11 @@ def main():
         neural_factory=neural_factory,
         neural_modules=neural_modules,
         tacotron2_params=tacotron2_params,
-        train_dataset=args.train_dataset,
+        train_dataset=TRAIN_DATASET,
         batch_size=args.batch_size,
         eval_freq=args.eval_freq,
         checkpoint_save_freq=args.checkpoint_save_freq,
-        eval_datasets=args.eval_datasets,
+        eval_datasets=[TEST_DATASET],
         eval_batch_size=args.eval_batch_size,
     )
 
