@@ -10,8 +10,8 @@ build_image:
 	docker build -t ${IMAGE_TAG} .
 
 run_container:
-	docker run -t -d --gpus all --rm \
-	--shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
+	docker run -t -d --gpus '"device=1,2,3"' --rm \
+	--shm-size=10g --ulimit memlock=-1 --ulimit stack=67108864 \
 	-v ${PWD}:/opt/stella \
 	-p 5003:5000 \
 	--name ${CONTAINER_NAME} ${IMAGE_TAG}
