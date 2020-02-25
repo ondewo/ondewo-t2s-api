@@ -25,57 +25,14 @@ def parse_args():
     parser = argparse.ArgumentParser(
         parents=[nm_argparse.NemoArgParser()], description='Tacotron2', conflict_handler='resolve',
     )
-    parser.set_defaults(
-        checkpoint_dir='checkpoints_de1',
-        optimizer="adam",
-        batch_size=48,
-        eval_batch_size=32,
-        lr=0.001,
-        amp_opt_level="O0",
-        create_tb_writer=True,
-        lr_policy=None,
-        weight_decay=1e-6,
-    )
-
-    # Overwrite default args
-    parser.add_argument(
-        "--max_steps", type=int, default=30000, required=False, help="max number of steps to train",
-    )
-    parser.add_argument(
-        "--num_epochs", type=int, default=None, required=False, help="number of epochs to train",
-    )
-    parser.add_argument(
-        "--model_config", type=str, default="/opt/stella/models/tacotron2/de/tacotron2.yaml", required=False, help="model configuration file: model.yaml",
-    )
-    parser.add_argument("--grad_norm_clip", type=float, default=1.0, help="gradient clipping")
-    parser.add_argument(
-        "--min_lr", type=float, default=1e-5, help="minimum learning rate to decay to",
-    )
-
-    # Create new args
-    parser.add_argument("--exp_name", default="Tacotron2", type=str)
-
     args = parser.parse_args()
 
     if args.lr_policy:
         raise NotImplementedError("Tacotron 2 does not support lr policy arg")
-    #if args.max_steps is not None and args.num_epochs is not None:
-    #    raise ValueError("Either max_steps or num_epochs should be provided.")
     if args.eval_freq % 25 != 0:
         raise ValueError("eval_freq should be a multiple of 25.")
 
-    #exp_directory = [
-    #    f"{args.exp_name}-lr_{args.lr}-bs_{args.batch_size}",
-    #    "",
-    #    (f"-wd_{args.weight_decay}-opt_{args.optimizer}" f"-ips_{args.iter_per_step}"),
-    #]
-    #if args.max_steps:
-    #    exp_directory[1] = f"-s_{args.max_steps}"
-    #elif args.num_epochs:
-    #    exp_directory[1] = f"-e_{args.num_epochs}"
-    #else:
-    #    raise ValueError("Both max_steps and num_epochs were None.")
-    return args, "tacotron2_de_exp"#"".join(exp_directory)
+    return args, "tacotron2_de_exp"
 
 
 def create_NMs(tacotron2_params, decoder_infer=False):
@@ -293,20 +250,39 @@ def main():
 
     TRAIN_DATASET = '/opt/stella/data/ramona_train.json'
     TEST_DATASET = '/opt/stella/data/ramona_test.json'
+    model_config = "/opt/stella/models/tacotron2/de/tacotron2.yaml"
+    checkpoint_dir= 'checkpoints_de1',
 
     log_dir = name
     if args.work_dir:
         log_dir = os.path.join(args.work_dir, name)
+       
+    # hyperparams
+    max_steps=30000
+    num_epochs=50
+    optimizer="adam"
+    beta1 = 0.9
+    beta2 = 0.999
+    lr=0.001
+    amp_opt_level="O0"
+    create_tb_writer=True
+    weight_decay=1e-6
+    batch_size=64
+    eval_batch_size=64
+    grad_norm_clip = None#1.0
+    min_lr=1e-5
+    eval_freq = 1000
+    checkpoint_save_freq = 1000
 
     # instantiate Neural Factory with supported backend
     neural_factory = nemo.core.NeuralModuleFactory(
         backend=nemo.core.Backend.PyTorch,
         local_rank=args.local_rank,
-        optimization_level=args.amp_opt_level,
+        optimization_level=amp_opt_level,
         log_dir=log_dir,
-        checkpoint_dir=args.checkpoint_dir,
-        create_tb_writer=args.create_tb_writer,
-        files_to_copy=[args.model_config, __file__],
+        checkpoint_dir=checkpoint_dir,
+        create_tb_writer=create_tb_writer,
+        files_to_copy=[model_config, __file__],
         cudnn_benchmark=args.cudnn_benchmark,
         tensorboard_dir=args.tensorboard_dir,
     )
@@ -315,7 +291,7 @@ def main():
         logging.info('Doing ALL GPU')
 
     yaml = YAML(typ="safe")
-    with open(args.model_config) as file:
+    with open(model_config) as file:
         tacotron2_params = yaml.load(file)
     # instantiate neural modules
     neural_modules = create_NMs(tacotron2_params)
@@ -326,26 +302,27 @@ def main():
         neural_modules=neural_modules,
         tacotron2_params=tacotron2_params,
         train_dataset=TRAIN_DATASET,
-        batch_size=args.batch_size,
-        eval_freq=args.eval_freq,
-        checkpoint_save_freq=args.checkpoint_save_freq,
+        batch_size=batch_size,
+        eval_freq=eval_freq,
+        checkpoint_save_freq=checkpoint_save_freq,
         eval_datasets=[TEST_DATASET],
-        eval_batch_size=args.eval_batch_size,
+        eval_batch_size=eval_batch_size,
     )
 
     # train model
-    total_steps = args.max_steps if args.max_steps is not None else args.num_epochs * steps_per_epoch
+    total_steps = max_steps if max_steps is not None else num_epochs * steps_per_epoch
     neural_factory.train(
         tensors_to_optimize=[train_loss],
         callbacks=callbacks,
-        lr_policy=CosineAnnealing(total_steps, min_lr=args.min_lr),
-        optimizer=args.optimizer,
+        lr_policy=CosineAnnealing(total_steps, min_lr=min_lr),
+        optimizer=optimizer,
         optimization_params={
-            "num_epochs": args.num_epochs,
-            "max_steps": args.max_steps,
-            "lr": args.lr,
-            "weight_decay": args.weight_decay,
-            "grad_norm_clip": args.grad_norm_clip,
+            "num_epochs": num_epochs,
+            "max_steps": max_steps,
+            "lr": lr,
+            "weight_decay": weight_decay,
+            "betas": (beta1, beta2),
+            "grad_norm_clip": grad_norm_clip,
         },
         batches_per_step=args.iter_per_step,
     )
