@@ -248,15 +248,16 @@ def create_all_dags(
 def main():
     args, name = parse_args()
 
-    TRAIN_DATASET = '/opt/stella/data/ramona_train.json'
-    TEST_DATASET = '/opt/stella/data/ramona_test.json'
+    TRAIN_DATASET = '/opt/stella/data/ramona_cleaned_train.json'
+    TEST_DATASET = '/opt/stella/data/ramona_cleaned_test.json'
     model_config = "/opt/stella/models/tacotron2/de/tacotron2.yaml"
     checkpoint_dir= 'checkpoints_de1'
 
     log_dir = name
     if args.work_dir:
         log_dir = os.path.join(args.work_dir, name)
-    print(args.tensorboard_dir) 
+    
+    
     # hyperparams
     max_steps=30000
     num_epochs=50
@@ -264,6 +265,7 @@ def main():
     beta1 = 0.9
     beta2 = 0.999
     lr=0.001
+    lr_policy=None
     amp_opt_level="O0"
     create_tb_writer=True
     weight_decay=1e-6
@@ -314,7 +316,7 @@ def main():
     neural_factory.train(
         tensors_to_optimize=[train_loss],
         callbacks=callbacks,
-        lr_policy=CosineAnnealing(total_steps, min_lr=min_lr),
+        lr_policy=lr_policy,   #CosineAnnealing(total_steps, min_lr=min_lr),
         optimizer=optimizer,
         optimization_params={
             "num_epochs": num_epochs,
