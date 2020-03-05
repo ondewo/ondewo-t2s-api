@@ -76,27 +76,51 @@ def get_audio(sample_path):
 
     return save_file
 
+
 RESULT: str = """
-<html>
-<div align="center">
-   <img align="center" src="static/images/ondewo.png" alt="ONDEWO logo" width="500" height="130">
-</div>
-<h1 align="center">Text-2-Speech Demo</h1>
-<h4 align="center">Model: ondewo-t2s-stella</h4>
-   <body>
-   <div align="center">
-     <b> Time: {0:.3f} seconds </b> <br/><br/>
-     <b> Result: </b> <br/>
-     <audio controls>
-     <source src="wav_file" type="audio/wav">
-     Your browser does not support the audio element.
-     </audio> 
-     <br/> </br>
-     <button onclick="window.location.href = 'wav_file_attachment';">Download audio</button>
-   </div>
-   </body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ONDEWO Stella</title>
+    <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="static/css/stylesheet.css">
+</head>
+
+<body>
+    <div class="header">
+        <div class="logo-container inline-block">
+            <img id="logo" src="static/images/ondewo.png">
+        </div>
+        <div class="name inline-block">
+            <p>T2S Stella</p>
+        </div>
+        <div class="model-name-container inline-block">
+            <div class="introduction">
+                <p>(Text to speech DEMO)</p>
+            </div>
+        </div>
+    </div>
+    <div class="content-wrapper-result">
+        <div class="info">
+            <div class="result">
+                <h2><b>Result:</b></h2>
+                <audio controls>
+                    <source src="wav_file" type="audio/wav">
+                    Your browser does not support the audio element.
+                </audio>
+            </div><br>
+            <div class="time">
+                <h2><b>Time: </b></h2>
+                <p> {0:.3f} seconds</p>
+            </div>
+        </div>
+        <button class="btn margin-top-0" onclick="window.location.href = 'wav_file_attachment';">Download audio</button>
+    </div>
+</body>
 </html>
 """
+
 
 @t2s_server.route('/text2speech', methods=['POST'])
 def text_2_speech():
@@ -145,4 +169,4 @@ def tmp_wav_attachment():
 @t2s_server.route('/')
 @t2s_server.route('/audiofile')
 def audiofile():
-    return t2s_server.send_static_file('audiofile.html')
+    return t2s_server.send_static_file('index.html')
