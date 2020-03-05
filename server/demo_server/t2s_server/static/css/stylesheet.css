@@ -183,7 +183,7 @@ textarea{
 }.time p{
     display: inline-block;
     all: unset;
-    line-height: 71px;
+    line-height: 90px;
     padding: auto 0;
 }
 .result h2{
@@ -201,4 +201,7 @@ textarea{
 audio{
     display: inline-block;
     width: 60vw;
+}
+.result {
+    margin-bottom: 20px;
 }
