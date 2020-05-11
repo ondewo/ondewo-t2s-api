@@ -1,0 +1,52 @@
+pipeline {
+    agent none
+    environment{
+        BRANCH_NAME = "${env.BRANCH_NAME}"
+        SANITIZED_BRANCH_NAME = "${env.BRANCH_NAME}".replace("/", "_")
+        IMAGE_TAG = "${SANITIZED_BRANCH_NAME}"
+
+        IMAGE_NAME_RELASE = "stella-server-release"
+        TTS_NAME = "${IMAGE_NAME_RELASE}:${IMAGE_TAG}"
+        PUSH_NAME_RELEASE = "dockerregistry.ondewo.com:5000/${TTS_NAME}"
+        test_image_name_stream = "test_image_${IMAGE_NAME_RELASE}"
+        code_check_image_name = "code_check_image_${IMAGE_NAME_RELASE}"
+    }
+
+    stages {
+        stage('Build, test and push the image'){ parallel {
+            stage('Label Unstable') { agent { label 'cpu' }
+                when { not { anyOf {
+                      branch 'master'
+                      branch 'develop'
+                } } }
+                steps {
+                    catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
+                                sh(script: "exit 1", label: "error code so i can label unstable")
+            } } }
+            stage('Cythonized image') {
+                when { anyOf {
+                      branch 'master'
+                      branch 'develop'
+                } }
+                stages {
+                    stage('Code quality') { agent { label 'cpu' }
+                        steps {
+                            sh(script: "docker build -t ${code_check_image_name} -f code_checks/Dockerfile .", label: "build code quality image")
+                            sh(script: "docker run --rm ${code_check_image_name} make flake8", label: "run flake8")
+                            sh(script: "docker run --rm ${code_check_image_name} make mypy", label: "run mypy")
+                    } }
+
+                    stage('Normal image') { agent { label 'cpu' }
+                        stages{
+                            stage('Build') { steps {
+                                    sh(script: "docker build -t ${PUSH_NAME_RELEASE} server", label: "build image")
+                            } }
+                            stage('Push') { steps{
+                                    sh(script: "docker push ${PUSH_NAME_RELEASE}", label: "push the image to the registry")
+                                    sh(script: "echo ${PUSH_NAME_RELEASE} pushed to registry")
+    
+                            } }
+                    } }
+                } }
+            } }
+} }

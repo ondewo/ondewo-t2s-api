@@ -125,7 +125,6 @@ RESULT: str = """
 @t2s_server.route('/text2speech', methods=['POST'])
 def text_2_speech():
     if request.method == 'POST':
- #       try:
         text = request.form['text']
         lang = request.form['language']
 

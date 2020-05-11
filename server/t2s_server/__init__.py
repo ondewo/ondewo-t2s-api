@@ -45,11 +45,15 @@ data_preprocessor = nemo_asr.AudioToMelSpectrogramPreprocessor.import_from_confi
 text_embedding = nemo_tts.TextEmbedding.import_from_config(MODEL_YAML_EN, "TextEmbedding")
 text_embedding.restore_from(TACOTRON2_EMBEDDING_EN)
 t2_enc = nemo_tts.Tacotron2Encoder.import_from_config(MODEL_YAML_EN, "Tacotron2Encoder")
+t2_enc.restore_from(TACOTRON2_ENCODER_EN)
 t2_dec = nemo_tts.Tacotron2DecoderInfer.import_from_config(MODEL_YAML_EN, "Tacotron2DecoderInfer")
+t2_dec.restore_from(TACOTRON2_DECODER_EN)
 t2_postnet = nemo_tts.Tacotron2Postnet.import_from_config(MODEL_YAML_EN, "Tacotron2Postnet")
+t2_postnet.restore_from(TACOTRON2_POSTNET_EN)
 t2_loss = nemo_tts.Tacotron2Loss.import_from_config(MODEL_YAML_EN, "Tacotron2Loss")
 makegatetarget = nemo_tts.MakeGate()
 total_weights = text_embedding.num_weights + t2_enc.num_weights + t2_dec.num_weights + t2_postnet.num_weights
+
 
 # ===============================
 
