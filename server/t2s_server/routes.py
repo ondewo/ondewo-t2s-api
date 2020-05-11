@@ -11,8 +11,8 @@ from werkzeug.utils import secure_filename
 from ruamel.yaml import YAML
 from scipy.io.wavfile import write
 
-import nemo_asr
-import nemo_tts
+import nemo.collections.asr as nemo_asr
+import nemo.collections.tts as nemo_tts
 from t2s_server import neural_factory, tacotron2_params, text_embedding, t2_enc, t2_dec, t2_postnet, t2_loss, \
     waveglow, t2s_server, waveglow_params, WORK_DIR
 
@@ -125,7 +125,6 @@ RESULT: str = """
 @t2s_server.route('/text2speech', methods=['POST'])
 def text_2_speech():
     if request.method == 'POST':
- #       try:
         text = request.form['text']
         lang = request.form['language']
 

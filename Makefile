@@ -1,27 +1,43 @@
-BASE_IMAGE_TAG="nvcr.io/nvidia/pytorch:19.10-py3"
-IMAGE_TAG="dockerregistry.ondewo.com:5000/nvidia-nemo-tts"
-CONTAINER_NAME="local-t2s-server"
-DEMO_C_NAME="demo-t2s-server"
+IMAGE_TAG_SERVER="dockerregistry.ondewo.com:5000/stella-server"
+IMAGE_TAG_SERVER_RELEASE="dockerregistry.ondewo.com:5000/stella-server-release"
+IMAGE_TAG_TRAINING="dockerregistry.ondewo.com:5000/stella-training"
+SERVER_CONTAINER="stella-server"
+TRAINING_CONTAINER="natalia-training"
+CODE_CHECK_IMAGE="code_check_image"
+SERVER_PORT = 40015
+TRAINING_PORT = 40011
 
 
-build_image:
-	-docker kill ${CONTAINER_NAME}
-	docker pull ${BASE_IMAGE_TAG}
-	docker build -t ${IMAGE_TAG} .
+run_code_checks: ## Start the code checks image and run the checks
+	docker build -t ${CODE_CHECK_IMAGE} -f code_checks/Dockerfile .
+	docker run --rm ${CODE_CHECK_IMAGE} make flake8
+	docker run --rm ${CODE_CHECK_IMAGE} make mypy
 
-run_container:
-	docker run -t -d --gpus '"device=1,2,3"' --rm \
-	--shm-size=10g --ulimit memlock=-1 --ulimit stack=67108864 \
-	-v ${PWD}:/opt/stella \
-	-p 5003:5000 \
-	--name ${CONTAINER_NAME} ${IMAGE_TAG}
+build_server:
+	docker build -t ${IMAGE_TAG_SERVER} --target uncythonized server
 
-run_on_server:
-	docker run -d --gpus all \
+build_server_release:
+	docker build -t ${IMAGE_TAG_SERVER_RELEASE} server	
+
+build_training_image:
+	docker build -t ${IMAGE_TAG_TRAINING} training
+
+run_training_container:
+	docker run -t -d --gpus all --rm \
 	--shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
-	-v ${PWD}:/opt/stella \
-	-p 40015:5000 \
+	-v ${PWD}/training:/opt/stella \
+	-p ${TRAINING_PORT}:5000 \
+	--name ${TRAINING_CONTAINER} ${IMAGE_TAG_TRAINING}
+
+run_server:
+	-docker kill ${SERVER_CONTAINER}
+	-docker rm ${SERVER_CONTAINER}
+	docker run -td --gpus all \
+	--shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
+	-p ${SERVER_PORT}:5000 \
+	-v ${PWD}/models:/opt/models \
 	--restart always \
-	--name ${DEMO_C_NAME} \
-	${IMAGE_TAG} /opt/stella/server/demo_server/start_flask_server.sh
+	--name ${SERVER_CONTAINER} \
+	${IMAGE_TAG_SERVER}
+
 

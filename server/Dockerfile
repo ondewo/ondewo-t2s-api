@@ -1,0 +1,25 @@
+FROM nvcr.io/nvidia/nemo:v0.10 AS uncythonized
+
+WORKDIR /opt/server
+COPY . .
+CMD  ./start_flask_server.sh
+
+
+# ========Cythonization Image=======
+FROM dockerregistry.ondewo.com:5000/ondewo-cythonize-tools-3.6 AS cython_builder
+
+COPY --from=uncythonized /opt/file_server/ /tmp/transfer/to_cythonize
+
+
+RUN ./cythonize.py \
+		--modules_to_cythonize ./to_cythonize \
+		--files_to_skip ./to_cythonize/t2s_server.py \
+    --delete_pycache True \
+		--py_files_mode delete
+
+
+# ========Cythonized================
+FROM uncythonized AS cythonized
+
+RUN rm -r ./*
+COPY --from=cython_builder /tmp/transfer/to_cythonize/ .
