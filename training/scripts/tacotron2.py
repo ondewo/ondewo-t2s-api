@@ -254,10 +254,10 @@ def create_all_dags(
 def main():
     args, name = parse_args()
 
-    TRAIN_DATASET = '/opt/stella/data/ramona_cleaned_train_small.json'
-    TEST_DATASET = '/opt/stella/data/ramona_cleaned_test_small.json'
-    model_config = "/opt/stella/models/tacotron2/de/tacotron2.yaml"
-    checkpoint_dir= 'checkpoints_de2'
+    TRAIN_DATASET = '/opt/stella/data/ramona_final_train_small.json'
+    TEST_DATASET = '/opt/stella/data/ramona_final_test_small.json'
+    model_config = "/opt/models/tacotron2/de/tacotron2_lowercase.yaml"
+    checkpoint_dir= 'checkpoints_ramona_2'
 
     log_dir = name
     if args.work_dir:
