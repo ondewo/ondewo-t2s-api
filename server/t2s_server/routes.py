@@ -13,30 +13,29 @@ from scipy.io.wavfile import write
 
 import nemo.collections.asr as nemo_asr
 import nemo.collections.tts as nemo_tts
-from t2s_server import neural_factory, tacotron2_params, text_embedding, t2_enc, t2_dec, t2_postnet, t2_loss, \
-    waveglow, t2s_server, waveglow_params, WORK_DIR
+from t2s_server import neural_factory, waveglow, t2s_server, waveglow_params, WORK_DIR, models
 
 
-def get_audio(sample_path):
+def get_audio(sample_path, lang):
 
     # make graph
     data_layer = nemo_asr.TranscriptDataLayer(
         path=sample_path,
-        labels=tacotron2_params['labels'],
+        labels=models[lang]['params']['labels'],
         batch_size=1,
         num_workers=1,
-        bos_id=len(tacotron2_params['labels']),
-        eos_id=len(tacotron2_params['labels']) + 1,
-        pad_id=len(tacotron2_params['labels']) + 2,
+        bos_id=len(models[lang]['params']['labels']),
+        eos_id=len(models[lang]['params']['labels']) + 1,
+        pad_id=len(models[lang]['params']['labels']) + 2,
         shuffle=False,
     )
     transcript, transcript_len = data_layer()
-    transcript_embedded = text_embedding(char_phone=transcript)
-    transcript_encoded = t2_enc(char_phone_embeddings=transcript_embedded, embedding_length=transcript_len,)
-    mel_decoder, gate, alignments, mel_len = t2_dec(
+    transcript_embedded = models[lang]['embedding'](char_phone=transcript)
+    transcript_encoded = models[lang]['encoder'](char_phone_embeddings=transcript_embedded, embedding_length=transcript_len,)
+    mel_decoder, gate, alignments, mel_len =  models[lang]['decoder'](
         char_phone_encoded=transcript_encoded, encoded_length=transcript_len,
     )
-    mel_postnet = t2_postnet(mel_input=mel_decoder)
+    mel_postnet = models[lang]['postnet'](mel_input=mel_decoder)
 
     infer_tensors = [mel_postnet, gate, alignments, mel_len]
 
@@ -45,12 +44,6 @@ def get_audio(sample_path):
     evaluated_tensors = neural_factory.infer(tensors=infer_tensors, offload_to_cpu=False)
     mel_len = evaluated_tensors[-1]
     logging.info("Done Running Tacotron 2")
-    filterbank = librosa.filters.mel(
-        sr=tacotron2_params["sample_rate"],
-        n_fft=tacotron2_params["n_fft"],
-        n_mels=tacotron2_params["n_mels"],
-        fmax=tacotron2_params["fmax"],
-    )
 
     (mel_pred, _, _, _) = infer_tensors
     # Run waveglow
@@ -68,7 +61,7 @@ def get_audio(sample_path):
     
     audio = evaluated_tensors[0][0].cpu().numpy()
     sample = audio[0]
-    sample_len = mel_len[0][0] * tacotron2_params["n_stride"]
+    sample_len = mel_len[0][0] * models[lang]['params']["n_stride"]
     sample = sample[:sample_len]
     save_file = WORK_DIR + "/tmp.wav"
     print(type(sample))
@@ -134,7 +127,7 @@ def text_2_speech():
             json_file.write(json.dumps(text_json))
 
         start_t = time.time()
-        save_file = get_audio(sample_path)
+        save_file = get_audio(sample_path, lang=lang)
         total_t = time.time() - start_t
 
         return RESULT.format(total_t)
@@ -147,6 +140,7 @@ def text_2_speech():
   #      except Exception as e:
    #         return str(e)
 
+
 @t2s_server.route('/wav_file')
 def tmp_wav():
     return send_file(
@@ -154,6 +148,7 @@ def tmp_wav():
         mimetype="audio/wav",
         cache_timeout=0
     )
+
 
 @t2s_server.route('/wav_file_attachment')
 def tmp_wav_attachment():
@@ -163,7 +158,8 @@ def tmp_wav_attachment():
         as_attachment=True,
         attachment_filename="demo.wav",
         cache_timeout=0
-    )  
+    )
+
 
 @t2s_server.route('/')
 @t2s_server.route('/audiofile')
