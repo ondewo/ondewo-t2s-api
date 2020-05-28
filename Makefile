@@ -43,4 +43,5 @@ run_server:
 	--name ${SERVER_CONTAINER} \
 	${IMAGE_TAG_SERVER}
 
-
+get_models:
+	rsync -avzhe ssh --progress dm:/home/rinjac/ondewo-t2s-stella/models .
