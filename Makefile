@@ -38,7 +38,7 @@ run_server:
 	docker run -td --gpus all \
 	--shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
 	-p ${SERVER_PORT}:${SERVER_PORT} \
-	-v ${PWD}/models:/opt/models \
+	-v ${PWD}/models:/opt/ondewo-s2t-stella/models \
 	--restart always \
 	--name ${SERVER_CONTAINER} \
 	${IMAGE_TAG_SERVER}
