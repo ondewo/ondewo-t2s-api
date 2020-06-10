@@ -39,7 +39,7 @@ pipeline {
                     stage('Normal image') { agent { label 'cpu' }
                         stages{
                             stage('Build') { steps {
-                                    sh(script: "docker build -t ${PUSH_NAME_RELEASE} server", label: "build image")
+                                    sh(script: "docker build -t ${PUSH_NAME_RELEASE}  -f docker/Dockerfile.server .", label: "build image")
                             } }
                             stage('Push') { steps{
                                     sh(script: "docker push ${PUSH_NAME_RELEASE}", label: "push the image to the registry")

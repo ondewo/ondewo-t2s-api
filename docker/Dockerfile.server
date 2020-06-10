@@ -1,8 +1,11 @@
 FROM nvcr.io/nvidia/nemo:v0.10 AS uncythonized
 
-WORKDIR /opt/server
-COPY . .
-CMD  ./start_flask_server.sh
+WORKDIR /opt/ondewo-s2t-stella
+COPY ./server ./server
+
+ENV PYTHONPATH /opt/ondewo-s2t-stella
+ENV FLASK_APP server/t2s_server.py
+CMD flask run --host=0.0.0.0 --port=40015
 
 
 # ========Cythonization Image=======

@@ -14,10 +14,10 @@ run_code_checks: ## Start the code checks image and run the checks
 	docker run --rm ${CODE_CHECK_IMAGE} make mypy
 
 build_server:
-	docker build -t ${IMAGE_TAG_SERVER} --target uncythonized server
+	docker build -t ${IMAGE_TAG_SERVER} --target uncythonized -f docker/Dockerfile.server .
 
 build_server_release:
-	docker build -t ${IMAGE_TAG_SERVER_RELEASE} server	
+	docker build -t ${IMAGE_TAG_SERVER_RELEASE}  -f docker/Dockerfile.server .
 
 build_training_image:
 	docker build -t ${IMAGE_TAG_TRAINING} training
@@ -37,10 +37,12 @@ run_server:
 	-docker rm ${SERVER_CONTAINER}
 	docker run -td --gpus all \
 	--shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
-	-p ${SERVER_PORT}:5000 \
+	-p ${SERVER_PORT}:${SERVER_PORT} \
 	-v ${PWD}/models:/opt/models \
 	--restart always \
 	--name ${SERVER_CONTAINER} \
 	${IMAGE_TAG_SERVER}
 
+install_dependencies_locally:
+	pip install -r requirements.txt
 
