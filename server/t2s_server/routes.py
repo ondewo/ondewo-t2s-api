@@ -1,19 +1,16 @@
 import json
-import os
 import time
-import re
-import wave
 import logging
-import librosa
-
 from flask import request, send_file
-from werkzeug.utils import secure_filename
-from ruamel.yaml import YAML
 from scipy.io.wavfile import write
-
 import nemo.collections.asr as nemo_asr
-import nemo.collections.tts as nemo_tts
-from t2s_server import neural_factory, waveglow, t2s_server, waveglow_params, WORK_DIR, models
+
+# for some reason Flask insists that this import must look like this
+# othwise the routes do not get imported into the server
+# so ignore the error you get in PyCharm for the following line
+from t2s_server import server
+
+from server.t2s_server import neural_factory, waveglow, waveglow_params, WORK_DIR, models
 
 
 def get_audio(sample_path, lang):
@@ -115,7 +112,7 @@ RESULT: str = """
 """
 
 
-@t2s_server.route('/text2speech', methods=['POST'])
+@server.route('/text2speech', methods=['POST'])
 def text_2_speech():
     if request.method == 'POST':
         text = request.form['text']
@@ -141,7 +138,7 @@ def text_2_speech():
    #         return str(e)
 
 
-@t2s_server.route('/wav_file')
+@server.route('/wav_file')
 def tmp_wav():
     return send_file(
         "tmp/tmp.wav",
@@ -150,7 +147,7 @@ def tmp_wav():
     )
 
 
-@t2s_server.route('/wav_file_attachment')
+@server.route('/wav_file_attachment')
 def tmp_wav_attachment():
     return send_file(
         "tmp/tmp.wav",
@@ -161,7 +158,7 @@ def tmp_wav_attachment():
     )
 
 
-@t2s_server.route('/')
-@t2s_server.route('/audiofile')
+@server.route('/')
+@server.route('/audiofile')
 def audiofile():
-    return t2s_server.send_static_file('index.html')
+    return server.send_static_file('index.html')

@@ -90,7 +90,7 @@ TextEmbedding:
         collection_type: tts, collection_version: null, nemo_core_version: 0.9.5}
     init_params:
         symbols_embedding_dim: *enc_emb_dim
-        n_symbols: 39  # Overwritten in tacotron2.py
+        n_symbols: 42  # Overwritten in tacotron2.py
 
 Tacotron2Decoder:
     header: {full_spec: nemo.collections.tts.tacotron2_modules.Tacotron2Decoder,
