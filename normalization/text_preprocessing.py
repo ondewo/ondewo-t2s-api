@@ -1,6 +1,6 @@
 import re
 from datetime import date, time
-from typing import Dict, Optional
+from typing import Dict, Optional, List
 
 
 class TextNormalizer:
@@ -270,3 +270,20 @@ class TextNormalizer:
 
         text = re.sub(self.pttrn_space, ' ', text)
         return text
+
+    def normalize_and_split(self, text: str) -> List[str]:
+        """
+
+        Args:
+            text:
+
+        Returns:
+
+        """
+        text = self.normalize_dates(text=text)
+        text = self.normalize_time(text=text)
+        texts: List[str] = self.split_text(text)
+        return texts
+
+    def split_text(self, text: str) -> List[str]:
+        return [text]

@@ -22,7 +22,7 @@ neural_factory = nemo.core.NeuralModuleFactory(
 # =============================== Waveglow ===============================
 WAVEGLOW_YAML: str = "models/waveglow/waveglow.yaml"
 WAVEGLOW_SIGMA: float = 0.6
-WAVEGLOW: str = "models/waveglow/kerstin/WaveGlowNM-STEP-500.pt"
+WAVEGLOW: str = "models/waveglow/checkpoints_waveglow_kerstin/WaveGlowNM.pt"
 
 yaml = YAML(typ="safe")
 with open(WAVEGLOW_YAML) as file:
@@ -61,8 +61,8 @@ total_weights = text_embedding_en.num_weights + t2_enc_en.num_weights + \
 
 # =============================== Tacotron2 German model =============================== 
 MODEL_YAML_DE: str = "models/tacotron2/de/tacotron2.yaml"
-MODEL_PATH: str = "models/tacotron2/de/kerstin_PUN/"
-STEP: str = "1000"
+MODEL_PATH: str = "models/tacotron2/de/checkpoints_kerstin_eloqai/"
+STEP: str = "3000"
 TACOTRON2_ENCODER_DE: str = "{}Tacotron2Encoder-STEP-{}.pt".format(MODEL_PATH, STEP)
 TACOTRON2_DECODER_DE: str = "{}Tacotron2Decoder-STEP-{}.pt".format(MODEL_PATH, STEP)
 TACOTRON2_POSTNET_DE: str = "{}Tacotron2Postnet-STEP-{}.pt".format(MODEL_PATH, STEP)

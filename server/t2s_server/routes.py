@@ -1,6 +1,9 @@
 import json
 import time
 import logging
+from typing import List
+import numpy as np
+
 from flask import request, send_file
 from scipy.io.wavfile import write
 import nemo.collections.asr as nemo_asr
@@ -8,16 +11,17 @@ import nemo.collections.asr as nemo_asr
 # for some reason Flask insists that this import must look like this
 # othwise the routes do not get imported into the server
 # so ignore the error you get in PyCharm for the following line
-from t2s_server import server
+from normalization.text_preprocessing import TextNormalizer
+from server.t2s_server import server
 
 from server.t2s_server import neural_factory, waveglow, waveglow_params, WORK_DIR, models
+from server.t2s_server.inference_data_layer import CustomDataLayer
 
 
-def get_audio(sample_path, lang):
-
+def get_audio(texts: List[str], lang: str):
     # make graph
-    data_layer = nemo_asr.TranscriptDataLayer(
-        path=sample_path,
+    data_layer = CustomDataLayer(
+        texts=texts,
         labels=models[lang]['params']['labels'],
         batch_size=1,
         num_workers=1,
@@ -26,43 +30,47 @@ def get_audio(sample_path, lang):
         pad_id=len(models[lang]['params']['labels']) + 2,
         shuffle=False,
     )
-    transcript, transcript_len = data_layer()
-    transcript_embedded = models[lang]['embedding'](char_phone=transcript)
-    transcript_encoded = models[lang]['encoder'](char_phone_embeddings=transcript_embedded, embedding_length=transcript_len,)
-    mel_decoder, gate, alignments, mel_len =  models[lang]['decoder'](
-        char_phone_encoded=transcript_encoded, encoded_length=transcript_len,
-    )
-    mel_postnet = models[lang]['postnet'](mel_input=mel_decoder)
 
-    infer_tensors = [mel_postnet, gate, alignments, mel_len]
+    result = np.zeros((0,))
+    for transcript, transcript_len in data_layer():
+        transcript_embedded = models[lang]['embedding'](char_phone=transcript)
+        transcript_encoded = models[lang]['encoder'](char_phone_embeddings=transcript_embedded,
+                                                     embedding_length=transcript_len, )
+        mel_decoder, gate, alignments, mel_len = models[lang]['decoder'](
+            char_phone_encoded=transcript_encoded, encoded_length=transcript_len,
+        )
+        mel_postnet = models[lang]['postnet'](mel_input=mel_decoder)
 
-    logging.info("Running Tacotron 2")
-    # Run tacotron 2
-    evaluated_tensors = neural_factory.infer(tensors=infer_tensors, offload_to_cpu=False)
-    mel_len = evaluated_tensors[-1]
-    logging.info("Done Running Tacotron 2")
+        infer_tensors = [mel_postnet, gate, alignments, mel_len]
 
-    (mel_pred, _, _, _) = infer_tensors
-    # Run waveglow
-    logging.info("Running Waveglow")
-    audio_pred = waveglow(mel_spectrogram=mel_pred)
-    evaluated_tensors = neural_factory.infer(tensors=[audio_pred])
-    logging.info("Done Running Waveglow")
+        logging.info("Running Tacotron 2")
+        # Run tacotron 2
+        evaluated_tensors = neural_factory.infer(tensors=infer_tensors, offload_to_cpu=False)
+        mel_len = evaluated_tensors[-1]
+        logging.info("Done Running Tacotron 2")
 
-    #if args.waveglow_denoiser_strength > 0:
-    #    logging.info("Setup denoiser")
-    #    waveglow.setup_denoiser()
+        (mel_pred, _, _, _) = infer_tensors
+        # Run waveglow
+        logging.info("Running Waveglow")
+        audio_pred = waveglow(mel_spectrogram=mel_pred)
+        evaluated_tensors = neural_factory.infer(tensors=[audio_pred])
+        logging.info("Done Running Waveglow")
 
-    logging.info("Saving results to disk")
-    #sample = evaluated_tensors[0][0][0]
-    
-    audio = evaluated_tensors[0][0].cpu().numpy()
-    sample = audio[0]
-    sample_len = mel_len[0][0] * models[lang]['params']["n_stride"]
-    sample = sample[:sample_len]
+        # if args.waveglow_denoiser_strength > 0:
+        #    logging.info("Setup denoiser")
+        #    waveglow.setup_denoiser()
+
+        logging.info("Saving results to disk")
+        # sample = evaluated_tensors[0][0][0]
+
+        audio = evaluated_tensors[0][0].cpu().numpy()
+        sample = audio[0]
+        sample_len = mel_len[0][0] * models[lang]['params']["n_stride"]
+        sample = sample[:sample_len]
+        result = np.concatenate((result, sample))
     save_file = WORK_DIR + "/tmp.wav"
-    print(type(sample))
-    write(save_file, waveglow_params["sample_rate"], sample)
+    print(type(result))
+    write(save_file, waveglow_params["sample_rate"], result)
 
     return save_file
 
@@ -110,32 +118,31 @@ RESULT: str = """
 </body>
 </html>
 """
+normalizer = TextNormalizer()
 
 
 @server.route('/text2speech', methods=['POST'])
 def text_2_speech():
     if request.method == 'POST':
-        text = request.form['text']
+        text: str = request.form['text']
+        texts: List[str] = normalizer.normalize_and_split(text)
         lang = request.form['language']
 
-        text_json = {"audio_filepath": "", "duration": 1.0, "text": text}
-        sample_path = WORK_DIR + "tmp.json"
-        with open(sample_path, 'w') as json_file:
-            json_file.write(json.dumps(text_json))
-
         start_t = time.time()
-        save_file = get_audio(sample_path, lang=lang)
+        save_file = get_audio(texts=texts, lang=lang)
         total_t = time.time() - start_t
 
         return RESULT.format(total_t)
-        #send_file(
+        # send_file(
         #    save_file, 
         #    mimetype="audio/wav")
         #    #as_attachment=True, 
         #    #attachment_filename="demo.wav"
-        #) 
-  #      except Exception as e:
-   #         return str(e)
+        # )
+
+
+#      except Exception as e:
+#         return str(e)
 
 
 @server.route('/wav_file')
