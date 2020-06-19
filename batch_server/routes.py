@@ -6,6 +6,8 @@ import numpy as np
 
 from flask import request, send_file
 from scipy.io.wavfile import write
+
+from normalization.text_preprocessing import TextNormalizer
 from . import server, WORK_DIR, nemo_inference
 
 RESULT: str = """
@@ -67,7 +69,7 @@ def text_2_speech():
             json_file.write(json.dumps(text_json))
 
         start_t = time.time()
-        save_file = get_audio(texts=texts, lang=lang)
+        save_file = nemo_inference.synthesize(texts=texts, lang=lang)
         sample = nemo_inference.synthesize(sample_path)
         total_t = time.time() - start_t
 

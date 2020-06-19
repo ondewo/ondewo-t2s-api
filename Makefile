@@ -14,7 +14,7 @@ run_code_checks: ## Start the code checks image and run the checks
 	docker run --rm ${CODE_CHECK_IMAGE} make mypy
 
 build_batch_server:
-	docker build -t ${IMAGE_TAG_BATCH} --target uncythonized -f docker/Dockerfile.server .
+	docker build -t ${IMAGE_TAG_BATCH} --target uncythonized -f docker/Dockerfile.batchserver .
 
 build_batch_server_release:
 	docker build -t ${IMAGE_TAG_BATCH}  -f docker/Dockerfile.server .
