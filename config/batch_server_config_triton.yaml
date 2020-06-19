@@ -1,0 +1,10 @@
+# Stella S2T server configuration
+
+tacotron2:
+    config: "models/tacotron2/de/tacotron2.yaml"
+    path: "models/tacotron2/de/kerstin_PUN"
+    step: 1000
+
+waveglow:
+    config: "models/waveglow/waveglow.yaml"
+    triton_model: "waveglow"
