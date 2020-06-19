@@ -1,7 +1,7 @@
-IMAGE_TAG_SERVER="dockerregistry.ondewo.com:5000/stella-server"
-IMAGE_TAG_SERVER_RELEASE="dockerregistry.ondewo.com:5000/stella-server-release"
+IMAGE_TAG_BATCH="dockerregistry.ondewo.com:5000/stella-batch-server"
+IMAGE_TAG_BATCH="dockerregistry.ondewo.com:5000/stella-batch-server-release"
 IMAGE_TAG_TRAINING="dockerregistry.ondewo.com:5000/stella-training"
-SERVER_CONTAINER="stella-server"
+BATCH_CONTAINER="stella-batch-server"
 TRAINING_CONTAINER="stella-training"
 CODE_CHECK_IMAGE="code_check_image"
 SERVER_PORT = 40015
@@ -13,11 +13,11 @@ run_code_checks: ## Start the code checks image and run the checks
 	docker run --rm ${CODE_CHECK_IMAGE} make flake8
 	docker run --rm ${CODE_CHECK_IMAGE} make mypy
 
-build_server:
-	docker build -t ${IMAGE_TAG_SERVER} --target uncythonized -f docker/Dockerfile.server .
+build_batch_server:
+	docker build -t ${IMAGE_TAG_BATCH} --target uncythonized -f docker/Dockerfile.server .
 
-build_server_release:
-	docker build -t ${IMAGE_TAG_SERVER_RELEASE}  -f docker/Dockerfile.server .
+build_batch_server_release:
+	docker build -t ${IMAGE_TAG_BATCH}  -f docker/Dockerfile.server .
 
 build_training_image:
 	docker build -t ${IMAGE_TAG_TRAINING} training
@@ -32,17 +32,18 @@ run_training_container:
 	-p ${TRAINING_PORT}:5000 \
 	--name ${TRAINING_CONTAINER} ${IMAGE_TAG_TRAINING}
 
-run_server:
-	-docker kill ${SERVER_CONTAINER}
-	-docker rm ${SERVER_CONTAINER}
+run_batch_server:
+	-docker kill ${BATCH_CONTAINER}
+	-docker rm ${BATCH_CONTAINER}
 	docker run -td --gpus all \
 	--shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
-	-p ${SERVER_PORT}:${SERVER_PORT} \
+	--network=host \
 	-v ${PWD}/models:/opt/ondewo-s2t-stella/models \
 	--restart always \
 	--name ${SERVER_CONTAINER} \
-	${IMAGE_TAG_SERVER}
+	${IMAGE_TAG_BATCH}
 
 install_dependencies_locally:
 	pip install -r requirements.txt
+	pip install utils/triton_client_lib/triton*.whl
 
