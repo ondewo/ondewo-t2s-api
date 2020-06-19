@@ -97,6 +97,17 @@ class CustomDataLayer(DataLayerNM):
             num_workers=num_workers,
         )
 
+    def __len__(self):
+        return len(self._dataset)
+
+    @property
+    def dataset(self):
+        return None
+
+    @property
+    def data_iterator(self):
+        return self._dataloader
+
 
 class CustomTranscriptDataset(Dataset):
     """A dataset class that reads and returns the text of a file.

@@ -61,16 +61,9 @@ def text_2_speech():
     if request.method == 'POST':
         text: str = request.form['text']
         texts: List[str] = normalizer.normalize_and_split(text)
-        lang = request.form['language']
-
-        text_json = {"audio_filepath": "", "duration": 1.0, "text": text}
-        sample_path = WORK_DIR + "tmp.json"
-        with open(sample_path, 'w') as json_file:
-            json_file.write(json.dumps(text_json))
 
         start_t = time.time()
-        save_file = nemo_inference.synthesize(texts=texts, lang=lang)
-        sample = nemo_inference.synthesize(sample_path)
+        sample = nemo_inference.synthesize(texts=texts)
         total_t = time.time() - start_t
 
         save_file = WORK_DIR + "/tmp.wav"
