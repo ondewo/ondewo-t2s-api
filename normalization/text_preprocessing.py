@@ -8,6 +8,7 @@ class TextNormalizer:
     pttrn_numbers = re.compile(r'([^0-9]|\b)(\d+)([^0-9]|\b)')
     pttrn_space = re.compile(r'\s+')
     pttrn_time = re.compile(r'(?:\s|\b|^)(([01][0-9]|[0-9]|2[0-3])\:([0-5][0-9])(?:\s|\b|$))')
+    splitting_pttrn = re.compile(r'.*?[.!?]')
 
     pttrn_date = re.compile(
         r'(\s*(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0[1-9])(?:(?:\.((?:19|20)\d{2}))|\s|\b|$)'
@@ -286,4 +287,23 @@ class TextNormalizer:
         return texts
 
     def split_text(self, text: str) -> List[str]:
-        return [text]
+        """
+
+        Args:
+            text:
+
+        Returns:
+
+        """
+        parts: List[str] = list(filter(lambda x: bool(x), self.splitting_pttrn.findall(text)))
+        parts_iter: List[str] = []
+        for part in parts:
+            if len(part) < 100:
+                parts_iter.append(part)
+            else:
+                raise ValueError
+        return parts_iter
+
+
+
+
