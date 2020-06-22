@@ -29,7 +29,7 @@ run_triton:
 	--ulimit stack=67108864 --network=host \
 	-v${PWD}/models/triton_repo:/models \
 	--name triton-inference-server nvcr.io/nvidia/tritonserver:20.03.1-py3 \
-	tritonserver --model-repository=/models --api-version=2
+	tritonserver --model-repository=/models --api-version=2 --strict-model-config=false
 
 run_training_container:
 	-docker kill ${TRAINING_CONTAINER}
