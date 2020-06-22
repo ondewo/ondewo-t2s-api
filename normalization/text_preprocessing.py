@@ -9,7 +9,7 @@ class TextNormalizer:
     pttrn_space = re.compile(r'\s+')
     pttrn_time = re.compile(r'(?:\s|\b|^)(([01][0-9]|[0-9]|2[0-3])\:([0-5][0-9])(?:\s|\b|$))')
     splitting_pttrn_eos = re.compile(r'.*?[.!?]')
-    splitting_pttrn_pos = re.compile(r'.*?[;,:\\|)(\[\]]')
+    splitting_pttrn_pos = re.compile(r'.*?[;,:.!?/\\|)(\[\]]')
     pttrn_punkt = re.compile(r'[.?!](\s*)$')
 
     pttrn_date = re.compile(
@@ -295,49 +295,55 @@ class TextNormalizer:
         texts: List[str] = self.split_text(text)
         return texts
 
-    def split_text(self, text: str) -> List[str]:
+    def split_text(self, text: str, max_len: int = 100) -> List[str]:
         """
 
         Args:
+            max_len:
             text:
 
         Returns:
 
         """
+        text = self.fix_punctuation(text=text)
         parts: List[str] = list(filter(lambda x: bool(x), self.splitting_pttrn_eos.findall(text)))
         parts_iter: List[str] = []
         for part in parts:
-            if len(part) < 100:
+            if len(part) < max_len:
                 parts_iter.append(part)
             else:
                 part_splitted: List[str] = self.split_sentence(text=part)
                 parts.extend(part_splitted)
         return parts_iter
 
-    def split_sentence(self, text: str) -> List[str]:
+    def split_sentence(self, text: str, max_len: int = 100) -> List[str]:
         """
 
         Args:
-            part:
+            text:
+            max_len:
 
         Returns:
 
         """
+        text = self.fix_punctuation(text=text)
         parts: List[str] = list(filter(lambda x: bool(x), self.splitting_pttrn_pos.findall(text)))
         parts_iter: List[str] = []
         for part in parts:
-            if len(part) < 100:
+            if len(part) < max_len:
                 parts_iter.append(part)
             else:
                 part_splitted: List[str] = self.split_on_words(text=part)
                 parts.extend(part_splitted)
+
         return parts_iter
 
-    def split_on_words(self, text: str) -> List[str]:
+    def split_on_words(self, text: str, max_len: int = 100) -> List[str]:
         """
 
         Args:
-            part:
+            text:
+            max_len:
 
         Returns:
 
@@ -345,7 +351,7 @@ class TextNormalizer:
         words: List[str] = text.split()
         words_normalized: List[str] = []
         for word in words:
-            if len(word) < 100:
+            if len(word) < max_len:
                 words_normalized.append(word)
             else:
                 word_splitted: List[str] = self.split_word(word=word)
@@ -355,23 +361,26 @@ class TextNormalizer:
         parts: List[str] = []
         part: str = ''
         for word in words:
-            if len_of_part + len(word) < 100:
+            word += ' '
+            if len_of_part + len(word) < max_len:
                 len_of_part += len(word)
                 part += word
             else:
                 if part:
-                    parts.append(part)
+                    parts.append(part.strip())
                 len_of_part = 0
                 part = word
         if part:
-            parts.append(part)
+            parts.append(part.strip())
         return parts
 
-    def split_word(self, word) -> List[str]:
+    def split_word(self, word: str, max_len: int = 80) -> List[str]:
         parts: List[str] = []
         while word:
-            part = word[:80]
+            part = word[:max_len]
             parts.append(part)
-            if len(word)>len(part):
+            if len(word) > len(part):
                 word = word[len(part):]
+            else:
+                word = ''
         return parts

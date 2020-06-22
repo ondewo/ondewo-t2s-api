@@ -1,4 +1,6 @@
+import re
 from datetime import time, date
+from typing import List
 
 import pytest
 
@@ -62,7 +64,6 @@ class TestNormalization:
         assert isinstance(number_text, str)
         assert number_text == expected_result
 
-
     @staticmethod
     @pytest.mark.parametrize('date, expected_result', [
         ('01.01 1 Januar 2018  02 Januar', 'erster Januar erster Januar zweitausendachtzehn zweiter Januar'),
@@ -85,3 +86,65 @@ class TestNormalization:
         normalized_text_with_time: str = normalizer.normalize_time(time)
         assert isinstance(normalized_text_with_time, str)
         assert normalized_text_with_time == expected_result
+
+    @staticmethod
+    def test_split_word() -> None:
+        word: str = 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww' \
+                    'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww'
+        word_parts: List[str] = normalizer.split_word(word=word)
+        assert isinstance(word_parts, list)
+        assert len(word_parts) > 1
+        assert all(map(lambda x: len(x) < 81, word_parts))
+        assert sum(map(len, word_parts)) == len(word)
+
+    @staticmethod
+    def test_split_on_words() -> None:
+        text = 'text1 text2 text3 text4 text5 text6 text7 text8 text9 text10 text11 text12 text13' \
+               ' text14 text15 text16 text17 text18 text19 text20 text21 text22 text23'
+        split_text: List[str] = normalizer.split_on_words(text)
+        assert isinstance(split_text, list)
+        assert len(split_text) > 1
+        assert all(map(lambda x: len(x) < 100, split_text))
+        assert sum(map(lambda x: len(x.split()), split_text)) == len(text.split())
+        assert sum(map(len, split_text)) == len(text) - 1
+
+    @staticmethod
+    @pytest.mark.parametrize('text, expected_result', [
+        ('text1 text2 text3 text4 text5 text6 text7 text8 text9 text10 text11 text12 text: text.',
+         ['text1 text2 text3 text4 text5 text6 text7 text8 text9 text10 text11 text12 text:', ' text.']),
+        ('text1 text2 text3 text4 text5 text6 text7 text8 text9 text10 text11 text12 text; text',
+         ['text1 text2 text3 text4 text5 text6 text7 text8 text9 text10 text11 text12 text;', ' text.']),
+        ('text1 text2 text3 text4 text5 text6 text7 text8 text9 text10 text11 text12 text; text?',
+         ['text1 text2 text3 text4 text5 text6 text7 text8 text9 text10 text11 text12 text;', ' text?']),
+        ('text1 text2 text3 text4 text5 text6 text7 text8 text9 text10 text11 text12 text; text!',
+         ['text1 text2 text3 text4 text5 text6 text7 text8 text9 text10 text11 text12 text;', ' text!']),
+        ('text1 text2 text3 text4 text5 text6 text7 text8 text9 text10 text11 text12 text/text!',
+         ['text1 text2 text3 text4 text5 text6 text7 text8 text9 text10 text11 text12 text/', 'text!']),
+    ])
+    def test_split_sentence(text: str, expected_result: str) -> None:
+        split_sentence: List[str] = normalizer.split_sentence(text)
+        assert isinstance(split_sentence, list)
+        assert all(map(lambda x: len(x) < 100, split_sentence))
+        assert sum(map(lambda x: len(x.split()), split_sentence)) == len(
+            list(filter(None, re.split(r'[:; |/\\]', text))))
+        assert abs(sum(map(len, split_sentence)) - len(text)) <= 1
+        assert split_sentence == expected_result
+
+    @staticmethod
+    @pytest.mark.parametrize('text, expected_result', [
+        ('text1 text2 text3 text4 text5 text6 text7 text8 text9 text10 text11. text12 text: text.',
+         ['text1 text2 text3 text4 text5 text6 text7 text8 text9 text10 text11.', ' text12 text: text.']),
+        (
+        'text1 text2 text3 text4 text5 text6 text7 text8 text9 text10 text11. text12 text text text text text'
+        ' text text text text text text text text text text: text text  text  text.',
+        ['text1 text2 text3 text4 text5 text6 text7 text8 text9 text10 text11.', ' text12 text text text text text'
+        ' text text text text text text text text text text:', ' text text  text  text.']),
+    ])
+    def test_split_text(text: str, expected_result: str) -> None:
+        split_text: List[str] = normalizer.split_text(text)
+        assert isinstance(split_text, list)
+        assert all(map(lambda x: len(x) < 100, split_text))
+        assert sum(map(lambda x: len(x.split()), split_text)) == len(
+            list(filter(None, re.split(r'[:; |/\\]', text))))
+        assert abs(sum(map(len, split_text)) - len(text)) <= 1
+        assert split_text == expected_result
