@@ -9,6 +9,7 @@ class TextNormalizer:
     pttrn_space = re.compile(r'\s+')
     pttrn_time = re.compile(r'(?:\s|\b|^)(([01][0-9]|[0-9]|2[0-3])\:([0-5][0-9])(?:\s|\b|$))')
     splitting_pttrn = re.compile(r'.*?[.!?]')
+    pttrn_punkt = re.compile(r'[.?!](\s*)$')
 
     pttrn_date = re.compile(
         r'(\s*(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0[1-9])(?:(?:\.((?:19|20)\d{2}))|\s|\b|$)'
@@ -272,6 +273,12 @@ class TextNormalizer:
         text = re.sub(self.pttrn_space, ' ', text)
         return text
 
+    def fix_punctuation(self, text: str) -> str:
+        if not self.pttrn_punkt.search(text):
+            text = text.strip()
+            text += '.'
+        return text
+
     def normalize_and_split(self, text: str) -> List[str]:
         """
 
@@ -283,6 +290,7 @@ class TextNormalizer:
         """
         text = self.normalize_dates(text=text)
         text = self.normalize_time(text=text)
+        text = self.fix_punctuation(text= text)
         texts: List[str] = self.split_text(text)
         return texts
 

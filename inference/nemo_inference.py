@@ -26,11 +26,11 @@ class NemoInference:
         data_layer = CustomDataLayer(
             texts=texts,
             labels=self.config['tacotron2']['config']['labels'],
-            batch_size=1,
+            batch_size=2,
             num_workers=1,
-            bos_id=len(self.config['tacotron2']['config']),
-            eos_id=len(self.config['tacotron2']['config']) + 1,
-            pad_id=len(self.config['tacotron2']['config']) + 2,
+            bos_id=len(self.config['tacotron2']['config']['labels']),
+            eos_id=len(self.config['tacotron2']['config']['labels']) + 1,
+            pad_id=len(self.config['tacotron2']['config']['labels']) + 2,
             shuffle=False,
         )
         transcript, transcript_len = data_layer()
@@ -40,29 +40,25 @@ class NemoInference:
         mel_decoder, gate, alignments, mel_len = self.config['tacotron2']['decoder'](
             char_phone_encoded=transcript_encoded, encoded_length=transcript_len,
         )
+        # todo(aryskin): split config into models and configs
         mel_postnet = self.config['tacotron2']['postnet'](mel_input=mel_decoder)
-        infer_tensors = [mel_postnet, gate, alignments, mel_len]
+        audio_pred = self.config['waveglow']['model'](mel_spectrogram=mel_postnet)
 
-        self.logger.info("Running Tacotron 2")
-        # Run tacotron 2
-        evaluated_tensors = self.neural_factory.infer(tensors=infer_tensors, offload_to_cpu=False)
-        mel_len = evaluated_tensors[-1]
-        self.logger.info("Done Running Tacotron 2")
-
-        (mel_pred, _, _, _) = infer_tensors
-        # Run waveglow
-        self.logger.info("Running Waveglow")
-        audio_pred = self.config['waveglow']['model'](mel_spectrogram=mel_pred)
-        evaluated_tensors = self.neural_factory.infer(tensors=[audio_pred])
+        self.logger.info("Running the whole model")
+        audio_mel_len = self.neural_factory.infer(tensors=[audio_pred, mel_len])
         self.logger.info("Done Running Waveglow")
+
+        audio_result = audio_mel_len[0]
+        mel_len_result = audio_mel_len[1]
 
         # if args.waveglow_denoiser_strength > 0:
         #    logging.info("Setup denoiser")
         #    waveglow.setup_denoiser()
 
         result: np.ndarray = np.zeros((10000,))
-        for i in range(len(mel_len)):
-            sample_len = mel_len[i][0] * self.config['tacotron2']['config']["n_stride"]
-            sample = evaluated_tensors[0][i].cpu().numpy()[0][:sample_len]
-            result = np.concatenate((result,sample))
+        for i in range(len(mel_len_result)):
+            for j in range(audio_result[i].shape[0]):
+                sample_len = mel_len_result[i][j] * self.config['tacotron2']['config']["n_stride"]
+                sample = audio_result[i].cpu().numpy()[j][:sample_len]
+                result = np.concatenate((result,sample))
         return result

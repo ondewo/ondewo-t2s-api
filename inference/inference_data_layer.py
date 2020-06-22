@@ -118,7 +118,7 @@ class CustomTranscriptDataset(Dataset):
         eos_id (int): Label position of end of string symbol
     """
 
-    def __init__(self, texts: List[str], labels, bos_id=None, eos_id=None, lowercase=True):
+    def __init__(self, texts: List[str], labels, bos_id=None, eos_id=None, lowercase=False):
         parser = parsers.make_parser(labels=labels, do_lowercase=lowercase)
         self.texts = Text(texts=texts, parser=parser)
 
