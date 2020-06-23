@@ -7,10 +7,12 @@ neural_factory_nemo:
     backend: 'pytorch'
 
 tacotron2:
-    config: "models/tacotron2/de/tacotron2.yaml"
-    path: "models/tacotron2/de/kerstin_PUN"
+    config-path: "models/tacotron2/de/tacotron2.yaml"
+    path: "models/tacotron2/de/kerstin_PUN/"
     step: 1000
 
 waveglow:
-    config: "models/waveglow/waveglow.yaml"
-    triton_model: "waveglow"
+    config-path: "models/waveglow/waveglow.yaml"
+    triton-url: "localhost:8001"
+    triton-model: "waveglow"
+

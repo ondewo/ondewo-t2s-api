@@ -1,23 +1,23 @@
 FROM nvcr.io/nvidia/nemo:v0.10 AS uncythonized
 
-WORKDIR /opt/ondewo-s2t-stella
-COPY ./server ./server
+WORKDIR /opt/ondewo-t2s-stella
+COPY ./inference ./inference
 COPY ./normalization ./normalization
+COPY ./batch_server ./batch_server
 
-ENV PYTHONPATH /opt/ondewo-s2t-stella
-ENV FLASK_APP server/t2s_server.py
+ENV PYTHONPATH /opt/ondewo-t2s-stella
+ENV FLASK_APP batch_server
 CMD flask run --host=0.0.0.0 --port=40015
 
 
 # ========Cythonization Image=======
 FROM dockerregistry.ondewo.com:5000/ondewo-cythonize-tools-3.6 AS cython_builder
 
-COPY --from=uncythonized /opt/file_server/ /tmp/transfer/to_cythonize
-
+COPY --from=uncythonized /opt/ondewo-t2s-stella/batch_server /tmp/transfer/to_cythonize
 
 RUN ./cythonize.py \
 		--modules_to_cythonize ./to_cythonize \
-		--files_to_skip ./to_cythonize/t2s_server.py \
+		--files_to_skip ./to_cythonize/__init__.py \
     --delete_pycache True \
 		--py_files_mode delete
 
