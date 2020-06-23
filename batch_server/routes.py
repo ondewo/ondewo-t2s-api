@@ -1,7 +1,13 @@
 import json
 import time
+import logging
+from typing import List
+import numpy as np
+
 from flask import request, send_file
 from scipy.io.wavfile import write
+
+from normalization.text_preprocessing import TextNormalizer
 from . import server, WORK_DIR, nemo_inference
 
 RESULT: str = """
@@ -47,21 +53,17 @@ RESULT: str = """
 </body>
 </html>
 """
+normalizer = TextNormalizer()
 
 
 @server.route('/text2speech', methods=['POST'])
 def text_2_speech():
     if request.method == 'POST':
-        text = request.form['text']
-        lang = request.form['language']
-
-        text_json = {"audio_filepath": "", "duration": 1.0, "text": text}
-        sample_path = WORK_DIR + "tmp.json"
-        with open(sample_path, 'w') as json_file:
-            json_file.write(json.dumps(text_json))
+        text: str = request.form['text']
+        texts: List[str] = normalizer.normalize_and_split(text)
 
         start_t = time.time()
-        sample = nemo_inference.synthesize(sample_path)
+        sample = nemo_inference.synthesize(texts=texts)
         total_t = time.time() - start_t
 
         save_file = WORK_DIR + "/tmp.wav"

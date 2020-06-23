@@ -2,10 +2,10 @@
 
 tacotron2:
     config-path: "models/tacotron2/de/tacotron2.yaml"
-    path: "models/tacotron2/de/kerstin_PUN/"
-    step: "1000"
+    path: "models/tacotron2/de/checkpoints_kerstin_eloqai/"
+    step: "3000"
 
 waveglow:
     config-path: "models/waveglow/waveglow.yaml"
-    path: "models/waveglow/kerstin/WaveGlowNM-STEP-500.pt"
+    path: "models/waveglow/checkpoints_waveglow_kerstin/WaveGlowNM.pt"
     sigma: 0.6

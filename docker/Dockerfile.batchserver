@@ -2,6 +2,7 @@ FROM nvcr.io/nvidia/nemo:v0.10 AS uncythonized
 
 WORKDIR /opt/ondewo-t2s-stella
 COPY ./inference ./inference
+COPY ./normalization ./normalization
 COPY ./batch_server ./batch_server
 
 ENV PYTHONPATH /opt/ondewo-t2s-stella
