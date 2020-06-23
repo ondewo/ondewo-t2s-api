@@ -21,5 +21,5 @@ RUN mkdir code_to_test
 WORKDIR code_to_test
 
 ENV FOLDER_NAME=testcode
-COPY server $FOLDER_NAME/batch_server
+COPY batch_server $FOLDER_NAME/batch_server
 COPY code_checks .

@@ -1,7 +1,6 @@
 from typing import List
 
 import nemo
-import nemo.collections.tts as nemo_tts
 import nemo.collections.asr as nemo_asr
 import numpy as np
 
