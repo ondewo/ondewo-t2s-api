@@ -1,7 +1,11 @@
+from typing import List
+
 import nemo
 import nemo.collections.tts as nemo_tts
 import nemo.collections.asr as nemo_asr
 import numpy as np
+
+from inference.inference_data_layer import CustomDataLayer
 from inference.load_config import load_config_triton
 import logging
 
@@ -70,13 +74,13 @@ class TritonInference:
 
         return batched_result
 
-    def synthesize(self, sample_path: str) -> np.ndarray:
+    def synthesize(self, texts: List[str]) -> np.ndarray:
 
         # make graph
-        data_layer = nemo_asr.TranscriptDataLayer(
-            path=sample_path,
+        data_layer = CustomDataLayer(
+            texts=texts,
             labels=self.config['tacotron2']['config']['labels'],
-            batch_size=1,
+            batch_size=2,
             num_workers=1,
             bos_id=len(self.config['tacotron2']['config']['labels']),
             eos_id=len(self.config['tacotron2']['config']['labels']) + 1,
