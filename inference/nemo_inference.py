@@ -1,5 +1,4 @@
 import nemo
-import nemo.collections.tts as nemo_tts
 import nemo.collections.asr as nemo_asr
 import numpy as np
 from inference.load_config import load_config_nemo

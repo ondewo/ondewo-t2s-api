@@ -21,6 +21,21 @@ class TritonInference:
         self.config = load_config_triton(config)
         self.logger = logger
 
+        self.test_triton()
+
+    def test_triton(self):
+        """Check if Triton server is active and WaveGlow model is loaded.
+        """
+        channel = grpc.insecure_channel(self.config['waveglow']['triton-url'])
+        grpc_stub = grpc_service_v2_pb2_grpc.GRPCInferenceServiceStub(channel)
+
+        # properties of the model that we need for preprocessing
+        metadata_request = grpc_service_v2_pb2.ModelMetadataRequest(
+            name=self.config['waveglow']['triton-model'])
+        metadata_response = grpc_stub.ModelMetadata(metadata_request)
+        if self.logger:
+            self.logger.info("Model {} is ready on Triton inference server".format(metadata_response.name))
+
     def inference_on_triton(self, spectrogram: np.ndarray, z: np.ndarray) -> np.ndarray:
         channel = grpc.insecure_channel(self.config['waveglow']['triton-url'])
         grpc_stub = grpc_service_v2_pb2_grpc.GRPCInferenceServiceStub(channel)
