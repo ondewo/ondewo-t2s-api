@@ -1,5 +1,5 @@
 IMAGE_TAG_BATCH="dockerregistry.ondewo.com:5000/stella-batch-server"
-IMAGE_TAG_BATCH="dockerregistry.ondewo.com:5000/stella-batch-server-release"
+IMAGE_TAG_BATCH_RELEASE="dockerregistry.ondewo.com:5000/stella-batch-server-release"
 IMAGE_TAG_TRAINING="dockerregistry.ondewo.com:5000/stella-training"
 BATCH_CONTAINER="stella-batch-server"
 TRAINING_CONTAINER="stella-training"
@@ -14,10 +14,10 @@ run_code_checks: ## Start the code checks image and run the checks
 	docker run --rm ${CODE_CHECK_IMAGE} make mypy
 
 build_batch_server:
-	docker build -t ${IMAGE_TAG_BATCH} --target uncythonized -f docker/Dockerfile.server .
+	docker build -t ${IMAGE_TAG_BATCH} --target uncythonized -f docker/Dockerfile.batchserver .
 
 build_batch_server_release:
-	docker build -t ${IMAGE_TAG_BATCH}  -f docker/Dockerfile.server .
+	docker build -t ${IMAGE_TAG_BATCH_RELEASE}  -f docker/Dockerfile.server .
 
 build_training_image:
 	docker build -t ${IMAGE_TAG_TRAINING} training

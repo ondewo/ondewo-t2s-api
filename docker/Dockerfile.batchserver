@@ -2,6 +2,7 @@ FROM nvcr.io/nvidia/nemo:v0.10 AS uncythonized
 
 WORKDIR /opt/ondewo-s2t-stella
 COPY ./server ./server
+COPY ./normalization ./normalization
 
 ENV PYTHONPATH /opt/ondewo-s2t-stella
 ENV FLASK_APP server/t2s_server.py
