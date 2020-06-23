@@ -1,5 +1,11 @@
 # Stella S2T server configuration
 
+inference_type: 'Nemo'
+
+neural_factory_nemo:
+    placement: 'GPU'
+    backend: 'pytorch'
+
 tacotron2:
     config: "models/tacotron2/de/tacotron2.yaml"
     path: "models/tacotron2/de/kerstin_PUN"

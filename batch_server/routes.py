@@ -8,7 +8,7 @@ from flask import request, send_file
 from scipy.io.wavfile import write
 
 from normalization.text_preprocessing import TextNormalizer
-from . import server, WORK_DIR, nemo_inference
+from . import server, WORK_DIR, inference
 
 RESULT: str = """
 <html lang="en">
@@ -63,7 +63,7 @@ def text_2_speech():
         texts: List[str] = normalizer.normalize_and_split(text)
 
         start_t = time.time()
-        sample = nemo_inference.synthesize(texts=texts)
+        sample = inference.synthesize(texts=texts)
         total_t = time.time() - start_t
 
         save_file = WORK_DIR + "/tmp.wav"
