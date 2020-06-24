@@ -1,5 +1,5 @@
 import time
-from typing import List
+from typing import List, Any, Optional
 
 from flask import request, send_file
 from scipy.io.wavfile import write
@@ -54,7 +54,7 @@ normalizer = TextNormalizer()
 
 
 @server.route('/text2speech', methods=['POST'])
-def text_2_speech():
+def text_2_speech() -> Any:
     if request.method == 'POST':
         text: str = request.form['text']
         texts: List[str] = normalizer.normalize_and_split(text)
@@ -81,7 +81,7 @@ def text_2_speech():
 
 
 @server.route('/wav_file')
-def tmp_wav():
+def tmp_wav() -> Any:
     return send_file(
         "tmp/tmp.wav",
         mimetype="audio/wav",
@@ -90,7 +90,7 @@ def tmp_wav():
 
 
 @server.route('/wav_file_attachment')
-def tmp_wav_attachment():
+def tmp_wav_attachment() -> Any:
     return send_file(
         "tmp/tmp.wav",
         mimetype="audio/wav",
@@ -102,5 +102,5 @@ def tmp_wav_attachment():
 
 @server.route('/')
 @server.route('/audiofile')
-def audiofile():
+def audiofile() -> Any:
     return server.send_static_file('index.html')
