@@ -5,6 +5,7 @@ inference_type: 'triton'
 neural_factory:
     placement: 'GPU'
     backend: 'pytorch'
+    batch_size: 1
 
 tacotron2:
     nemo:
@@ -20,6 +21,7 @@ waveglow:
         sigma: 0.6
     triton:
         triton_model: "waveglow"
+        triton-url: "localhost:8001"
 
 
 

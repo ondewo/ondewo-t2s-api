@@ -31,6 +31,13 @@ run_triton:
 	--name triton-inference-server nvcr.io/nvidia/tritonserver:20.03.1-py3 \
 	tritonserver --model-repository=/models --api-version=2 --strict-model-config=false
 
+run_triton_on_aistation:
+	-kill -9 $(ps aux | grep "ssh -N -f -L localhost:8001:aistation:8001 voice_user@aistation"| grep -v grep| awk '{print $2}')
+	ssh -N -f -L localhost:8001:aistation:8001 voice_user@aistation
+
+stop_ssh_tunel:
+	-kill -9 $(ps aux | grep "ssh -N -f -L localhost:8001:aistation:8001 voice_user@aistation"| grep -v grep| awk '{print $2}')
+
 run_training_container:
 	-docker kill ${TRAINING_CONTAINER}
 	-docker rm ${TRAINING_CONTAINER}

@@ -1,8 +1,5 @@
-import json
 import time
-import logging
 from typing import List
-import numpy as np
 
 from flask import request, send_file
 from scipy.io.wavfile import write
@@ -71,14 +68,16 @@ def text_2_speech():
         write(save_file, 22050, sample)
 
         return RESULT.format(total_t)
-        #send_file(
+        # send_file(
         #    save_file, 
         #    mimetype="audio/wav")
         #    #as_attachment=True, 
         #    #attachment_filename="demo.wav"
-        #) 
-  #      except Exception as e:
-   #         return str(e)
+        # )
+
+
+#      except Exception as e:
+#         return str(e)
 
 
 @server.route('/wav_file')

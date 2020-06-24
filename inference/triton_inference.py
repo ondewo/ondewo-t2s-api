@@ -27,30 +27,31 @@ class TritonInference(Inference):
         self.nemo_synthesizer = NemoSynthesizer(config=config, waveglow=False)
 
         self.max_decoder_steps: int = \
-            self.nemo_synthesizer.config['tacotron2']['Tacotron2Decoder']['init_params']['max_decoder_steps']
+            self.nemo_synthesizer.config['tacotron2']['config']['Tacotron2Decoder']['init_params']['max_decoder_steps']
+
+        self.batch_size: int = self.config['neural_factory']['batch_size']
 
         self.logger = logger
+
+        self.channel = grpc.insecure_channel(self.config['waveglow']['triton']['triton-url'])
+        self.grpc_stub = grpc_service_v2_pb2_grpc.GRPCInferenceServiceStub(self.channel)
 
         self.test_triton()
 
     def test_triton(self):
         """Check if Triton server is active and WaveGlow model is loaded.
         """
-        channel = grpc.insecure_channel(self.config['waveglow']['triton-url'])
-        grpc_stub = grpc_service_v2_pb2_grpc.GRPCInferenceServiceStub(channel)
 
         # properties of the model that we need for preprocessing
         metadata_request = grpc_service_v2_pb2.ModelMetadataRequest(
-            name=self.config['waveglow']['triton-model'])
-        metadata_response = grpc_stub.ModelMetadata(metadata_request)
+            name=self.config['waveglow']['triton']['triton_model'])
+        metadata_response = self.grpc_stub.ModelMetadata(metadata_request)
         if self.logger:
             self.logger.info("Model {} is ready on Triton inference server".format(metadata_response.name))
 
-    def inference_on_triton(self, spectrogram: np.ndarray, z: np.ndarray) -> np.ndarray:
-        channel = grpc.insecure_channel(self.nemo_synthesizer.config['waveglow']['triton-url'])
-        grpc_stub = grpc_service_v2_pb2_grpc.GRPCInferenceServiceStub(channel)
+    def inference_on_triton(self, spectrogram: np.ndarray, z: np.ndarray) -> List[np.ndarray]:
         request = grpc_service_v2_pb2.ModelInferRequest()
-        request.model_name = self.config['waveglow']['triton-model']
+        request.model_name = self.config['waveglow']['triton']['triton_model']
 
         # prepare output
         output = grpc_service_v2_pb2.ModelInferRequest().InferRequestedOutputTensor()
@@ -75,9 +76,12 @@ class TritonInference(Inference):
         input2.contents.CopyFrom(input_contents2)
         request.inputs.extend([input1, input2])
 
-        response = grpc_stub.ModelInfer(request)
+        response = self.grpc_stub.ModelInfer(request)
 
-        batched_result = np.frombuffer(response.outputs[0].contents.raw_contents, dtype=spectrogram.dtype)
+        batched_result: List[np.ndarray] = []
+        for output in response.outputs:
+            result = np.frombuffer(output.contents.raw_contents, dtype=spectrogram.dtype)
+            batched_result.append(result)
 
         return batched_result
 
@@ -86,7 +90,7 @@ class TritonInference(Inference):
         data_layer = CustomDataLayer(
             texts=texts,
             labels=self.nemo_synthesizer.labels,
-            batch_size=2,
+            batch_size=self.batch_size,
             num_workers=1,
             bos_id=self.nemo_synthesizer.bos_id,
             eos_id=self.nemo_synthesizer.eos_id,
@@ -128,7 +132,7 @@ class TritonInference(Inference):
                                      [1, spectrogram.shape[0], spectrogram.shape[1], spectrogram.shape[2]])
 
             audio = self.inference_on_triton(spectrogram, z)
-            for j in range(audio.shape[0]):
+            for j in range(len(audio)):
                 sample_len = mel_len[0][0] * self.config['tacotron2']['config']["n_stride"]
                 sample = audio[j][:sample_len]
                 result = np.concatenate((result, sample))
@@ -140,12 +144,13 @@ class TritonInference(Inference):
         Returns:
 
         """
-        n_group: int = self.nemo_synthesizer.config['waveglow']['WaveGlowNM']['init_params']['n_group']
+        n_group: int = \
+            self.nemo_synthesizer.config['waveglow']['config']['WaveGlowNM']['init_params']['n_group']
         win_stride: int = \
-            self.nemo_synthesizer.config['waveglow']['AudioToMelSpectrogram' \
+            self.nemo_synthesizer.config['waveglow']['config']['AudioToMelSpectrogram' \
                                                      'Preprocessor']['init_params']['n_window_stride']
         win_size: int = \
-            self.nemo_synthesizer.config['waveglow']['AudioToMelSpectrogram' \
+            self.nemo_synthesizer.config['waveglow']['config']['AudioToMelSpectrogram' \
                                                      'Preprocessor']['init_params']['n_window_size']
 
         return 1, n_group, (self.max_decoder_steps * win_stride + win_size - win_stride) // n_group, 1
