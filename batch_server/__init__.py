@@ -1,7 +1,10 @@
 import os
 from flask import Flask
 import logging
-from inference.triton_inference import TritonInference
+
+from inference.inference import Inference
+from inference.inference_factory import InferenceFactory
+from inference.nemo_inference import NemoInference
 
 server = Flask(__name__)
 server.logger.setLevel(logging.DEBUG)
@@ -10,7 +13,7 @@ WORK_DIR = "batch_server/tmp/"
 if not os.path.isdir(WORK_DIR):
     os.mkdir(WORK_DIR)
 
-nemo_inference = TritonInference("config/batch_server_config_triton.yaml", logger=server.logger)
+inference: Inference = InferenceFactory.get_inference("config/batch_server_config_triton.yaml", logger=server.logger)
 # ===============================
 from batch_server import routes
 

@@ -102,7 +102,7 @@ Tacotron2Decoder:
         decoder_rnn_dim: 1024
         encoder_embedding_dim: *enc_emb_dim
         gate_threshold: 0.5
-        max_decoder_steps: 1000
+        max_decoder_steps: 160
         n_frames_per_step: 1  # currently only 1 is supported
         n_mel_channels: *n_mels
         p_attention_dropout: 0.1
