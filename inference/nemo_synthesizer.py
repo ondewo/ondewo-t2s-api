@@ -16,7 +16,7 @@ class NemoSynthesizer:
 
         # load config
         yaml = YAML(typ="safe")
-        with open(self.config['tacotron2']['config-path']) as f:
+        with open(self.config['tacotron2']['nemo']['config-path']) as f:
             self.config['tacotron2']['config'] = yaml.load(f)
 
         self.embedding_path = "{}TextEmbedding-STEP-{}.pt".format(self.config['tacotron2']['path'],

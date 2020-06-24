@@ -3,7 +3,6 @@ from typing import Dict, Any, List, Tuple
 
 import grpc
 import nemo
-import nemo.collections.asr as nemo_asr
 import numpy as np
 from tritongrpcclient import grpc_service_v2_pb2
 from tritongrpcclient import grpc_service_v2_pb2_grpc
