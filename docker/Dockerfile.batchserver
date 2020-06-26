@@ -1,6 +1,9 @@
 FROM nvcr.io/nvidia/nemo:v0.10 AS uncythonized
 
 WORKDIR /opt/ondewo-t2s-stella
+COPY ./utils ./utils
+RUN cd utils/triton_client_lib && pip install --user --upgrade triton*.whl
+
 COPY ./inference ./inference
 COPY ./normalization ./normalization
 COPY ./batch_server ./batch_server
