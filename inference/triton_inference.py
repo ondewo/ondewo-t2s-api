@@ -12,9 +12,6 @@ from inference.nemo_synthesizer import NemoSynthesizer
 from utils.logger import logger
 
 
-# Triton
-
-
 class TritonInference(Inference):
 
     def __init__(self, config: Dict[str, Any]):

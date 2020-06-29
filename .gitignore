@@ -1,2 +1,3 @@
 *.pt
 data/ramona_deininger
+**/__pycache__/**

@@ -1,5 +1,4 @@
 import os
-
 from flask import Flask
 
 from inference.inference import Inference
