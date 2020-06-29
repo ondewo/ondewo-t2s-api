@@ -4,6 +4,11 @@ WORKDIR /opt/ondewo-t2s-stella
 COPY ./inference ./inference
 COPY ./normalization ./normalization
 COPY ./batch_server ./batch_server
+COPY ./utils ./utils
+COPY ./docker/requirements.txt .
+
+RUN cd utils/triton_client_lib && pip install --user --upgrade triton*.whl
+RUN pip install -r requirements.txt --ignore-installed
 
 ENV PYTHONPATH /opt/ondewo-t2s-stella
 ENV FLASK_APP batch_server

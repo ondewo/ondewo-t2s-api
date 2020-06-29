@@ -92,7 +92,7 @@ logging:
             handlers: [debug]
             level: INFO
             propagate: True
-        rootlogger: #
+        '': #root logger
             handlers: [console, fluent-async-console, fluent-async-debug]
             level: DEBUG
             propagate: False
