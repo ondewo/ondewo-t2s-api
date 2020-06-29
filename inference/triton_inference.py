@@ -12,9 +12,6 @@ from inference.inference_data_layer import CustomDataLayer
 from inference.nemo_synthesizer import NemoSynthesizer
 
 
-# Triton
-
-
 class TritonInference(Inference):
 
     def __init__(self, config: Dict[str, Any], logger: logging.Logger = None):

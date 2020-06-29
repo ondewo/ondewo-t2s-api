@@ -4,7 +4,6 @@ import logging
 
 from inference.inference import Inference
 from inference.inference_factory import InferenceFactory
-from inference.nemo_inference import NemoInference
 
 server = Flask(__name__)
 server.logger.setLevel(logging.DEBUG)

@@ -1,11 +1,11 @@
 import time
 from typing import List, Any, Optional
-
 from flask import request, send_file
 from scipy.io.wavfile import write
 
 from normalization.text_preprocessing import TextNormalizer
 from . import server, WORK_DIR, inference
+
 
 RESULT: str = """
 <html lang="en">
@@ -60,6 +60,7 @@ def text_2_speech():
         texts: List[str] = normalizer.normalize_and_split(text)
 
         sample = inference.synthesize(texts=texts)
+
         # conversion to 16-bit PCM
         sample *= 32768
         sample = sample.astype("int16")
@@ -68,6 +69,26 @@ def text_2_speech():
         write(save_file, 22050, sample)
 
         return send_file("tmp/tmp.wav", mimetype="audio/wav")
+
+
+@server.route('/text2speech_web', methods=['POST'])
+def text_2_speech_web():
+    if request.method == 'POST':
+        text: str = request.form['text']
+        texts: List[str] = normalizer.normalize_and_split(text)
+
+        start_t = time.time()
+        sample = inference.synthesize(texts=texts)
+        total_t = time.time() - start_t
+
+        # conversion to 16-bit PCM
+        sample *= 32768
+        sample = sample.astype("int16")
+
+        save_file = WORK_DIR + "/tmp.wav"
+        write(save_file, 22050, sample)
+
+        return RESULT.format(total_t)
 
 
 @server.route('/wav_file')
