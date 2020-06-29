@@ -1,12 +1,27 @@
 # Stella S2T server configuration
 
+inference_type: 'triton'
+
+neural_factory:
+    placement: 'GPU'
+    backend: 'pytorch'
+    batch_size: 1
+
 tacotron2:
-    config-path: "models/tacotron2/de/tacotron2.yaml"
-    path: "models/tacotron2/de/kerstin_PUN/"
-    step: 1000
+    nemo:
+        config-path: "models/tacotron2/de/tacotron2.yaml"
+        path: "models/tacotron2/de/checkpoints_kerstin_eloqai/"
+        step: "3000"
 
 waveglow:
+    inference_type: 'nemo'
     config-path: "models/waveglow/waveglow.yaml"
-    triton-url: "localhost:8001"
-    triton-model: "waveglow"
+    nemo:
+        path: "models/waveglow/checkpoints_waveglow_kerstin/WaveGlowNM.pt"
+        sigma: 0.6
+    triton:
+        triton_model: "waveglow"
+        triton-url: "localhost:8001"
+
+
 

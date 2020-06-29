@@ -1,10 +1,10 @@
 import time
-from typing import List
+from typing import List, Any, Optional
 from flask import request, send_file
 from scipy.io.wavfile import write
 
 from normalization.text_preprocessing import TextNormalizer
-from . import server, WORK_DIR, nemo_inference
+from . import server, WORK_DIR, inference
 
 
 RESULT: str = """
@@ -59,13 +59,16 @@ def text_2_speech():
         text: str = request.form['text']
         texts: List[str] = normalizer.normalize_and_split(text)
 
-        sample = nemo_inference.synthesize(texts=texts)
+        sample = inference.synthesize(texts=texts)
+
+        # conversion to 16-bit PCM
+        sample *= 32768
+        sample = sample.astype("int16")
 
         save_file = WORK_DIR + "/tmp.wav"
-        print(type(sample))
         write(save_file, 22050, sample)
 
-        send_file(save_file, mimetype="audio/wav")
+        return send_file("tmp/tmp.wav", mimetype="audio/wav")
 
 
 @server.route('/text2speech_web', methods=['POST'])
@@ -75,18 +78,21 @@ def text_2_speech_web():
         texts: List[str] = normalizer.normalize_and_split(text)
 
         start_t = time.time()
-        sample = nemo_inference.synthesize(texts=texts)
+        sample = inference.synthesize(texts=texts)
         total_t = time.time() - start_t
 
+        # conversion to 16-bit PCM
+        sample *= 32768
+        sample = sample.astype("int16")
+
         save_file = WORK_DIR + "/tmp.wav"
-        print(type(sample))
         write(save_file, 22050, sample)
 
         return RESULT.format(total_t)
 
 
 @server.route('/wav_file')
-def tmp_wav():
+def tmp_wav() -> Any:
     return send_file(
         "tmp/tmp.wav",
         mimetype="audio/wav",
@@ -95,7 +101,7 @@ def tmp_wav():
 
 
 @server.route('/wav_file_attachment')
-def tmp_wav_attachment():
+def tmp_wav_attachment() -> Any:
     return send_file(
         "tmp/tmp.wav",
         mimetype="audio/wav",
@@ -107,5 +113,5 @@ def tmp_wav_attachment():
 
 @server.route('/')
 @server.route('/audiofile')
-def audiofile():
+def audiofile() -> Any:
     return server.send_static_file('index.html')
