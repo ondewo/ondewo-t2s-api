@@ -1,0 +1,98 @@
+logging:
+    version: 1
+
+    formatters:
+      brief:
+        format: '%(message)s'
+      default:
+        format: >-
+          %(asctime)s [%(process)d|%(threadName)-8s]
+          - %(levelname)-4s
+          - %(message)s
+        datefmt: '%Y-%m-%d::%H:%M:%S'
+      debug:
+        format: >-
+          %(asctime)s %(pathname)s:%(funcName)s():%(lineno)d
+          - [%(processName)s|%(threadName)s]
+          - %(levelname)s
+          - %(message)s
+        datefmt: '%Y-%m-%d::%H:%M:%S'
+      fluent_console:
+        '()': fluent.handler.FluentRecordFormatter
+        format:
+          time: '%(asctime)s'
+          where: '[%(module)s|%(funcName)s]'
+          message: '%(message)s'
+        datefmt: '%H:%M:%S'
+      fluent_debug:
+        '()': fluent.handler.FluentRecordFormatter
+        format:
+          level: '%(levelname)s'
+          hostname: '%(hostname)s'
+          where: '%(module)s.%(funcName)s'
+          stack_trace: '%(exc_text)s'
+          message: '%(message)s'
+          time: '%(asctime)s'
+          process: '%(processName)s:%(process)d'
+          thread: '%(threadName)s:%(thread)d'
+        datefmt: '%Y-%m-%d::%H:%M:%S'
+
+    handlers:
+        console:
+            class: logging.StreamHandler
+            level: INFO
+            formatter: brief
+            stream: ext://sys.stdout
+        debug:
+            class: logging.StreamHandler
+            level: DEBUG
+            formatter: debug
+            stream: ext://sys.stdout
+        fluent-console:
+            class: fluent.handler.FluentHandler
+            host: localhost
+            port: 24224
+            tag: py.console.logging
+            buffer_overflow_handler: overflow_handler
+            formatter: fluent_console
+            level: INFO
+        fluent-async-console:
+            class: fluent.asynchandler.FluentHandler
+            host: localhost
+            port: 24224
+            tag: py.console.async.logging
+            buffer_overflow_handler: overflow_handler
+            formatter: fluent_console
+            level: INFO
+        fluent-debug:
+            class: fluent.handler.FluentHandler
+            host: localhost
+            port: 24224
+            tag: py.debug.logging
+            buffer_overflow_handler: overflow_handler
+            formatter: fluent_debug
+            level: DEBUG
+        fluent-async-debug:
+            class: fluent.asynchandler.FluentHandler
+            host: localhost
+            port: 24224
+            tag: py.debug.async.logging
+            buffer_overflow_handler: overflow_handler
+            formatter: fluent_debug
+            level: INFO
+        none:
+            class: logging.NullHandler
+
+    loggers:
+        console:
+            handlers: [console]
+            level: INFO
+            propagate: True
+        debug:
+            handlers: [debug]
+            level: INFO
+            propagate: True
+        rootlogger: #
+            handlers: [console, fluent-async-console, fluent-async-debug]
+            level: DEBUG
+            propagate: False

@@ -15,7 +15,9 @@ class TextNormalizer:
     pttrn_date = re.compile(
         r'(\s*(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0[1-9])(?:(?:\.((?:19|20)\d{2}))|\s|\b|$)'
         r'|\s*(3[01]|[12][0-9]|0?[1-9])\.? ([jJ]anuar|[fF]ebruar|[mM]ärz|[aA]pril|[mM]ai|[jJ]uni|[jJ]uli'
-        r'|[aA]ugust|[sS]eptember|[oO]ktober|[nN]ovember|[dD]ezember)(?: ((?:19|20)\d{2})|\s|\b|$))')
+        r'|[aA]ugust|[sS]eptember|[oO]ktober|[nN]ovember|[dD]ezember)(?:((?: 19| 20)\d{2})|\s|\b|$))')
+
+    pttrn_year = re.compile(r'(?:\s|\b|^)((?:19|20)\d{2})(?:\s|\b|$)')
 
     month_dict: Dict[str, int] = {'januar': 1, 'februar': 2, 'märz': 3, 'april': 4, 'mai': 5, 'juni': 6,
                                   'juli': 7, 'august': 8, 'september': 9, 'oktober': 10, 'november': 11,
@@ -203,6 +205,7 @@ class TextNormalizer:
             group = self.pttrn_numbers.findall(text)[0][1]
             text = re.sub(self.pttrn_numbers, fr'\1{self.texturize_numbers(group)}\3', text)
         text = re.sub(self.pttrn_space, ' ', text)
+        text = text.strip()
         return text
 
     def normalize_dates(self, text: str) -> str:
@@ -275,8 +278,8 @@ class TextNormalizer:
         return text
 
     def fix_punctuation(self, text: str) -> str:
+        text = text.strip()
         if not self.pttrn_punkt.search(text):
-            text = text.strip()
             text += '.'
         return text
 
@@ -291,8 +294,9 @@ class TextNormalizer:
         """
         text = self.normalize_dates(text=text)
         text = self.normalize_time(text=text)
-        text = self.fix_punctuation(text=text)
+        text = self.normalize_numbers(text=text)
         texts: List[str] = self.split_text(text)
+        texts = [self.fix_punctuation(item) for item in texts]
         return texts
 
     def split_text(self, text: str, max_len: int = 100) -> List[str]:

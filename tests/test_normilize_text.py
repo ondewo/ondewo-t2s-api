@@ -74,6 +74,24 @@ class TestNormalization:
         assert normalized_text_with_dates == expected_result
 
     @staticmethod
+    @pytest.mark.parametrize('text, expected_result', [
+        ('Brauche noch Ihr Geburtsdatum. '
+         'Sagen Sie zum Beispiel etwa fnfundzwanzigster Februar neuzehn neunundachzig.',
+         ['Brauche noch Ihr Geburtsdatum.',
+          'Sagen Sie zum Beispiel etwa fnfundzwanzigster Februar neuzehn neunundachzig.']),
+        ('1. Januar 1989. Ist das korrekt?', ['erster Januar neunzehnhundertneunundachtzig.',
+                                              'Ist das korrekt?']),
+        ('erster Januar 1989. Ist das korrekt?', ['erster Januar neunzehnhundertneunundachtzig.',
+                                              'Ist das korrekt?']),
+        ('erster Januar. Ist das korrekt?', ['erster Januar.',
+                                              'Ist das korrekt?'])
+    ])
+    def test_normalize_and_split(text: str, expected_result: str) -> None:
+        normalized_text: List[str] = normalizer.normalize_and_split(text)
+        assert isinstance(normalized_text, list)
+        assert normalized_text == expected_result
+
+    @staticmethod
     @pytest.mark.parametrize('time, expected_result', [
         ('text 01:20 text', 'text eins Uhr zwanzig text'),
         ('text 30:50 text', 'text 30:50 text'),
@@ -135,10 +153,11 @@ class TestNormalization:
         ('text1 text2 text3 text4 text5 text6 text7 text8 text9 text10 text11. text12 text: text.',
          ['text1 text2 text3 text4 text5 text6 text7 text8 text9 text10 text11.', ' text12 text: text.']),
         (
-        'text1 text2 text3 text4 text5 text6 text7 text8 text9 text10 text11. text12 text text text text text'
-        ' text text text text text text text text text text: text text  text  text.',
-        ['text1 text2 text3 text4 text5 text6 text7 text8 text9 text10 text11.', ' text12 text text text text text'
-        ' text text text text text text text text text text:', ' text text  text  text.']),
+                'text1 text2 text3 text4 text5 text6 text7 text8 text9 text10 text11. text12 text text text text text'
+                ' text text text text text text text text text text: text text  text  text.',
+                ['text1 text2 text3 text4 text5 text6 text7 text8 text9 text10 text11.',
+                 ' text12 text text text text text'
+                 ' text text text text text text text text text text:', ' text text  text  text.']),
     ])
     def test_split_text(text: str, expected_result: str) -> None:
         split_text: List[str] = normalizer.split_text(text)

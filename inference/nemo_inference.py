@@ -1,7 +1,7 @@
-import logging
 from typing import List, Dict, Any
 
 import numpy as np
+from utils.logger import logger
 
 from inference.inference import Inference
 from inference.inference_data_layer import CustomDataLayer
@@ -10,12 +10,11 @@ from inference.nemo_synthesizer import NemoSynthesizer
 
 class NemoInference(Inference):
 
-    def __init__(self, config: Dict[str, Any], logger: logging.Logger = None):
+    def __init__(self, config: Dict[str, Any]):
 
         self.config: Dict[str, Any] = config
 
-        self.logger = logger
-        self.syntesizer = NemoSynthesizer(config=self.config, logger=self.logger)
+        self.syntesizer = NemoSynthesizer(config=self.config)
 
     def synthesize(self, texts: List[str]) -> np.ndarray:
 
@@ -43,15 +42,15 @@ class NemoInference(Inference):
         audio_pred = self.syntesizer.waveglow(mel_spectrogram=mel_postnet)
 
         # running the inference pipeline
-        self.logger.info("Running the whole model")
+        logger.info("Running the whole model")
         audio_mel_len = self.syntesizer.neural_factory.infer(tensors=[audio_pred, mel_len])
-        self.logger.info("Done Running Waveglow")
+        logger.info("Done Running Waveglow")
 
         audio_result = audio_mel_len[0]
         mel_len_result = audio_mel_len[1]
 
         # if args.waveglow_denoiser_strength > 0:
-        #    logging.info("Setup denoiser")
+        #    logger.info("Setup denoiser")
         #    waveglow.setup_denoiser()
 
         result: np.ndarray = np.zeros((10000,))
