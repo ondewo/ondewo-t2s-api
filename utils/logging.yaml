@@ -87,7 +87,7 @@ logging:
         console:
             handlers: [console]
             level: INFO
-            propagate: True
+            propagate: False
         debug:
             handlers: [debug]
             level: INFO

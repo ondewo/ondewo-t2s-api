@@ -2,6 +2,7 @@ import time
 from typing import List, Any, Optional
 from flask import request, send_file
 from scipy.io.wavfile import write
+from utils.logger import logger
 
 from normalization.text_preprocessing import TextNormalizer
 from . import server, WORK_DIR, inference
@@ -75,7 +76,9 @@ def text_2_speech():
 def text_2_speech_web():
     if request.method == 'POST':
         text: str = request.form['text']
+        logger.info(f'Text to transcribe"{text}"')
         texts: List[str] = normalizer.normalize_and_split(text)
+        logger.info(f'After normalization texts are "{texts}"')
 
         start_t = time.time()
         sample = inference.synthesize(texts=texts)
