@@ -54,30 +54,20 @@ normalizer = TextNormalizer()
 
 
 @server.route('/text2speech', methods=['POST'])
-def text_2_speech() -> Any:
+def text_2_speech():
     if request.method == 'POST':
         text: str = request.form['text']
         texts: List[str] = normalizer.normalize_and_split(text)
 
-        start_t = time.time()
         sample = inference.synthesize(texts=texts)
-        total_t = time.time() - start_t
+        # conversion to 16-bit PCM
+        sample *= 32768
+        sample = sample.astype("int16")
 
         save_file = WORK_DIR + "/tmp.wav"
-        print(type(sample))
         write(save_file, 22050, sample)
 
-        return RESULT.format(total_t)
-        # send_file(
-        #    save_file, 
-        #    mimetype="audio/wav")
-        #    #as_attachment=True, 
-        #    #attachment_filename="demo.wav"
-        # )
-
-
-#      except Exception as e:
-#         return str(e)
+        return send_file("tmp/tmp.wav", mimetype="audio/wav")
 
 
 @server.route('/wav_file')
