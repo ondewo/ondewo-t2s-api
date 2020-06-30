@@ -58,7 +58,9 @@ normalizer = TextNormalizer()
 def text_2_speech():
     if request.method == 'POST':
         text: str = request.form['text']
+        logger.info(f'Text to transcribe: "{text}"')
         texts: List[str] = normalizer.normalize_and_split(text)
+        logger.info(f'After normalization texts are: {texts}')
 
         sample = inference.synthesize(texts=texts)
 
