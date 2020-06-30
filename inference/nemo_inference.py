@@ -43,8 +43,7 @@ class NemoInference(Inference):
 
         # running the inference pipeline
         logger.info("Running the whole model")
-        audio_mel_len = self.syntesizer.neural_factory.infer(tensors=[audio_pred, mel_len, transcript])
-        logger.info(f'The transtript is {audio_mel_len[2]}')
+        audio_mel_len = self.syntesizer.neural_factory.infer(tensors=[audio_pred, mel_len])
         logger.info("Done Running Waveglow")
 
         audio_result = audio_mel_len[0]

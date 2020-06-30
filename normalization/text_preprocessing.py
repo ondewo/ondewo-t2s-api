@@ -201,9 +201,9 @@ class TextNormalizer:
         Returns:
 
         """
-        while self.pttrn_numbers.search(text):
-            group = self.pttrn_numbers.findall(text)[0][1]
-            text = re.sub(self.pttrn_numbers, fr'\1{self.texturize_numbers(group)}\3', text)
+        for groups in self.pttrn_numbers.findall(text):
+            numbers = groups[1]
+            text = text.replace(numbers, self.texturize_numbers(numbers))
         text = re.sub(self.pttrn_space, ' ', text)
         text = text.strip()
         return text
@@ -277,6 +277,12 @@ class TextNormalizer:
         text = re.sub(self.pttrn_space, ' ', text)
         return text
 
+    def normalize_year(self, text: str) -> str:
+        for year_str in self.pttrn_year.findall(text):
+            year_txt = self.texturize_year(year=int(year_str), mode=2)
+            text = text.replace(year_str, year_txt)
+        return text
+
     def fix_punctuation(self, text: str) -> str:
         text = text.strip()
         if not self.pttrn_punkt.search(text):
@@ -293,6 +299,7 @@ class TextNormalizer:
 
         """
         text = self.normalize_dates(text=text)
+        text = self.normalize_year(text=text)
         text = self.normalize_time(text=text)
         text = self.normalize_numbers(text=text)
         texts: List[str] = self.split_text(text)
@@ -317,7 +324,7 @@ class TextNormalizer:
                 parts_iter.append(part)
             else:
                 part_splitted: List[str] = self.split_sentence(text=part)
-                parts.extend(part_splitted)
+                parts_iter.extend(part_splitted)
         return parts_iter
 
     def split_sentence(self, text: str, max_len: int = 100) -> List[str]:
