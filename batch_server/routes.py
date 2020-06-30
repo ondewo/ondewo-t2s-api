@@ -76,9 +76,9 @@ def text_2_speech():
 def text_2_speech_web():
     if request.method == 'POST':
         text: str = request.form['text']
-        logger.info(f'Text to transcribe"{text}"')
+        logger.info(f'Text to transcribe: "{text}"')
         texts: List[str] = normalizer.normalize_and_split(text)
-        logger.info(f'After normalization texts are "{texts}"')
+        logger.info(f'After normalization texts are: {texts}')
 
         start_t = time.time()
         sample = inference.synthesize(texts=texts)
