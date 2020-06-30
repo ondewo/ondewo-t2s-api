@@ -1,4 +1,3 @@
-import logging
 from typing import Dict, Any, List, Tuple
 
 import grpc
@@ -10,11 +9,12 @@ from tritongrpcclient import grpc_service_v2_pb2_grpc
 from inference.inference import Inference
 from inference.inference_data_layer import CustomDataLayer
 from inference.nemo_synthesizer import NemoSynthesizer
+from utils.logger import logger
 
 
 class TritonInference(Inference):
 
-    def __init__(self, config: Dict[str, Any], logger: logging.Logger = None):
+    def __init__(self, config: Dict[str, Any]):
         self.neural_factory = nemo.core.NeuralModuleFactory(
             placement=nemo.core.DeviceType.GPU,
             backend=nemo.core.Backend.PyTorch)
@@ -24,11 +24,10 @@ class TritonInference(Inference):
         self.nemo_synthesizer = NemoSynthesizer(config=config, waveglow=False)
 
         self.max_decoder_steps: int = \
-            self.nemo_synthesizer.config['tacotron2']['config']['Tacotron2Decoder']['init_params']['max_decoder_steps']
+            self.nemo_synthesizer.config['tacotron2']['config']['Tacotron2Decoder']['init_params'][
+                'max_decoder_steps']
 
         self.batch_size: int = self.config['neural_factory']['batch_size']
-
-        self.logger = logger
 
         self.channel = grpc.insecure_channel(self.config['waveglow']['triton']['triton-url'])
         self.grpc_stub = grpc_service_v2_pb2_grpc.GRPCInferenceServiceStub(self.channel)
@@ -43,8 +42,8 @@ class TritonInference(Inference):
         metadata_request = grpc_service_v2_pb2.ModelMetadataRequest(
             name=self.config['waveglow']['triton']['triton_model'])
         metadata_response = self.grpc_stub.ModelMetadata(metadata_request)
-        if self.logger:
-            self.logger.info("Model {} is ready on Triton inference server".format(metadata_response.name))
+        if logger:
+            logger.info("Model {} is ready on Triton inference server".format(metadata_response.name))
 
     def inference_on_triton(self, spectrogram: np.ndarray, z: np.ndarray) -> List[np.ndarray]:
         request = grpc_service_v2_pb2.ModelInferRequest()
@@ -106,12 +105,12 @@ class TritonInference(Inference):
         mel_postnet = self.nemo_synthesizer.tacotron_postnet(mel_input=mel_decoder)
 
         # running the inference pipeline
-        self.logger.info("Running the whole model")
+        logger.info("Running the whole model")
         evaluated_tensors = self.nemo_synthesizer.neural_factory.infer(
             tensors=[mel_postnet, gate, alignments, mel_len])
 
         mel_len = evaluated_tensors[-1]
-        self.logger.info("Done Running Tacotron 2")
+        logger.info("Done Running Tacotron 2")
 
         z_shape = self.calculate_shape_of_z()
         z = np.random.normal(
@@ -145,9 +144,10 @@ class TritonInference(Inference):
             self.nemo_synthesizer.config['waveglow']['config']['WaveGlowNM']['init_params']['n_group']
         win_stride: int = \
             self.nemo_synthesizer.config['waveglow']['config']['AudioToMelSpectrogram' \
-                                                     'Preprocessor']['init_params']['n_window_stride']
+                                                               'Preprocessor']['init_params'][
+                'n_window_stride']
         win_size: int = \
             self.nemo_synthesizer.config['waveglow']['config']['AudioToMelSpectrogram' \
-                                                     'Preprocessor']['init_params']['n_window_size']
+                                                               'Preprocessor']['init_params']['n_window_size']
 
         return 1, n_group, (self.max_decoder_steps * win_stride + win_size - win_stride) // n_group, 1

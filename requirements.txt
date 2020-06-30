@@ -1,3 +1,5 @@
+fluent-logger==0.9.6
+msgpack==1.0.0
+PyYAML==5.3.1
 nemo-toolkit[all]==0.10.1
-transformers==2.5.1
 flask

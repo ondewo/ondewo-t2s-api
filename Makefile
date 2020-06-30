@@ -2,6 +2,7 @@ IMAGE_TAG_BATCH="dockerregistry.ondewo.com:5000/stella-batch-server"
 IMAGE_TAG_BATCH_RELEASE="dockerregistry.ondewo.com:5000/stella-batch-server-release"
 IMAGE_TAG_TRAINING="dockerregistry.ondewo.com:5000/stella-training"
 BATCH_CONTAINER="stella-batch-server"
+BATCH_CONTAINER_RELEASE="stella-batch-server-release"
 TRAINING_CONTAINER="stella-training"
 CODE_CHECK_IMAGE="code_check_image"
 SERVER_PORT = 40015
@@ -59,6 +60,18 @@ run_batch_server:
 	--restart always \
 	--name ${BATCH_CONTAINER} \
 	${IMAGE_TAG_BATCH}
+
+run_batch_server_release:
+	-docker kill ${BATCH_CONTAINER_RELEASE}
+	-docker rm ${BATCH_CONTAINER_RELEASE}
+	docker run -td --gpus all \
+	--shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
+	--network=host \
+	-v ${PWD}/models:/opt/ondewo-t2s-stella/models \
+	-v ${PWD}/config:/opt/ondewo-t2s-stella/config \
+	--restart always \
+	--name ${BATCH_CONTAINER_RELEASE} \
+	${IMAGE_TAG_BATCH_RELEASE}
 
 install_dependencies_locally:
 	pip install -r requirements.txt

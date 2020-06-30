@@ -1,5 +1,8 @@
 FROM nvcr.io/nvidia/nemo:v0.10 AS uncythonized
 
+COPY ./docker/requirements.txt .
+RUN pip install -r requirements.txt --ignore-installed
+
 WORKDIR /opt/ondewo-t2s-stella
 COPY ./utils ./utils
 RUN cd utils/triton_client_lib && pip install --user --upgrade triton*.whl
@@ -7,6 +10,7 @@ RUN cd utils/triton_client_lib && pip install --user --upgrade triton*.whl
 COPY ./inference ./inference
 COPY ./normalization ./normalization
 COPY ./batch_server ./batch_server
+
 
 ENV PYTHONPATH /opt/ondewo-t2s-stella
 ENV FLASK_APP batch_server
@@ -16,7 +20,10 @@ CMD flask run --host=0.0.0.0 --port=40015
 # ========Cythonization Image=======
 FROM dockerregistry.ondewo.com:5000/ondewo-cythonize-tools-3.6 AS cython_builder
 
-COPY --from=uncythonized /opt/ondewo-t2s-stella/batch_server /tmp/transfer/to_cythonize
+COPY --from=uncythonized /opt/ondewo-t2s-stella/batch_server /tmp/transfer/to_cythonize/batch_server
+COPY --from=uncythonized /opt/ondewo-t2s-stella/inference /tmp/transfer/to_cythonize/inference
+COPY --from=uncythonized /opt/ondewo-t2s-stella/normalization /tmp/transfer/to_cythonize/normalization
+COPY --from=uncythonized /opt/ondewo-t2s-stella/utils/logger.py /tmp/transfer/to_cythonize/utils/logger.py
 
 RUN ./cythonize.py \
 		--modules_to_cythonize ./to_cythonize \

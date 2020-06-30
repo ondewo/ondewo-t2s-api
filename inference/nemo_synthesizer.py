@@ -1,4 +1,4 @@
-import logging
+from utils.logger import logger
 from typing import Dict, Any
 
 import nemo
@@ -9,10 +9,8 @@ from ruamel.yaml import YAML
 
 class NemoSynthesizer:
 
-    def __init__(self, config: Dict[str, Any], logger: logging.Logger = None,
-                 waveglow: bool = True):
+    def __init__(self, config: Dict[str, Any], waveglow: bool = True):
         self.config = config
-        self.logger = logger
 
         # load config
         yaml = YAML(typ="safe")
@@ -61,8 +59,7 @@ class NemoSynthesizer:
         self.tacotron_postnet = nemo_tts.Tacotron2Postnet.import_from_config(
             self.config['tacotron2']['nemo']['config-path'], "Tacotron2Postnet")
         self.tacotron_postnet.restore_from(self.postnet_path)
-        if self.logger:
-            self.logger.info("Loaded Tacotron2 model.")
+        logger.info("Loaded Tacotron2 model.")
 
         # load WaveGlow
         yaml = YAML(typ="safe")
@@ -75,8 +72,7 @@ class NemoSynthesizer:
                 overwrite_params={"sigma": self.config['waveglow']['nemo']['sigma']}
             )
             self.waveglow.restore_from(self.config['waveglow']['nemo']['path'])
-            if self.logger:
-                self.logger.info("Loaded WaveGlow model.")
+            logger.info("Loaded WaveGlow model.")
         else:
             self.waveglow = None
 
