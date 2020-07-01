@@ -98,7 +98,9 @@ class TestNormalization:
     @staticmethod
     @pytest.mark.parametrize('time, expected_result', [
         ('text 01:20 text', 'text eins Uhr zwanzig text'),
+        ('text 01:20:00 text', 'text eins Uhr zwanzig text'),
         ('text 30:50 text', 'text 30:50 text'),
+        ('text 30:50:00 text', 'text 30:50:00 text'),
         ('text 25:40 text', 'text 25:40 text'),
         ('text 23:40 text', 'text dreiundzwanzig Uhr vierzig text'),
         ('text 1:40 text', 'text eins Uhr vierzig text'),
