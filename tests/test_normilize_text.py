@@ -84,7 +84,9 @@ class TestNormalization:
         ('erster Januar 1989. Ist das korrekt?', ['erster Januar neunzehnhundertneunundachtzig.',
                                               'Ist das korrekt?']),
         ('erster Januar. Ist das korrekt?', ['erster Januar.',
-                                              'Ist das korrekt?'])
+                                              'Ist das korrekt?']),
+        ("Sie sind am 26. 12. 1944 geboren. Richtig? ",[
+            'Sie sind am sechsundzwanzigster Dezember neunzehnhundertvierundvierzig geboren.', 'Richtig?'])
     ])
     def test_normalize_and_split(text: str, expected_result: str) -> None:
         normalized_text: List[str] = normalizer.normalize_and_split(text)
