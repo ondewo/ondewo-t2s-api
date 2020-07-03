@@ -82,14 +82,23 @@ class TestNormalization:
         ('1. Januar 1989. Ist das korrekt?', ['erster Januar neunzehnhundertneunundachtzig.',
                                               'Ist das korrekt?']),
         ('erster Januar 1989. Ist das korrekt?', ['erster Januar neunzehnhundertneunundachtzig.',
-                                              'Ist das korrekt?']),
+                                                  'Ist das korrekt?']),
         ('erster Januar. Ist das korrekt?', ['erster Januar.',
-                                              'Ist das korrekt?']),
-        ("Sie sind am 26. 12. 1944 geboren. Richtig? ",[
+                                             'Ist das korrekt?']),
+        ("Sie sind am 26. 12. 1944 geboren. Richtig? ", [
             'Sie sind am sechsundzwanzigster Dezember neunzehnhundertvierundvierzig geboren.', 'Richtig?']),
-        ("Sie sind am 26.12.1944 geboren. Richtig? ",[
-            'Sie sind am sechsundzwanzigster Dezember neunzehnhundertvierundvierzig geboren.', 'Richtig?'])
-    ])
+        ("Sie sind am 26.12.1944 geboren. Richtig? ", [
+            'Sie sind am sechsundzwanzigster Dezember neunzehnhundertvierundvierzig geboren.', 'Richtig?']),
+        ('meiner Tochter müssen Großvater Terminumbuchen 5. 10. 1936 anders',
+         ['meiner Tochter müssen Großvater Terminumbuchen fünfter Oktober neunzehnhundertsechsunddreißig.',
+          'anders.']),
+        ("meinem Bub müssen für Kind Terminumbuchen 26. 08. 2027 anders",
+         ['meinem Bub müssen für Kind Terminumbuchen sechsundzwanzigster August zweitausendsiebenundzwanzig.',
+          'anders.']),
+        ("ich haben m\u00f6chten meinem Bub Terminumbuchen 9. 03. 1998 anderes",
+         ['ich haben möchten meinem Bub Terminumbuchen neunter März neunzehnhundertachtundneunzig anderes.'])
+    ]
+                             )
     def test_normalize_and_split(text: str, expected_result: str) -> None:
         normalized_text: List[str] = normalizer.normalize_and_split(text)
         assert isinstance(normalized_text, list)
