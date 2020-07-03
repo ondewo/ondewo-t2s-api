@@ -7,15 +7,17 @@ class TextNormalizer:
     pttrn_spaces_bw_num = re.compile(r'(\d)\s+(\d)')
     pttrn_numbers = re.compile(r'([^0-9]|\b)(\d+)([^0-9]|\b)')
     pttrn_space = re.compile(r'\s+')
-    pttrn_time = re.compile(r'(?:\s|\b|^)(([01][0-9]|[0-9]|2[0-3])\:([0-5][0-9])(?:\s|\b|$))')
+    pttrn_time = re.compile(r'(?:\s|\b|^)(([01][0-9]|[0-9]|2[0-3])\:([0-5][0-9])(?:\s|\b|$)'
+                            r'(?:\:[0-5][0-9](?:\s|\b|$))?)')
     splitting_pttrn_eos = re.compile(r'.*?[.!?]')
     splitting_pttrn_pos = re.compile(r'.*?[;,:.!?/\\|)(\[\]]')
     pttrn_punkt = re.compile(r'[.?!](\s*)$')
 
     pttrn_date = re.compile(
         r'(\s*(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0[1-9])(?:(?:\.((?:19|20)\d{2}))|\s|\b|$)'
-        r'|\s*(3[01]|[12][0-9]|0?[1-9])\.? ([jJ]anuar|[fF]ebruar|[mM]ärz|[aA]pril|[mM]ai|[jJ]uni|[jJ]uli'
-        r'|[aA]ugust|[sS]eptember|[oO]ktober|[nN]ovember|[dD]ezember)(?:((?: 19| 20)\d{2})|\s|\b|$))')
+        r'|\s*(3[01]|[12][0-9]|0?[1-9])\.? ((?:[jJ]anuar|[fF]ebruar|[mM]ärz|[aA]pril|[mM]ai|[jJ]uni|[jJ]uli'
+        r'|[aA]ugust|[sS]eptember|[oO]ktober|[nN]ovember|[dD]ezember)|[01][0-9])\.?'
+        r'(?:((?: 19| 20)\d{2})|\s|\b|$))')
 
     pttrn_year = re.compile(r'(?:\s|\b|^)((?:19|20)\d{2})(?:\s|\b|$)')
 
