@@ -66,7 +66,8 @@ def text_2_speech():
             logger.info(f'After normalization texts are: {texts}')
             sample = inference.synthesize(texts=texts)
         else:
-            logger.info(f'Text to synthesize should contain at least one letter of number. Got {text}')
+            logger.info(f'Text to synthesize should contain at least one letter of number. Got {text}. '
+                        f'Silence will be synthesized.')
             sample = np.zeros((10000,))
 
         # conversion to 16-bit PCM
