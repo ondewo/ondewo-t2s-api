@@ -1,4 +1,6 @@
+import re
 import time
+import numpy as np
 from typing import List, Any, Optional
 from flask import request, send_file
 from scipy.io.wavfile import write
@@ -58,11 +60,15 @@ normalizer = TextNormalizer()
 def text_2_speech():
     if request.method == 'POST':
         text: str = request.form['text']
-        logger.info(f'Text to transcribe: "{text}"')
-        texts: List[str] = normalizer.normalize_and_split(text)
-        logger.info(f'After normalization texts are: {texts}')
-
-        sample = inference.synthesize(texts=texts)
+        if re.search(r'[^A-Za-z0-9]+'):
+            logger.info(f'Text to transcribe: "{text}"')
+            texts: List[str] = normalizer.normalize_and_split(text)
+            logger.info(f'After normalization texts are: {texts}')
+            sample = inference.synthesize(texts=texts)
+        else:
+            logger.info(f'Text to synthesize should contain at least one letter of number. Got {text}. '
+                        f'Silence will be synthesized.')
+            sample = np.zeros((10000,))
 
         # conversion to 16-bit PCM
         sample *= 32768
