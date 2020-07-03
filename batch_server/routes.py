@@ -9,7 +9,6 @@ from utils.logger import logger
 from normalization.text_preprocessing import TextNormalizer
 from . import server, WORK_DIR, inference
 
-
 RESULT: str = """
 <html lang="en">
 <head>
@@ -60,15 +59,7 @@ normalizer = TextNormalizer()
 def text_2_speech():
     if request.method == 'POST':
         text: str = request.form['text']
-        if re.search(r'[^A-Za-z0-9]+'):
-            logger.info(f'Text to transcribe: "{text}"')
-            texts: List[str] = normalizer.normalize_and_split(text)
-            logger.info(f'After normalization texts are: {texts}')
-            sample = inference.synthesize(texts=texts)
-        else:
-            logger.info(f'Text to synthesize should contain at least one letter of number. Got {text}. '
-                        f'Silence will be synthesized.')
-            sample = np.zeros((10000,))
+        sample = make_synthesys(text=text)
 
         # conversion to 16-bit PCM
         sample *= 32768
@@ -84,12 +75,8 @@ def text_2_speech():
 def text_2_speech_web():
     if request.method == 'POST':
         text: str = request.form['text']
-        logger.info(f'Text to transcribe: "{text}"')
-        texts: List[str] = normalizer.normalize_and_split(text)
-        logger.info(f'After normalization texts are: {texts}')
-
         start_t = time.time()
-        sample = inference.synthesize(texts=texts)
+        sample = make_synthesys(text=text)
         total_t = time.time() - start_t
 
         # conversion to 16-bit PCM
@@ -126,3 +113,16 @@ def tmp_wav_attachment() -> Any:
 @server.route('/audiofile')
 def audiofile() -> Any:
     return server.send_static_file('index.html')
+
+
+def make_synthesys(text: str) -> np.array:
+
+    if re.search(r'[A-Za-z0-9]+', text):
+        logger.info(f'Text to transcribe: "{text}"')
+        texts: List[str] = normalizer.normalize_and_split(text)
+        logger.info(f'After normalization texts are: {texts}')
+        return inference.synthesize(texts=texts)
+    else:
+        logger.info(f'Text to synthesize should contain at least one letter or number. Got "{text}". '
+                    f'Silence will be synthesized.')
+        return np.zeros((10000,))
