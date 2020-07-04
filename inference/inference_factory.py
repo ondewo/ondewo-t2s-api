@@ -2,6 +2,7 @@ from typing import Dict, Any
 
 from ruamel.yaml import YAML
 
+from inference.cached_inference import CachedInference
 from inference.inference import Inference
 from inference.nemo_inference import NemoInference
 from inference.triton_inference import TritonInference
@@ -16,9 +17,15 @@ class InferenceFactory:
             config: Dict[str, Any] = yaml.load(f)
 
         if config.get('inference_type') == 'nemo':
-            return NemoInference(config=config)
+            inference_base: Inference = NemoInference(config=config)
         elif config.get('inference_type') == 'triton':
-            return TritonInference(config=config)
+            inference_base = TritonInference(config=config)
         else:
-            ValueError(
+            raise ValueError(
                 f'Inference type can be either "nemo" or "triton". Got {config.get("inference_type")}.')
+
+        caching_config: Dict[str, Any] = config['caching']
+        if caching_config.get('active'):
+            return CachedInference(inference=inference_base, config=caching_config)
+        else:
+            return inference_base

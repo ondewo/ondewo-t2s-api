@@ -2,6 +2,11 @@
 
 
 inference_type: 'nemo'
+caching:
+    active: true
+    save_cache: true
+    load_cache: true
+
 
 neural_factory:
     placement: 'GPU'
