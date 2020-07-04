@@ -81,7 +81,7 @@ class TritonInference(Inference):
 
         return batched_result
 
-    def synthesize(self, texts: List[str]) -> np.ndarray:
+    def synthesize(self, texts: List[str]) -> List[np.ndarray]:
         # make graph
         data_layer = CustomDataLayer(
             texts=texts,
@@ -116,7 +116,7 @@ class TritonInference(Inference):
         z = np.random.normal(
             loc=0.0, scale=self.config['waveglow']['nemo']['sigma'], size=z_shape
         ).astype("float32")
-        result: np.ndarray = np.zeros((10000,))
+        result: List[np.ndarray] = []
         for i in range(len(mel_len)):
             spectrogram: np.ndarray = evaluated_tensors[0][i].cpu().numpy()
             spectrogram = np.pad(
@@ -131,7 +131,7 @@ class TritonInference(Inference):
             for j in range(len(audio)):
                 sample_len = mel_len[0][0] * self.config['tacotron2']['config']["n_stride"]
                 sample = audio[j][:sample_len]
-                result = np.concatenate((result, sample))
+                result.append(sample)
         return result
 
     def calculate_shape_of_z(self) -> Tuple[int, int, int, int]:
