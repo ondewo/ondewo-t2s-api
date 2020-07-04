@@ -14,7 +14,7 @@ from utils.logger import logger
 class CachedInference(Inference):
     cache: Optional[Dict[str, np.ndarray]] = {}
     saving_queue: Queue = Queue()
-    CACHE_DIR = "cache"
+    CACHE_DIR = "models/cache"
     sr = 22050
 
     def __init__(self, inference: Inference, config: Dict[str, Any]):
