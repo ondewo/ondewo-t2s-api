@@ -13,11 +13,15 @@ class TextNormalizer:
     splitting_pttrn_pos = re.compile(r'.*?[;,:.!?/\\|)(\[\]]')
     pttrn_punkt = re.compile(r'[.?!](\s*)$')
 
-    pttrn_date = re.compile(
-        r'(\s*(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0[1-9])(?:(?:\.((?:19|20)\d{2}))|\s|\b|$)'
-        r'|\s*(3[01]|[12][0-9]|0?[1-9])\.? ((?:[jJ]anuar|[fF]ebruar|[mM]ärz|[aA]pril|[mM]ai|[jJ]uni|[jJ]uli'
-        r'|[aA]ugust|[sS]eptember|[oO]ktober|[nN]ovember|[dD]ezember)|[01][0-9])\.?'
-        r'(?:((?: 19| 20)\d{2})|\s|\b|$))')
+    pttrn_right_split = re.compile(r"(?=\s[0-9])")
+    pttrn_left_split = re.compile(r"(?<=[0-9]\s)")
+
+    date_regex: str = r'(\s*(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0[1-9])(?:(?:\.((?:19|20)\d{2}))|\s|\b|$)' \
+                      r'|\s*(3[01]|[12][0-9]|0?[1-9])\.? ((?:[jJ]anuar|[fF]ebruar|[mM]ärz|[aA]pril|[mM]ai|' \
+                      r'[jJ]uni|[jJ]uli|[aA]ugust|[sS]eptember|[oO]ktober|[nN]ovember|[dD]ezember)|' \
+                      r'[01][0-9])\.?(?:((?: 19| 20)\d{2})|\s|\b|$))'
+
+    pttrn_date = re.compile(date_regex)
 
     pttrn_year = re.compile(r'(?:\s|\b|^)((?:19|20)\d{2})(?:\s|\b|$)')
 
@@ -194,6 +198,16 @@ class TextNormalizer:
             text = re.sub(self.pttrn_spaces_bw_num, r'\1\2', text)
         return text
 
+    def split_number_right(self, text: str) -> List[str]:
+        texts: List[str] = self.pttrn_right_split.split(text)
+        texts = list(filter(lambda x: x, texts))
+        return texts
+
+    def split_number_left(self, text: str) -> List[str]:
+        texts: List[str] = self.pttrn_left_split.split(text)
+        texts = list(filter(lambda x: x, texts))
+        return texts
+
     def normalize_numbers(self, text: str) -> str:
         """
 
@@ -291,6 +305,11 @@ class TextNormalizer:
             text += '.'
         return text
 
+    def fix_plus(self, text: str) -> str:
+        text = text.strip()
+        text = text.replace('+', ' plus ')
+        return text
+
     def normalize_and_split(self, text: str) -> List[str]:
         """
 
@@ -300,11 +319,20 @@ class TextNormalizer:
         Returns:
 
         """
-        text = self.normalize_dates(text=text)
-        text = self.normalize_year(text=text)
-        text = self.normalize_time(text=text)
-        text = self.normalize_numbers(text=text)
-        texts: List[str] = self.split_text(text)
+        text = self.fix_plus(text)
+        texts: List[str] = self.split_number_right(text=text)
+        texts_next: List[str] = []
+        for text in texts:
+            texts_next.extend(self.split_number_left(text=text))
+        texts = texts_next
+        texts = [self.normalize_dates(text=text) for text in texts]
+        texts = [self.normalize_year(text=text) for text in texts]
+        texts = [self.normalize_time(text=text) for text in texts]
+        texts = [self.normalize_numbers(text=text) for text in texts]
+        texts_next: List[str] = []
+        for text in texts:
+            texts_next.extend(self.split_text(text=text))
+        texts = texts_next
         texts = [self.fix_punctuation(item) for item in texts]
         return texts
 
@@ -318,6 +346,7 @@ class TextNormalizer:
         Returns:
 
         """
+
         text = self.fix_punctuation(text=text)
         parts: List[str] = list(filter(lambda x: bool(x), self.splitting_pttrn_eos.findall(text)))
         parts_iter: List[str] = []
