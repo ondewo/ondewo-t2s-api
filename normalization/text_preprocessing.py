@@ -1,6 +1,7 @@
 import re
 from datetime import date, time
-from typing import Dict, Optional, List
+from re import Pattern
+from typing import Dict, Optional, List, Union
 
 
 class TextNormalizer:
@@ -13,11 +14,16 @@ class TextNormalizer:
     splitting_pttrn_pos = re.compile(r'.*?[;,:.!?/\\|)(\[\]]')
     pttrn_punkt = re.compile(r'[.?!](\s*)$')
 
-    pttrn_date = re.compile(
-        r'(\s*(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0[1-9])(?:(?:\.((?:19|20)\d{2}))|\s|\b|$)'
-        r'|\s*(3[01]|[12][0-9]|0?[1-9])\.? ((?:[jJ]anuar|[fF]ebruar|[mM]ärz|[aA]pril|[mM]ai|[jJ]uni|[jJ]uli'
-        r'|[aA]ugust|[sS]eptember|[oO]ktober|[nN]ovember|[dD]ezember)|[01][0-9])\.?'
-        r'(?:((?: 19| 20)\d{2})|\s|\b|$))')
+    pttrn_right_split = re.compile(r'(?<=[^\s])(?<!(?:\d\.))\s+(?=[0-9])')
+    pttrn_left_split = re.compile(r'(?<=[0-9])\s+(?=(?:[^\d]))')
+    pttrn_split_before_year = re.compile(r'(?=(?:19|20)\d\d(?:\s|\b|$))')
+
+    date_regex: str = r'(\s*(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0[1-9])(?:(?:\.((?:19|20)\d{2}))|\s|\b|$)' \
+                      r'|\s*(3[01]|[12][0-9]|0?[1-9])\.? ((?:[jJ]anuar|[fF]ebruar|[mM]ärz|[aA]pril|[mM]ai|' \
+                      r'[jJ]uni|[jJ]uli|[aA]ugust|[sS]eptember|[oO]ktober|[nN]ovember|[dD]ezember)|' \
+                      r'[01][0-9])\.?(?:((?: 19| 20)\d{2})|\s|\b|$))'
+
+    pttrn_date = re.compile(date_regex)
 
     pttrn_year = re.compile(r'(?:\s|\b|^)((?:19|20)\d{2})(?:\s|\b|$)')
 
@@ -194,6 +200,14 @@ class TextNormalizer:
             text = re.sub(self.pttrn_spaces_bw_num, r'\1\2', text)
         return text
 
+    def split_on_pattern(self, texts: List[str], pattern: Pattern) -> List[str]:
+        texts_splited: List[str] = []
+        for text in texts:
+            texts_splited.extend(pattern.split(text))
+        texts = texts_splited
+        texts = list(filter(lambda x: x, texts))
+        return texts
+
     def normalize_numbers(self, text: str) -> str:
         """
 
@@ -291,6 +305,11 @@ class TextNormalizer:
             text += '.'
         return text
 
+    def fix_plus(self, text: str) -> str:
+        text = text.strip()
+        text = text.replace('+', ' plus ')
+        return text
+
     def normalize_and_split(self, text: str) -> List[str]:
         """
 
@@ -300,11 +319,18 @@ class TextNormalizer:
         Returns:
 
         """
-        text = self.normalize_dates(text=text)
-        text = self.normalize_year(text=text)
-        text = self.normalize_time(text=text)
-        text = self.normalize_numbers(text=text)
-        texts: List[str] = self.split_text(text)
+        text = self.fix_plus(text)
+        texts = self.split_on_pattern(texts=[text], pattern=self.pttrn_right_split)
+        texts = self.split_on_pattern(texts=texts, pattern=self.pttrn_left_split)
+        texts = self.split_on_pattern(texts=texts, pattern=self.pttrn_split_before_year)
+        texts = [self.normalize_dates(text=text) for text in texts]
+        texts = [self.normalize_year(text=text) for text in texts]
+        texts = [self.normalize_time(text=text) for text in texts]
+        texts = [self.normalize_numbers(text=text) for text in texts]
+        texts_next: List[str] = []
+        for text in texts:
+            texts_next.extend(self.split_text(text=text))
+        texts = texts_next
         texts = [self.fix_punctuation(item) for item in texts]
         return texts
 
@@ -318,6 +344,7 @@ class TextNormalizer:
         Returns:
 
         """
+
         text = self.fix_punctuation(text=text)
         parts: List[str] = list(filter(lambda x: bool(x), self.splitting_pttrn_eos.findall(text)))
         parts_iter: List[str] = []
