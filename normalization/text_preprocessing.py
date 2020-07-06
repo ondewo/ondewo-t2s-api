@@ -1,6 +1,7 @@
 import re
 from datetime import date, time
-from typing import Dict, Optional, List
+from re import Pattern
+from typing import Dict, Optional, List, Union
 
 
 class TextNormalizer:
@@ -15,6 +16,7 @@ class TextNormalizer:
 
     pttrn_right_split = re.compile(r'(?<=[^\s])(?<!(?:\d\.))\s+(?=[0-9])')
     pttrn_left_split = re.compile(r'(?<=[0-9])\s+(?=(?:[^\d]))')
+    pttrn_split_before_year = re.compile(r'(?=(?:19|20)\d\d(?:\s|\b|$))')
 
     date_regex: str = r'(\s*(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0[1-9])(?:(?:\.((?:19|20)\d{2}))|\s|\b|$)' \
                       r'|\s*(3[01]|[12][0-9]|0?[1-9])\.? ((?:[jJ]anuar|[fF]ebruar|[mM]ärz|[aA]pril|[mM]ai|' \
@@ -198,13 +200,11 @@ class TextNormalizer:
             text = re.sub(self.pttrn_spaces_bw_num, r'\1\2', text)
         return text
 
-    def split_number_right(self, text: str) -> List[str]:
-        texts: List[str] = self.pttrn_right_split.split(text)
-        texts = list(filter(lambda x: x, texts))
-        return texts
-
-    def split_number_left(self, text: str) -> List[str]:
-        texts: List[str] = self.pttrn_left_split.split(text)
+    def split_on_pattern(self, texts: List[str], pattern: Pattern) -> List[str]:
+        texts_splited: List[str] = []
+        for text in texts:
+            texts_splited.extend(pattern.split(text))
+        texts = texts_splited
         texts = list(filter(lambda x: x, texts))
         return texts
 
@@ -320,11 +320,9 @@ class TextNormalizer:
 
         """
         text = self.fix_plus(text)
-        texts: List[str] = self.split_number_right(text=text)
-        texts_next: List[str] = []
-        for text in texts:
-            texts_next.extend(self.split_number_left(text=text))
-        texts = texts_next
+        texts = self.split_on_pattern(texts=[text], pattern=self.pttrn_right_split)
+        texts = self.split_on_pattern(texts=texts, pattern=self.pttrn_left_split)
+        texts = self.split_on_pattern(texts=texts, pattern=self.pttrn_split_before_year)
         texts = [self.normalize_dates(text=text) for text in texts]
         texts = [self.normalize_year(text=text) for text in texts]
         texts = [self.normalize_time(text=text) for text in texts]
