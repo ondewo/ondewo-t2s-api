@@ -18,22 +18,24 @@ class TextNormalizer:
     pttrn_left_split = re.compile(r'(?<=[0-9])\s+(?=(?:[^\d]))')
     pttrn_split_before_year = re.compile(r'(?=(?:19|20)\d\d(?:\s|\b|$))')
 
+    pttrn_audible_char = re.compile(r'[a-zA-Z]')
+
     date_regex: str = r'(\s*(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0[1-9])(?:(?:\.((?:19|20)\d{2}))|\s|\b|$)' \
-                      r'|\s*(3[01]|[12][0-9]|0?[1-9])\.? ((?:[jJ]anuar|[fF]ebruar|[mM]ärz|[aA]pril|[mM]ai|' \
-                      r'[jJ]uni|[jJ]uli|[aA]ugust|[sS]eptember|[oO]ktober|[nN]ovember|[dD]ezember)|' \
-                      r'[01][0-9])\.?(?:((?: 19| 20)\d{2})|\s|\b|$))'
+                      r'|\s*(3[01]|[12][0-9]|0?[1-9])\.? ((?:[jJ]anuar|[jJ]änner|[fF]ebruar|[mM]ärz|' \
+                      r'[aA]pril|[mM]ai|[jJ]uni|[jJ]uli|[aA]ugust|[sS]eptember|[oO]ktober|[nN]ovember|' \
+                      r'[dD]ezember)|[01][0-9])\.?(?:((?: 19| 20)\d{2})|\s|\b|$))'
 
     pttrn_date = re.compile(date_regex)
 
     pttrn_year = re.compile(r'(?:\s|\b|^)((?:19|20)\d{2})(?:\s|\b|$)')
 
-    month_dict: Dict[str, int] = {'januar': 1, 'februar': 2, 'märz': 3, 'april': 4, 'mai': 5, 'juni': 6,
+    month_dict: Dict[str, int] = {'januar': 1, 'jänner': 1,'februar': 2, 'märz': 3, 'april': 4, 'mai': 5, 'juni': 6,
                                   'juli': 7, 'august': 8, 'september': 9, 'oktober': 10, 'november': 11,
-                                  'dezember': 12, 'Januar': 1, 'Februar': 2, 'März': 3, 'April': 4, 'Mai': 5,
+                                  'dezember': 12, 'Januar': 1, 'Jänner': 1,'Februar': 2, 'März': 3, 'April': 4, 'Mai': 5,
                                   'Juni': 6, 'Juli': 7, 'August': 8, 'September': 9, 'Oktober': 10,
                                   'November': 11, 'Dezember': 12}
 
-    def texturize_date(self, _date: date, mode: int = 2) -> str:
+    def texturize_date(self, _date: date, ending: str, mode: int = 2) -> str:
         """
 
         Args:
@@ -52,7 +54,7 @@ class TextNormalizer:
             mode=mode) else ''
 
         month_text: str = " " + self.texturize_month(month)
-        day_text: str = self.texturize_day(day)
+        day_text: str = self.texturize_day(day, ending)
         return day_text + month_text + year_text
 
     def texturize_year(self, year: int, mode: int) -> str:
@@ -91,7 +93,7 @@ class TextNormalizer:
                                       12: 'Dezember'}
         return month_dict[month]
 
-    def texturize_day(self, day: int) -> str:
+    def texturize_day(self, day: int, ending: str = 'ter') -> str:
         text_day: str = self.textulize_tens(day)
         if text_day.endswith('sieben'):
             text_day = text_day[:-2]
@@ -104,7 +106,7 @@ class TextNormalizer:
         elif text_day.endswith('acht'):
             text_day = text_day[:-1]
 
-        return text_day + 'ter'
+        return text_day + ending
 
     def textulize_tens(self, number: int) -> str:
         if number > 99 or number < 0:
@@ -224,7 +226,19 @@ class TextNormalizer:
         text = text.strip()
         return text
 
-    def normalize_dates(self, text: str) -> str:
+    def normalize_dates(self, texts: List[str]) -> List[str]:
+        for index in range(len(texts)):
+            if index == 0:
+                texts[index] = self.normalize_single_date(text=texts[index])
+                continue
+            else:
+                if texts[index-1].endswith('m'):
+                    texts[index] = self.normalize_single_date(text=texts[index], ending='ten')
+                else:
+                    texts[index] = self.normalize_single_date(text=texts[index])
+        return texts
+
+    def normalize_single_date(self, text: str, ending: str = 'ter') -> str:
         """
 
         Args:
@@ -258,7 +272,7 @@ class TextNormalizer:
             except ValueError:
                 continue
 
-            normalized_date: str = self.texturize_date(_date=date_)
+            normalized_date: str = self.texturize_date(_date=date_, ending=ending)
             text = text.replace(date_to_normalize, normalized_date)
 
         text = re.sub(self.pttrn_space, ' ', text)
@@ -310,6 +324,9 @@ class TextNormalizer:
         text = text.replace('+', ' plus ')
         return text
 
+    def remove_unaudible_texts(self, texts: List[str]) -> List[str]:
+        return list(filter(lambda x: self.pttrn_audible_char.match(x), texts))
+
     def normalize_and_split(self, text: str) -> List[str]:
         """
 
@@ -323,7 +340,7 @@ class TextNormalizer:
         texts = self.split_on_pattern(texts=[text], pattern=self.pttrn_right_split)
         texts = self.split_on_pattern(texts=texts, pattern=self.pttrn_left_split)
         texts = self.split_on_pattern(texts=texts, pattern=self.pttrn_split_before_year)
-        texts = [self.normalize_dates(text=text) for text in texts]
+        texts = self.normalize_dates(texts=texts)
         texts = [self.normalize_year(text=text) for text in texts]
         texts = [self.normalize_time(text=text) for text in texts]
         texts = [self.normalize_numbers(text=text) for text in texts]
@@ -332,6 +349,7 @@ class TextNormalizer:
             texts_next.extend(self.split_text(text=text))
         texts = texts_next
         texts = [self.fix_punctuation(item) for item in texts]
+        texts = self.remove_unaudible_texts(texts=texts)
         return texts
 
     def split_text(self, text: str, max_len: int = 100) -> List[str]:
