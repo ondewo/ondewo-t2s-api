@@ -1,11 +1,14 @@
-# Stella S2T server configuration
-
+# Stella batch server configuration for NeMO inference
 
 inference_type: 'nemo'
+
 caching:
     active: true
-    save_cache: true
+    memory_cache_max_size: 20
+    sampling_rate: 22050
     load_cache: true
+    save_cache: true
+    cache_save_dir: "models/cache"
 
 
 neural_factory:

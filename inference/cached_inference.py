@@ -1,7 +1,9 @@
 import os
 import uuid
-from multiprocessing import Process, Queue
-from typing import Dict, Any, List, Optional
+from threading import Thread
+from queue import Queue, Empty
+from typing import Dict, Any, List, Tuple
+from cachetools import Cache, LFUCache
 
 import numpy as np
 from scipy.io.wavfile import read as read_wav
@@ -12,105 +14,129 @@ from utils.logger import logger
 
 
 class CachedInference(Inference):
-    cache: Optional[Dict[str, np.ndarray]] = {}
-    saving_queue: Queue = Queue()
-    CACHE_DIR = "models/cache"
-    sr = 22050
 
     def __init__(self, inference: Inference, config: Dict[str, Any]):
-        self.inference = inference
         self.save_cache: bool = config['save_cache']
-        if not os.path.isdir(self.CACHE_DIR):
-            os.mkdir(self.CACHE_DIR)
+        self.memory_cache_max_size: int = config['memory_cache_max_size']
+        self.cache_save_dir: str = config['cache_save_dir']
+        self.sr: int = config['sampling_rate']
+
+        self.inference: Inference = inference
+
+        # Cache loaded in memory, limited in size
+        # Key: text, value: audio waveform
+        self.memory_cache: Cache[str, np.ndarray] = LFUCache(maxsize=self.memory_cache_max_size)
+        # Second, unlimited cache of all audio which has been synthesized
+        # Key: text, value: audio filename
+        self.file_cache: Dict[str, str] = {}
+
         if config['load_cache']:
-            logger.info('Start loading the cache')
+            logger.info('Started loading the cache from filesystem.')
             self.load_cache()
-            logger.info(f'Load the cahce is done. The cached texts loaded are {self.cache.keys()}')
-            logger.info(f"Cache has {len(self.cache)} elements")
+            logger.info(f'Loading of the memory cache is done. '
+                        f'Memory cache has {len(self.memory_cache)} elements. '
+                        f'The loaded cached texts are: {list(self.memory_cache.keys())}')
+            logger.info(f'Loading of the file cache is done. '
+                        f'File cache has {len(self.file_cache)} elements.')
+
         if self.save_cache:
-            self.pickle_thread: Process = Process(target=self.saving_cache_loop, args=(self.saving_queue,))
-            self.pickle_thread.start()
+            if not os.path.isdir(self.cache_save_dir):
+                os.mkdir(self.cache_save_dir)
+
+            self.saving_queue: Queue[Tuple[str, np.ndarray]] = Queue()
+            self.saved_file_queue: Queue[Tuple[str, str]] = Queue()
+            self.caching_thread: Thread = Thread(target=self.saving_cache_loop,
+                                                 args=(self.saving_queue,
+                                                       self.saved_file_queue,
+                                                       self.cache_save_dir,
+                                                       self.sr))
+            self.caching_thread.start()
 
     def load_cache(self) -> None:
-        """
-
-        Returns:
-
-        """
-        if not os.path.isdir(self.CACHE_DIR):
+        if not os.path.isdir(self.cache_save_dir):
             return
-        for file in os.listdir(self.CACHE_DIR):
+        for file in os.listdir(self.cache_save_dir):
             if file.endswith('.txt'):
-                txt_path = os.path.join(self.CACHE_DIR, file)
+                txt_path = os.path.join(self.cache_save_dir, file)
                 wav_path = txt_path[:-3] + 'wav'
                 if not os.path.isfile(wav_path):
                     continue
+
                 with open(txt_path, mode='r') as fi:
                     text = fi.read()
-                    audio = self.read_audio(wav_path)
-                    self.cache[text] = audio
+                audio = self.read_audio(wav_path)
 
-    def saving_cache_loop(self, saving_cache_queue: Queue) -> None:
-        """
-        
-        Args:
-            saving_cache_queue: 
+                # Don't need to add more things in the memory cache if it's full
+                if len(self.memory_cache) <= self.memory_cache_max_size:
+                    self.memory_cache[text] = audio
+                self.file_cache[text] = wav_path
 
-        Returns:
+    def saving_cache_loop(self,
+                          saving_queue: Queue,
+                          saved_file_queue: Queue,
+                          cache_save_dir: str,
+                          sr: int) -> None:
+        try:
+            while True:
+                text, audio = saving_queue.get()
+                file_name_base: str = str(uuid.uuid5(uuid.NAMESPACE_DNS, text))
+                wav_file_path: str = os.path.join(cache_save_dir, file_name_base + '.wav')
+                text_file_path: str = os.path.join(cache_save_dir, file_name_base + '.txt')
 
-        """
-        while True:
-            text, response = saving_cache_queue.get()
-            file_name_base: str = str(uuid.uuid5(uuid.NAMESPACE_DNS, text))
-            wav_file_path: str = os.path.join(self.CACHE_DIR, file_name_base + '.wav')
-            text_file_path: str = os.path.join(self.CACHE_DIR, file_name_base + '.txt')
-            with open(text_file_path, "w", encoding="utf-8") as fi:
-                fi.write(text)
-            response *= 32768
-            response = response.astype("int16")
-            write(wav_file_path, self.sr, response)
-            logger.info(f'Audio for text {text} is saved on the disc.')
+                # Save text file
+                with open(text_file_path, "w", encoding="utf-8") as fi:
+                    fi.write(text)
 
-    def cache_response(self, response: np.ndarray, text: str) -> None:
-        """
+                # Save audio file
+                audio *= 32768
+                audio = audio.astype("int16")
+                write(wav_file_path, sr, audio)
 
-        Args:
-            response:
-            text:
+                logger.info(f'Saved text "{text}" and its audio to disc.')
+                saved_file_queue.put((text, wav_file_path))
+        except Exception:
+            logger.exception("Saving cache loop exception.")
 
-        Returns:
-
-        """
-        self.cache[text] = response
-        logger.info(f"{text} added to cache, now cache has {len(self.cache)} elements")
+    def cache_audio(self, text: str, audio: np.ndarray) -> None:
+        self.memory_cache[text] = audio
+        logger.info(f'Text "{text}" is added to the memory cache. '
+                    f' Memory cache has {len(self.memory_cache)} elements now.')
         if self.save_cache:
-            self.saving_queue.put((text, response))
+            self.saving_queue.put((text, audio))
 
     def synthesize(self, texts: List[str]) -> List[np.ndarray]:
-        """
+        # Firstly, update the file cache
+        try:
+            while not self.saved_file_queue.empty():
+                text, audiofile = self.saved_file_queue.get(block=False)
+                self.file_cache[text] = audiofile
+                logger.info(f'Updated file cache. File cache has {len(self.file_cache)} elements now.')
+        except Empty:
+            logger.exception("Saving file queue is empty!")
 
-        Args:
-            texts:
-
-        Returns:
-
-        """
         texts_not_in_cache: List[str] = []
-        result: Dict[str] = {}
+        audio_result: Dict[str, np.ndarray] = {}
         for text in texts:
-            if text in self.cache:
-                result[text] = self.cache[text]
+            if text in self.memory_cache:
+                audio_result[text] = self.memory_cache[text]
+            elif text in self.file_cache:
+                audio_result[text] = self.read_audio(self.file_cache[text])
+                self.memory_cache[text] = audio_result[text]
             else:
                 texts_not_in_cache.append(text)
-        logger.info(f'{result.keys()} are taken from the cache')
-        logger.info(f'Start synthesizing audio for {texts_not_in_cache}')
-        audio_list: List[np.ndarray] = self.inference.synthesize(texts=texts_not_in_cache)
-        logger.info('Synthesizing is finished')
-        for text, audio in zip(texts_not_in_cache, audio_list):
-            result[text] = audio
-            self.cache_response(response=audio, text=text)
-        logger.info(f'Texts {texts_not_in_cache} are saved in the cache')
-        return [result[text] for text in texts]
+
+        if len(audio_result) > 0:
+            logger.info(f'Texts {list(audio_result.keys())} are taken from the cache.')
+
+        if len(texts_not_in_cache) > 0:
+            logger.info(f'Start synthesizing audio for texts {texts_not_in_cache}')
+            audio_list: List[np.ndarray] = self.inference.synthesize(texts=texts_not_in_cache)
+            logger.info('Synthesizing is finished.')
+            for text, audio in zip(texts_not_in_cache, audio_list):
+                audio_result[text] = audio
+                self.cache_audio(text=text, audio=audio)
+
+        return [audio_result[text] for text in texts]
 
     def read_audio(self, wav_path: str) -> np.ndarray:
         sr, audio = read_wav(wav_path)
