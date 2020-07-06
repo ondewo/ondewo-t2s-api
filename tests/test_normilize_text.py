@@ -69,7 +69,7 @@ class TestNormalization:
         ('01.01 1 Januar 2018  02 Januar', 'erster Januar erster Januar zweitausendachtzehn zweiter Januar'),
     ])
     def test_normalize_numbers(date: str, expected_result: str) -> None:
-        normalized_text_with_dates: str = normalizer.normalize_dates(date)
+        normalized_text_with_dates: str = normalizer.normalize_single_date(date)
         assert isinstance(normalized_text_with_dates, str)
         assert normalized_text_with_dates == expected_result
 
@@ -86,10 +86,10 @@ class TestNormalization:
         ('erster Januar. Ist das korrekt?', ['erster Januar.',
                                              'Ist das korrekt?']),
         ("Sie sind am 26. 12. 1944 geboren. Richtig? ", [
-            'Sie sind am.', 'sechsundzwanzigster Dezember.', 'neunzehnhundertvierundvierzig.', 'geboren.',
+            'Sie sind am.', 'sechsundzwanzigsten Dezember.', 'neunzehnhundertvierundvierzig.', 'geboren.',
             'Richtig?']),
         ("Sie sind am 26.12.1944 geboren. Richtig? ", [
-            'Sie sind am.', 'sechsundzwanzigster Dezember.', 'neunzehnhundertvierundvierzig.', 'geboren.',
+            'Sie sind am.', 'sechsundzwanzigsten Dezember.', 'neunzehnhundertvierundvierzig.', 'geboren.',
             'Richtig?']),
         ('meiner Tochter müssen Großvater Terminumbuchen 5. 10. 1936 anders',
          ['meiner Tochter müssen Großvater Terminumbuchen.',
@@ -103,7 +103,12 @@ class TestNormalization:
          ['ich haben möchten meinem Bub Terminumbuchen.',
           'neunter März.', 'neunzehnhundertachtundneunzig.', 'anderes.']),
         ('sie sind am 15. Januar 1998 geboren',
-         ['sie sind am.', 'fünfzehnter Januar.', 'neunzehnhundertachtundneunzig.', 'geboren.'])
+         ['sie sind am.', 'fünfzehnten Januar.', 'neunzehnhundertachtundneunzig.', 'geboren.']),
+        ("Ihre Sozialversicherungsnummer ist 1234 und sie sind am 15. Jänner 1998 geboren. Richtig?", [
+            'Ihre Sozialversicherungsnummer ist.', 'eins zwei drei vier.', 'und sie sind am.',
+            'fünfzehnten Januar.', 'neunzehnhundertachtundneunzig.', 'geboren.', 'Richtig?'
+        ]),
+        ("Wie geht's dir???", ["Wie geht's dir?"])
     ]
                              )
     def test_normalize_and_split(text: str, expected_result: str) -> None:
