@@ -4,6 +4,8 @@ import numpy as np
 from typing import List, Any, Optional
 from flask import request, send_file
 from scipy.io.wavfile import write
+
+from normalization.postrocesser import Postprocesser
 from utils.logger import logger
 
 from normalization.text_preprocessing import TextNormalizer
@@ -53,6 +55,7 @@ RESULT: str = """
 </html>
 """
 normalizer = TextNormalizer()
+postprocesser = Postprocesser()
 
 
 @server.route('/text2speech', methods=['POST'])
@@ -116,12 +119,14 @@ def audiofile() -> Any:
 
 
 def make_synthesys(text: str) -> np.array:
-
     if re.search(r'[A-Za-z0-9]+', text):
         logger.info(f'Text to transcribe: "{text}"')
         texts: List[str] = normalizer.normalize_and_split(text)
         logger.info(f'After normalization texts are: {texts}')
-        return inference.synthesize(texts=texts)
+
+        audio_list: List[np.ndarray] = inference.synthesize(texts=texts)
+        audio = postprocesser.postprocess(audio_list)
+        return audio
     else:
         logger.info(f'Text to synthesize should contain at least one letter or number. Got "{text}". '
                     f'Silence will be synthesized.')

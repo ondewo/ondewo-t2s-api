@@ -7,7 +7,7 @@ import numpy
 class Inference(ABC):
 
     @abstractmethod
-    def synthesize(self, texts: List[str]) -> numpy.ndarray:
+    def synthesize(self, texts: List[str]) -> List[numpy.ndarray]:
         """
 
         Args:

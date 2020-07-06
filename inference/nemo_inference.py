@@ -16,7 +16,7 @@ class NemoInference(Inference):
 
         self.syntesizer = NemoSynthesizer(config=self.config)
 
-    def synthesize(self, texts: List[str]) -> np.ndarray:
+    def synthesize(self, texts: List[str]) -> List[np.ndarray]:
 
         # make graph
         data_layer = CustomDataLayer(
@@ -53,10 +53,10 @@ class NemoInference(Inference):
         #    logger.info("Setup denoiser")
         #    waveglow.setup_denoiser()
 
-        result: np.ndarray = np.zeros((10000,))
+        result: List[np.ndarray] = []
         for i in range(len(mel_len_result)):
             for j in range(audio_result[i].shape[0]):
                 sample_len = mel_len_result[i][j] * self.syntesizer.config['tacotron2']['config']["n_stride"]
                 sample = audio_result[i].cpu().numpy()[j][:sample_len]
-                result = np.concatenate((result, sample))
+                result.append(sample)
         return result
