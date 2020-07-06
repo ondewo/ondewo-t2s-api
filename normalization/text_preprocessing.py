@@ -13,8 +13,8 @@ class TextNormalizer:
     splitting_pttrn_pos = re.compile(r'.*?[;,:.!?/\\|)(\[\]]')
     pttrn_punkt = re.compile(r'[.?!](\s*)$')
 
-    pttrn_right_split = re.compile(r"(?=\s[0-9])")
-    pttrn_left_split = re.compile(r"(?<=[0-9]\s)")
+    pttrn_right_split = re.compile(r'(?<=[^\s])(?<!(?:\d\.))\s+(?=[0-9])')
+    pttrn_left_split = re.compile(r'(?<=[0-9])\s+(?=(?:[^\d]))')
 
     date_regex: str = r'(\s*(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0[1-9])(?:(?:\.((?:19|20)\d{2}))|\s|\b|$)' \
                       r'|\s*(3[01]|[12][0-9]|0?[1-9])\.? ((?:[jJ]anuar|[fF]ebruar|[mM]ärz|[aA]pril|[mM]ai|' \
