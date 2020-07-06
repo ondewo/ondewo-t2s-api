@@ -25,7 +25,7 @@ class CachedInference(Inference):
 
         # Cache loaded in memory, limited in size
         # Key: text, value: audio waveform
-        self.memory_cache: Cache[str, np.ndarray] = LFUCache(maxsize=self.memory_cache_max_size)
+        self.memory_cache: LFUCache = LFUCache(maxsize=self.memory_cache_max_size)
         # Second, unlimited cache of all audio which has been synthesized
         # Key: text, value: audio filename
         self.file_cache: Dict[str, str] = {}
@@ -102,7 +102,7 @@ class CachedInference(Inference):
         logger.info(f'Text "{text}" is added to the memory cache. '
                     f' Memory cache has {len(self.memory_cache)} elements now.')
         if self.save_cache:
-            self.saving_queue.put((text, audio))
+            self.saving_queue.put((text, np.copy(audio)))
 
     def synthesize(self, texts: List[str]) -> List[np.ndarray]:
         # Firstly, update the file cache
@@ -119,14 +119,13 @@ class CachedInference(Inference):
         for text in texts:
             if text in self.memory_cache:
                 audio_result[text] = self.memory_cache[text]
+                logger.info(f'Text "{text}" taken from the memory cache.')
             elif text in self.file_cache:
                 audio_result[text] = self.read_audio(self.file_cache[text])
                 self.memory_cache[text] = audio_result[text]
+                logger.info(f'Text "{text}" taken from the file cache.')
             else:
                 texts_not_in_cache.append(text)
-
-        if len(audio_result) > 0:
-            logger.info(f'Texts {list(audio_result.keys())} are taken from the cache.')
 
         if len(texts_not_in_cache) > 0:
             logger.info(f'Start synthesizing audio for texts {texts_not_in_cache}')
