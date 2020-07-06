@@ -101,7 +101,9 @@ class TestNormalization:
           'anders.']),
         ("ich haben m\u00f6chten meinem Bub Terminumbuchen 9. 03. 1998 anderes",
          ['ich haben möchten meinem Bub Terminumbuchen.',
-          'neunter März.', 'neunzehnhundertachtundneunzig.', 'anderes.'])
+          'neunter März.', 'neunzehnhundertachtundneunzig.', 'anderes.']),
+        ('sie sind am 15. Januar 1998 geboren',
+         ['sie sind am.', 'fünfzehnter Januar.', 'neunzehnhundertachtundneunzig.', 'geboren.'])
     ]
                              )
     def test_normalize_and_split(text: str, expected_result: str) -> None:
