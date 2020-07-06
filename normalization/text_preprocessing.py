@@ -1,7 +1,6 @@
 import re
 from datetime import date, time
-from re import Pattern
-from typing import Dict, Optional, List, Union
+from typing import Dict, List, Any
 
 
 class TextNormalizer:
@@ -202,10 +201,13 @@ class TextNormalizer:
             text = re.sub(self.pttrn_spaces_bw_num, r'\1\2', text)
         return text
 
-    def split_on_pattern(self, texts: List[str], pattern: Pattern) -> List[str]:
+    def split_on_pattern(self, texts: List[str], pattern: Any) -> List[str]:
         texts_splited: List[str] = []
         for text in texts:
-            texts_splited.extend(pattern.split(text))
+            if pattern.search(text):
+                texts_splited.extend(pattern.split(text))
+            else:
+                texts_splited.append(text)
         texts = texts_splited
         texts = list(filter(lambda x: x, texts))
         return texts

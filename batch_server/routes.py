@@ -59,7 +59,7 @@ postprocesser = Postprocesser()
 
 
 @server.route('/text2speech', methods=['POST'])
-def text_2_speech():
+def text_2_speech() -> Any:
     if request.method == 'POST':
         text: str = request.form['text']
         sample = make_synthesys(text=text)
@@ -75,7 +75,7 @@ def text_2_speech():
 
 
 @server.route('/text2speech_web', methods=['POST'])
-def text_2_speech_web():
+def text_2_speech_web() -> Any:
     if request.method == 'POST':
         text: str = request.form['text']
         start_t = time.time()
