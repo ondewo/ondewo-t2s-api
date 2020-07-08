@@ -75,4 +75,3 @@ class NemoSynthesizer:
             logger.info("Loaded WaveGlow model.")
         else:
             self.waveglow = None
-

@@ -31,18 +31,18 @@ Before running the server, depening on the type of inference you want to use, ei
 To run the batch server, build the image by `make build_batch_server` and then run the server by `make run_batch_server`
 You can now try the server by going to  `http://0.0.0.0:40015`
 
-### How to Run Locally 
+### How to Run Locally
 
 If you just want to use the servers, it is suggested to run them in Docker. Run locally only for development purposes.
- 
-Create a new conda environment (which you are going to use for development of this repository), then install all dependencies locally by doing `make install_dependencies_locally`. 
+
+Create a new conda environment (which you are going to use for development of this repository), then install all dependencies locally by doing `make install_dependencies_locally`.
 
 When this is all done, use the following commands to start the servers
 (you'll need to run this commands from the project root):
 
 __Batch server:__ `export PYTHONPATH="${PWD}" && export FLASK_APP=batch_server &&  flask run --host=0.0.0.0 --port=40013`
 
-__Streaming server:__ `export PYTHONPATH="${PWD}" && python streaming_server/server.py` 
+__Streaming server:__ `export PYTHONPATH="${PWD}" && python streaming_server/server.py`
 
 __Demo server:__ `export PYTHONPATH="${PWD}" && export FLASK_APP=demo_server &&  flask run --host=0.0.0.0 --port=40012`
 

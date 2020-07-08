@@ -44,7 +44,7 @@ pipeline {
                             stage('Push') { steps{
                                     sh(script: "docker push ${PUSH_NAME_RELEASE}", label: "push the image to the registry")
                                     sh(script: "echo ${PUSH_NAME_RELEASE} pushed to registry")
-    
+
                             } }
                     } }
                 } }

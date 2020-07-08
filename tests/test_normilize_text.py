@@ -110,7 +110,7 @@ class TestNormalization:
         ]),
         ("Wie geht's dir???", ["Wie geht's dir?"])
     ]
-                             )
+    )
     def test_normalize_and_split(text: str, expected_result: str) -> None:
         normalized_text: List[str] = normalizer.normalize_and_split(text)
         assert isinstance(normalized_text, list)

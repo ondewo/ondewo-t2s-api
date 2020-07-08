@@ -16,4 +16,3 @@ class Inference(ABC):
         Returns:
 
         """
-

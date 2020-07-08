@@ -9,10 +9,12 @@ repos:
     - id: no-commit-to-branch
       args: [--branch, master, --branch, develop]
     - id: trailing-whitespace
-      exclude: (^training/|^utils/triton_client_lib|^demo_server/static|^language_models)
+      exclude: (^training/|^utils/triton_client_lib|^batch_server/static|^models)
     - id: check-ast
     - id: check-json
+      exclude: (^training)
     - id: pretty-format-json
+      exclude: (^training)
       args: [--autofix]
     - id: check-xml
     - id: check-yaml
