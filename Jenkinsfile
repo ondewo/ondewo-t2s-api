@@ -24,7 +24,7 @@ pipeline {
         stage('Normal image') { agent { label 'cpu' }
             stages{
                 stage('Build') { steps {
-                        sh(script: "docker build -t ${PUSH_NAME_STREAM} --target uncythonized -f docker/Dockerfile.server .", label: "build image")
+                        sh(script: "docker build -t ${PUSH_NAME_STREAM} --target uncythonized -f docker/Dockerfile.batchserver .", label: "build image")
                 } }
                 stage('Push') { steps{
                         sh(script: "docker push ${PUSH_NAME_STREAM}", label: "push the image to the registry")

@@ -1,0 +1,50 @@
+exclude: '^$'
+
+fail_fast: false
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.1.0
+    hooks:
+    - id: no-commit-to-branch
+      args: [--branch, master, --branch, develop]
+    - id: trailing-whitespace
+      exclude: (^training/|^utils/triton_client_lib|^demo_server/static|^language_models)
+    - id: check-ast
+    - id: check-json
+    - id: pretty-format-json
+      args: [--autofix]
+    - id: check-xml
+    - id: check-yaml
+    - id: check-symlinks
+    - id: check-merge-conflict
+    - id: detect-private-key
+    - id: check-executables-have-shebangs
+    - id: requirements-txt-fixer
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: 'v0.782'
+    hooks:
+    - id: mypy
+      args: ['--config-file=code_checks/mypy.ini']
+      exclude: (^training/|^utils/triton_client_lib)
+
+  - repo: https://gitlab.com/pycqa/flake8
+    rev: 3.8.3
+    hooks:
+    - id: flake8
+      args: ['--config=code_checks/.flake8']
+      exclude: (^training/|^utils/triton_client_lib)
+
+  - repo: https://github.com/pre-commit/mirrors-autopep8
+    rev: v1.5.3
+    hooks:
+      - id: autopep8  # Perform pep8 auto-formatting
+        args: [--max-line-length=110, --in-place]
+        exclude: |
+          (?x) (
+          ^training/ |
+          ^utils/triton_client_lib |
+          ^batch_server/__init__.py |
+          ^demo_server/__init__.py
+          )
