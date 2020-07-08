@@ -45,6 +45,5 @@ repos:
           (?x) (
           ^training/ |
           ^utils/triton_client_lib |
-          ^batch_server/__init__.py |
-          ^demo_server/__init__.py
+          ^batch_server/__init__.py
           )

@@ -143,11 +143,11 @@ class TritonInference(Inference):
         n_group: int = \
             self.nemo_synthesizer.config['waveglow']['config']['WaveGlowNM']['init_params']['n_group']
         win_stride: int = \
-            self.nemo_synthesizer.config['waveglow']['config']['AudioToMelSpectrogram' \
+            self.nemo_synthesizer.config['waveglow']['config']['AudioToMelSpectrogram'
                                                                'Preprocessor']['init_params'][
                 'n_window_stride']
         win_size: int = \
-            self.nemo_synthesizer.config['waveglow']['config']['AudioToMelSpectrogram' \
+            self.nemo_synthesizer.config['waveglow']['config']['AudioToMelSpectrogram'
                                                                'Preprocessor']['init_params']['n_window_size']
 
         return 1, n_group, (self.max_decoder_steps * win_stride + win_size - win_stride) // n_group, 1

@@ -5,7 +5,7 @@ from nemo.backends.pytorch import DataLayerNM
 from nemo.collections.asr.parts import parsers
 from nemo.collections.asr.parts.collections import Text
 from nemo.core import DeviceType
-from nemo.core.neural_types import *
+from nemo.core.neural_types import NeuralType, LabelsType, LengthsType
 from nemo.utils.decorators import add_port_docs
 import torch
 from nemo.utils.misc import pad_to

@@ -28,9 +28,9 @@ class TextNormalizer:
 
     pttrn_year = re.compile(r'(?:\s|\b|^)((?:19|20)\d{2})(?:\s|\b|$)')
 
-    month_dict: Dict[str, int] = {'januar': 1, 'jänner': 1,'februar': 2, 'märz': 3, 'april': 4, 'mai': 5, 'juni': 6,
+    month_dict: Dict[str, int] = {'januar': 1, 'jänner': 1, 'februar': 2, 'märz': 3, 'april': 4, 'mai': 5, 'juni': 6,
                                   'juli': 7, 'august': 8, 'september': 9, 'oktober': 10, 'november': 11,
-                                  'dezember': 12, 'Januar': 1, 'Jänner': 1,'Februar': 2, 'März': 3, 'April': 4, 'Mai': 5,
+                                  'dezember': 12, 'Januar': 1, 'Jänner': 1, 'Februar': 2, 'März': 3, 'April': 4, 'Mai': 5,
                                   'Juni': 6, 'Juli': 7, 'August': 8, 'September': 9, 'Oktober': 10,
                                   'November': 11, 'Dezember': 12}
 
