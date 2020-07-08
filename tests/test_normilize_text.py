@@ -26,7 +26,7 @@ class TestNormalization:
         (date(day=15, month=3, year=1), 'fünfzehnter März'),
         (date(day=15, month=4, year=2020), 'fünfzehnter April zweitausendzwanzig'),
     ])
-    def test_normalize_time(date_to_normalize: date, expected_result: str) -> None:
+    def test_normalize_date(date_to_normalize: date, expected_result: str) -> None:
         date_text = normalizer.texturize_date(date_to_normalize)
         assert isinstance(date_text, str)
         assert date_text == expected_result
@@ -68,7 +68,7 @@ class TestNormalization:
     @pytest.mark.parametrize('date, expected_result', [
         ('01.01 1 Januar 2018  02 Januar', 'erster Januar erster Januar zweitausendachtzehn zweiter Januar'),
     ])
-    def test_normalize_numbers(date: str, expected_result: str) -> None:
+    def test_normalize_dates(date: str, expected_result: str) -> None:
         normalized_text_with_dates: str = normalizer.normalize_single_date(date)
         assert isinstance(normalized_text_with_dates, str)
         assert normalized_text_with_dates == expected_result
@@ -127,7 +127,7 @@ class TestNormalization:
         ('text 1:40 text', 'text eins Uhr vierzig text'),
         ('text 1:4 text', 'text 1:4 text'),
     ])
-    def test_normalize_numbers(time: str, expected_result: str) -> None:
+    def test_normalize_times(time: str, expected_result: str) -> None:
         normalized_text_with_time: str = normalizer.normalize_time(time)
         assert isinstance(normalized_text_with_time, str)
         assert normalized_text_with_time == expected_result

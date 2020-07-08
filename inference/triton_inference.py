@@ -34,7 +34,7 @@ class TritonInference(Inference):
 
         self.test_triton()
 
-    def test_triton(self):
+    def test_triton(self) -> None:
         """Check if Triton server is active and WaveGlow model is loaded.
         """
 

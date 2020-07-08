@@ -148,7 +148,7 @@ class TextNormalizer:
         if hundreds_num == 1:
             hundreds: str = 'hundert'
         else:
-            hundreds: str = self.textulize_tens(hundreds_num) + 'hundert'
+            hundreds = self.textulize_tens(hundreds_num) + 'hundert'
 
         if tens != 0:
             text_tens: str = self.textulize_tens(tens)
@@ -182,9 +182,9 @@ class TextNormalizer:
         """
 
         if len(number) <= 2:
-            texturized_number = ' ' + self.textulize_tens(number=int(number)) + ' '
+            texturized_number: str = ' ' + self.textulize_tens(number=int(number)) + ' '
         elif len(number) > 3:
-            texturized_number: str = ' '
+            texturized_number = ' '
             for digit in number:
                 texturized_number += self.textulize_tens(number=int(digit)) + ' '
         else:
