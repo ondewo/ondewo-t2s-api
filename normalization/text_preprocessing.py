@@ -327,7 +327,7 @@ class TextNormalizer:
         return text
 
     def remove_unaudible_texts(self, texts: List[str]) -> List[str]:
-        return list(filter(lambda x: self.pttrn_audible_char.match(x), texts))
+        return list(filter(lambda x: self.pttrn_audible_char.findall(x), texts))
 
     def normalize_and_split(self, text: str) -> List[str]:
         """
