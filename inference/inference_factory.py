@@ -11,10 +11,7 @@ from inference.triton_inference import TritonInference
 class InferenceFactory:
 
     @classmethod
-    def get_inference(cls, config_path: str) -> Inference:
-        yaml = YAML(typ="safe")
-        with open(config_path) as f:
-            config: Dict[str, Any] = yaml.load(f)
+    def get_inference(cls, config: Dict[str, Any]) -> Inference:
 
         if config.get('inference_type') == 'nemo':
             inference_base: Inference = NemoInference(config=config)

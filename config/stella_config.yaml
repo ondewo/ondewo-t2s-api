@@ -1,6 +1,15 @@
-# Stella S2T server configuration
+# Stella batch server configuration for NeMO inference
 
-inference_type: 'triton'
+inference_type: 'nemo'
+
+caching:
+    active: true
+    memory_cache_max_size: 20
+    sampling_rate: 22050
+    load_cache: true
+    save_cache: true
+    cache_save_dir: "models/cache"
+
 
 neural_factory:
     placement: 'GPU'
@@ -11,7 +20,7 @@ tacotron2:
     nemo:
         config-path: "models/tacotron2/de/tacotron2.yaml"
         path: "models/tacotron2/de/checkpoints_kerstin_eloqai/"
-        step: "3000"
+        step: "1000"
 
 waveglow:
     inference_type: 'nemo'
@@ -22,6 +31,3 @@ waveglow:
     triton:
         triton_model: "waveglow"
         triton-url: "localhost:8001"
-
-
-

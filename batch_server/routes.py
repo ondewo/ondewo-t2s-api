@@ -1,10 +1,14 @@
 from typing import Any
+import tempfile
+from os.path import join
 
 from flask import request, send_file
 from scipy.io.wavfile import write
 
-from . import server, WORK_DIR
+from . import server
 from .server_utils import synthesize
+
+RESULT_FILENAME: str = "result.wav"
 
 
 @server.route('/text2speech', methods=['POST'])
@@ -17,7 +21,9 @@ def text_2_speech() -> Any:
         sample *= 32768
         sample = sample.astype("int16")
 
-        save_file = WORK_DIR + "/result.wav"
-        write(save_file, 22050, sample)
+        # save audio to file
+        with tempfile.TemporaryDirectory() as temp_dir:
+            filepath: str = join(temp_dir, RESULT_FILENAME)
+            write(filepath, 22050, sample)
 
-        return send_file("tmp/result.wav", mimetype="audio/wav")
+            return send_file(filepath, mimetype="audio/wav")

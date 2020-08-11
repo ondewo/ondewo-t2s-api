@@ -57,6 +57,7 @@ run_batch_server:
 	--network=host \
 	-v ${PWD}/models:/opt/ondewo-t2s-stella/models \
 	-v ${PWD}/config:/opt/ondewo-t2s-stella/config \
+	--env CONFIG_FILE="config/stella_config.yaml" \
 	--name ${BATCH_CONTAINER} \
 	${IMAGE_TAG_BATCH}
 
@@ -68,6 +69,7 @@ run_batch_server_release:
 	--network=host \
 	-v ${PWD}/models:/opt/ondewo-t2s-stella/models \
 	-v ${PWD}/config:/opt/ondewo-t2s-stella/config \
+	--env CONFIG_FILE="config/stella_config.yaml" \
 	--name ${BATCH_CONTAINER_RELEASE} \
 	${IMAGE_TAG_BATCH_RELEASE}
 
