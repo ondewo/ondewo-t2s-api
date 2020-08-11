@@ -1,35 +1,26 @@
-import re
 import time
-import numpy as np
-from typing import List, Any, Optional
+from typing import Any
 from flask import request, send_file
-from scipy.io.wavfile import write
+import requests
 
-from normalization.postrocesser import Postprocesser
-from utils.logger import logger
 
-from normalization.text_preprocessing import TextNormalizer
 from . import server, WORK_DIR
-
-
-normalizer = TextNormalizer()
-postprocesser = Postprocesser()
-
-#TODO: whole file is work in progress
+from demo_server.html_loading import get_audiofile, RESULT
+from demo_server.demo_utils import get_batch_server_url
 
 
 @server.route('/text2speech', methods=['POST'])
 def text_2_speech() -> Any:
     if request.method == 'POST':
         text: str = request.form['text']
-        sample = make_synthesys(text=text)
+        language: str = request.form['language']
 
-        # conversion to 16-bit PCM
-        sample *= 32768
-        sample = sample.astype("int16")
+        url: str = get_batch_server_url(language_string=language) + "/text2speech"
+        audio_bytes: bytes = requests.post(url, data={'text': text}).content
 
         save_file = WORK_DIR + "/tmp.wav"
-        write(save_file, 22050, sample)
+        with open(save_file, "wb+") as wfile:
+            wfile.write(audio_bytes)
 
         return send_file("tmp/tmp.wav", mimetype="audio/wav")
 
@@ -38,16 +29,16 @@ def text_2_speech() -> Any:
 def text_2_speech_web() -> Any:
     if request.method == 'POST':
         text: str = request.form['text']
+        language: str = request.form['language']
+
         start_t = time.time()
-        sample = make_synthesys(text=text)
+        url: str = get_batch_server_url(language_string=language) + "/text2speech"
+        audio_bytes: bytes = requests.post(url, data={'text': text}).content
         total_t = time.time() - start_t
 
-        # conversion to 16-bit PCM
-        sample *= 32768
-        sample = sample.astype("int16")
-
         save_file = WORK_DIR + "/tmp.wav"
-        write(save_file, 22050, sample)
+        with open(save_file, "wb+") as wfile:
+            wfile.write(audio_bytes)
 
         return RESULT.format(total_t)
 
@@ -75,4 +66,4 @@ def tmp_wav_attachment() -> Any:
 @server.route('/')
 @server.route('/audiofile')
 def audiofile() -> Any:
-    return server.send_static_file('index.html')
+    return get_audiofile()

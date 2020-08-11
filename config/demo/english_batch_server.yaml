@@ -1,0 +1,33 @@
+# Stella batch server configuration for NeMO inference
+
+inference_type: 'nemo'
+
+caching:
+    active: false
+    memory_cache_max_size: 20
+    sampling_rate: 22050
+    load_cache: true
+    save_cache: true
+    cache_save_dir: "models/cache"
+
+
+neural_factory:
+    placement: 'GPU'
+    backend: 'pytorch'
+    batch_size: 1
+
+tacotron2:
+    nemo:
+        config-path: "models/tacotron2/en/tacotron2.yaml"
+        path: "models/tacotron2/en/nvidia/"
+        step: "0"
+
+waveglow:
+    inference_type: 'nemo'
+    config-path: "models/waveglow/waveglow.yaml"
+    nemo:
+        path: "models/waveglow/WaveGlowNM.pt"
+        sigma: 0.6
+    triton:
+        triton_model: "waveglow"
+        triton-url: "localhost:8001"
