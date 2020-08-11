@@ -5,6 +5,10 @@ def get_audiofile() -> str:
     return AUDIOFILE.format(DEMO_URL)
 
 
+def get_result(wav_filename: str, time: float) -> str:
+    return RESULT.format(wav_filename, time)
+
+
 AUDIOFILE: str = """
 <html lang="en">
 
@@ -89,16 +93,16 @@ RESULT: str = """
             <div class="result">
                 <h2><b>Result:</b></h2>
                 <audio controls>
-                    <source src="wav_file" type="audio/wav">
+                    <source src="wavs/{0}" type="audio/wav">
                     Your browser does not support the audio element.
                 </audio>
             </div><br>
             <div class="time">
                 <h2><b>Time: </b></h2>
-                <p> {0:.3f} seconds</p>
+                <p> {1:.3f} seconds</p>
             </div>
         </div>
-        <button class="btn margin-top-0" onclick="window.location.href = 'wav_file_attachment';">Download audio</button>
+        <button class="btn margin-top-0" onclick="window.location.href = 'wavs_as_attachment/{0}';">Download audio</button>
     </div>
 </body>
 </html>

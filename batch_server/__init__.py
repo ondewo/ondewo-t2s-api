@@ -23,8 +23,5 @@ inference: Inference = InferenceFactory.get_inference(config)
 normalizer = TextNormalizer()
 postprocesser = Postprocesser()
 
-# ===============================
+# needed for Flask
 from batch_server import routes
-
-if __name__ == '__main__':
-    server.run()

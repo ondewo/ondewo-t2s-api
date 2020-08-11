@@ -1,10 +1,11 @@
-from demo_server import routes
 import os
 from flask import Flask
+from utils.logger import logger
 
 server = Flask(__name__)
 
-WORK_DIR = "demo_server/tmp/"
+TMP_DIR_NAME: str = "tmp"
+WORK_DIR: str = f"demo_server/{TMP_DIR_NAME}/"
 if not os.path.isdir(WORK_DIR):
     os.mkdir(WORK_DIR)
 
@@ -26,6 +27,9 @@ if not BATCH_EN_URL:
                            "batch server.")
 
 # ===============================
+from demo_server import routes
+from demo_server.demo_utils import FileRemovalThread
 
-if __name__ == '__main__':
-    server.run()
+file_removal_thread = FileRemovalThread()
+file_removal_thread.start()
+
