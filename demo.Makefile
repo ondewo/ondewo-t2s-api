@@ -1,5 +1,5 @@
 IMAGE_TAG_BATCH="dockerregistry.ondewo.com:5000/stella-batch-server"
-IMAGE_TAG_DEMO="dockerregistry.ondewo.com:5000/stella-demo-server"
+IMAGE_TAG_DEMO="dockerregistry.ondewo.com:5000/stella-demo-server:develop"
 DEMO_CONTAINER="stella-demo-server"
 BATCH_CONTAINER_DE="stella-batch-server-german"
 BATCH_CONTAINER_EN="stella-batch-server-english"
@@ -9,7 +9,7 @@ PORT_EN=40042
 
 
 build_demo_server:
-	docker build -t ${IMAGE_TAG_DEMO} -f docker/demo_server/Dockerfile.demoserver .
+	docker build -t ${IMAGE_TAG_DEMO} -f docker/Dockerfile.demoserver .
 
 run_demo_server_locally:
 	-docker rm -f ${DEMO_CONTAINER}
@@ -18,6 +18,7 @@ run_demo_server_locally:
 	--env DEMO_URL=http://0.0.0.0:${PORT_DEMO} \
 	--env BATCH_DE_URL=http://0.0.0.0:${PORT_DE} \
 	--env BATCH_EN_URL=http://0.0.0.0:${PORT_EN} \
+	-v ${PWD}/config:/opt/ondewo-t2s-stella/config \
 	--name ${DEMO_CONTAINER} ${IMAGE_TAG_DEMO}
 
 run_demo_server_production:
@@ -27,6 +28,7 @@ run_demo_server_production:
 	--env DEMO_URL="https://stella.s2t.demo.ondewo.com" \
 	--env BATCH_DE_URL=http://0.0.0.0:${PORT_DE} \
 	--env BATCH_EN_URL=http://0.0.0.0:${PORT_EN} \
+	-v ${PWD}/config:/opt/ondewo-t2s-stella/config \
 	--name ${DEMO_CONTAINER} ${IMAGE_TAG_DEMO}
 
 kill_all:
