@@ -6,7 +6,7 @@ from flask import request, send_file
 from scipy.io.wavfile import write
 
 from . import server
-from .server_utils import synthesize
+from .sythesize import synthesize
 
 RESULT_FILENAME: str = "result.wav"
 
