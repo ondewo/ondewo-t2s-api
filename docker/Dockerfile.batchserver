@@ -1,6 +1,6 @@
 FROM nvcr.io/nvidia/nemo:v0.10 AS uncythonized
 
-COPY ./docker/requirements.txt .
+COPY ./docker/batch_server_requirements.txt .
 RUN pip install -r batch_server_requirements.txt --ignore-installed
 
 WORKDIR /opt/ondewo-t2s-stella
