@@ -1,0 +1,14 @@
+FROM python:3.7
+
+RUN apt-get -y update && apt-get -y upgrade
+
+COPY docker/demo_server_requirements.txt .
+RUN pip install -r demo_server_requirements.txt --ignore-installed
+
+WORKDIR /opt/ondewo-t2s-stella
+COPY ./demo_server ./demo_server
+COPY ./utils ./utils
+
+ENV PYTHONPATH /opt/ondewo-t2s-stella
+ENV FLASK_APP demo_server
+CMD flask run --host=0.0.0.0 --port=40040
