@@ -12,7 +12,6 @@ class InferenceFactory:
 
     @classmethod
     def get_inference(cls, config: Dict[str, Any]) -> Inference:
-
         if config.get('inference_type') == 'nemo':
             inference_base: Inference = NemoInference(config=config)
         elif config.get('inference_type') == 'triton':

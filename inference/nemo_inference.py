@@ -4,7 +4,7 @@ import numpy as np
 from utils.logger import logger
 
 from inference.inference import Inference
-from inference.inference_data_layer import CustomDataLayer
+from inference.nemo_modules.inference_data_layer import InferenceDataLayer
 from inference.nemo_synthesizer import NemoSynthesizer
 
 
@@ -19,7 +19,7 @@ class NemoInference(Inference):
     def synthesize(self, texts: List[str]) -> List[np.ndarray]:
 
         # make graph
-        data_layer = CustomDataLayer(
+        data_layer = InferenceDataLayer(
             texts=texts,
             labels=self.syntesizer.labels,
             batch_size=2,

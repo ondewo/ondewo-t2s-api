@@ -1,4 +1,4 @@
-FROM nvcr.io/nvidia/nemo:v0.10 AS uncythonized
+FROM dockerregistry.ondewo.com:5000/nemo:master AS uncythonized
 
 COPY ./docker/batch_server_requirements.txt .
 RUN pip install -r batch_server_requirements.txt --ignore-installed
@@ -18,7 +18,7 @@ CMD flask run --host=0.0.0.0 --port=40015
 
 
 # ========Cythonization Image=======
-FROM dockerregistry.ondewo.com:5000/ondewo-cythonize-tools-3.6 AS cython_builder
+FROM dockerregistry.ondewo.com:5000/ondewo-cythonize-tools-3.7 AS cython_builder
 
 COPY --from=uncythonized /opt/ondewo-t2s-stella/batch_server /tmp/transfer/to_cythonize/batch_server
 COPY --from=uncythonized /opt/ondewo-t2s-stella/inference /tmp/transfer/to_cythonize/inference
@@ -27,8 +27,9 @@ COPY --from=uncythonized /opt/ondewo-t2s-stella/utils/logger.py /tmp/transfer/to
 
 RUN ./cythonize.py \
 		--modules_to_cythonize ./to_cythonize \
-		--files_to_skip ./to_cythonize/__init__.py \
-    --delete_pycache True \
+		--files_to_skip ./to_cythonize/batch_server/__init__.py \
+        --directories_to_skip "./to_cythonize/inference/nemo_modules" \
+        --delete_pycache True \
 		--py_files_mode delete
 
 

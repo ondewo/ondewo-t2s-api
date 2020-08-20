@@ -30,21 +30,13 @@ class NemoSynthesizer:
         else:
             self.placement = nemo.core.DeviceType.CPU
 
-        if self.config['neural_factory']['backend'] == 'pytorch':
-            self.backend = nemo.core.Backend.PyTorch
-        else:
-            ValueError(f'The only supported backend is pytorch. '
-                       f'Got {self.config["neural_factory"]["backend"]} instead')
-
         self.labels = self.config['tacotron2']['config']['labels']
         self.bos_id = len(self.config['tacotron2']['config']['labels'])
         self.eos_id = len(self.config['tacotron2']['config']['labels']) + 1
         self.pad_id = len(self.config['tacotron2']['config']['labels']) + 2
 
         # load models
-        self.neural_factory = nemo.core.NeuralModuleFactory(
-            placement=self.placement,
-            backend=self.backend)
+        self.neural_factory = nemo.core.NeuralModuleFactory(placement=self.placement)
         self.tacotron_preprocessor = nemo_asr.AudioToMelSpectrogramPreprocessor.import_from_config(
             self.config['tacotron2']['nemo']['config-path'], "AudioToMelSpectrogramPreprocessor")
         self.tacotron_embedding = nemo_tts.TextEmbedding.import_from_config(
@@ -65,7 +57,6 @@ class NemoSynthesizer:
         yaml = YAML(typ="safe")
         with open(self.config['waveglow']['config-path']) as file:
             self.config['waveglow']['config'] = yaml.load(file)
-
         if waveglow:
             self.waveglow = nemo_tts.WaveGlowInferNM.import_from_config(
                 self.config['waveglow']['config-path'], "WaveGlowInferNM",
