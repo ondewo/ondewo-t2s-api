@@ -6,7 +6,7 @@ from ruamel.yaml import YAML
 
 from inference.inference import Inference
 from inference.inference_factory import InferenceFactory
-from normalization.postrocesser import Postprocesser
+from normalization.postprocessor import Postprocessor
 from normalization.text_preprocessing import TextNormalizer
 
 server = Flask(__name__)
@@ -21,7 +21,7 @@ with open(config_file) as f:
 
 inference: Inference = InferenceFactory.get_inference(config)
 normalizer = TextNormalizer()
-postprocesser = Postprocesser()
+postprocessor = Postprocessor()
 
 # needed for Flask
 from batch_server import routes

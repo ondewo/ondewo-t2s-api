@@ -2,7 +2,7 @@ from typing import List
 import numpy as np
 
 
-class Postprocesser():
+class Postprocessor():
     silence = np.zeros((5000,))
 
     @classmethod

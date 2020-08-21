@@ -34,7 +34,7 @@ class TextNormalizer:
                                   'Juni': 6, 'Juli': 7, 'August': 8, 'September': 9, 'Oktober': 10,
                                   'November': 11, 'Dezember': 12}
 
-    def texturize_date(self, _date: date, ending: str, mode: int = 2) -> str:
+    def texturize_date(self, _date: date, ending: str = 'ter', mode: int = 2) -> str:
         """
 
         Args:
