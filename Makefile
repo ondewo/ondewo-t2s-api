@@ -73,6 +73,25 @@ run_batch_server_release:
 	--name ${BATCH_CONTAINER_RELEASE} \
 	${IMAGE_TAG_BATCH_RELEASE}
 
+package_git_revision_and_version:
+	echo "version: `cat utils/version.py | grep -oP "(?<=__version__ = ')(.*)(?=')"`" > package/VERSION.md
+	echo "" >> package/VERSION.md
+	echo "git revision: ` git rev-parse --short HEAD`" >> package/VERSION.md
+
+make package_release: package_git_revision_and_version
+	echo "Who am I: `whoami`"
+	echo "Where am I: `pwd`"
+	echo "My environment variables: `env`"
+
+	mkdir -p ${RELEASE_FOLDER}/${SANITIZED_DOCKER_TAG_NAME}
+
+	# tar and zip images
+	docker save ${PUSH_NAME_RELEASE} | gzip > ${RELEASE_FOLDER}/${SANITIZED_DOCKER_TAG_NAME}/stella-batch-server-release-${SANITIZED_DOCKER_TAG_NAME}.tar.gz
+
+	# move to the release folder
+	rsync -av package/. ${RELEASE_FOLDER}/${SANITIZED_DOCKER_TAG_NAME} --exclude '.gitignore'
+	rm -rf package
+
 install_dependencies_locally:
 	pip install -r requirements.txt
 	pip install utils/triton_client_lib/triton*.whl

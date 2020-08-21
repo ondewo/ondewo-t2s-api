@@ -3,9 +3,11 @@ pipeline {
     environment{
         BRANCH_NAME = "${env.BRANCH_NAME}"
         SANITIZED_BRANCH_NAME = "${env.BRANCH_NAME}".replace("/", "_")
-        IMAGE_TAG = "${SANITIZED_BRANCH_NAME}"
+        SANITIZED_DOCKER_TAG_NAME = "${env.BRANCH_NAME}".replace("release/", "")
+        IMAGE_TAG = "${SANITIZED_DOCKER_TAG_NAME}"
+        RELEASE_FOLDER = "/var/dynadrive/fileserver/releases/ondewo-t2s-stella"
 
-        IMAGE_NAME_RELASE = "stella-server-release"
+        IMAGE_NAME_RELASE = "stella-batch-server-release"
         TTS_NAME = "${IMAGE_NAME_RELASE}:${IMAGE_TAG}"
         PUSH_NAME_RELEASE = "dockerregistry.ondewo.com:5000/${TTS_NAME}"
         test_image_name_stream = "test_image_${IMAGE_NAME_RELASE}"
@@ -45,6 +47,15 @@ pipeline {
                                     sh(script: "docker push ${PUSH_NAME_RELEASE}", label: "push the image to the registry")
                                     sh(script: "echo ${PUSH_NAME_RELEASE} pushed to registry")
 
+                            } }
+                            // Only releases get packaged
+                            stage('Package the release') {
+                            agent { node { label 'master' } }
+                            when { expression { env.BRANCH_NAME.startsWith("release/") } }
+                            steps{
+                                sh "echo \"Releasing Ondewo T2S Stella - ${env.BRANCH_NAME}\""
+                                sh 'printenv'
+                                sh "make package_release"
                             } }
                     } }
                 } }
