@@ -1,5 +1,8 @@
+braceexpand
+editdistance
 flask
 fluent-logger==0.9.6
 msgpack==1.0.0
-nemo-toolkit[all]==0.10.1
+nemo-toolkit[all]==0.11
 PyYAML==5.3.1
+webdataset

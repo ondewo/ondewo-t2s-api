@@ -1,5 +1,5 @@
-IMAGE_TAG_BATCH="dockerregistry.ondewo.com:5000/stella-batch-server"
-IMAGE_TAG_BATCH_RELEASE="dockerregistry.ondewo.com:5000/stella-batch-server-release"
+IMAGE_TAG_BATCH="dockerregistry.ondewo.com:5000/stella-batch-server:develop"
+IMAGE_TAG_BATCH_RELEASE="dockerregistry.ondewo.com:5000/stella-batch-server-release:develop"
 IMAGE_TAG_TRAINING="dockerregistry.ondewo.com:5000/stella-training"
 BATCH_CONTAINER="stella-batch-server"
 BATCH_CONTAINER_RELEASE="stella-batch-server-release"

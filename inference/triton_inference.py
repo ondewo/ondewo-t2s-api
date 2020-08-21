@@ -7,7 +7,7 @@ from tritongrpcclient import grpc_service_v2_pb2
 from tritongrpcclient import grpc_service_v2_pb2_grpc
 
 from inference.inference import Inference
-from inference.inference_data_layer import CustomDataLayer
+from inference.nemo_modules.inference_data_layer import InferenceDataLayer
 from inference.nemo_synthesizer import NemoSynthesizer
 from utils.logger import logger
 
@@ -15,9 +15,7 @@ from utils.logger import logger
 class TritonInference(Inference):
 
     def __init__(self, config: Dict[str, Any]):
-        self.neural_factory = nemo.core.NeuralModuleFactory(
-            placement=nemo.core.DeviceType.GPU,
-            backend=nemo.core.Backend.PyTorch)
+        self.neural_factory = nemo.core.NeuralModuleFactory(placement=nemo.core.DeviceType.GPU)
 
         self.config: Dict[str, Any] = config
 
@@ -83,7 +81,7 @@ class TritonInference(Inference):
 
     def synthesize(self, texts: List[str]) -> List[np.ndarray]:
         # make graph
-        data_layer = CustomDataLayer(
+        data_layer = InferenceDataLayer(
             texts=texts,
             labels=self.nemo_synthesizer.labels,
             batch_size=self.batch_size,

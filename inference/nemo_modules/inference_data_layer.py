@@ -13,7 +13,7 @@ from nemo.utils.misc import pad_to
 from torch.utils.data import Dataset
 
 
-class CustomDataLayer(DataLayerNM):
+class InferenceDataLayer(DataLayerNM):
 
     @property
     @add_port_docs()
@@ -77,7 +77,7 @@ class CustomDataLayer(DataLayerNM):
             'eos_id': eos_id,
         }
 
-        self._dataset = CustomTranscriptDataset(**dataset_params)
+        self._dataset = InferenceTranscriptDataset(**dataset_params)
 
         # Set up data loader
         if self._placement == DeviceType.AllGpu:
@@ -110,7 +110,7 @@ class CustomDataLayer(DataLayerNM):
         return self._dataloader
 
 
-class CustomTranscriptDataset(Dataset):
+class InferenceTranscriptDataset(Dataset):
     """A dataset class that reads and returns the text of a file.
 
     Args:
