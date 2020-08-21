@@ -6,6 +6,7 @@ pipeline {
         IMAGE_TAG = "${SANITIZED_BRANCH_NAME}"
 
         IMAGE_NAME = "stella-batch-server"
+        TESTS_IMAGE_NAME = "stella-tests"
         TTS_NAME = "${IMAGE_NAME}:${IMAGE_TAG}"
         PUSH_NAME_STREAM = "dockerregistry.ondewo.com:5000/${TTS_NAME}"
         test_IMAGE_NAME = "test_image_${IMAGE_NAME}"
@@ -25,6 +26,10 @@ pipeline {
             stages{
                 stage('Build') { steps {
                         sh(script: "docker build -t ${PUSH_NAME_STREAM} --target uncythonized -f docker/Dockerfile.batchserver .", label: "build image")
+                } }
+                stage('Tests') { steps {
+                        sh(script: "docker build -t ${TESTS_IMAGE_NAME} -f docker/Dockerfile.tests .", label: "build image")
+                        sh(script: "docker run --rm ${TESTS_IMAGE_NAME}", label: "run_tests")
                 } }
                 stage('Push') { steps{
                         sh(script: "docker push ${PUSH_NAME_STREAM}", label: "push the image to the registry")

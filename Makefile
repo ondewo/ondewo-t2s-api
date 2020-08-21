@@ -1,10 +1,12 @@
 IMAGE_TAG_BATCH="dockerregistry.ondewo.com:5000/stella-batch-server:develop"
 IMAGE_TAG_BATCH_RELEASE="dockerregistry.ondewo.com:5000/stella-batch-server-release:develop"
 IMAGE_TAG_TRAINING="dockerregistry.ondewo.com:5000/stella-training"
+IMAGE_TAG_TESTS="stella-tests-image"
 BATCH_CONTAINER="stella-batch-server"
 BATCH_CONTAINER_RELEASE="stella-batch-server-release"
 TRAINING_CONTAINER="stella-training"
 CODE_CHECK_IMAGE="code_check_image"
+TESTS_CONTAINER="stella-tests"
 SERVER_PORT = 40015
 TRAINING_PORT = 40011
 
@@ -72,6 +74,11 @@ run_batch_server_release:
 	--env CONFIG_FILE="config/stella_config.yaml" \
 	--name ${BATCH_CONTAINER_RELEASE} \
 	${IMAGE_TAG_BATCH_RELEASE}
+
+run_tests:
+	docker build -t ${IMAGE_TAG_TESTS} -f docker/Dockerfile.tests .
+	-docker rm -f ${TESTS_CONTAINER}
+	docker run --rm --name ${TESTS_CONTAINER} ${IMAGE_TAG_TESTS}
 
 package_git_revision_and_version:
 	echo "version: `cat utils/version.py | grep -oP "(?<=__version__ = ')(.*)(?=')"`" > package/VERSION.md
