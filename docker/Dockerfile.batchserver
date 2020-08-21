@@ -24,6 +24,8 @@ COPY --from=uncythonized /opt/ondewo-t2s-stella/batch_server /tmp/transfer/to_cy
 COPY --from=uncythonized /opt/ondewo-t2s-stella/inference /tmp/transfer/to_cythonize/inference
 COPY --from=uncythonized /opt/ondewo-t2s-stella/normalization /tmp/transfer/to_cythonize/normalization
 COPY --from=uncythonized /opt/ondewo-t2s-stella/utils/logger.py /tmp/transfer/to_cythonize/utils/logger.py
+COPY --from=uncythonized /opt/ondewo-t2s-stella/utils/version.py /tmp/transfer/to_cythonize/utils/version.py
+COPY --from=uncythonized /opt/ondewo-t2s-stella/utils/constants.py /tmp/transfer/to_cythonize/utils/constants.py
 
 RUN ./cythonize.py \
 		--modules_to_cythonize ./to_cythonize \
