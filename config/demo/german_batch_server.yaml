@@ -19,14 +19,17 @@ neural_factory:
 tacotron2:
     nemo:
         config-path: "models/tacotron2/de/tacotron2.yaml"
-        path: "models/tacotron2/de/checkpoints_kerstin_eloqai/"
-        step: "1000"
+        path: "models/tacotron2/de/florian_eloqai_2/"
+        step: "10000"
 
 waveglow:
     inference_type: 'nemo'
     config-path: "models/waveglow/waveglow.yaml"
+    denoiser:
+        active: false
+        strength: 0.05
     nemo:
-        path: "models/waveglow/WaveGlowNM.pt"
+        path: "models/waveglow/pretrained/WaveGlowNM.pt"
         sigma: 0.6
     triton:
         triton_model: "waveglow"

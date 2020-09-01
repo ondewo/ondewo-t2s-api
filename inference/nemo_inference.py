@@ -11,9 +11,7 @@ from inference.nemo_synthesizer import NemoSynthesizer
 class NemoInference(Inference):
 
     def __init__(self, config: Dict[str, Any]):
-
         self.config: Dict[str, Any] = config
-
         self.syntesizer = NemoSynthesizer(config=self.config)
 
     def synthesize(self, texts: List[str]) -> List[np.ndarray]:
@@ -49,14 +47,16 @@ class NemoInference(Inference):
         audio_result = audio_mel_len[0]
         mel_len_result = audio_mel_len[1]
 
-        # if args.waveglow_denoiser_strength > 0:
-        #    logger.info("Setup denoiser")
-        #    waveglow.setup_denoiser()
-
         result: List[np.ndarray] = []
         for i in range(len(mel_len_result)):
             for j in range(audio_result[i].shape[0]):
                 sample_len = mel_len_result[i][j] * self.syntesizer.config['tacotron2']['config']["n_stride"]
-                sample = audio_result[i].cpu().numpy()[j][:sample_len]
+                sample: np.ndarray = audio_result[i].cpu().numpy()[j][:sample_len]
+
+                if self.syntesizer.is_denoiser_active:
+                    sample, _ = self.syntesizer.waveglow.denoise(
+                        sample, strength=self.syntesizer.denoiser_strength)
+
                 result.append(sample)
+
         return result

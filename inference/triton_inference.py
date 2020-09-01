@@ -19,7 +19,7 @@ class TritonInference(Inference):
 
         self.config: Dict[str, Any] = config
 
-        self.nemo_synthesizer = NemoSynthesizer(config=config, waveglow=False)
+        self.nemo_synthesizer = NemoSynthesizer(config=config, load_waveglow=False)
 
         self.max_decoder_steps: int = \
             self.nemo_synthesizer.config['tacotron2']['config']['Tacotron2Decoder']['init_params'][

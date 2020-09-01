@@ -4,7 +4,7 @@ fail_fast: false
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v3.1.0
+    rev: v3.2.0
     hooks:
     - id: no-commit-to-branch
       args: [--branch, master, --branch, develop]
@@ -39,7 +39,7 @@ repos:
       exclude: (^training/|^utils/triton_client_lib)
 
   - repo: https://github.com/pre-commit/mirrors-autopep8
-    rev: v1.5.3
+    rev: v1.5.4
     hooks:
       - id: autopep8  # Perform pep8 auto-formatting
         args: [--max-line-length=110, --in-place]

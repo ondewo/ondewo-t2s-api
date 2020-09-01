@@ -9,7 +9,7 @@ from ruamel.yaml import YAML
 
 class NemoSynthesizer:
 
-    def __init__(self, config: Dict[str, Any], waveglow: bool = True):
+    def __init__(self, config: Dict[str, Any], load_waveglow: bool = True):
         self.config = config
 
         # load config
@@ -30,13 +30,13 @@ class NemoSynthesizer:
         else:
             self.placement = nemo.core.DeviceType.CPU
 
+        self.neural_factory = nemo.core.NeuralModuleFactory(placement=self.placement)
         self.labels = self.config['tacotron2']['config']['labels']
         self.bos_id = len(self.config['tacotron2']['config']['labels'])
         self.eos_id = len(self.config['tacotron2']['config']['labels']) + 1
         self.pad_id = len(self.config['tacotron2']['config']['labels']) + 2
 
-        # load models
-        self.neural_factory = nemo.core.NeuralModuleFactory(placement=self.placement)
+        # load Tacotron2 parts
         self.tacotron_preprocessor = nemo_asr.AudioToMelSpectrogramPreprocessor.import_from_config(
             self.config['tacotron2']['nemo']['config-path'], "AudioToMelSpectrogramPreprocessor")
         self.tacotron_embedding = nemo_tts.TextEmbedding.import_from_config(
@@ -57,12 +57,18 @@ class NemoSynthesizer:
         yaml = YAML(typ="safe")
         with open(self.config['waveglow']['config-path']) as file:
             self.config['waveglow']['config'] = yaml.load(file)
-        if waveglow:
+        if load_waveglow:
             self.waveglow = nemo_tts.WaveGlowInferNM.import_from_config(
                 self.config['waveglow']['config-path'], "WaveGlowInferNM",
                 overwrite_params={"sigma": self.config['waveglow']['nemo']['sigma']}
             )
             self.waveglow.restore_from(self.config['waveglow']['nemo']['path'])
             logger.info("Loaded WaveGlow model.")
+
+            self.is_denoiser_active: bool = self.config['waveglow']['denoiser']['active']
+            if self.is_denoiser_active:
+                self.waveglow.setup_denoiser()
+                self.denoiser_strength = self.config['waveglow']['denoiser']['strength']
+                logger.info(f"Loaded WaveGlow denoiser with strength {self.denoiser_strength}.")
         else:
             self.waveglow = None
