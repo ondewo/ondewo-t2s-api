@@ -25,6 +25,9 @@ tacotron2:
 waveglow:
     inference_type: 'nemo'
     config-path: "models/waveglow/waveglow.yaml"
+    denoiser:
+        active: false
+        strength: 0.05
     nemo:
         path: "models/waveglow/WaveGlowNM.pt"
         sigma: 0.6

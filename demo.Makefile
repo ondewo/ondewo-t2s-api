@@ -1,4 +1,4 @@
-IMAGE_TAG_BATCH="dockerregistry.ondewo.com:5000/stella-batch-server"
+IMAGE_TAG_BATCH="dockerregistry.ondewo.com:5000/stella-batch-server:develop"
 IMAGE_TAG_DEMO="dockerregistry.ondewo.com:5000/stella-demo-server:develop"
 DEMO_CONTAINER="stella-demo-server"
 BATCH_CONTAINER_DE="stella-batch-server-german"
