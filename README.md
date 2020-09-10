@@ -1,6 +1,6 @@
-# Ondewo Speech-2-Text Natalia
+# Ondewo Text-2-Speech
 
-Repository containing code for training and deployment of Stella text synthesis (text-2-speech) models.
+Repository containing code for training and deployment of ONDEWO text synthesis (text-2-speech) models.
 
 ### Organization
 

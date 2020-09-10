@@ -1,3 +1,3 @@
-FROM nvcr.io/nvidia/nemo:v0.10 
+FROM nvcr.io/nvidia/nemo:v0.11
 
-WORKDIR /opt/stella
+WORKDIR /opt/ondewo-t2s
