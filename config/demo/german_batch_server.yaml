@@ -1,4 +1,4 @@
-# Stella batch server configuration for NeMO inference
+# ONDEWO T2S batch server configuration for NeMO inference
 
 inference_type: 'nemo'
 
@@ -19,8 +19,8 @@ neural_factory:
 tacotron2:
     nemo:
         config-path: "models/tacotron2/de/tacotron2.yaml"
-        path: "models/tacotron2/de/florian_eloqai_2/"
-        step: "10000"
+        path: "models/tacotron2/de/sandra/"
+        step: "7500"
 
 waveglow:
     inference_type: 'nemo'

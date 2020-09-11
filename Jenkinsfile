@@ -5,8 +5,8 @@ pipeline {
         SANITIZED_BRANCH_NAME = "${env.BRANCH_NAME}".replace("/", "_")
         IMAGE_TAG = "${SANITIZED_BRANCH_NAME}"
 
-        IMAGE_NAME = "stella-batch-server"
-        TESTS_IMAGE_NAME = "stella-tests"
+        IMAGE_NAME = "ondewo-t2s-batch-server"
+        TESTS_IMAGE_NAME = "ondewo-t2s-tests"
         TTS_NAME = "${IMAGE_NAME}:${IMAGE_TAG}"
         PUSH_NAME_STREAM = "dockerregistry.ondewo.com:5000/${TTS_NAME}"
         test_IMAGE_NAME = "test_image_${IMAGE_NAME}"

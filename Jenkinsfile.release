@@ -5,10 +5,10 @@ pipeline {
         SANITIZED_BRANCH_NAME = "${env.BRANCH_NAME}".replace("/", "_")
         SANITIZED_DOCKER_TAG_NAME = "${env.BRANCH_NAME}".replace("release/", "")
         IMAGE_TAG = "${SANITIZED_DOCKER_TAG_NAME}"
-        TESTS_IMAGE_NAME = "stella-tests"
-        RELEASE_FOLDER = "/var/dynadrive/fileserver/releases/ondewo-t2s-stella"
+        TESTS_IMAGE_NAME = "ondewo-t2s-tests"
+        RELEASE_FOLDER = "/var/dynadrive/fileserver/releases/ondewo-t2s"
 
-        IMAGE_NAME_RELASE = "stella-batch-server-release"
+        IMAGE_NAME_RELASE = "ondewo-t2s-batch-server-release"
         TTS_NAME = "${IMAGE_NAME_RELASE}:${IMAGE_TAG}"
         PUSH_NAME_RELEASE = "dockerregistry.ondewo.com:5000/${TTS_NAME}"
         test_image_name_stream = "test_image_${IMAGE_NAME_RELASE}"
@@ -57,7 +57,7 @@ pipeline {
                                 agent { node { label 'master' } }
                                 when { expression { env.BRANCH_NAME.startsWith("release/") } }
                                 steps{
-                                    sh "echo \"Releasing Ondewo T2S Stella - ${env.BRANCH_NAME}\""
+                                    sh "echo \"Releasing ONDEWO T2S - ${env.BRANCH_NAME}\""
                                     sh 'printenv'
                                     sh "make package_release"
                             } }

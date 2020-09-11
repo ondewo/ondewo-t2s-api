@@ -1,4 +1,4 @@
-# Stella batch server configuration for NeMO inference
+# ONDEWO T2S batch server configuration for NeMO inference
 
 inference_type: 'nemo'
 

@@ -1,12 +1,13 @@
-IMAGE_TAG_BATCH="dockerregistry.ondewo.com:5000/stella-batch-server:develop"
-IMAGE_TAG_BATCH_RELEASE="dockerregistry.ondewo.com:5000/stella-batch-server-release:develop"
-IMAGE_TAG_TRAINING="dockerregistry.ondewo.com:5000/stella-training"
-IMAGE_TAG_TESTS="stella-tests-image"
-BATCH_CONTAINER="stella-batch-server"
-BATCH_CONTAINER_RELEASE="stella-batch-server-release"
-TRAINING_CONTAINER="stella-training"
+IMAGE_TAG_BATCH="dockerregistry.ondewo.com:5000/ondewo-t2s-batch-server:develop"
+IMAGE_TAG_BATCH_RELEASE="dockerregistry.ondewo.com:5000/ondewo-t2s-batch-server-release:develop"
+IMAGE_TAG_TRAINING="dockerregistry.ondewo.com:5000/ondewo-t2s-training"
+IMAGE_TAG_TESTS="ondewo-t2s-tests-image"
+IMAGE_TAG_TRITON="nvcr.io/nvidia/tritonserver:20.03.1-py3"
+BATCH_CONTAINER="ondewo-t2s-batch-server"
+BATCH_CONTAINER_RELEASE="ondewo-t2s-batch-server-release"
+TRAINING_CONTAINER="ondewo-t2s-training"
 CODE_CHECK_IMAGE="code_check_image"
-TESTS_CONTAINER="stella-tests"
+TESTS_CONTAINER="ondewo-t2s-tests"
 SERVER_PORT = 40015
 TRAINING_PORT = 40011
 
@@ -29,9 +30,9 @@ run_triton:
 	docker pull nvcr.io/nvidia/tritonserver:20.03.1-py3
 	-docker kill triton-inference-server
 	docker run -d --rm --shm-size=1g --gpus all --ulimit memlock=-1 \
-	--ulimit stack=67108864 --network=host \
+	--ulimit stack=67108864 --network=host --restart always \
 	-v${PWD}/models/triton_repo:/models \
-	--name triton-inference-server nvcr.io/nvidia/tritonserver:20.03.1-py3 \
+	--name triton-inference-server ${IMAGE_TAG_TRITON} \
 	tritonserver --model-repository=/models --api-version=2 --strict-model-config=false
 
 run_triton_on_aistation:
@@ -47,7 +48,7 @@ run_training_container:
 	docker run -t -d --gpus all --rm \
 	--shm-size=10g --ulimit memlock=-1 --ulimit stack=67108864 \
 	-v ${PWD}/models:/opt/models \
-	-v ${PWD}/training:/opt/stella \
+	-v ${PWD}/training:/opt/ondewo-t2s \
 	-p ${TRAINING_PORT}:5000 \
 	--name ${TRAINING_CONTAINER} ${IMAGE_TAG_TRAINING}
 
@@ -56,10 +57,10 @@ run_batch_server:
 	-docker rm ${BATCH_CONTAINER}
 	docker run -td --gpus all \
 	--shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
-	--network=host \
-	-v ${PWD}/models:/opt/ondewo-t2s-stella/models \
-	-v ${PWD}/config:/opt/ondewo-t2s-stella/config \
-	--env CONFIG_FILE="config/stella_config.yaml" \
+	--network=host --restart always \
+	-v ${PWD}/models:/opt/ondewo-t2s/models \
+	-v ${PWD}/config:/opt/ondewo-t2s/config \
+	--env CONFIG_FILE="config/ondewo_t2s_config.yaml" \
 	--name ${BATCH_CONTAINER} \
 	${IMAGE_TAG_BATCH}
 
@@ -68,10 +69,10 @@ run_batch_server_release:
 	-docker rm ${BATCH_CONTAINER_RELEASE}
 	docker run -td --gpus all \
 	--shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
-	--network=host \
-	-v ${PWD}/models:/opt/ondewo-t2s-stella/models \
-	-v ${PWD}/config:/opt/ondewo-t2s-stella/config \
-	--env CONFIG_FILE="config/stella_config.yaml" \
+	--network=host --restart always \
+	-v ${PWD}/models:/opt/ondewo-t2s/models \
+	-v ${PWD}/config:/opt/ondewo-t2s/config \
+	--env CONFIG_FILE="config/ondewo_t2s_config.yaml" \
 	--name ${BATCH_CONTAINER_RELEASE} \
 	${IMAGE_TAG_BATCH_RELEASE}
 
@@ -93,7 +94,7 @@ make package_release: package_git_revision_and_version
 	mkdir -p ${RELEASE_FOLDER}/${SANITIZED_DOCKER_TAG_NAME}
 
 	# tar and zip images
-	docker save ${PUSH_NAME_RELEASE} | gzip > ${RELEASE_FOLDER}/${SANITIZED_DOCKER_TAG_NAME}/stella-batch-server-release-${SANITIZED_DOCKER_TAG_NAME}.tar.gz
+	docker save ${PUSH_NAME_RELEASE} | gzip > ${RELEASE_FOLDER}/${SANITIZED_DOCKER_TAG_NAME}/ondewo-t2s-batch-server-release-${SANITIZED_DOCKER_TAG_NAME}.tar.gz
 
 	# move to the release folder
 	rsync -av package/. ${RELEASE_FOLDER}/${SANITIZED_DOCKER_TAG_NAME} --exclude '.gitignore'

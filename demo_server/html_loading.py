@@ -15,7 +15,7 @@ AUDIOFILE: str = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ONDEWO Stella</title>
+    <title>ONDEWO T2S</title>
     <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
     <link rel="stylesheet" type="text/css" href="static/css/stylesheet.css">
 </head>
@@ -26,7 +26,7 @@ AUDIOFILE: str = """
             <img id="logo" src="static/images/ondewo.png">
         </div>
         <div class="name inline-block">
-            <p>T2S Stella</p>
+            <p>T2S</p>
         </div>
         <div class="model-name-container inline-block">
             <div class="introduction">
@@ -69,7 +69,7 @@ RESULT: str = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ONDEWO Stella</title>
+    <title>ONDEWO T2S</title>
     <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
     <link rel="stylesheet" type="text/css" href="static/css/stylesheet.css">
 </head>
@@ -80,7 +80,7 @@ RESULT: str = """
             <img id="logo" src="static/images/ondewo.png">
         </div>
         <div class="name inline-block">
-            <p>T2S Stella</p>
+            <p>T2S</p>
         </div>
         <div class="model-name-container inline-block">
             <div class="introduction">
