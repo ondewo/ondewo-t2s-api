@@ -91,10 +91,13 @@ make package_release: package_git_revision_and_version
 	echo "Where am I: `pwd`"
 	echo "My environment variables: `env`"
 
-	mkdir -p ${RELEASE_FOLDER}/${SANITIZED_DOCKER_TAG_NAME}
+	mkdir -p ${RELEASE_FOLDER}/${SANITIZED_DOCKER_TAG_NAME}/software
 
 	# tar and zip images
-	docker save ${PUSH_NAME_RELEASE} | gzip > ${RELEASE_FOLDER}/${SANITIZED_DOCKER_TAG_NAME}/ondewo-t2s-batch-server-release-${SANITIZED_DOCKER_TAG_NAME}.tar.gz
+	docker save ${PUSH_NAME_RELEASE} | gzip > ${RELEASE_FOLDER}/${SANITIZED_DOCKER_TAG_NAME}/software/ondewo-t2s-batch-server-release-${SANITIZED_DOCKER_TAG_NAME}.tar.gz
+
+	# add configs
+	rsync -av config package --exclude demo
 
 	# move to the release folder
 	rsync -av package/. ${RELEASE_FOLDER}/${SANITIZED_DOCKER_TAG_NAME} --exclude '.gitignore'
