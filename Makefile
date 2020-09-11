@@ -100,7 +100,7 @@ make package_release: package_git_revision_and_version
 	rsync -av config package --exclude demo
 
 	# move to the release folder
-	rsync -av package/. ${RELEASE_FOLDER}/${SANITIZED_DOCKER_TAG_NAME} --exclude '.gitignore'
+	rsync -av package/. ${RELEASE_FOLDER}/${SANITIZED_DOCKER_TAG_NAME}/software --exclude '.gitignore'
 	rm -rf package
 
 install_dependencies_locally:
