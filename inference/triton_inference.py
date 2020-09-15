@@ -3,8 +3,7 @@ from typing import Dict, Any, List, Tuple
 import grpc
 import nemo
 import numpy as np
-from tritongrpcclient import grpc_service_v2_pb2
-from tritongrpcclient import grpc_service_v2_pb2_grpc
+from tritongrpcclient import InferenceServerClient, InferInput, InferRequestedOutput, InferResult
 
 from inference.inference import Inference
 from inference.nemo_modules.inference_data_layer import InferenceDataLayer
@@ -24,58 +23,38 @@ class TritonInference(Inference):
         self.max_decoder_steps: int = \
             self.nemo_synthesizer.config['tacotron2']['config']['Tacotron2Decoder']['init_params'][
                 'max_decoder_steps']
-
         self.batch_size: int = self.config['neural_factory']['batch_size']
 
-        self.channel = grpc.insecure_channel(self.config['waveglow']['triton']['triton-url'])
-        self.grpc_stub = grpc_service_v2_pb2_grpc.GRPCInferenceServiceStub(self.channel)
-
+        self.triton_client = InferenceServerClient(url=self.config['waveglow']['triton']['triton_url'])
+        self.triton_model_name: str = self.config['waveglow']['triton']['triton_model']
         self.test_triton()
 
     def test_triton(self) -> None:
         """Check if Triton server is active and WaveGlow model is loaded.
         """
-
-        # properties of the model that we need for preprocessing
-        metadata_request = grpc_service_v2_pb2.ModelMetadataRequest(
-            name=self.config['waveglow']['triton']['triton_model'])
-        metadata_response = self.grpc_stub.ModelMetadata(metadata_request)
-        if logger:
-            logger.info("Model {} is ready on Triton inference server".format(metadata_response.name))
+        if self.triton_client.is_server_ready() and self.triton_client.is_model_ready(self.triton_model_name):
+            logger.info(f"Model {self.triton_model_name} is ready on Triton inference server.")
+        else:
+            error_text: str = f"Triton server is not ready for the inference of model {self.triton_model_name}."
+            logger.error(error_text)
+            raise RuntimeError(error_text)
 
     def inference_on_triton(self, spectrogram: np.ndarray, z: np.ndarray) -> List[np.ndarray]:
-        request = grpc_service_v2_pb2.ModelInferRequest()
-        request.model_name = self.config['waveglow']['triton']['triton_model']
+        # Prepare inputs
+        input_0: InferInput = InferInput(name="spect", shape=list(spectrogram.shape), datatype="FP32")
+        input_0.set_data_from_numpy(spectrogram)
+        input_1: InferInput = InferInput(name="z", shape=list(z.shape), datatype="FP32")
+        input_1.set_data_from_numpy(z)
 
-        # prepare output
-        output = grpc_service_v2_pb2.ModelInferRequest().InferRequestedOutputTensor()
-        output.name = "audio"
-        request.outputs.extend([output])
+        # Prepare output
+        output_0: InferRequestedOutput = InferRequestedOutput("audio")
 
-        # prepare inputs
-        input1 = grpc_service_v2_pb2.ModelInferRequest().InferInputTensor()
-        input1.name = "spect"
-        input1.shape.extend(
-            [spectrogram.shape[0], spectrogram.shape[1], spectrogram.shape[2], spectrogram.shape[3]])
-        input_bytes1 = spectrogram.tobytes()
-        input_contents1 = grpc_service_v2_pb2.InferTensorContents()
-        input_contents1.raw_contents = input_bytes1
-        input1.contents.CopyFrom(input_contents1)
-        input2 = grpc_service_v2_pb2.ModelInferRequest().InferInputTensor()
-        input2.name = "z"
-        input2.shape.extend([z.shape[0], z.shape[1], z.shape[2], z.shape[3]])
-        input_bytes2 = z.tobytes()
-        input_contents2 = grpc_service_v2_pb2.InferTensorContents()
-        input_contents2.raw_contents = input_bytes2
-        input2.contents.CopyFrom(input_contents2)
-        request.inputs.extend([input1, input2])
-
-        response = self.grpc_stub.ModelInfer(request)
-
-        batched_result: List[np.ndarray] = []
-        for output in response.outputs:
-            result = np.frombuffer(output.contents.raw_contents, dtype=spectrogram.dtype)
-            batched_result.append(result)
+        result: InferResult = self.triton_client.infer(
+            model_name=self.triton_model_name,
+            inputs=[input_0, input_1],
+            outputs=[output_0]
+        )
+        batched_result: List[np.ndarray] = [batch for batch in result.as_numpy("audio")]
 
         return batched_result
 

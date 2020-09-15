@@ -2,7 +2,7 @@ IMAGE_TAG_BATCH="dockerregistry.ondewo.com:5000/ondewo-t2s-batch-server:develop"
 IMAGE_TAG_BATCH_RELEASE="dockerregistry.ondewo.com:5000/ondewo-t2s-batch-server-release:develop"
 IMAGE_TAG_TRAINING="dockerregistry.ondewo.com:5000/ondewo-t2s-training"
 IMAGE_TAG_TESTS="ondewo-t2s-tests-image"
-IMAGE_TAG_TRITON="nvcr.io/nvidia/tritonserver:20.03.1-py3"
+IMAGE_TAG_TRITON="nvcr.io/nvidia/tritonserver:20.08-py3"
 BATCH_CONTAINER="ondewo-t2s-batch-server"
 BATCH_CONTAINER_RELEASE="ondewo-t2s-batch-server-release"
 TRAINING_CONTAINER="ondewo-t2s-training"
@@ -27,13 +27,12 @@ build_training_image:
 	docker build -t ${IMAGE_TAG_TRAINING} training
 
 run_triton:
-	docker pull nvcr.io/nvidia/tritonserver:20.03.1-py3
-	-docker kill triton-inference-server
-	docker run -d --rm --shm-size=1g --gpus all --ulimit memlock=-1 \
+	-docker rm -f triton-inference-server
+	docker run -d --shm-size=1g --gpus all --ulimit memlock=-1 \
 	--ulimit stack=67108864 --network=host --restart always \
 	-v${PWD}/models/triton_repo:/models \
 	--name triton-inference-server ${IMAGE_TAG_TRITON} \
-	tritonserver --model-repository=/models --api-version=2 --strict-model-config=false
+	tritonserver --model-repository=/models --strict-model-config=false
 
 run_triton_on_aistation:
 	-kill -9 $(ps aux | grep "ssh -N -f -L localhost:8001:aistation:8001 voice_user@aistation"| grep -v grep| awk '{print $2}')

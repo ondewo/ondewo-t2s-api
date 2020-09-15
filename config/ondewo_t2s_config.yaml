@@ -31,4 +31,4 @@ waveglow:
         sigma: 0.6
     triton:
         triton_model: "waveglow"
-        triton-url: "localhost:8001"
+        triton_url: "localhost:8001"
