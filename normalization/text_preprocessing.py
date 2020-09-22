@@ -12,6 +12,19 @@ class TextNormalizer:
     splitting_pttrn_eos = re.compile(r'.*?[.!?]')
     splitting_pttrn_pos = re.compile(r'.*?[;,:.!?/\\|)(\[\]]')
     pttrn_punkt = re.compile(r'[.?!](\s*)$')
+    domain_str: str = r'(?:com|net|org|edu|gov|mil|aero|asia|biz|cat|coop|info|int|jobs|mobi|museum|name|' \
+                      r'post|pro|tel|travel|xxx|ac|ad|ae|af|ag|ai|al|am|an|ao|aq|ar|as|at|au|aw|ax|az|ba|' \
+                      r'bb|bd|be|bf|bg|bh|bi|bj|bm|bn|bo|br|bs|bt|bv|bw|by|bz|ca|cc|cd|cf|cg|ch|ci|ck|cl|' \
+                      r'cm|cn|co|cr|cs|cu|cv|cx|cy|cz|dd|de|dj|dk|dm|do|dz|ec|ee|eg|eh|er|es|et|eu|fi|fj|' \
+                      r'fk|fm|fo|fr|ga|gb|gd|ge|gf|gg|gh|gi|gl|gm|gn|gp|gq|gr|gs|gt|gu|gw|gy|hk|hm|hn|hr|' \
+                      r'ht|hu|id|ie|il|im|in|io|iq|ir|is|it|je|jm|jo|jp|ke|kg|kh|ki|km|kn|kp|kr|kw|ky|kz|' \
+                      r'la|lb|lc|li|lk|lr|ls|lt|lu|lv|ly|ma|mc|md|me|mg|mh|mk|ml|mm|mn|mo|mp|mq|mr|ms|mt|' \
+                      r'mu|mv|mw|mx|my|mz|na|nc|ne|nf|ng|ni|nl|no|np|nr|nu|nz|om|pa|pe|pf|pg|ph|pk|pl|pm|' \
+                      r'pn|pr|ps|pt|pw|py|qa|re|ro|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|Ja|sk|sl|sm|sn|so|' \
+                      r'sr|ss|st|su|sv|sx|sy|sz|tc|td|tf|tg|th|tj|tk|tl|tm|tn|to|tp|tr|tt|tv|tw|tz|ua|ug|' \
+                      r'uk|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|yu|za|zm|zw)'
+
+    pttrn_url = re.compile(rf'(?:https?://|\b)((?:[A-Za-z0-9]+\.)+{domain_str})(?:$|\s|,|\.|:|;|\?)')
 
     pttrn_right_split = re.compile(r'(?<=[^\s])(?<!(?:\d\.))\s+(?=[0-9])')
     pttrn_left_split = re.compile(r'(?<=[0-9])\s+(?=(?:[^\d]))')
@@ -28,9 +41,11 @@ class TextNormalizer:
 
     pttrn_year = re.compile(r'(?:\s|\b|^)((?:19|20)\d{2})(?:\s|\b|$)')
 
-    month_dict: Dict[str, int] = {'januar': 1, 'jänner': 1, 'februar': 2, 'märz': 3, 'april': 4, 'mai': 5, 'juni': 6,
+    month_dict: Dict[str, int] = {'januar': 1, 'jänner': 1, 'februar': 2, 'märz': 3, 'april': 4, 'mai': 5,
+                                  'juni': 6,
                                   'juli': 7, 'august': 8, 'september': 9, 'oktober': 10, 'november': 11,
-                                  'dezember': 12, 'Januar': 1, 'Jänner': 1, 'Februar': 2, 'März': 3, 'April': 4, 'Mai': 5,
+                                  'dezember': 12, 'Januar': 1, 'Jänner': 1, 'Februar': 2, 'März': 3,
+                                  'April': 4, 'Mai': 5,
                                   'Juni': 6, 'Juli': 7, 'August': 8, 'September': 9, 'Oktober': 10,
                                   'November': 11, 'Dezember': 12}
 
@@ -234,7 +249,7 @@ class TextNormalizer:
                 texts[index] = self.normalize_single_date(text=texts[index])
                 continue
             else:
-                if texts[index-1].endswith('m'):
+                if texts[index - 1].endswith('m'):
                     texts[index] = self.normalize_single_date(text=texts[index], ending='ten')
                 else:
                     texts[index] = self.normalize_single_date(text=texts[index])
@@ -339,6 +354,7 @@ class TextNormalizer:
 
         """
         text = self.fix_plus(text)
+        text = self.normalize_urls(text)
         texts = self.split_on_pattern(texts=[text], pattern=self.pttrn_right_split)
         texts = self.split_on_pattern(texts=texts, pattern=self.pttrn_left_split)
         texts = self.split_on_pattern(texts=texts, pattern=self.pttrn_split_before_year)
@@ -444,3 +460,49 @@ class TextNormalizer:
             else:
                 word = ''
         return parts
+
+    def normalize_urls(self, text: str) -> str:
+        """
+
+        Args:
+            text:
+
+        Returns:
+
+        """
+        urls: List[str] = self.pttrn_url.findall(text)
+        for url in urls:
+            normalized_url = self.normalize_url(url)
+            text = text.replace(url, normalized_url)
+
+        return text
+
+    def normalize_url(self, url: str) -> str:
+        """
+
+        Args:
+            url:
+
+        Returns:
+
+        """
+        char_mapping: Dict[str, str] = {'a': 'aa', 'b': 'be', 'c': 'ce', 'd': 'de', 'e': 'ee', 'f': 'ef',
+                                        'g': 'ge', 'h': 'ha', 'i': 'ii', 'j': 'jot', 'k': 'ke', 'l': 'le',
+                                        'm': 'me', 'n': 'ne', 'o': 'oo', 'p': 'pe', 'q': 'qu', 'r': 'er',
+                                        's': 'es', 't': 'te', 'u': 'uu', 'v': 'fau', 'w': 'we', 'x': 'iks',
+                                        'y': 'ipsilon', 'z': 'zed'}
+        list_of_words: List[str] = ['com', 'net', 'org', 'gov', 'pro', 'edu',]
+
+        url_pieces: List[str] = url.split('.')
+        url_normalized: str = ''
+        for ind in range(len(url_pieces)):
+            if len(url_pieces[ind]) > 3 or url_pieces[ind] in list_of_words:
+                url_piece = url_pieces[ind]
+            else:
+                url_piece = ''.join([char_mapping[char.lower()] + ' ' for char in url_pieces[ind]])
+
+            if ind < len(url_pieces) - 1:
+                url_normalized += url_piece + ' punkt '
+            else:
+                url_normalized += url_piece
+        return url_normalized
