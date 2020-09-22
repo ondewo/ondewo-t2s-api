@@ -4,7 +4,7 @@ from typing import List
 
 import pytest
 
-from normalization.text_preprocessing import TextNormalizer
+from normalization.text_preprocessing_de import TextNormalizer
 
 normalizer = TextNormalizer()
 
@@ -110,7 +110,7 @@ class TestNormalization:
         ]),
         ("Wie geht's dir???", ["Wie geht's dir?"])
     ]
-    )
+                             )
     def test_normalize_and_split(text: str, expected_result: str) -> None:
         normalized_text: List[str] = normalizer.normalize_and_split(text)
         assert isinstance(normalized_text, list)
@@ -193,3 +193,27 @@ class TestNormalization:
             list(filter(None, re.split(r'[:; |/\\]', text))))
         assert abs(sum(map(len, split_text)) - len(text)) <= 1
         assert split_text == expected_result
+
+    @staticmethod
+    @pytest.mark.parametrize('text, expected_result', [
+        ('www.google.de', 'weh weh weh punkt google punkt deh eh '),
+        ('www.fundamt.gv.at', 'weh weh weh punkt fundamt punkt geh fau punkt ah teh ')
+    ])
+    def test_normalize_url(text: str, expected_result: str):
+        resulting_text: str = normalizer.normalize_url(text)
+        assert isinstance(resulting_text, str)
+        assert resulting_text == expected_result
+
+    @staticmethod
+    @pytest.mark.parametrize('text, expected_result', [
+        ('text www.google.de another text www.fundamt.gv.at',
+         'text weh weh weh punkt google punkt deh eh  another text weh weh weh '
+         'punkt fundamt punkt geh fau punkt ah teh '),
+        ('text www.google-test.de/index another text ',
+         'text weh weh weh punkt google strich test punkt deh eh '
+         'schrägstrich index  another text ')
+    ])
+    def test_normalize_urls(text: str, expected_result: str):
+        resulting_text: str = normalizer.normalize_urls(text)
+        assert isinstance(resulting_text, str)
+        assert resulting_text == expected_result

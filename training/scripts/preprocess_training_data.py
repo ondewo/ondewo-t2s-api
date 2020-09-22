@@ -1,7 +1,7 @@
 import json
 from typing import List
 
-from normalization.text_preprocessing import TextNormalizer
+from normalization.text_preprocessing_de import TextNormalizer
 
 normalizer = TextNormalizer()
 
