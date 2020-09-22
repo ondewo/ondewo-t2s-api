@@ -7,8 +7,8 @@ class TextNormalizer:
     pttrn_spaces_bw_num = re.compile(r'(\d)\s+(\d)')
     pttrn_numbers = re.compile(r'([^0-9]|\b)(\d+)([^0-9]|\b)')
     pttrn_space = re.compile(r'\s+')
-    pttrn_time = re.compile(r'(?:\s|\b|^)(([01][0-9]|[0-9]|2[0-3])\:([0-5][0-9])(?:\s|\b|$)'
-                            r'(?:\:[0-5][0-9](?:\s|\b|$))?)')
+    pttrn_time = re.compile(r'(?:\s|\b|^)(([01][0-9]|[0-9]|2[0-3]):([0-5][0-9])(?:\s|\b|$)'
+                            r'(?::[0-5][0-9](?:\s|\b|$))?)')
     splitting_pttrn_eos = re.compile(r'.*?[.!?]')
     splitting_pttrn_pos = re.compile(r'.*?[;,:.!?/\\|)(\[\]]')
     pttrn_punkt = re.compile(r'[.?!](\s*)$')
@@ -25,7 +25,7 @@ class TextNormalizer:
                       r'uk|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|yu|za|zm|zw)'
 
     pttrn_url = re.compile(
-        rf'(?:https?\://|\b)((?:[A-Za-z0-9\-]+\.)+{domain_str}(?:/[A-Za-z0-9\-]+)*)(?:$|\s|,|:|;|\?|!|.)'
+        rf'(?:https?://|\b)((?:[A-Za-z0-9\-]+\.)+{domain_str}(?:/[A-Za-z0-9\-]+)*)(?:$|\s|,|:|;|\?|!|.)'
     )
 
     pttrn_right_split = re.compile(r'(?<=[^\s])(?<!(?:\d\.))\s+(?=[0-9])')
@@ -55,6 +55,7 @@ class TextNormalizer:
         """
 
         Args:
+            ending:
             mode:
             _date:
 
