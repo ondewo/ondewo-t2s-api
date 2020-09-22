@@ -196,8 +196,8 @@ class TestNormalization:
 
     @staticmethod
     @pytest.mark.parametrize('text, expected_result',[
-        ('www.google.de', 'we we we  punkt google punkt de ee '),
-        ('www.fundamt.gv.at', 'we we we  punkt fundamt punkt ge fau  punkt aa te ')
+        ('www.google.de', 'weh weh weh  punkt google punkt deh eh '),
+        ('www.fundamt.gv.at', 'weh weh weh  punkt fundamt punkt geh fau  punkt ah teh ')
     ])
     def test_normalize_url(text: str, expected_result: str):
         resulting_text: str = normalizer.normalize_url(text)
@@ -209,8 +209,8 @@ class TestNormalization:
     @staticmethod
     @pytest.mark.parametrize('text, expected_result',[
         ('text www.google.de another text www.fundamt.gv.at',
-         'text we we we  punkt google punkt de ee  another text we we we  '
-         'punkt fundamt punkt ge fau  punkt aa te ')
+         'text weh weh weh  punkt google punkt deh eh  another text weh weh weh  '
+         'punkt fundamt punkt geh fau  punkt ah teh ')
     ])
     def test_normalize_urls(text: str, expected_result: str):
         resulting_text: str = normalizer.normalize_urls(text)

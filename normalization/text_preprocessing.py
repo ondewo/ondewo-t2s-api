@@ -486,12 +486,14 @@ class TextNormalizer:
         Returns:
 
         """
-        char_mapping: Dict[str, str] = {'a': 'aa', 'b': 'be', 'c': 'ce', 'd': 'de', 'e': 'ee', 'f': 'ef',
-                                        'g': 'ge', 'h': 'ha', 'i': 'ii', 'j': 'jot', 'k': 'ke', 'l': 'le',
-                                        'm': 'me', 'n': 'ne', 'o': 'oo', 'p': 'pe', 'q': 'qu', 'r': 'er',
-                                        's': 'es', 't': 'te', 'u': 'uu', 'v': 'fau', 'w': 'we', 'x': 'iks',
-                                        'y': 'ipsilon', 'z': 'zed'}
-        list_of_words: List[str] = ['com', 'net', 'org', 'gov', 'pro', 'edu',]
+        char_mapping: Dict[str, str] = {'a': 'ah', 'b': 'beh', 'c': 'tsehe', 'd': 'deh', 'e': 'eh',
+                                        'f': 'eff', 'g': 'geh', 'h': 'ha', 'i': 'ii', 'j': 'yot', 'k': 'kah',
+                                        'l': 'ell', 'm': 'emm', 'n': 'enn', 'o': 'oh', 'p': 'peh', 'q': 'kuh',
+                                        'r': 'err', 's': 'ess', 't': 'teh', 'u': 'uh', 'v': 'fau', 'w': 'weh',
+                                        'x': 'iks', 'y': 'upsilon', 'z': 'tsett', 'ä': 'ah umlaut',
+                                        'ö': 'oh umlaut', 'ü': 'uh umlaut', 'ß': 'esstsett'}
+
+        list_of_words: List[str] = ['com', 'net', 'org', 'gov', 'pro', 'edu', ]
 
         url_pieces: List[str] = url.split('.')
         url_normalized: str = ''
