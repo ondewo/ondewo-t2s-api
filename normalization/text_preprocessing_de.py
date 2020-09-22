@@ -24,7 +24,9 @@ class TextNormalizer:
                       r'sr|ss|st|su|sv|sx|sy|sz|tc|td|tf|tg|th|tj|tk|tl|tm|tn|to|tp|tr|tt|tv|tw|tz|ua|ug|' \
                       r'uk|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|yu|za|zm|zw)'
 
-    pttrn_url = re.compile(rf'(?:https?://|\b)((?:[A-Za-z0-9]+\.)+{domain_str})(?:$|\s|,|\.|:|;|\?)')
+    pttrn_url = re.compile(
+        rf'(?:https?\://|\b)((?:[A-Za-z0-9\-]+\.)+{domain_str}(?:/[A-Za-z0-9\-]+)*)(?:$|\s|,|:|;|\?|!|.)'
+    )
 
     pttrn_right_split = re.compile(r'(?<=[^\s])(?<!(?:\d\.))\s+(?=[0-9])')
     pttrn_left_split = re.compile(r'(?<=[0-9])\s+(?=(?:[^\d]))')
@@ -491,20 +493,19 @@ class TextNormalizer:
                                         'l': 'ell', 'm': 'emm', 'n': 'enn', 'o': 'oh', 'p': 'peh', 'q': 'kuh',
                                         'r': 'err', 's': 'ess', 't': 'teh', 'u': 'uh', 'v': 'fau', 'w': 'weh',
                                         'x': 'iks', 'y': 'upsilon', 'z': 'tsett', 'ä': 'ah umlaut',
-                                        'ö': 'oh umlaut', 'ü': 'uh umlaut', 'ß': 'esstsett'}
+                                        'ö': 'oh umlaut', 'ü': 'uh umlaut', 'ß': 'esstsett', '-': 'strich',
+                                        '/': 'schrägstrich', '.': 'punkt', }
 
         list_of_words: List[str] = ['com', 'net', 'org', 'gov', 'pro', 'edu', ]
 
-        url_pieces: List[str] = url.split('.')
+        url_pieces: List[str] = re.split(r'(?<=[./\-\d])|(?=[./\-\d])', url)
         url_normalized: str = ''
         for ind in range(len(url_pieces)):
             if len(url_pieces[ind]) > 3 or url_pieces[ind] in list_of_words:
                 url_piece = url_pieces[ind]
             else:
-                url_piece = ''.join([char_mapping[char.lower()] + ' ' for char in url_pieces[ind]])
+                url_piece = ' '.join(
+                    [(char_mapping.get(char.lower()) or char.lower()) for char in url_pieces[ind]])
+            url_normalized += url_piece + ' '
 
-            if ind < len(url_pieces) - 1:
-                url_normalized += url_piece + ' punkt '
-            else:
-                url_normalized += url_piece
         return url_normalized
