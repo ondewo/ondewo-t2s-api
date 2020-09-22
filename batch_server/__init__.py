@@ -7,7 +7,7 @@ from ruamel.yaml import YAML
 from inference.inference import Inference
 from inference.inference_factory import InferenceFactory
 from normalization.postprocessor import Postprocessor
-from normalization.text_preprocessing import TextNormalizer
+from normalization.text_preprocessing_de import TextNormalizer
 
 server = Flask(__name__)
 

@@ -4,7 +4,7 @@ from typing import List
 
 import pytest
 
-from normalization.text_preprocessing import TextNormalizer
+from normalization.text_preprocessing_de import TextNormalizer
 
 normalizer = TextNormalizer()
 
