@@ -18,6 +18,6 @@ run_batch_server_release:
 	--network=host --restart always \
 	-v ${PWD}/models:/opt/ondewo-t2s/models \
 	-v ${PWD}/config:/opt/ondewo-t2s/config \
-	--env CONFIG_FILE="config/ondewo_t2s_config.yaml" \
+	--env CONFIG_FILE="config/config.yaml" \
 	--name ${CONTAINER_NAME} \
 	${IMAGE_NAME}
