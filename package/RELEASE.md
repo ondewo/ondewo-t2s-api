@@ -13,4 +13,6 @@
 * New demo architecture
 * Various small improvements and bugfixes
 
-
+### ondewo-t2s v1.1.1
+* Migrated to CUDA 11 and Triton 2.2.0
+* Further improvement in automatic packaging and model deployment
