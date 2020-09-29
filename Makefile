@@ -78,7 +78,8 @@ run_batch_server_release:
 run_tests:
 	docker build -t ${IMAGE_TAG_TESTS} -f docker/Dockerfile.tests .
 	-docker rm -f ${TESTS_CONTAINER}
-	docker run --rm --name ${TESTS_CONTAINER} ${IMAGE_TAG_TESTS}
+	docker run --rm -e TESTFILE=pytest.xml -v ${PWD}/test_results:/opt/ondewo-t2s/log \
+	--name ${TESTS_CONTAINER} ${IMAGE_TAG_TESTS}
 
 package_git_revision_and_version:
 	echo "version: `cat utils/version.py | grep -oP "(?<=__version__ = ')(.*)(?=')"`" > package/VERSION.md
