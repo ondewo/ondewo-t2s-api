@@ -2,6 +2,11 @@ SHELL=/bin/bash
 include .env
 export
 
+install:
+	gunzip -c ondewo-t2s-batch-server-release-${ONDEWO_T2S_VERSION}.tar.gz | docker load
+
+run: run_batch_server_release
+
 run_triton:
 	-docker rm -f triton-inference-server
 	docker run -d --rm --shm-size=1g --gpus all --ulimit memlock=-1 \
