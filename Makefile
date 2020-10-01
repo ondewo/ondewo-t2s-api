@@ -30,7 +30,7 @@ run_triton:
 	-docker rm -f triton-inference-server
 	docker run -d --shm-size=1g --gpus all --ulimit memlock=-1 \
 	--ulimit stack=67108864 --network=host \
-	-v${PWD}/models/triton_repo:/models \
+	-v${shell pwd}/models/triton_repo:/models \
 	--name triton-inference-server ${IMAGE_TAG_TRITON} \
 	tritonserver --model-repository=/models --strict-model-config=false
 
@@ -46,8 +46,8 @@ run_training_container:
 	-docker rm ${TRAINING_CONTAINER}
 	docker run -t -d --gpus all --rm \
 	--shm-size=10g --ulimit memlock=-1 --ulimit stack=67108864 \
-	-v ${PWD}/models:/opt/models \
-	-v ${PWD}/training:/opt/ondewo-t2s \
+	-v ${shell pwd}/models:/opt/models \
+	-v ${shell pwd}/training:/opt/ondewo-t2s \
 	-p ${TRAINING_PORT}:5000 \
 	--name ${TRAINING_CONTAINER} ${IMAGE_TAG_TRAINING}
 
@@ -57,8 +57,8 @@ run_batch_server:
 	docker run -td --gpus all \
 	--shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
 	--network=host \
-	-v ${PWD}/models:/opt/ondewo-t2s/models \
-	-v ${PWD}/config:/opt/ondewo-t2s/config \
+	-v ${shell pwd}/models:/opt/ondewo-t2s/models \
+	-v ${shell pwd}/config:/opt/ondewo-t2s/config \
 	--env CONFIG_FILE="config/config.yaml" \
 	--name ${BATCH_CONTAINER} \
 	${IMAGE_TAG_BATCH}
@@ -69,8 +69,8 @@ run_batch_server_release:
 	docker run -td --gpus all \
 	--shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
 	--network=host \
-	-v ${PWD}/models:/opt/ondewo-t2s/models \
-	-v ${PWD}/config:/opt/ondewo-t2s/config \
+	-v ${shell pwd}/models:/opt/ondewo-t2s/models \
+	-v ${shell pwd}/config:/opt/ondewo-t2s/config \
 	--env CONFIG_FILE="config/config.yaml" \
 	--name ${BATCH_CONTAINER_RELEASE} \
 	${IMAGE_TAG_BATCH_RELEASE}
