@@ -141,7 +141,8 @@ class DirTree:
             manager: superior of DirTree, instance of speech to text manager
             config_path_relative: path of config.yaml in ./models relative to /<model_setup>/
             models_path: (optional, default "./models")
-                         path of models with directory structure /models/<company>/<language>/<domain>/<model_setup>/
+                         path of models with directory structure
+                         /models/<company>/<language>/<domain>/<speaker>/<model_setup>/
                          preferably relative
         """
 
@@ -277,13 +278,15 @@ class DirTree:
                         speakers = [a_domain.get_speaker(name=speaker_name)]
                     else:
                         speakers = a_domain.speakers  # type: ignore
-                    for speaker in speakers:
+                    for a_speaker in speakers:
+                        if not a_speaker:
+                            continue
 
                         # check model setup name
                         if model_setup_name:
-                            setups = [speaker.get_model_config(name=model_setup_name)]
+                            setups = [a_speaker.get_model_config(name=model_setup_name)]
                         else:
-                            setups = speaker.model_configs  # type: ignore
+                            setups = a_speaker.model_configs  # type: ignore
 
                         # append all that match
                         for a_model in setups:
@@ -292,8 +295,8 @@ class DirTree:
                             else:
                                 model_config_list.append(a_model)
 
-        ## trial for streamlined code
-        ## will check full path instead of every part of the path, which can lead to wrong results
+        # trial for streamlined code
+        # will check full path instead of every part of the path, which can lead to wrong results
         # if e.g. language-code is in the company name, domain name in company name, etc. pp.
         # for a_company in self.companies:
         #     for a_language in a_company.languages:

@@ -106,7 +106,8 @@ class TextToSpeechConfigServer (text_to_speech_pb2_grpc.Text2SpeechConfiguration
         self,
         request: text_to_speech_pb2.SetModelConfigRequest,
     ) -> text_to_speech_pb2.SetModelConfigResponse:
-        success, log_message = self.manager.set_active_config(model_id=request.model_setup_id)  # Type[str] != str wtf?!
+        success, log_message = self.manager.set_active_config(
+            model_id=request.model_setup_id)  # Type[str] != str wtf?!
         return text_to_speech_pb2.SetModelConfigResponse(
             request=request,
             success=success,
@@ -121,7 +122,8 @@ class TextToSpeechConfigServer (text_to_speech_pb2_grpc.Text2SpeechConfiguration
 
     def setup_reflection(self) -> None:
         service_names = [
-            text_to_speech_pb2.DESCRIPTOR.services_by_name['Text2SpeechConfiguration'].full_name,  # type: ignore
+            # type: ignore
+            text_to_speech_pb2.DESCRIPTOR.services_by_name['Text2SpeechConfiguration'].full_name,
         ]
 
         reflection.enable_server_reflection(service_names=service_names, server=self.server)
