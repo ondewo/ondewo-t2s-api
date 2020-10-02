@@ -107,3 +107,14 @@ install_dependencies_locally:
 	pip install -r requirements.txt
 	pip install utils/triton_client_lib/triton*.whl
 
+# GENERATE PYTHON FILES FROM PROTOS
+# copy from nlu-client, changed output directory to ./grpc_config_server/ and only exporting /audio/ directory of ondewoapis
+ONDEWO_PROTOS_DIR=ondewoapis/ondewo/audio
+GOOGLE_APIS_DIR=ondewoapis/googleapis
+ONDEWO_APIS_DIR=ondewoapis
+PROTO_OUTPUT_FOLDER=grpc_config_server/
+
+generate_ondewo_protos:
+	for f in $$(find ${ONDEWO_PROTOS_DIR} -name '*.proto'); do \
+		python -m grpc_tools.protoc -I${GOOGLE_APIS_DIR} -I${ONDEWO_APIS_DIR} --python_out=${PROTO_OUTPUT_FOLDER} --mypy_out=${PROTO_OUTPUT_FOLDER} --grpc_python_out=${PROTO_OUTPUT_FOLDER} $$f; \
+	done
