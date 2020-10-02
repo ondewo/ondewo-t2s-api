@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 import yaml
 
 if TYPE_CHECKING:
-    from grpc_config_server.s2t_manager.manager import SpeechToTextManager
+    from grpc_config_server.t2s_manager.manager import TextToSpeechManager
 
 
 @dataclass
@@ -35,7 +35,7 @@ class ModelConfig:
 
 
 @dataclass
-class DirDomain:
+class DirSpeaker:
     name: str
     model_configs: List[ModelConfig]
 
@@ -44,6 +44,19 @@ class DirDomain:
         for model_config in self.model_configs:
             if name == model_config.name:
                 return model_config
+        return None
+
+
+@dataclass
+class DirDomain:
+    name: str
+    speakers: List[DirSpeaker]
+
+    def get_speaker(self, name: str) -> Union[DirSpeaker, None]:
+        """get the model config object with the given name"""
+        for speaker in self.speakers:
+            if name == speaker.name:
+                return speaker
         return None
 
 
@@ -77,7 +90,7 @@ class DirCompany:
 class DirTree:
     directory: str
     companies: List[DirCompany]
-    manager: 'SpeechToTextManager'
+    manager: 'TextToSpeechManager'
 
     def get_all_languages(self) -> List[DirLanguage]:
         """get all available languages"""
@@ -101,9 +114,9 @@ class DirTree:
         for setup in setups:
             if config_data == setup.config_data:
                 return setup
-        raise FileNotFoundError("could not find path of active config.yaml." +
-                                "No files in ./model/<company>/<language>/<domain>/<setup>/config/config.yaml " +
-                                "match the config")
+        raise FileNotFoundError("Could not find path of active config.yaml. No files in " +
+                                "./model/<company>/<language>/<domain>/<speaker>/<setup>/config/config.yaml" +
+                                " match the config")
 
     def get_model_by_id(self, model_id: Type[str]) -> ModelConfig:
         """get the ModelConfig associated with this model_id"""
@@ -115,7 +128,7 @@ class DirTree:
 
     @staticmethod
     def load_from_path(
-        manager: 'SpeechToTextManager',
+        manager: 'TextToSpeechManager',
         config_path_relative: str,
         models_path: str = "./models",
     ) -> 'DirTree':
@@ -150,32 +163,44 @@ class DirTree:
                 for domain in domains:
                     dpath = lpath + f"/{domain}"
 
-                    # get model setups from /models/<company>/<language>/<domain>/
-                    model_list = []
-                    model_setups = os.listdir(dpath)
-                    for model_setup in model_setups:
-                        mpath = dpath + f"/{model_setup}"
+                    # get speakers from /models/<company>/<language>/<domain>/
+                    speaker_list = []
+                    speakers = os.listdir(dpath)
+                    for speaker in speakers:
+                        spath = dpath + f"/{speaker}"
 
-                        # NOTE: directory: /models/<company>/<language>/<domain>/<model_setup>/
+                        # get model setups from /models/<company>/<language>/<domain>/<speaker>/
+                        model_list = []
+                        model_setups = os.listdir(spath)
+                        for model_setup in model_setups:
+                            mpath = spath + f"/{model_setup}"
 
-                        # load config of this setup
-                        config_yaml_path = mpath + config_path_relative
-                        config_data = ModelConfig.read_config_data(config_path=config_yaml_path)
+                            # NOTE: directory: /models/<company>/<language>/<domain>/<speaker>/<model_setup>/
 
-                        # save model setups
-                        model_list.append(ModelConfig(
-                            name=model_setup,
-                            full_path=mpath,
-                            config_yaml_path=config_yaml_path,
-                            model_id=str(uuid.uuid4()),
-                            language_code=language,
-                            config_data=config_data,
+                            # load config of this setup
+                            config_yaml_path = mpath + config_path_relative
+                            config_data = ModelConfig.read_config_data(config_path=config_yaml_path)
+
+                            # save model setups
+                            model_list.append(ModelConfig(
+                                name=model_setup,
+                                full_path=mpath,
+                                config_yaml_path=config_yaml_path,
+                                model_id=str(uuid.uuid4()),
+                                language_code=language,
+                                config_data=config_data,
+                            ))
+
+                        # save speakers
+                        speaker_list.append(DirSpeaker(
+                            name=speaker,
+                            model_configs=model_list,
                         ))
 
                     # save domains
                     domain_list.append(DirDomain(
                         name=domain,
-                        model_configs=model_list,
+                        speakers=speaker_list,
                     ))
 
                 # save languages
@@ -201,6 +226,7 @@ class DirTree:
         self,
         company_name: Union[str, None] = None,
         language_code: Union[str, None] = None,
+        speaker_name: Union[str, None] = None,
         domain_name: Union[str, None] = None,
         model_setup_name: Union[str, None] = None,
     ) -> List[ModelConfig]:
@@ -246,31 +272,39 @@ class DirTree:
                     if not a_domain:
                         continue
 
-                    # check model setup name
-                    if model_setup_name:
-                        setups = [a_domain.get_model_config(name=model_setup_name)]
+                    # check speaker name
+                    if speaker_name:
+                        speakers = [a_domain.get_speaker(name=speaker_name)]
                     else:
-                        setups = a_domain.model_configs  # type: ignore
+                        speakers = a_domain.speakers  # type: ignore
+                    for speaker in speakers:
 
-                    # append all that match
-                    for a_model in setups:
-                        if not a_model:
-                            continue
+                        # check model setup name
+                        if model_setup_name:
+                            setups = [speaker.get_model_config(name=model_setup_name)]
                         else:
-                            model_config_list.append(a_model)
+                            setups = speaker.model_configs  # type: ignore
 
-        # trial for streamlined code
-        # will check full path instead of every part of the path, which can lead to wrong results
+                        # append all that match
+                        for a_model in setups:
+                            if not a_model:
+                                continue
+                            else:
+                                model_config_list.append(a_model)
+
+        ## trial for streamlined code
+        ## will check full path instead of every part of the path, which can lead to wrong results
         # if e.g. language-code is in the company name, domain name in company name, etc. pp.
         # for a_company in self.companies:
         #     for a_language in a_company.languages:
         #         for a_domain in a_language.domains:
-        #             for a_config in a_domain.model_configs:
-        #                 if all(condition in a_config.full_path for condition in [
-        #                         some_condition for some_condition in [
-        #                             company_name, language_code, domain_name, model_setup_name
-        #                         ] if some_condition is not None
-        #                 ]):
-        #                     model_config_list.append(a_config)
+        #               for a_speaker in a_domain.speakers:
+        #                   for a_config in a_domain.model_configs:
+        #                       if all(condition in a_config.full_path for condition in [
+        #                           some_condition for some_condition in [
+        #                               company_name, language_code, domain_name, model_setup_name
+        #                           ] if some_condition is not None
+        #                       ]):
+        #                           model_config_list.append(a_config)
 
         return model_config_list

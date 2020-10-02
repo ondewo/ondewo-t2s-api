@@ -118,3 +118,13 @@ generate_ondewo_protos:
 	for f in $$(find ${ONDEWO_PROTOS_DIR} -name '*.proto'); do \
 		python -m grpc_tools.protoc -I${GOOGLE_APIS_DIR} -I${ONDEWO_APIS_DIR} --python_out=${PROTO_OUTPUT_FOLDER} --mypy_out=${PROTO_OUTPUT_FOLDER} --grpc_python_out=${PROTO_OUTPUT_FOLDER} $$f; \
 	done
+
+build_grpc_server:
+	docker build -t t2s_grpc_server -f grpc_config_server/Dockerfile .
+
+run_grpc_server:
+	docker-compose -f grpc_config_server/docker-compose.yaml up
+
+remove_grpc_exited_container:
+	docker-compose -f grpc_config_server/docker-compose.yaml rm -f
+

@@ -1,3 +1,8 @@
 grpcio==1.31.0
 grpcio-reflection==1.31.0
 grpcio-tools==1.31.0
+regex==2020.7.14
+google-api-core==1.13.0
+googleapis-common-protos==1.5.10
+protobuf==3.13.0
+pyyaml==5.3.1

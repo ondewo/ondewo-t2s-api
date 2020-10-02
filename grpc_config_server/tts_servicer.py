@@ -143,4 +143,5 @@ class TextToSpeechConfigServer (text_to_speech_pb2_grpc.Text2SpeechConfiguration
 
 if __name__ == "__main__":
     server_manager = TextToSpeechConfigServer()
+    print("STARTING SERVER...")
     server_manager.serve()

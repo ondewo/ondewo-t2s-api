@@ -24,7 +24,7 @@ class TestTTSServicer:
                 language_code=test_code,
             )
         )
-        assert len(response.model_setups) == 6
+        assert len(response.model_setups) == 2
         for model_setup in response.model_setups:
             setup = MessageToDict(model_setup)
             assert "languageCode" in setup.keys()
@@ -40,7 +40,7 @@ class TestTTSServicer:
                 identity=text_to_speech_pb2.Identifier(),
             )
         )
-        assert len(response.model_setups) == 27
+        assert len(response.model_setups) == 21
         for model_setup in response.model_setups:
             setup = MessageToDict(model_setup)
             assert "languageCode" in setup.keys()
@@ -61,11 +61,11 @@ class TestTTSServicer:
         assert setup["languageCode"] == "en-US"
         assert "modelSetupId" in setup.keys()
         assert "directoryName" in setup.keys()
-        assert setup["directoryName"] == './models/eloqai/en-US/esoterics/0.0.3'
+        assert setup["directoryName"] == './models/eloqai/en-US/officechat/sr199/0.0.1'
         assert "config" in setup.keys()
         assert "inference" in setup["config"].keys()
         assert "inference_type" in setup["config"]["inference"].keys()
-        assert setup["config"]["inference"]["inference_type"] == "7kndsc"
+        assert setup["config"]["inference"]["inference_type"] == "67567"
 
         from_file = server.manager.active_config
         from_file_setup = MessageToDict(text_to_speech_pb2.ModelSetup(
