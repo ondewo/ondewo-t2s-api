@@ -19,7 +19,7 @@ if not config_file:
 with open(config_file) as f:
     config: Dict[str, Any] = yaml.load(f)
 
-inference: Inference = InferenceFactory.get_inference(config)
+inference: Inference = InferenceFactory.get_inference(config['inference'])
 normalizer = TextNormalizer()
 postprocessor = Postprocessor()
 
