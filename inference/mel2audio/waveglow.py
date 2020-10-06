@@ -5,6 +5,7 @@ from inference.mel2audio.nemo_modules.mel_spectrogram_data_layer import MelSpect
 from utils.logger import logger
 from typing import Dict, Any, List
 from ruamel.yaml import YAML
+import time
 
 import nemo
 import nemo.collections.tts as nemo_tts
@@ -39,6 +40,7 @@ class Waveglow(Mel2Audio):
             logger.info(f"Loaded WaveGlow denoiser with strength {self.denoiser_strength}.")
 
     def mel2audio(self, mel_spectrograms: List[np.ndarray]) -> List[np.ndarray]:
+        start_time: float = time.time()
 
         # make graph
         data_layer = MelSpectrogramDataLayer(
@@ -72,4 +74,5 @@ class Waveglow(Mel2Audio):
             audios_final = [self.waveglow.denoise(audio_final, strength=self.denoiser_strength)[0]
                             for audio_final in audios_final]
 
+        logger.info(f"WaveGlow inference took {time.time() - start_time} seconds")
         return audios_final

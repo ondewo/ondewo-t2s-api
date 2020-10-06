@@ -6,6 +6,7 @@ from tritongrpcclient import InferenceServerClient, InferInput, InferRequestedOu
 from inference.mel2audio.mel2audio import Mel2Audio
 import numpy as np
 from utils.logger import logger
+import time
 
 
 class WaveglowTriton(Mel2Audio):
@@ -57,6 +58,7 @@ class WaveglowTriton(Mel2Audio):
         return batched_result
 
     def mel2audio(self, mel_spectrograms: List[np.ndarray]) -> List[np.ndarray]:
+        start_time: float = time.time()
 
         z_shape = self.calculate_shape_of_z()
         z = np.random.normal(loc=0.0, scale=self.config['sigma'], size=z_shape).astype("float32")
@@ -79,6 +81,8 @@ class WaveglowTriton(Mel2Audio):
                 sample_len = mel_len * self.win_stride
                 sample = audio[j][:sample_len]
                 audios.append(sample)
+
+        logger.info(f"WaveGlow inference using Triton took {time.time() - start_time} seconds")
         return audios
 
     def calculate_shape_of_z(self) -> Tuple[int, int, int, int]:

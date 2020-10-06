@@ -9,6 +9,7 @@ import nemo
 import nemo.collections.asr as nemo_asr
 import nemo.collections.tts as nemo_tts
 from ruamel.yaml import YAML
+import time
 import numpy as np
 
 
@@ -56,6 +57,7 @@ class Tacotron2(Text2Mel):
         logger.info(f"Loaded Tacotron2 model from {self.config['path']}")
 
     def text2mel(self, texts: List[str]) -> List[np.ndarray]:
+        start_time: float = time.time()
 
         # make graph
         data_layer = TextDataLayer(
@@ -82,7 +84,7 @@ class Tacotron2(Text2Mel):
         # running the inference pipeline
         logger.info("Running Tacotron2 inference in PyTorch.")
         mel_preds, mel_pred_lens = self.neural_factory.infer(tensors=[mel, mel_len])
-        logger.info("Done running Tacatron2 inference in PyTorch")
+        logger.info("Done running Tacotron2 inference in PyTorch.")
 
         # format the mel spectrograms
         mels_formatted: List[np.ndarray] = []
@@ -95,4 +97,5 @@ class Tacotron2(Text2Mel):
             mel_len = mel_lens_formatted[index]
             mels_formatted[index] = mels_formatted[index][:, :mel_len]
 
+        logger.info(f"Tacotron2 inference took {time.time() - start_time} seconds.")
         return mels_formatted
