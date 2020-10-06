@@ -14,7 +14,7 @@ inference:
                 step: "1000"
 
         mel2audio:
-            type: "waveglow_triton"
+            type: "waveglow"
 
             waveglow:
                 param_config_path: "models/waveglow/waveglow.yaml"

@@ -57,10 +57,11 @@ class Tacotron2(Text2Mel):
     def text2mel(self, texts: List[str]) -> List[np.ndarray]:
 
         # make graph
+        # TODO: make it work for batch sizes > 1
         data_layer = TextDataLayer(
             texts=texts,
             labels=self.labels,
-            batch_size=2,
+            batch_size=1,
             num_workers=1,
             bos_id=self.bos_id,
             eos_id=self.eos_id,
@@ -83,4 +84,8 @@ class Tacotron2(Text2Mel):
         mel_preds = self.neural_factory.infer(tensors=[mel])[0]
         logger.info("Done running Tacatron2 inference in PyTorch")
 
-        return [mel_pred.cpu().numpy() for mel_pred in mel_preds]
+        mels_formatted: List[np.ndarray] = []
+        for mel_pred in mel_preds:
+            mels_formatted.extend([mel for mel in mel_pred.cpu().numpy()])
+
+        return mels_formatted

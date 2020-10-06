@@ -13,6 +13,6 @@ class Text2Mel(ABC):
         Args:
             texts: the given texts (strings)
 
-        Returns: A 3-dimensonal numpy array (first dimension is index, second two dimensions are for mel-spectrogram)
+        Returns: A list of 2-dimensonal numpy arrays (first dimension is mel-features, second dimension is time)
 
         """

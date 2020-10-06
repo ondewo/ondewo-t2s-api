@@ -11,9 +11,9 @@ class Mel2Audio(ABC):
         """Converts given mel-spectrograms to audio.
 
         Args:
-            mel_spectrograms: the given mel-spectrograms (first dimension is index,
-                              second two dimensions are for mel-spectrogram)
+            mel_spectrograms: A list of 2-dimensonal numpy arrays
+                              (first dimension is mel-features, second dimension is time)
 
-        Returns: A 2-dimensonal numpy array (first dimension is index, second for audio)
+        Returns: A list of 1-dimensonal numpy arrays (audio waveforms)
 
         """

@@ -66,10 +66,10 @@ class WaveglowTriton(Mel2Audio):
             # convert spectrogram to proper format
             mel_len: int = spectrogram.shape[-1]
             spectrogram = np.pad(spectrogram,
-                                 ((0, 0), (0, 0), (0, self.max_spect_size - mel_len)), constant_values=0)
-            spectrogram = spectrogram.swapaxes(1, 2)
+                                 ((0, 0), (0, self.max_spect_size - mel_len)), constant_values=0)
+            spectrogram = spectrogram.swapaxes(0, 1)
             spectrogram = np.reshape(
-                spectrogram, [1, spectrogram.shape[0], spectrogram.shape[1], spectrogram.shape[2]])
+                spectrogram, [1, 1, spectrogram.shape[0], spectrogram.shape[1]])
 
             logger.info(f"Started inference on Triton for model {self.triton_model_name}.")
             audio = self.inference_on_triton(spectrogram, z)
