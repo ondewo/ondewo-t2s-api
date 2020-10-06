@@ -1,9 +1,12 @@
 # type: ignore
+from functools import partial
 from typing import List
 
 from nemo.backends.pytorch import DataLayerNM
+from nemo.collections.asr.parts import parsers
+from nemo.collections.asr.parts.collections import Text
 from nemo.core import DeviceType
-from nemo.core.neural_types import NeuralType, MelSpectrogramType
+from nemo.core.neural_types import NeuralType, MelSpectrogramType, LengthsType
 from nemo.utils.decorators import add_port_docs
 import torch
 import numpy as np
@@ -22,10 +25,32 @@ class MelSpectrogramDataLayer(DataLayerNM):
 
             1: AxisType(TimeTag)
 
+        mel_spectrograms_length:
+            0: AxisType(BatchTag)
+
         """
         return {
-            'mel_spectrograms': NeuralType(('B', 'D', 'T'), MelSpectrogramType())
+            'mel_spectrograms': NeuralType(('B', 'D', 'T'), MelSpectrogramType()),
+            'mel_spectrograms_length': NeuralType(tuple('B'), LengthsType()),
         }
+
+    @staticmethod
+    def _collate_fn(batch, pad, pad8=False):
+        mels_list, mels_len = zip(*batch)
+        max_len = max(mels_len)
+
+        mels = torch.empty(len(mels_list), mels_list[0].shape[0], max_len, dtype=torch.float)
+        mels.fill_(pad)
+
+        for i, mel in enumerate(mels_list):
+            mel_len = mels_len[i]
+            mels[i, :, :mel_len] = mel
+
+        if len(mels.shape) != 3:
+            raise ValueError(
+                f"Texts in collate function have shape {mels.shape}," f" should have 3 dimensions.")
+
+        return mels, torch.stack(mels_len)
 
     def __init__(
             self,
@@ -33,6 +58,7 @@ class MelSpectrogramDataLayer(DataLayerNM):
             batch_size,
             drop_last=False,
             num_workers=0,
+            pad=0,
             shuffle=True,
     ):
         super().__init__()
@@ -44,9 +70,12 @@ class MelSpectrogramDataLayer(DataLayerNM):
             sampler = torch.utils.data.distributed.DistributedSampler(self._dataset)
         else:
             sampler = None
+
+        # noinspection PyTypeChecker
         self._dataloader = torch.utils.data.DataLoader(
             dataset=self._dataset,
             batch_size=batch_size,
+            collate_fn=partial(self._collate_fn, pad=pad, pad8=True),
             drop_last=drop_last,
             shuffle=shuffle if sampler is None else False,
             sampler=sampler,
@@ -80,4 +109,7 @@ class MelSpectrogramDataset(Dataset):
 
     def __getitem__(self, index):
         mel_spectrogram: np.ndarray = self.mel_spectrograms[index]
-        return torch.tensor(mel_spectrogram, dtype=torch.float)
+        return (
+            torch.tensor(mel_spectrogram, dtype=torch.float),
+            torch.tensor(mel_spectrogram.shape[-1], dtype=torch.long)
+        )

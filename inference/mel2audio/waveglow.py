@@ -1,7 +1,10 @@
+from nemo.core import NmTensor
+
 from inference.mel2audio.mel2audio import Mel2Audio
 from inference.mel2audio.nemo_modules.mel_spectrogram_data_layer import MelSpectrogramDataLayer
 from utils.logger import logger
 from typing import Dict, Any, List
+from ruamel.yaml import YAML
 
 import nemo
 import nemo.collections.tts as nemo_tts
@@ -12,7 +15,15 @@ class Waveglow(Mel2Audio):
 
     def __init__(self, config: Dict[str, Any]):
         self.config = config
+        self.batch_size = config['batch_size']
 
+        # load WaveGlow params
+        yaml = YAML(typ="safe")
+        with open(self.config['param_config_path']) as file:
+            self.param_config = yaml.load(file)
+        self.win_stride: int = self.param_config['AudioToMelSpectrogramPreprocessor']['init_params']['n_window_stride']
+
+        # load WaveGlow model
         self.neural_factory = nemo.core.NeuralModuleFactory(placement=nemo.core.DeviceType.GPU)
         self.waveglow = nemo_tts.WaveGlowInferNM.import_from_config(
             self.config['param_config_path'], "WaveGlowInferNM",
@@ -28,17 +39,18 @@ class Waveglow(Mel2Audio):
             logger.info(f"Loaded WaveGlow denoiser with strength {self.denoiser_strength}.")
 
     def mel2audio(self, mel_spectrograms: List[np.ndarray]) -> List[np.ndarray]:
+
         # make graph
         data_layer = MelSpectrogramDataLayer(
             mel_spectrograms,
-            batch_size=1,
+            batch_size=self.batch_size,
             num_workers=1,
             shuffle=False,
         )
 
         # building inference pipeline
-        mel_spectrogram = data_layer()
-        audio = self.waveglow(mel_spectrogram=mel_spectrogram)
+        mel_spectrogram, mel_spectrogram_len = data_layer()
+        audio: NmTensor = self.waveglow(mel_spectrogram=mel_spectrogram)
 
         # running the inference pipeline
         logger.info("Running WaveGlow inference in PyTorch.")
@@ -48,11 +60,16 @@ class Waveglow(Mel2Audio):
         # format results
         audios_formatted: List[np.ndarray] = []
         for audio_pred in audio_preds:
-            audios_formatted.extend([audio for audio in audio_pred.cpu().numpy()])
+            audios_formatted.extend([audio_ for audio_ in audio_pred.cpu().numpy()])
+        audios_final: List[np.ndarray] = []
+        for i in range(len(audios_formatted)):
+            audio_final_len = mel_spectrograms[i].shape[-1] * self.win_stride
+            audio_final = audios_formatted[i][:audio_final_len]
+            audios_final.append(audio_final)
 
         # perform denoising
         if self.is_denoiser_active:
-            audios_formatted = [self.waveglow.denoise(audio, strength=self.denoiser_strength)[0]
-                                for audio in audios_formatted]
+            audios_final = [self.waveglow.denoise(audio_final, strength=self.denoiser_strength)[0]
+                            for audio_final in audios_final]
 
-        return audios_formatted
+        return audios_final

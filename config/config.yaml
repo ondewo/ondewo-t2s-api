@@ -9,16 +9,18 @@ inference:
             type: "tacotron2"
 
             tacotron2:
-                param_config_path: "models/tacotron2/de/tacotron2.yaml"
+                batch_size: 8
                 path: "models/tacotron2/de/kerstin_PUN/"
+                param_config_path: "models/tacotron2/de/tacotron2.yaml"
                 step: "1000"
 
         mel2audio:
             type: "waveglow"
 
             waveglow:
-                param_config_path: "models/waveglow/waveglow.yaml"
+                batch_size: 4
                 path: "models/waveglow/pretrained/WaveGlowNM.pt"
+                param_config_path: "models/waveglow/waveglow.yaml"
                 sigma: 0.6
                 denoiser:
                     active: true
@@ -27,7 +29,7 @@ inference:
             waveglow_triton:
                 param_config_path: "models/waveglow/waveglow.yaml"
                 sigma: 0.6
-                max_spect_size: 200
+                max_spect_size: 1000
                 triton_model_name: "waveglow"
                 triton_url: "localhost:8001"
 

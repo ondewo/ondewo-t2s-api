@@ -16,6 +16,7 @@ class Tacotron2(Text2Mel):
 
     def __init__(self, config: Dict[str, Any]):
         self.config = config
+        self.batch_size = config['batch_size']
 
         # load params
         yaml = YAML(typ="safe")
@@ -57,11 +58,10 @@ class Tacotron2(Text2Mel):
     def text2mel(self, texts: List[str]) -> List[np.ndarray]:
 
         # make graph
-        # TODO: make it work for batch sizes > 1
         data_layer = TextDataLayer(
             texts=texts,
             labels=self.labels,
-            batch_size=1,
+            batch_size=self.batch_size,
             num_workers=1,
             bos_id=self.bos_id,
             eos_id=self.eos_id,
@@ -81,11 +81,18 @@ class Tacotron2(Text2Mel):
 
         # running the inference pipeline
         logger.info("Running Tacotron2 inference in PyTorch.")
-        mel_preds = self.neural_factory.infer(tensors=[mel])[0]
+        mel_preds, mel_pred_lens = self.neural_factory.infer(tensors=[mel, mel_len])
         logger.info("Done running Tacatron2 inference in PyTorch")
 
+        # format the mel spectrograms
         mels_formatted: List[np.ndarray] = []
         for mel_pred in mel_preds:
             mels_formatted.extend([mel for mel in mel_pred.cpu().numpy()])
+        mel_lens_formatted: List[np.ndarray] = []
+        for mel_pred_len in mel_pred_lens:
+            mel_lens_formatted.extend([mel_len for mel_len in mel_pred_len.cpu().numpy()])
+        for index in range(len(mels_formatted)):
+            mel_len = mel_lens_formatted[index]
+            mels_formatted[index] = mels_formatted[index][:, :mel_len]
 
         return mels_formatted
