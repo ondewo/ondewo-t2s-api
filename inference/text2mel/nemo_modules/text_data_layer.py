@@ -13,7 +13,7 @@ from nemo.utils.misc import pad_to
 from torch.utils.data import Dataset
 
 
-class InferenceDataLayer(DataLayerNM):
+class TextDataLayer(DataLayerNM):
 
     @property
     @add_port_docs()
@@ -30,8 +30,6 @@ class InferenceDataLayer(DataLayerNM):
 
         """
         return {
-            # 'texts': NeuralType({0: AxisType(BatchTag), 1: AxisType(TimeTag)}),
-            # 'texts_length': NeuralType({0: AxisType(BatchTag)}),
             'texts': NeuralType(('B', 'T'), LabelsType()),
             'texts_length': NeuralType(tuple('B'), LengthsType()),
         }
@@ -77,7 +75,7 @@ class InferenceDataLayer(DataLayerNM):
             'eos_id': eos_id,
         }
 
-        self._dataset = InferenceTranscriptDataset(**dataset_params)
+        self._dataset = TextDataset(**dataset_params)
 
         # Set up data loader
         if self._placement == DeviceType.AllGpu:
@@ -110,7 +108,7 @@ class InferenceDataLayer(DataLayerNM):
         return self._dataloader
 
 
-class InferenceTranscriptDataset(Dataset):
+class TextDataset(Dataset):
     """A dataset class that reads and returns the text of a file.
 
     Args:
