@@ -1,3 +1,4 @@
+import torch
 from nemo.core import NmTensor
 
 from inference.mel2audio.mel2audio import Mel2Audio
@@ -56,23 +57,34 @@ class Waveglow(Mel2Audio):
 
         # running the inference pipeline
         logger.info("Running WaveGlow inference in PyTorch.")
-        audio_preds = self.neural_factory.infer(tensors=[audio])[0]
+        audio_preds: List[torch.Tensor] = self.neural_factory.infer(tensors=[audio])[0]
         logger.info("Done running WaveGlow inference in PyTorch.")
 
         # format results
+        audios_final = self.format_results(audio_preds, mel_spectrograms)
+
+        # perform denoising
+        if self.is_denoiser_active:
+            audios_final = self.denoise(audios_final)
+
+        logger.info(f"WaveGlow inference took {time.time() - start_time} seconds")
+        return audios_final
+
+    def format_results(self,
+                       audio_preds: List[torch.Tensor],
+                       mel_spectrograms: List[np.ndarray]) -> List[np.ndarray]:
+        # convert to numpy array
         audios_formatted: List[np.ndarray] = []
         for audio_pred in audio_preds:
             audios_formatted.extend([audio_ for audio_ in audio_pred.cpu().numpy()])
+
+        # set correct lengths in the time-domain
         audios_final: List[np.ndarray] = []
         for i in range(len(audios_formatted)):
             audio_final_len = mel_spectrograms[i].shape[-1] * self.win_stride
             audio_final = audios_formatted[i][:audio_final_len]
             audios_final.append(audio_final)
-
-        # perform denoising
-        if self.is_denoiser_active:
-            audios_final = [self.waveglow.denoise(audio_final, strength=self.denoiser_strength)[0]
-                            for audio_final in audios_final]
-
-        logger.info(f"WaveGlow inference took {time.time() - start_time} seconds")
         return audios_final
+
+    def denoise(self, audios: List[np.ndarray]) -> List[np.ndarray]:
+        return [self.waveglow.denoise(audio, strength=self.denoiser_strength)[0] for audio in audios]

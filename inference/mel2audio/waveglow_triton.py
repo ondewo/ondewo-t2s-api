@@ -63,6 +63,7 @@ class WaveglowTriton(Mel2Audio):
         z_shape = self.calculate_shape_of_z()
         z = np.random.normal(loc=0.0, scale=self.config['sigma'], size=z_shape).astype("float32")
 
+        # TODO: handle sending batches to Triton
         audios: List[np.ndarray] = []
         for spectrogram in mel_spectrograms:
             # convert spectrogram to proper format
