@@ -29,8 +29,8 @@ build_training_image:
 run_triton:
 	-docker rm -f triton-inference-server
 	docker run -d --shm-size=1g --gpus all --ulimit memlock=-1 \
-	--ulimit stack=67108864 --network=host --restart always \
-	-v${PWD}/models/triton_repo:/models \
+	--ulimit stack=67108864 --network=host \
+	-v${shell pwd}/models/triton_repo:/models \
 	--name triton-inference-server ${IMAGE_TAG_TRITON} \
 	tritonserver --model-repository=/models --strict-model-config=false
 
@@ -46,8 +46,8 @@ run_training_container:
 	-docker rm ${TRAINING_CONTAINER}
 	docker run -t -d --gpus all --rm \
 	--shm-size=10g --ulimit memlock=-1 --ulimit stack=67108864 \
-	-v ${PWD}/models:/opt/models \
-	-v ${PWD}/training:/opt/ondewo-t2s \
+	-v ${shell pwd}/models:/opt/models \
+	-v ${shell pwd}/training:/opt/ondewo-t2s \
 	-p ${TRAINING_PORT}:5000 \
 	--name ${TRAINING_CONTAINER} ${IMAGE_TAG_TRAINING}
 
@@ -56,10 +56,10 @@ run_batch_server:
 	-docker rm ${BATCH_CONTAINER}
 	docker run -td --gpus all \
 	--shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
-	--network=host --restart always \
-	-v ${PWD}/models:/opt/ondewo-t2s/models \
-	-v ${PWD}/config:/opt/ondewo-t2s/config \
-	--env CONFIG_FILE="config/ondewo_t2s_config.yaml" \
+	--network=host \
+	-v ${shell pwd}/models:/opt/ondewo-t2s/models \
+	-v ${shell pwd}/config:/opt/ondewo-t2s/config \
+	--env CONFIG_FILE="config/config.yaml" \
 	--name ${BATCH_CONTAINER} \
 	${IMAGE_TAG_BATCH}
 
@@ -68,17 +68,18 @@ run_batch_server_release:
 	-docker rm ${BATCH_CONTAINER_RELEASE}
 	docker run -td --gpus all \
 	--shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
-	--network=host --restart always \
-	-v ${PWD}/models:/opt/ondewo-t2s/models \
-	-v ${PWD}/config:/opt/ondewo-t2s/config \
-	--env CONFIG_FILE="config/ondewo_t2s_config.yaml" \
+	--network=host \
+	-v ${shell pwd}/models:/opt/ondewo-t2s/models \
+	-v ${shell pwd}/config:/opt/ondewo-t2s/config \
+	--env CONFIG_FILE="config/config.yaml" \
 	--name ${BATCH_CONTAINER_RELEASE} \
 	${IMAGE_TAG_BATCH_RELEASE}
 
 run_tests:
 	docker build -t ${IMAGE_TAG_TESTS} -f docker/Dockerfile.tests .
 	-docker rm -f ${TESTS_CONTAINER}
-	docker run --rm --name ${TESTS_CONTAINER} ${IMAGE_TAG_TESTS}
+	docker run --rm -e TESTFILE=pytest.xml -v ${PWD}/test_results:/opt/ondewo-t2s/log \
+	--name ${TESTS_CONTAINER} ${IMAGE_TAG_TESTS}
 
 package_git_revision_and_version:
 	echo "version: `cat utils/version.py | grep -oP "(?<=__version__ = ')(.*)(?=')"`" > package/VERSION.md
@@ -90,16 +91,16 @@ make package_release: package_git_revision_and_version
 	echo "Where am I: `pwd`"
 	echo "My environment variables: `env`"
 
-	mkdir -p ${RELEASE_FOLDER}/${SANITIZED_DOCKER_TAG_NAME}/software
+	mkdir -p ${RELEASE_FOLDER}/${SANITIZED_DOCKER_TAG_NAME}
 
 	# tar and zip images
-	docker save ${PUSH_NAME_RELEASE} | gzip > ${RELEASE_FOLDER}/${SANITIZED_DOCKER_TAG_NAME}/software/ondewo-t2s-batch-server-release-${SANITIZED_DOCKER_TAG_NAME}.tar.gz
+	docker save ${PUSH_NAME_RELEASE} | gzip > ${RELEASE_FOLDER}/${SANITIZED_DOCKER_TAG_NAME}/ondewo-t2s-batch-server-release-${SANITIZED_DOCKER_TAG_NAME}.tar.gz
 
 	# add configs
 	rsync -av config package --exclude demo
 
 	# move to the release folder
-	rsync -av package/. ${RELEASE_FOLDER}/${SANITIZED_DOCKER_TAG_NAME}/software --exclude '.gitignore'
+	rsync -av package/. ${RELEASE_FOLDER}/${SANITIZED_DOCKER_TAG_NAME} --exclude '.gitignore'
 	rm -rf package
 
 install_dependencies_locally:

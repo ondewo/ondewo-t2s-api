@@ -27,10 +27,22 @@ pipeline {
                 stage('Build') { steps {
                         sh(script: "docker build -t ${PUSH_NAME_STREAM} --target uncythonized -f docker/Dockerfile.batchserver .", label: "build image")
                 } }
-                stage('Tests') { steps {
+                stage('Tests') {
+                     environment {
+                        PWD = pwd()
+                        testresults_folder = "${PWD}/test_results"
+                        testresults_filename = "pytest.xml"
+                     }
+                     steps {
+                        sh(script: "mkdir ${testresults_folder}")
                         sh(script: "docker build -t ${TESTS_IMAGE_NAME} -f docker/Dockerfile.tests .", label: "build image")
-                        sh(script: "docker run --rm ${TESTS_IMAGE_NAME}", label: "run_tests")
-                } }
+                        sh(script: "docker run --rm -e TESTFILE=${testresults_filename} -v ${testresults_folder}:/opt/ondewo-t2s/log  ${TESTS_IMAGE_NAME}", label: "run_tests")
+                     }
+                     post { always {
+                        sh(script: "cd ${testresults_folder} && cp *.xml ${PWD}")
+                        junit "${testresults_filename}"
+                     } }
+                }
                 stage('Push') { steps{
                         sh(script: "docker push ${PUSH_NAME_STREAM}", label: "push the image to the registry")
                         sh(script: "echo ${PUSH_NAME_STREAM} pushed to registry")
