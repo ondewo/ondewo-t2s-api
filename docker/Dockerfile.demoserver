@@ -5,6 +5,7 @@ RUN apt-get -y update && apt-get -y upgrade
 COPY docker/demo_server_requirements.txt .
 RUN pip install -r demo_server_requirements.txt --ignore-installed
 RUN git clone git@bitbucket.org:ondewo/glow-tts.git; pip install -e glow-tts
+RUN cd glow-tts/monotonic_align; python setup.py build_ext --inplace; cd ../..
 
 WORKDIR /opt/ondewo-t2s
 COPY ./demo_server ./demo_server
