@@ -30,14 +30,15 @@ class GlowTts(Text2Mel):
                 return self.generator.generate_batch(texts=texts,
                                                      length_scale=self.config[LENGTH_SCALE],
                                                      noise_scale=self.config[NOISE_SCALE])
-            mel_list: List[np.array] = []
-            while texts:
-                text_batch = texts[:self.config[BATCH_SIZE]]
-                mel_list.extend(
-                    self.generator.generate_batch(texts=text_batch,
-                                                  length_scale=self.config[LENGTH_SCALE],
-                                                  noise_scale=self.config[NOISE_SCALE]
-                                                  )
-                )
-                texts = texts[self.config[BATCH_SIZE]:]
-            return mel_list
+            else:
+                mel_list: List[np.array] = []
+                while texts:
+                    text_batch = texts[:self.config[BATCH_SIZE]]
+                    mel_list.extend(
+                        self.generator.generate_batch(texts=text_batch,
+                                                      length_scale=self.config[LENGTH_SCALE],
+                                                      noise_scale=self.config[NOISE_SCALE]
+                                                      )
+                    )
+                    texts = texts[self.config[BATCH_SIZE]:]
+                return mel_list
