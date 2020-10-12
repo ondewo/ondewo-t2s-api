@@ -1,4 +1,25 @@
-FROM dockerregistry.ondewo.com:5000/nemo:master
+FROM dockerregistry.ondewo.com:5000/cuda:10.2-base-ubuntu18.04
+
+# Upgrade installed packages
+RUN apt-get update && apt-get upgrade -y && apt-get install -y libsndfile1-dev
+
+# Install Python 3.7
+RUN apt-get install -y curl python3.7 python3.7-dev python3.7-distutils && \
+    update-alternatives --install /usr/bin/python python /usr/bin/python3.7 1 && \
+    update-alternatives --set python /usr/bin/python3.7 && \
+    curl -s https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
+    python get-pip.py --force-reinstall && \
+    rm get-pip.py
+
+# Install PyTorch
+RUN pip install torch==1.5.1
+
+# Install NeMo
+RUN pip install nemo_toolkit[all]==0.11 numba==0.46.0 llvmlite==0.32.1 torchvision==0.5.0
+
+RUN git clone git@bitbucket.org:ondewo/glow-tts.git
+RUN cd glow-tts/monotonic_align; python setup.py build_ext --inplace; cd ../..
+RUN pip install -e glow-tts
 
 COPY docker/test_requirements.txt .
 RUN pip install -r test_requirements.txt --ignore-installed
