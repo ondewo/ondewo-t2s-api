@@ -106,4 +106,5 @@ make package_release: package_git_revision_and_version
 install_dependencies_locally:
 	pip install -r requirements.txt
 	pip install utils/triton_client_lib/triton*.whl
+	pip install git+https://github.com/TensorSpeech/TensorflowTTS.git
 

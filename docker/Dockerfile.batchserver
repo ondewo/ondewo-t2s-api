@@ -1,7 +1,11 @@
 FROM dockerregistry.ondewo.com:5000/nemo:master AS uncythonized
 
+RUN apt-get update && apt-get -y upgrade && \
+	apt-get install -y git
+
 COPY ./docker/batch_server_requirements.txt .
-RUN pip install -r batch_server_requirements.txt --ignore-installed
+RUN pip install -r batch_server_requirements.txt --ignore-installed && \
+	pip install git+https://github.com/TensorSpeech/TensorflowTTS.git
 
 WORKDIR /opt/ondewo-t2s
 COPY ./utils ./utils

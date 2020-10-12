@@ -15,7 +15,7 @@ inference:
                 step: "1000"
 
         mel2audio:
-            type: "waveglow"
+            type: "mb_melgan"
 
             waveglow:
                 batch_size: 4
@@ -32,6 +32,11 @@ inference:
                 max_spect_size: 1000
                 triton_model_name: "waveglow"
                 triton_url: "localhost:8001"
+
+            mb_melgan:
+                config_path: "models/mb_melgan/en/config.yml"
+                model_path: "models/mb_melgan/en/generator-680000.h5"
+                stats_path: "models/mb_melgan/en/stats.npy"
 
     caching:
         active: false
