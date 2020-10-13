@@ -1,4 +1,7 @@
-FROM dockerregistry.ondewo.com:5000/cuda:10.2-base-ubuntu18.04
+FROM dockerregistry.ondewo.com:5000/cuda:11.0-base-ubuntu18.04 AS uncythonized
+
+RUN apt-get update && apt-get -y upgrade && \
+	apt-get install -y git
 
 # Upgrade installed packages
 RUN apt-get update && apt-get upgrade -y && apt-get install -y libsndfile1-dev
@@ -12,12 +15,12 @@ RUN apt-get install -y curl python3.7 python3.7-dev python3.7-distutils && \
     rm get-pip.py
 
 # Install PyTorch
-RUN pip install torch==1.5.1
+RUN pip install torch==1.6.0
 
 # Install NeMo
-RUN pip install nemo_toolkit[all]==0.11 numba==0.46.0 llvmlite==0.32.1 torchvision==0.5.0
+RUN pip install nemo_toolkit[all]==0.11
 
-RUN git clone git@bitbucket.org:ondewo/glow-tts.git
+COPY ./glow-tts ./glow-tts
 RUN cd glow-tts/monotonic_align; python setup.py build_ext --inplace; cd ../..
 RUN pip install -e glow-tts
 
