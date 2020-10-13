@@ -120,7 +120,12 @@ generate_ondewo_protos:
 	done
 
 build_grpc_server:
+	# ignore dockerignore by moving it before the build, and restore it afterwards
+	mkdir ignoreme
+	mv .dockerignore ignoreme/.dockerignore
 	docker build -t t2s_grpc_server -f grpc_config_server/Dockerfile .
+	mv ignoreme/.dockerignore .dockerignore
+	rm -r ignoreme
 
 run_grpc_server:
 	docker-compose -f grpc_config_server/docker-compose.yaml up

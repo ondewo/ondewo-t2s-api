@@ -34,7 +34,6 @@ RUN pip install -r grpc_config_server/requirements.txt
 # copy server code
 COPY grpc_config_server grpc_config_server
 
-# !!! if models are copied, remove from .dockerignore!!!
 COPY models models
 COPY config config
 
