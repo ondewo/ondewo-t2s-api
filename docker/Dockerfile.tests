@@ -1,7 +1,11 @@
 FROM dockerregistry.ondewo.com:5000/nemo:master
 
+RUN apt-get update && apt-get -y upgrade && \
+	apt-get install -y git
+
 COPY docker/test_requirements.txt .
-RUN pip install -r test_requirements.txt --ignore-installed
+RUN pip install -r test_requirements.txt --ignore-installed && \
+    pip install git+https://github.com/TensorSpeech/TensorflowTTS.git
 WORKDIR /opt
 
 WORKDIR /opt/ondewo-t2s
@@ -13,4 +17,4 @@ COPY ./tests ./tests
 COPY ./config ./config
 
 ENV PYTHONPATH /opt/ondewo-t2s
-CMD python -m pytest -vv --capture=no --junit-xml=log/"$TESTFILE" --ignore="tests/e2e"
+CMD python -m pytest -vv --capture=no --junit-xml=log/"$TESTFILE" --ignore="tests/e2e" --ignore="tests/integration"

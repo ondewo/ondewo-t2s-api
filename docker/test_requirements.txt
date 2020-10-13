@@ -1,4 +1,5 @@
 fluent-logger==0.9.6
+funcy
 msgpack==1.0.0
 pytest
 PyYAML==5.3.1

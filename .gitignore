@@ -5,3 +5,4 @@ data/ramona_deininger
 **/.ipynb_checkpoints/**
 .idea/
 .vscode/
+pytest.xml
