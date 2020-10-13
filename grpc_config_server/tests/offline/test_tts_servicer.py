@@ -1,5 +1,6 @@
 from google.protobuf.json_format import MessageToDict
 
+from grpc_config_server.config import T2S_CONTAINER_NAME
 from grpc_config_server.ondewo.audio import text_to_speech_pb2
 from grpc_config_server.tts_servicer import TextToSpeechConfigServer
 from grpc_config_server.utils.helpers import get_struct_from_dict
@@ -88,5 +89,12 @@ class TestTTSServicer:
                 model_setup_id=model_setup_id,
             )
         )
-        assert response.success
-        assert response.log_message == ""
+        containers = server.manager.docker_client.containers.list()
+        if not any(c.name == server.manager.t2s_container_name for c in containers):
+            assert not response.success
+            assert response.log_message == "\nT2S container not running, " + \
+                                           f"expected name: {server.manager.t2s_container_name}"
+
+        else:
+            assert response.success
+            assert response.log_message == ""

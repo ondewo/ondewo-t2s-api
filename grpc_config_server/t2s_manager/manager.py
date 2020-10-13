@@ -1,6 +1,9 @@
 from typing import List, Union, Tuple, Type
 
-from grpc_config_server.config import ACTIVE_CONFIG_YAML, CONFIG_YAML_RELATIVE
+import docker
+from docker.models.containers import Container
+
+from grpc_config_server.config import ACTIVE_CONFIG_YAML, CONFIG_YAML_RELATIVE, T2S_CONTAINER_NAME
 from grpc_config_server.ondewo.audio import text_to_speech_pb2
 from grpc_config_server.t2s_manager.dir_dataclass import DirTree, ModelConfig
 from grpc_config_server.utils.helpers import get_struct_from_dict
@@ -11,10 +14,12 @@ class TextToSpeechManager:
 
     active_config_path: str = ACTIVE_CONFIG_YAML
     config_path_relative: str = CONFIG_YAML_RELATIVE
+    t2s_container_name: str = T2S_CONTAINER_NAME
 
     def __init__(self) -> None:
         # returning in-place as not to do the initial attr assignments outside of __init__()
         self.model_dir_tree, self.active_config = self.update_from_directory_tree()
+        self.docker_client = docker.from_env()
 
     def update_from_directory_tree(self) -> Tuple[DirTree, ModelConfig]:
         """
@@ -61,6 +66,7 @@ class TextToSpeechManager:
         """
         set the model configuration associated with the ID as the active configuration
         replaces ./config/config.yaml with the file in the ./models/ directory associated with this ID
+        then attemps to 'docker restart' the container
 
         Args:
             model_id: ID of the model configuration to set
@@ -72,7 +78,20 @@ class TextToSpeechManager:
         try:
             model_config = self.model_dir_tree.get_model_by_id(model_id=model_id)
             success, log_message = model_config.set(active_config_yaml=self.active_config_path)
-            return success, log_message
+            success2, log2 = self.restart_t2s_container()
+            if not success2:
+                return success2, log_message + "\n" + log2
+            else:
+                return success, log_message
 
         except ModuleNotFoundError:
             return False, "ERROR: unknown model ID"
+
+    def restart_t2s_container(self) -> Tuple[bool, str]:
+        containers: List[Container] = self.docker_client.containers.list()
+        for container in containers:
+            if container.name == self.t2s_container_name:
+                container.restart()
+                return True, ""
+        return False, f"T2S container not running, expected name: {self.t2s_container_name}"
+
