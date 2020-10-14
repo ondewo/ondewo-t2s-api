@@ -118,6 +118,7 @@ generate_ondewo_protos:
 	for f in $$(find ${ONDEWO_PROTOS_DIR} -name '*.proto'); do \
 		python -m grpc_tools.protoc -I${GOOGLE_APIS_DIR} -I${ONDEWO_APIS_DIR} --python_out=${PROTO_OUTPUT_FOLDER} --mypy_out=${PROTO_OUTPUT_FOLDER} --grpc_python_out=${PROTO_OUTPUT_FOLDER} $$f; \
 	done
+	python grpc_config_server/utils/fix_imports.py # fix imports into subdirectory
 
 build_grpc_server:
 	# ignore dockerignore by moving it before the build, and restore it afterwards

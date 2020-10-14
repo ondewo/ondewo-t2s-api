@@ -13,10 +13,6 @@ from google.protobuf.message import (
     Message as google___protobuf___message___Message,
 )
 
-from google.protobuf.struct_pb2 import (
-    Struct as google___protobuf___struct_pb2___Struct,
-)
-
 from typing import (
     Iterable as typing___Iterable,
     Optional as typing___Optional,
@@ -68,14 +64,14 @@ class ModelSetup(google___protobuf___message___Message):
     directory_name = ... # type: typing___Text
 
     @property
-    def config(self) -> google___protobuf___struct_pb2___Struct: ...
+    def config(self) -> global___Text2SpeechConfig: ...
 
     def __init__(self,
         *,
         language_code : typing___Optional[typing___Text] = None,
         model_setup_id : typing___Optional[typing___Text] = None,
         directory_name : typing___Optional[typing___Text] = None,
-        config : typing___Optional[google___protobuf___struct_pb2___Struct] = None,
+        config : typing___Optional[global___Text2SpeechConfig] = None,
         ) -> None: ...
     if sys.version_info >= (3,):
         @classmethod
@@ -299,3 +295,298 @@ class SetModelConfigResponse(google___protobuf___message___Message):
     def HasField(self, field_name: typing_extensions___Literal[u"request",b"request"]) -> builtin___bool: ...
     def ClearField(self, field_name: typing_extensions___Literal[u"log_message",b"log_message",u"request",b"request",u"success",b"success"]) -> None: ...
 global___SetModelConfigResponse = SetModelConfigResponse
+
+class Text2SpeechConfig(google___protobuf___message___Message):
+    DESCRIPTOR: google___protobuf___descriptor___Descriptor = ...
+
+    @property
+    def inference(self) -> global___Inference: ...
+
+    def __init__(self,
+        *,
+        inference : typing___Optional[global___Inference] = None,
+        ) -> None: ...
+    if sys.version_info >= (3,):
+        @classmethod
+        def FromString(cls, s: builtin___bytes) -> Text2SpeechConfig: ...
+    else:
+        @classmethod
+        def FromString(cls, s: typing___Union[builtin___bytes, builtin___buffer, builtin___unicode]) -> Text2SpeechConfig: ...
+    def MergeFrom(self, other_msg: google___protobuf___message___Message) -> None: ...
+    def CopyFrom(self, other_msg: google___protobuf___message___Message) -> None: ...
+    def HasField(self, field_name: typing_extensions___Literal[u"inference",b"inference"]) -> builtin___bool: ...
+    def ClearField(self, field_name: typing_extensions___Literal[u"inference",b"inference"]) -> None: ...
+global___Text2SpeechConfig = Text2SpeechConfig
+
+class Inference(google___protobuf___message___Message):
+    DESCRIPTOR: google___protobuf___descriptor___Descriptor = ...
+    type = ... # type: typing___Text
+
+    @property
+    def composite_interface(self) -> global___CompositeInterface: ...
+
+    @property
+    def caching(self) -> global___Caching: ...
+
+    def __init__(self,
+        *,
+        type : typing___Optional[typing___Text] = None,
+        composite_interface : typing___Optional[global___CompositeInterface] = None,
+        caching : typing___Optional[global___Caching] = None,
+        ) -> None: ...
+    if sys.version_info >= (3,):
+        @classmethod
+        def FromString(cls, s: builtin___bytes) -> Inference: ...
+    else:
+        @classmethod
+        def FromString(cls, s: typing___Union[builtin___bytes, builtin___buffer, builtin___unicode]) -> Inference: ...
+    def MergeFrom(self, other_msg: google___protobuf___message___Message) -> None: ...
+    def CopyFrom(self, other_msg: google___protobuf___message___Message) -> None: ...
+    def HasField(self, field_name: typing_extensions___Literal[u"caching",b"caching",u"composite_interface",b"composite_interface"]) -> builtin___bool: ...
+    def ClearField(self, field_name: typing_extensions___Literal[u"caching",b"caching",u"composite_interface",b"composite_interface",u"type",b"type"]) -> None: ...
+global___Inference = Inference
+
+class CompositeInterface(google___protobuf___message___Message):
+    DESCRIPTOR: google___protobuf___descriptor___Descriptor = ...
+
+    @property
+    def text_2_mel(self) -> global___Text2Mel: ...
+
+    @property
+    def mel_2_audio(self) -> global___Mel2Audio: ...
+
+    def __init__(self,
+        *,
+        text_2_mel : typing___Optional[global___Text2Mel] = None,
+        mel_2_audio : typing___Optional[global___Mel2Audio] = None,
+        ) -> None: ...
+    if sys.version_info >= (3,):
+        @classmethod
+        def FromString(cls, s: builtin___bytes) -> CompositeInterface: ...
+    else:
+        @classmethod
+        def FromString(cls, s: typing___Union[builtin___bytes, builtin___buffer, builtin___unicode]) -> CompositeInterface: ...
+    def MergeFrom(self, other_msg: google___protobuf___message___Message) -> None: ...
+    def CopyFrom(self, other_msg: google___protobuf___message___Message) -> None: ...
+    def HasField(self, field_name: typing_extensions___Literal[u"mel_2_audio",b"mel_2_audio",u"text_2_mel",b"text_2_mel"]) -> builtin___bool: ...
+    def ClearField(self, field_name: typing_extensions___Literal[u"mel_2_audio",b"mel_2_audio",u"text_2_mel",b"text_2_mel"]) -> None: ...
+global___CompositeInterface = CompositeInterface
+
+class Text2Mel(google___protobuf___message___Message):
+    DESCRIPTOR: google___protobuf___descriptor___Descriptor = ...
+    type = ... # type: typing___Text
+
+    @property
+    def tacotron_2(self) -> global___Tacotron2: ...
+
+    @property
+    def glow_tts(self) -> global___GlowTTS: ...
+
+    def __init__(self,
+        *,
+        type : typing___Optional[typing___Text] = None,
+        tacotron_2 : typing___Optional[global___Tacotron2] = None,
+        glow_tts : typing___Optional[global___GlowTTS] = None,
+        ) -> None: ...
+    if sys.version_info >= (3,):
+        @classmethod
+        def FromString(cls, s: builtin___bytes) -> Text2Mel: ...
+    else:
+        @classmethod
+        def FromString(cls, s: typing___Union[builtin___bytes, builtin___buffer, builtin___unicode]) -> Text2Mel: ...
+    def MergeFrom(self, other_msg: google___protobuf___message___Message) -> None: ...
+    def CopyFrom(self, other_msg: google___protobuf___message___Message) -> None: ...
+    def HasField(self, field_name: typing_extensions___Literal[u"glow_tts",b"glow_tts",u"tacotron_2",b"tacotron_2"]) -> builtin___bool: ...
+    def ClearField(self, field_name: typing_extensions___Literal[u"glow_tts",b"glow_tts",u"tacotron_2",b"tacotron_2",u"type",b"type"]) -> None: ...
+global___Text2Mel = Text2Mel
+
+class Tacotron2(google___protobuf___message___Message):
+    DESCRIPTOR: google___protobuf___descriptor___Descriptor = ...
+    batch_size = ... # type: builtin___int
+    path = ... # type: typing___Text
+    param_config_path = ... # type: typing___Text
+    step = ... # type: typing___Text
+
+    def __init__(self,
+        *,
+        batch_size : typing___Optional[builtin___int] = None,
+        path : typing___Optional[typing___Text] = None,
+        param_config_path : typing___Optional[typing___Text] = None,
+        step : typing___Optional[typing___Text] = None,
+        ) -> None: ...
+    if sys.version_info >= (3,):
+        @classmethod
+        def FromString(cls, s: builtin___bytes) -> Tacotron2: ...
+    else:
+        @classmethod
+        def FromString(cls, s: typing___Union[builtin___bytes, builtin___buffer, builtin___unicode]) -> Tacotron2: ...
+    def MergeFrom(self, other_msg: google___protobuf___message___Message) -> None: ...
+    def CopyFrom(self, other_msg: google___protobuf___message___Message) -> None: ...
+    def ClearField(self, field_name: typing_extensions___Literal[u"batch_size",b"batch_size",u"param_config_path",b"param_config_path",u"path",b"path",u"step",b"step"]) -> None: ...
+global___Tacotron2 = Tacotron2
+
+class GlowTTS(google___protobuf___message___Message):
+    DESCRIPTOR: google___protobuf___descriptor___Descriptor = ...
+    batch_size = ... # type: builtin___int
+    use_gpu = ... # type: builtin___bool
+    length_scale = ... # type: builtin___float
+    noise_scale = ... # type: builtin___float
+    batch_inference = ... # type: builtin___bool
+    path = ... # type: typing___Text
+    param_config_path = ... # type: typing___Text
+
+    def __init__(self,
+        *,
+        batch_size : typing___Optional[builtin___int] = None,
+        use_gpu : typing___Optional[builtin___bool] = None,
+        length_scale : typing___Optional[builtin___float] = None,
+        noise_scale : typing___Optional[builtin___float] = None,
+        batch_inference : typing___Optional[builtin___bool] = None,
+        path : typing___Optional[typing___Text] = None,
+        param_config_path : typing___Optional[typing___Text] = None,
+        ) -> None: ...
+    if sys.version_info >= (3,):
+        @classmethod
+        def FromString(cls, s: builtin___bytes) -> GlowTTS: ...
+    else:
+        @classmethod
+        def FromString(cls, s: typing___Union[builtin___bytes, builtin___buffer, builtin___unicode]) -> GlowTTS: ...
+    def MergeFrom(self, other_msg: google___protobuf___message___Message) -> None: ...
+    def CopyFrom(self, other_msg: google___protobuf___message___Message) -> None: ...
+    def ClearField(self, field_name: typing_extensions___Literal[u"batch_inference",b"batch_inference",u"batch_size",b"batch_size",u"length_scale",b"length_scale",u"noise_scale",b"noise_scale",u"param_config_path",b"param_config_path",u"path",b"path",u"use_gpu",b"use_gpu"]) -> None: ...
+global___GlowTTS = GlowTTS
+
+class Mel2Audio(google___protobuf___message___Message):
+    DESCRIPTOR: google___protobuf___descriptor___Descriptor = ...
+    type = ... # type: typing___Text
+
+    @property
+    def waveglow(self) -> global___Waveglow: ...
+
+    @property
+    def waveglow_triton(self) -> global___WaveglowTriton: ...
+
+    def __init__(self,
+        *,
+        type : typing___Optional[typing___Text] = None,
+        waveglow : typing___Optional[global___Waveglow] = None,
+        waveglow_triton : typing___Optional[global___WaveglowTriton] = None,
+        ) -> None: ...
+    if sys.version_info >= (3,):
+        @classmethod
+        def FromString(cls, s: builtin___bytes) -> Mel2Audio: ...
+    else:
+        @classmethod
+        def FromString(cls, s: typing___Union[builtin___bytes, builtin___buffer, builtin___unicode]) -> Mel2Audio: ...
+    def MergeFrom(self, other_msg: google___protobuf___message___Message) -> None: ...
+    def CopyFrom(self, other_msg: google___protobuf___message___Message) -> None: ...
+    def HasField(self, field_name: typing_extensions___Literal[u"waveglow",b"waveglow",u"waveglow_triton",b"waveglow_triton"]) -> builtin___bool: ...
+    def ClearField(self, field_name: typing_extensions___Literal[u"type",b"type",u"waveglow",b"waveglow",u"waveglow_triton",b"waveglow_triton"]) -> None: ...
+global___Mel2Audio = Mel2Audio
+
+class Waveglow(google___protobuf___message___Message):
+    DESCRIPTOR: google___protobuf___descriptor___Descriptor = ...
+    batch_size = ... # type: builtin___int
+    path = ... # type: typing___Text
+    param_config_path = ... # type: typing___Text
+    sigma = ... # type: builtin___float
+
+    @property
+    def denoiser(self) -> global___Denoiser: ...
+
+    def __init__(self,
+        *,
+        batch_size : typing___Optional[builtin___int] = None,
+        path : typing___Optional[typing___Text] = None,
+        param_config_path : typing___Optional[typing___Text] = None,
+        sigma : typing___Optional[builtin___float] = None,
+        denoiser : typing___Optional[global___Denoiser] = None,
+        ) -> None: ...
+    if sys.version_info >= (3,):
+        @classmethod
+        def FromString(cls, s: builtin___bytes) -> Waveglow: ...
+    else:
+        @classmethod
+        def FromString(cls, s: typing___Union[builtin___bytes, builtin___buffer, builtin___unicode]) -> Waveglow: ...
+    def MergeFrom(self, other_msg: google___protobuf___message___Message) -> None: ...
+    def CopyFrom(self, other_msg: google___protobuf___message___Message) -> None: ...
+    def HasField(self, field_name: typing_extensions___Literal[u"denoiser",b"denoiser"]) -> builtin___bool: ...
+    def ClearField(self, field_name: typing_extensions___Literal[u"batch_size",b"batch_size",u"denoiser",b"denoiser",u"param_config_path",b"param_config_path",u"path",b"path",u"sigma",b"sigma"]) -> None: ...
+global___Waveglow = Waveglow
+
+class Denoiser(google___protobuf___message___Message):
+    DESCRIPTOR: google___protobuf___descriptor___Descriptor = ...
+    active = ... # type: builtin___bool
+    strength = ... # type: builtin___float
+
+    def __init__(self,
+        *,
+        active : typing___Optional[builtin___bool] = None,
+        strength : typing___Optional[builtin___float] = None,
+        ) -> None: ...
+    if sys.version_info >= (3,):
+        @classmethod
+        def FromString(cls, s: builtin___bytes) -> Denoiser: ...
+    else:
+        @classmethod
+        def FromString(cls, s: typing___Union[builtin___bytes, builtin___buffer, builtin___unicode]) -> Denoiser: ...
+    def MergeFrom(self, other_msg: google___protobuf___message___Message) -> None: ...
+    def CopyFrom(self, other_msg: google___protobuf___message___Message) -> None: ...
+    def ClearField(self, field_name: typing_extensions___Literal[u"active",b"active",u"strength",b"strength"]) -> None: ...
+global___Denoiser = Denoiser
+
+class WaveglowTriton(google___protobuf___message___Message):
+    DESCRIPTOR: google___protobuf___descriptor___Descriptor = ...
+    param_config_path = ... # type: typing___Text
+    sigma = ... # type: builtin___float
+    max_spect_size = ... # type: builtin___int
+    triton_model_name = ... # type: typing___Text
+    triton_url = ... # type: typing___Text
+
+    def __init__(self,
+        *,
+        param_config_path : typing___Optional[typing___Text] = None,
+        sigma : typing___Optional[builtin___float] = None,
+        max_spect_size : typing___Optional[builtin___int] = None,
+        triton_model_name : typing___Optional[typing___Text] = None,
+        triton_url : typing___Optional[typing___Text] = None,
+        ) -> None: ...
+    if sys.version_info >= (3,):
+        @classmethod
+        def FromString(cls, s: builtin___bytes) -> WaveglowTriton: ...
+    else:
+        @classmethod
+        def FromString(cls, s: typing___Union[builtin___bytes, builtin___buffer, builtin___unicode]) -> WaveglowTriton: ...
+    def MergeFrom(self, other_msg: google___protobuf___message___Message) -> None: ...
+    def CopyFrom(self, other_msg: google___protobuf___message___Message) -> None: ...
+    def ClearField(self, field_name: typing_extensions___Literal[u"max_spect_size",b"max_spect_size",u"param_config_path",b"param_config_path",u"sigma",b"sigma",u"triton_model_name",b"triton_model_name",u"triton_url",b"triton_url"]) -> None: ...
+global___WaveglowTriton = WaveglowTriton
+
+class Caching(google___protobuf___message___Message):
+    DESCRIPTOR: google___protobuf___descriptor___Descriptor = ...
+    active = ... # type: builtin___bool
+    memory_cache_max_size = ... # type: builtin___int
+    sampling_rate = ... # type: builtin___int
+    load_cache = ... # type: builtin___bool
+    save_cache = ... # type: builtin___bool
+    cache_save_dir = ... # type: typing___Text
+
+    def __init__(self,
+        *,
+        active : typing___Optional[builtin___bool] = None,
+        memory_cache_max_size : typing___Optional[builtin___int] = None,
+        sampling_rate : typing___Optional[builtin___int] = None,
+        load_cache : typing___Optional[builtin___bool] = None,
+        save_cache : typing___Optional[builtin___bool] = None,
+        cache_save_dir : typing___Optional[typing___Text] = None,
+        ) -> None: ...
+    if sys.version_info >= (3,):
+        @classmethod
+        def FromString(cls, s: builtin___bytes) -> Caching: ...
+    else:
+        @classmethod
+        def FromString(cls, s: typing___Union[builtin___bytes, builtin___buffer, builtin___unicode]) -> Caching: ...
+    def MergeFrom(self, other_msg: google___protobuf___message___Message) -> None: ...
+    def CopyFrom(self, other_msg: google___protobuf___message___Message) -> None: ...
+    def ClearField(self, field_name: typing_extensions___Literal[u"active",b"active",u"cache_save_dir",b"cache_save_dir",u"load_cache",b"load_cache",u"memory_cache_max_size",b"memory_cache_max_size",u"sampling_rate",b"sampling_rate",u"save_cache",b"save_cache"]) -> None: ...
+global___Caching = Caching
