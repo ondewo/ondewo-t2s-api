@@ -1,7 +1,9 @@
 FROM dockerregistry.ondewo.com:5000/nemo:master
 
 COPY docker/test_requirements.txt .
+COPY grpc_config_server/requirements.txt grpc_config_server/requirements.txt
 RUN pip install -r test_requirements.txt --ignore-installed
+RUN pip install -r grpc_config_server/requirements.txt
 WORKDIR /opt
 
 WORKDIR /opt/ondewo-t2s
@@ -11,6 +13,8 @@ COPY ./batch_server ./batch_server
 COPY ./utils ./utils
 COPY ./tests ./tests
 COPY ./config ./config
+COPY ./grpc_config_server ./grpc_config_server
+COPY ./tests/tests_grpc/offline/models ./models
 
 ENV PYTHONPATH /opt/ondewo-t2s
 CMD python -m pytest -vv --capture=no --junit-xml=log/"$TESTFILE" --ignore="tests/e2e"

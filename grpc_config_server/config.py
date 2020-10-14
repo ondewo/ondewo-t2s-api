@@ -1,6 +1,9 @@
 
 PORT = 7777
 
+# path of all models in project directory
+MODELS_PATH = "./models"
+
 # path to active config in project directory (copy of config in ./models/ directory)
 ACTIVE_CONFIG_YAML = "./config/config.yaml"
 

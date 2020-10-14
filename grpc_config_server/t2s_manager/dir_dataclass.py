@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 
 import yaml
 
+from grpc_config_server.config import MODELS_PATH
 from grpc_config_server.ondewo.audio import text_to_speech_pb2
 
 if TYPE_CHECKING:
@@ -209,7 +210,7 @@ class DirTree:
     def load_from_path(
         manager: 'TextToSpeechManager',
         config_path_relative: str,
-        models_path: str = "./models",
+        models_path: str = MODELS_PATH,
     ) -> 'DirTree':
         """
         construct dataclass from /models/ directory

@@ -3,7 +3,7 @@ from typing import List, Union, Tuple, Type
 import docker
 from docker.models.containers import Container
 
-from grpc_config_server.config import ACTIVE_CONFIG_YAML, CONFIG_YAML_RELATIVE, T2S_CONTAINER_NAME
+from grpc_config_server.config import ACTIVE_CONFIG_YAML, CONFIG_YAML_RELATIVE, T2S_CONTAINER_NAME, MODELS_PATH
 from grpc_config_server.ondewo.audio import text_to_speech_pb2
 from grpc_config_server.t2s_manager.dir_dataclass import DirTree, ModelConfig
 
@@ -14,6 +14,7 @@ class TextToSpeechManager:
     active_config_path: str = ACTIVE_CONFIG_YAML
     config_path_relative: str = CONFIG_YAML_RELATIVE
     t2s_container_name: str = T2S_CONTAINER_NAME
+    models_path: str = MODELS_PATH
 
     def __init__(self) -> None:
         # returning in-place as not to do the initial attr assignments outside of __init__()
@@ -30,7 +31,7 @@ class TextToSpeechManager:
             self.active_config: ModelConfig object of active config.yaml file
         """
         self.model_dir_tree = DirTree.load_from_path(
-            manager=self, config_path_relative=self.config_path_relative)
+            manager=self, config_path_relative=self.config_path_relative, models_path=self.models_path)
         config_data = ModelConfig.read_config_data(config_path=self.active_config_path)
         self.active_config = self.model_dir_tree.get_associated_model_setup(config_data=config_data)
         return self.model_dir_tree, self.active_config
