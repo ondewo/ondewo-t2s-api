@@ -21,6 +21,7 @@ class MBMelGAN(Mel2Audio):
 
     def __init__(self, config: Dict[str, Any]):
         self.config = config
+        self.batch_size = self.config["batch_size"]
         self.scaler = StandardScaler()
         self.scaler.mean_, self.scaler.scale_ = np.load(
             self.config["stats_path"])
@@ -45,15 +46,39 @@ class MBMelGAN(Mel2Audio):
         mel_out = tf.keras.preprocessing.sequence.pad_sequences(mel_out, dtype="float32", padding="post")
         return mel_out
 
+    def batch_inputs(self, mel_spectrograms: List[np.ndarray]) -> List[np.ndarray]:
+        batched: List[np.ndarray] = []
+
+        n_batches = len(mel_spectrograms) // self.batch_size
+        for i in range(n_batches):
+            batched.append(mel_spectrograms[i*self.batch_size: (i+1)*self.batch_size])
+
+        remain = len(mel_spectrograms) % self.batch_size
+        if remain > 0:
+            batched.append(mel_spectrograms[n_batches*self.batch_size: (n_batches+remain)*self.batch_size])
+        return batched
+
     @log_durations(logger.info, label="MB-MelGAN inference")
     def mel2audio(self, mel_spectrograms: List[np.ndarray]) -> List[np.ndarray]:
         input_mels: List[np.ndarray] = self.preprocess(mel_spectrograms)
 
-        audio_tensor = self.mb_melgan.inference(input_mels)
+        batched_input_mels: List[np.ndarray] = self.batch_inputs(input_mels)
 
-        result: List[np.ndarray] = self.postprocess(
-            audio_tensor, mel_spectrograms)
+        result: List[np.ndarray] = self.inference_batches_and_postprocess(
+            batched_input_mels, mel_spectrograms)
         return result
+
+    def inference_batches_and_postprocess(self,
+                                          batched_input_mels: List[np.ndarray],
+                                          mel_spectrograms: List[np.ndarray]) -> List[np.ndarray]:
+        final_result: List[np.ndarray] = []
+        for i, input_mels in enumerate(batched_input_mels):
+            audio_tensor = self.mb_melgan.inference(input_mels)
+            mel_spectrograms_slice = mel_spectrograms[i*self.batch_size: i*self.batch_size+len(input_mels)]
+            result: List[np.ndarray] = self.postprocess(
+                audio_tensor, mel_spectrograms_slice)
+            final_result += result
+        return final_result
 
     def postprocess(self,
                     audio_tensor: tf.Tensor,
