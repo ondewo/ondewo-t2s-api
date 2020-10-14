@@ -14,7 +14,7 @@ class TestTTSServicer:
                 identity=text_to_speech_pb2.Identifier()
             )
         )
-        assert response.language_codes == ['de-DE', 'fr-FR']
+        assert response.language_codes == ['de-DE', 'fr-FR'] or response.language_codes == ['fr-FR', 'de-DE']
 
     def test_handle_list_model_setups_for_language(self, server_offline: TextToSpeechConfigServer) -> None:
         test_code = "fr-FR"
