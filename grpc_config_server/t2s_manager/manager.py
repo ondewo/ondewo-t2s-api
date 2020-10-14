@@ -6,7 +6,6 @@ from docker.models.containers import Container
 from grpc_config_server.config import ACTIVE_CONFIG_YAML, CONFIG_YAML_RELATIVE, T2S_CONTAINER_NAME
 from grpc_config_server.ondewo.audio import text_to_speech_pb2
 from grpc_config_server.t2s_manager.dir_dataclass import DirTree, ModelConfig
-from grpc_config_server.utils.helpers import get_struct_from_dict
 
 
 class TextToSpeechManager:
@@ -58,7 +57,7 @@ class TextToSpeechManager:
                 language_code=model.language_code,
                 model_setup_id=model.model_id,
                 directory_name=model.full_path,
-                config=get_struct_from_dict(model.config_data),
+                config=model.get_proto_config(),
             ) for model in self.model_dir_tree.extract_model_config_list(language_code=language_code)
         ]
 
@@ -94,4 +93,3 @@ class TextToSpeechManager:
                 container.restart()
                 return True, ""
         return False, f"T2S container not running, expected name: {self.t2s_container_name}"
-

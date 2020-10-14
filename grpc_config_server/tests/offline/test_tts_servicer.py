@@ -1,9 +1,8 @@
 from google.protobuf.json_format import MessageToDict
 
-from grpc_config_server.config import T2S_CONTAINER_NAME
 from grpc_config_server.ondewo.audio import text_to_speech_pb2
+from grpc_config_server.t2s_manager.dir_dataclass import ModelConfig
 from grpc_config_server.tts_servicer import TextToSpeechConfigServer
-from grpc_config_server.utils.helpers import get_struct_from_dict
 
 
 class TestTTSServicer:
@@ -15,7 +14,7 @@ class TestTTSServicer:
                 identity=text_to_speech_pb2.Identifier()
             )
         )
-        assert response.language_codes == ['en-US', 'de-DE', 'fr-FR']
+        assert response.language_codes == ['de-DE', 'fr-FR']
 
     def test_handle_list_model_setups_for_language(self, server: TextToSpeechConfigServer) -> None:
         test_code = "fr-FR"
@@ -25,7 +24,7 @@ class TestTTSServicer:
                 language_code=test_code,
             )
         )
-        assert len(response.model_setups) == 2
+        assert len(response.model_setups) == 6
         for model_setup in response.model_setups:
             setup = MessageToDict(model_setup)
             assert "languageCode" in setup.keys()
@@ -41,7 +40,7 @@ class TestTTSServicer:
                 identity=text_to_speech_pb2.Identifier(),
             )
         )
-        assert len(response.model_setups) == 21
+        assert len(response.model_setups) == 30
         for model_setup in response.model_setups:
             setup = MessageToDict(model_setup)
             assert "languageCode" in setup.keys()
@@ -59,21 +58,21 @@ class TestTTSServicer:
         assert response.model_setup
         setup = MessageToDict(response.model_setup)
         assert "languageCode" in setup.keys()
-        assert setup["languageCode"] == "en-US"
+        assert setup["languageCode"] == "de-DE"
         assert "modelSetupId" in setup.keys()
         assert "directoryName" in setup.keys()
-        assert setup["directoryName"] == './models/eloqai/en-US/officechat/sr199/0.0.1'
+        assert setup["directoryName"] == './models/eloqai/de-DE/esoterics/sr006/0.0.2'
         assert "config" in setup.keys()
         assert "inference" in setup["config"].keys()
-        assert "inference_type" in setup["config"]["inference"].keys()
-        assert setup["config"]["inference"]["inference_type"] == "67567"
+        assert "type" in setup["config"]["inference"].keys()
+        assert setup["config"]["inference"]["type"] == "testme2"
 
         from_file = server.manager.active_config
         from_file_setup = MessageToDict(text_to_speech_pb2.ModelSetup(
             language_code=from_file.language_code,
             model_setup_id=from_file.model_id,
             directory_name=from_file.full_path,
-            config=get_struct_from_dict(from_file.config_data),
+            config=ModelConfig.get_proto_from_dict(config_data=from_file.config_data),
         ))
         assert from_file_setup == setup
 

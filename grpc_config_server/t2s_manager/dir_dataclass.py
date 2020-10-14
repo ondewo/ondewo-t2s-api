@@ -7,6 +7,8 @@ from typing import TYPE_CHECKING
 
 import yaml
 
+from grpc_config_server.ondewo.audio import text_to_speech_pb2
+
 if TYPE_CHECKING:
     from grpc_config_server.t2s_manager.manager import TextToSpeechManager
 
@@ -32,6 +34,83 @@ class ModelConfig:
     def set(self, active_config_yaml: str) -> Tuple[bool, str]:
         copy(src=self.config_yaml_path, dst=active_config_yaml)
         return True, ""
+
+    def get_proto_config(self) -> text_to_speech_pb2.Text2SpeechConfig:
+        return self.get_proto_from_dict(config_data=self.config_data)
+
+    @staticmethod
+    def get_proto_from_dict(config_data: dict) -> text_to_speech_pb2.Text2SpeechConfig:
+        return text_to_speech_pb2.Text2SpeechConfig(
+            inference=text_to_speech_pb2.Inference(
+                type=config_data["inference"]["type"],
+                composite_inference=text_to_speech_pb2.CompositeInference(
+                    text_2_mel=text_to_speech_pb2.Text2Mel(
+                        type=config_data["inference"]["composite_inference"]["text2mel"]["type"],
+                        tacotron_2=text_to_speech_pb2.Tacotron2(
+                            batch_size=config_data["inference"]["composite_inference"]["text2mel"]["tacotron2"][
+                                "batch_size"],
+                            path=config_data["inference"]["composite_inference"]["text2mel"]["tacotron2"]["path"],
+                            param_config_path=config_data["inference"]["composite_inference"]["text2mel"]["tacotron2"][
+                                "param_config_path"],
+                            step=config_data["inference"]["composite_inference"]["text2mel"]["tacotron2"]["step"],
+                        ),
+                        glow_tts=text_to_speech_pb2.GlowTTS(
+                            batch_size=config_data["inference"]["composite_inference"]["text2mel"]["glow_tts"][
+                                "batch_size"],
+                            use_gpu=config_data["inference"]["composite_inference"]["text2mel"]["glow_tts"][
+                                "use_gpu"],
+                            length_scale=config_data["inference"]["composite_inference"]["text2mel"]["glow_tts"][
+                                "length_scale"],
+                            noise_scale=config_data["inference"]["composite_inference"]["text2mel"]["glow_tts"][
+                                "noise_scale"],
+                            batch_inference=config_data["inference"]["composite_inference"]["text2mel"]["glow_tts"][
+                                "batch_inference"],
+                            path=config_data["inference"]["composite_inference"]["text2mel"]["glow_tts"]["path"],
+                            param_config_path=config_data["inference"]["composite_inference"]["text2mel"]["glow_tts"][
+                                "param_config_path"],
+                        ),
+                    ),
+                    mel_2_audio=text_to_speech_pb2.Mel2Audio(
+                        type=config_data["inference"]["composite_inference"]["mel2audio"]["type"],
+                        waveglow=text_to_speech_pb2.Waveglow(
+                            batch_size=config_data["inference"]["composite_inference"]["mel2audio"]["waveglow"][
+                                "batch_size"],
+                            path=config_data["inference"]["composite_inference"]["mel2audio"]["waveglow"]["path"],
+                            param_config_path=config_data["inference"]["composite_inference"]["mel2audio"]["waveglow"][
+                                "param_config_path"],
+                            sigma=config_data["inference"]["composite_inference"]["mel2audio"]["waveglow"][
+                                "sigma"],
+                            denoiser=text_to_speech_pb2.Denoiser(
+                                active=config_data["inference"]["composite_inference"]["mel2audio"]["waveglow"][
+                                    "denoiser"]["active"],
+                                strength=config_data["inference"]["composite_inference"]["mel2audio"]["waveglow"][
+                                    "denoiser"]["strength"],
+                            ),
+                        ),
+                        waveglow_triton=text_to_speech_pb2.WaveglowTriton(
+                            param_config_path=config_data["inference"]["composite_inference"]["mel2audio"]["waveglow_triton"][
+                                "param_config_path"],
+                            sigma=config_data["inference"]["composite_inference"]["mel2audio"]["waveglow_triton"][
+                                "sigma"],
+                            max_spect_size=config_data["inference"]["composite_inference"]["mel2audio"]["waveglow_triton"][
+                                "max_spect_size"],
+                            triton_model_name=config_data["inference"]["composite_inference"]["mel2audio"]["waveglow_triton"][
+                                "triton_model_name"],
+                            triton_url=config_data["inference"]["composite_inference"]["mel2audio"]["waveglow_triton"][
+                                "triton_url"],
+                        )
+                    )
+                ),
+                caching=text_to_speech_pb2.Caching(
+                    active=config_data["inference"]["caching"]["active"],
+                    memory_cache_max_size=config_data["inference"]["caching"]["memory_cache_max_size"],
+                    sampling_rate=config_data["inference"]["caching"]["sampling_rate"],
+                    load_cache=config_data["inference"]["caching"]["load_cache"],
+                    save_cache=config_data["inference"]["caching"]["save_cache"],
+                    cache_save_dir=config_data["inference"]["caching"]["cache_save_dir"],
+                )
+            )
+        )
 
 
 @dataclass

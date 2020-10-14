@@ -1,3 +1,4 @@
+docker==4.3.1
 google-api-core==1.13.0
 googleapis-common-protos==1.5.10
 grpcio==1.31.0
@@ -6,4 +7,3 @@ grpcio-tools==1.31.0
 protobuf==3.13.0
 pyyaml==5.3.1
 regex==2020.7.14
-docker==4.3.1

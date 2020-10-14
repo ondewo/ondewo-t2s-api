@@ -7,8 +7,8 @@ from grpc_reflection.v1alpha import reflection
 from grpc_config_server.config import PORT
 from grpc_config_server.ondewo.audio import text_to_speech_pb2, \
     text_to_speech_pb2_grpc
+from grpc_config_server.t2s_manager.dir_dataclass import ModelConfig
 from grpc_config_server.t2s_manager.manager import TextToSpeechManager
-from grpc_config_server.utils.helpers import get_struct_from_dict
 
 
 class TextToSpeechConfigServer (text_to_speech_pb2_grpc.Text2SpeechConfigurationServicer):
@@ -91,7 +91,7 @@ class TextToSpeechConfigServer (text_to_speech_pb2_grpc.Text2SpeechConfiguration
                 language_code=self.manager.active_config.language_code,
                 model_setup_id=self.manager.active_config.model_id,
                 directory_name=self.manager.active_config.full_path,
-                config=get_struct_from_dict(self.manager.active_config.config_data),
+                config=ModelConfig.get_proto_from_dict(config_data=self.manager.active_config.config_data),
             )
         )
 

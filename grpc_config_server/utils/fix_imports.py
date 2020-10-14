@@ -5,6 +5,7 @@ def fix_imports_in_ondewoapis() -> None:
     """
     when generating python files from protos into a subdirectory, there is a known issue with imports
     currently no fix exists, so this fct will fix them
+    INFO: https://github.com/protocolbuffers/protobuf/pull/7470
     """
     script_path = os.path.realpath(__file__)
     server_dir_name = script_path.split("ondewo-t2s/")[1].split("/")[0]
