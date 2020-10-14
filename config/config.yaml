@@ -19,7 +19,6 @@ inference:
                 use_gpu: false
                 length_scale: 1.0
                 noise_scale: 0.667
-                batch_inference: false
                 path: "models/glow-tts/de/G_florian.pth"
                 param_config_path: "models/glow-tts/de/config.json"
 

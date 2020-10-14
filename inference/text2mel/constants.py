@@ -1,4 +1,3 @@
-BATCH_INFERENCE: str = 'batch_inference'
 MODEL_PATH: str = 'path'
 CONFIG_PATH: str = 'param_config_path'
 BATCH_SIZE: str = "batch_size"
