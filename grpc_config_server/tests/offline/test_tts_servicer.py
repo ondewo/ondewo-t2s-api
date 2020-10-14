@@ -8,17 +8,17 @@ from grpc_config_server.tts_servicer import TextToSpeechConfigServer
 class TestTTSServicer:
     """performs offline tests by using the handle_xxx() functions in the stt_servicer"""
 
-    def test_handle_list_supported_languages(self, server: TextToSpeechConfigServer) -> None:
-        response = server.handle_list_supported_languages(
+    def test_handle_list_supported_languages(self, server_offline: TextToSpeechConfigServer) -> None:
+        response = server_offline.handle_list_supported_languages(
             request=text_to_speech_pb2.ListLanguagesRequest(
                 identity=text_to_speech_pb2.Identifier()
             )
         )
         assert response.language_codes == ['de-DE', 'fr-FR']
 
-    def test_handle_list_model_setups_for_language(self, server: TextToSpeechConfigServer) -> None:
+    def test_handle_list_model_setups_for_language(self, server_offline: TextToSpeechConfigServer) -> None:
         test_code = "fr-FR"
-        response = server.handle_list_model_setups_for_language(
+        response = server_offline.handle_list_model_setups_for_language(
             request=text_to_speech_pb2.ListModelSetupsForLangRequest(
                 identity=text_to_speech_pb2.Identifier(),
                 language_code=test_code,
@@ -34,8 +34,8 @@ class TestTTSServicer:
             assert "config" in setup.keys()
             assert "inference" in setup["config"].keys()
 
-    def test_handle_list_all_model_setups(self, server: TextToSpeechConfigServer) -> None:
-        response = server.handle_list_all_model_setups(
+    def test_handle_list_all_model_setups(self, server_offline: TextToSpeechConfigServer) -> None:
+        response = server_offline.handle_list_all_model_setups(
             request=text_to_speech_pb2.ListAllModelSetupsRequest(
                 identity=text_to_speech_pb2.Identifier(),
             )
@@ -49,8 +49,8 @@ class TestTTSServicer:
             assert "config" in setup.keys()
             assert "inference" in setup["config"].keys()
 
-    def test_handle_get_active_model_config(self, server: TextToSpeechConfigServer) -> None:
-        response = server.handle_get_active_model_config(
+    def test_handle_get_active_model_config(self, server_offline: TextToSpeechConfigServer) -> None:
+        response = server_offline.handle_get_active_model_config(
             request=text_to_speech_pb2.GetActiveModelConfigRequest(
                 identity=text_to_speech_pb2.Identifier(),
             )
@@ -67,7 +67,7 @@ class TestTTSServicer:
         assert "type" in setup["config"]["inference"].keys()
         assert setup["config"]["inference"]["type"] == "testme2"
 
-        from_file = server.manager.active_config
+        from_file = server_offline.manager.active_config
         from_file_setup = MessageToDict(text_to_speech_pb2.ModelSetup(
             language_code=from_file.language_code,
             model_setup_id=from_file.model_id,
@@ -76,23 +76,23 @@ class TestTTSServicer:
         ))
         assert from_file_setup == setup
 
-    def test_handle_set_model_config(self, server: TextToSpeechConfigServer) -> None:
-        response = server.handle_list_all_model_setups(
+    def test_handle_set_model_config(self, server_offline: TextToSpeechConfigServer) -> None:
+        response = server_offline.handle_list_all_model_setups(
             request=text_to_speech_pb2.ListAllModelSetupsRequest(
                 identity=text_to_speech_pb2.Identifier(),
             )
         )
         model_setup_id = response.model_setups[0].model_setup_id
-        response = server.handle_set_model_config(
+        response = server_offline.handle_set_model_config(
             text_to_speech_pb2.SetModelConfigRequest(
                 model_setup_id=model_setup_id,
             )
         )
-        containers = server.manager.docker_client.containers.list()
-        if not any(c.name == server.manager.t2s_container_name for c in containers):
+        containers = server_offline.manager.docker_client.containers.list()
+        if not any(c.name == server_offline.manager.t2s_container_name for c in containers):
             assert not response.success
             assert response.log_message == "\nT2S container not running, " + \
-                                           f"expected name: {server.manager.t2s_container_name}"
+                                           f"expected name: {server_offline.manager.t2s_container_name}"
 
         else:
             assert response.success

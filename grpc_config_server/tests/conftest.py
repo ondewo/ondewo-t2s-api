@@ -5,7 +5,7 @@ from grpc_config_server.tts_servicer import TextToSpeechConfigServer
 
 
 @pytest.fixture(scope="function")
-def server() -> TextToSpeechConfigServer:
+def server_offline() -> TextToSpeechConfigServer:
     """server object for offline testing"""
 
     server = TextToSpeechConfigServer()
