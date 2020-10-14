@@ -356,6 +356,7 @@ class TextNormalizer:
         Returns:
 
         """
+        text = text.lower()
         text = self.fix_plus(text)
         text = self.normalize_urls(text)
         texts = self.split_on_pattern(texts=[text], pattern=self.pttrn_right_split)
