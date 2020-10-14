@@ -17,8 +17,9 @@ run_code_checks: ## Start the code checks image and run the checks
 	docker run --rm ${CODE_CHECK_IMAGE} make flake8
 	docker run --rm ${CODE_CHECK_IMAGE} make mypy
 
+build_batch_server: export SSH_PRIVATE_KEY="$$(cat ~/.ssh/id_rsa)"
 build_batch_server:
-	docker build -t ${IMAGE_TAG_BATCH} --target uncythonized -f docker/Dockerfile.batchserver .
+	docker build -t ${IMAGE_TAG_BATCH} --build-arg SSH_PRIVATE_KEY=$(SSH_PRIVATE_KEY) --target uncythonized -f docker/Dockerfile.batchserver .
 
 build_batch_server_release:
 	docker build -t ${IMAGE_TAG_BATCH_RELEASE}  -f docker/Dockerfile.batchserver .

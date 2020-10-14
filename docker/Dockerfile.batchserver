@@ -1,3 +1,17 @@
+FROM dockerregistry.ondewo.com:5000/ubuntu:18.04 AS private_installer
+ARG SSH_PRIVATE_KEY
+RUN mkdir /root/install
+WORKDIR /root/install
+RUN mkdir /root/.ssh/
+RUN echo "${SSH_PRIVATE_KEY}" > /root/.ssh/id_rsa
+RUN chmod 600 /root/.ssh/id_rsa
+RUN echo "StrictHostKeyChecking no" >> /root/.ssh/config
+
+RUN apt-get update && apt-get -y upgrade && \
+	apt-get install -y git
+
+RUN git clone git@bitbucket.org:ondewo/glow-tts.git
+
 FROM dockerregistry.ondewo.com:5000/cuda:11.0-base-ubuntu18.04 AS uncythonized
 
 RUN apt-get update && apt-get -y upgrade && \
@@ -24,7 +38,7 @@ COPY ./docker/batch_server_requirements.txt .
 RUN pip install -r batch_server_requirements.txt --ignore-installed
 
 RUN pip install cython
-COPY ./glow-tts ./glow-tts
+COPY --from=private_installer /root/install/glow-tts ./glow-tts
 RUN cd glow-tts/monotonic_align; python setup.py build_ext --inplace; cd ../..
 RUN pip install -e glow-tts
 
