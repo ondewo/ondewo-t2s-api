@@ -34,7 +34,7 @@ COPY --from=uncythonized /opt/ondewo-t2s/utils/constants.py /tmp/transfer/to_cyt
 RUN ./cythonize.py \
 		--modules_to_cythonize ./to_cythonize \
 		--files_to_skip ./to_cythonize/batch_server/__init__.py \
-        --directories_to_skip "./to_cythonize/inference/nemo_modules" \
+        --directories_to_skip "./to_cythonize/inference/mel2audio/nemo_modules, ./to_cythonize/inference/text2mel/nemo_modules" \
         --delete_pycache True \
 		--py_files_mode delete
 
