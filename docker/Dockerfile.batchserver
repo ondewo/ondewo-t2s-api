@@ -1,12 +1,11 @@
 FROM dockerregistry.ondewo.com:5000/nemo:master AS uncythonized
 
 COPY ./docker/batch_server_requirements.txt .
+RUN pip install nvidia-pyindex
 RUN pip install -r batch_server_requirements.txt --ignore-installed
 
 WORKDIR /opt/ondewo-t2s
 COPY ./utils ./utils
-RUN cd utils/triton_client_lib && pip install --user --upgrade triton*.whl
-
 COPY ./inference ./inference
 COPY ./normalization ./normalization
 COPY ./batch_server ./batch_server
