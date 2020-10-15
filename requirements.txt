@@ -1,6 +1,8 @@
 braceexpand
 editdistance
 flask
+torch==1.6.0
+cython
 fluent-logger==0.9.6
 msgpack==1.0.0
 nemo-toolkit[all]==0.11
