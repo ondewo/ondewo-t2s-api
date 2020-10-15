@@ -114,7 +114,7 @@ class TestNormalization:
     def test_normalize_and_split(text: str, expected_result: str) -> None:
         normalized_text: List[str] = normalizer.normalize_and_split(text)
         assert isinstance(normalized_text, list)
-        assert normalized_text == expected_result
+        assert normalized_text == [text.lower() for text in expected_result]
 
     @staticmethod
     @pytest.mark.parametrize('time, expected_result', [

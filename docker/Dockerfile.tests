@@ -53,4 +53,4 @@ COPY ./tests ./tests
 COPY ./config ./config
 
 ENV PYTHONPATH /opt/ondewo-t2s
-CMD python -m pytest -vv --capture=no --junit-xml=log/"$TESTFILE" --ignore="tests/e2e"
+CMD python -m pytest -vv --capture=no --junit-xml=log/"$TESTFILE" --ignore="tests/e2e" --ignore="tests/integration"

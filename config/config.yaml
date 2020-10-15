@@ -27,7 +27,7 @@ inference:
 
             waveglow:
                 batch_size: 4
-                path: "models/waveglow/checkpoints_waveglow_florian/WaveGlowNM-STEP-3000.pt"
+                path: "models/waveglow/checkpoints_waveglow_kerstin/WaveGlowNM.pt"
                 param_config_path: "models/waveglow/waveglow.yaml"
                 sigma: 0.6
                 denoiser:

@@ -76,8 +76,9 @@ run_batch_server_release:
 	--name ${BATCH_CONTAINER_RELEASE} \
 	${IMAGE_TAG_BATCH_RELEASE}
 
+run_tests:  export SSH_PRIVATE_KEY="$$(cat ~/.ssh/id_rsa)"
 run_tests:
-	docker build -t ${IMAGE_TAG_TESTS} -f docker/Dockerfile.tests .
+	docker build -t ${IMAGE_TAG_TESTS} --build-arg SSH_PRIVATE_KEY=$(SSH_PRIVATE_KEY) -f docker/Dockerfile.tests .
 	-docker rm -f ${TESTS_CONTAINER}
 	docker run --rm -e TESTFILE=pytest.xml -v ${PWD}/test_results:/opt/ondewo-t2s/log \
 	--name ${TESTS_CONTAINER} ${IMAGE_TAG_TESTS}
