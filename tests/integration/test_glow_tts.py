@@ -9,10 +9,10 @@ from inference.text2mel.glow_tts import GlowTts
 
 yaml = YAML(typ="safe")
 
-test_config_path: str = 'tests/ressources/config.yaml'
+test_config_path: str = 'tests/resources/glow_tts_config.yaml'
 
 with open(test_config_path, 'r') as f:
-    test_config: Dict[str, Any] = yaml.load(f)['inference']['composite_inference']['text2mel']['glow_tts']
+    test_config: Dict[str, Any] = yaml.load(f)
 
 
 class TestGlowTts:
