@@ -1,7 +1,7 @@
 from abc import ABC
 
 from inference.text2mel.text2mel import Text2Mel
-from inference.text2mel.nemo_modules.text_data_layer import TextDataLayer
+from inference.text2mel.nemo_modules.text_data_layer_factory import get_text_data_layer
 from utils.logger import logger
 from typing import Dict, Any, List
 
@@ -60,16 +60,8 @@ class Tacotron2(Text2Mel):
         start_time: float = time.time()
 
         # make graph
-        data_layer = TextDataLayer(
-            texts=texts,
-            labels=self.labels,
-            batch_size=self.batch_size,
-            num_workers=1,
-            bos_id=self.bos_id,
-            eos_id=self.eos_id,
-            pad_id=self.pad_id,
-            shuffle=False,
-        )
+        data_layer = get_text_data_layer(texts, labels=self.labels, batch_size=self.batch_size,
+                                         bos_id=self.bos_id, eos_id=self.eos_id, pad_id=self.pad_id)
 
         # building inference pipeline
         transcript, transcript_len = data_layer()

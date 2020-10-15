@@ -2,7 +2,7 @@ import torch
 from nemo.core import NmTensor
 
 from inference.mel2audio.mel2audio import Mel2Audio
-from inference.mel2audio.nemo_modules.mel_spectrogram_data_layer import MelSpectrogramDataLayer
+from inference.mel2audio.nemo_modules.mel_spectrogram_data_layer_factory import get_mel_spectrogram_data_layer
 from utils.logger import logger
 from typing import Dict, Any, List
 from ruamel.yaml import YAML
@@ -44,13 +44,7 @@ class Waveglow(Mel2Audio):
         start_time: float = time.time()
 
         # make graph
-        data_layer = MelSpectrogramDataLayer(
-            mel_spectrograms,
-            batch_size=self.batch_size,
-            num_workers=1,
-            shuffle=False,
-        )
-
+        data_layer = get_mel_spectrogram_data_layer(mel_spectrograms, self.batch_size)
         # building inference pipeline
         mel_spectrogram, mel_spectrogram_len = data_layer()
         audio: NmTensor = self.waveglow(mel_spectrogram=mel_spectrogram)
