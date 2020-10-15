@@ -1,3 +1,4 @@
+import pytest
 from google.protobuf.json_format import MessageToDict
 
 from grpc_config_server.ondewo.audio import text_to_speech_pb2
@@ -58,14 +59,14 @@ class TestTTSServicer:
         assert response.model_setup
         setup = MessageToDict(response.model_setup)
         assert "languageCode" in setup.keys()
-        assert setup["languageCode"] == "de-DE"
+        assert setup["languageCode"] == "fr-FR"
         assert "modelSetupId" in setup.keys()
         assert "directoryName" in setup.keys()
-        assert setup["directoryName"] == './models/eloqai/de-DE/esoterics/sr006/0.0.2'
+        assert setup["directoryName"] == './tests/tests_grpc/offline/models/universeinc/fr-FR/astrology0815/sr001/0.0.1'
         assert "config" in setup.keys()
         assert "inference" in setup["config"].keys()
         assert "type" in setup["config"]["inference"].keys()
-        assert setup["config"]["inference"]["type"] == "testme2"
+        assert setup["config"]["inference"]["type"] == "testsetterorig"
 
         from_file = server_offline.manager.active_config
         from_file_setup = MessageToDict(text_to_speech_pb2.ModelSetup(
@@ -82,18 +83,36 @@ class TestTTSServicer:
                 identity=text_to_speech_pb2.Identifier(),
             )
         )
-        model_setup_id = response.model_setups[0].model_setup_id
-        response = server_offline.handle_set_model_config(
-            text_to_speech_pb2.SetModelConfigRequest(
-                model_setup_id=model_setup_id,
-            )
-        )
-        containers = server_offline.manager.docker_client.containers.list()
-        if not any(c.name == server_offline.manager.t2s_container_name for c in containers):
-            assert not response.success
-            assert response.log_message == "\nT2S container not running, " + \
-                                           f"expected name: {server_offline.manager.t2s_container_name}"
+        all_model_setups = response.model_setups
 
-        else:
-            assert response.success
-            assert response.log_message == ""
+        # set, and then reset configuration
+        for test_type_name in ["testsetter1", "testsetterorig"]:
+
+            # get model id
+            for setup in all_model_setups:
+                if setup.config.inference.type == test_type_name:
+                    model_setup_id = setup.model_setup_id
+                    break
+
+            # set model with id
+            response = server_offline.handle_set_model_config(
+                text_to_speech_pb2.SetModelConfigRequest(
+                    model_setup_id=model_setup_id,
+                )
+            )
+
+            # assert that active config was changed
+            assert "ERROR" not in response.log_message
+            active_config = server_offline.manager.active_config
+            assert active_config.config_data["inference"]["type"] == test_type_name
+
+            # check if container is running (docker commands are not mocked, test will restart containers)
+            containers = server_offline.manager.docker_client.containers.list()
+            if not any(c.name == server_offline.manager.t2s_container_name for c in containers):
+                assert not response.success
+                assert response.log_message == "\nT2S container not running, " + \
+                                               f"expected name: {server_offline.manager.t2s_container_name}"
+
+            else:
+                assert response.success
+                assert response.log_message == ""

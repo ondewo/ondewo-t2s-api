@@ -84,7 +84,6 @@ class TextToSpeechConfigServer (text_to_speech_pb2_grpc.Text2SpeechConfiguration
         self,
         request: text_to_speech_pb2.GetActiveModelConfigRequest,
     ) -> text_to_speech_pb2.ModelSetupResponse:
-        self.manager.update_from_directory_tree()
         return text_to_speech_pb2.ModelSetupResponse(
             request=request,
             model_setup=text_to_speech_pb2.ModelSetup(

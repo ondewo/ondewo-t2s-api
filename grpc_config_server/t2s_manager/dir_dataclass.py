@@ -113,6 +113,47 @@ class ModelConfig:
             )
         )
 
+    @staticmethod
+    def get_dict_from_proto(config_data: text_to_speech_pb2.Text2SpeechConfig) -> dict:
+        return {'inference':
+                {'type': config_data.inference.type,
+                 'composite_inference': {
+                     'text2mel': {'type': config_data.inference.composite_inference.text_2_mel.type,
+                                  'tacotron2': {
+                                      'batch_size': config_data.inference.composite_inference.text_2_mel.tacotron_2.batch_size,
+                                      'path': config_data.inference.composite_inference.text_2_mel.tacotron_2.path,
+                                      'param_config_path': config_data.inference.composite_inference.text_2_mel.tacotron_2.param_config_path,
+                                      'step': config_data.inference.composite_inference.text_2_mel.tacotron_2.step},
+                                  'glow_tts': {
+                                      'batch_size': config_data.inference.composite_inference.text_2_mel.glow_tts.batch_size,
+                                      'use_gpu': config_data.inference.composite_inference.text_2_mel.glow_tts.use_gpu,
+                                      'length_scale': config_data.inference.composite_inference.text_2_mel.glow_tts.length_scale,
+                                      'noise_scale': config_data.inference.composite_inference.text_2_mel.glow_tts.noise_scale,
+                                      'batch_inference': config_data.inference.composite_inference.text_2_mel.glow_tts.batch_inference,
+                                      'path': config_data.inference.composite_inference.text_2_mel.glow_tts.path,
+                                      'param_config_path': config_data.inference.composite_inference.text_2_mel.glow_tts.param_config_path}},
+                     'mel2audio': {'type': config_data.inference.composite_inference.mel_2_audio.type,
+                                   'waveglow': {
+                                       'batch_size': config_data.inference.composite_inference.mel_2_audio.waveglow.batch_size,
+                                       'path': config_data.inference.composite_inference.mel_2_audio.waveglow.path,
+                                       'param_config_path': config_data.inference.composite_inference.mel_2_audio.waveglow.param_config_path,
+                                       'sigma': config_data.inference.composite_inference.mel_2_audio.waveglow.sigma,
+                                       'denoiser': {
+                                           'active': config_data.inference.composite_inference.mel_2_audio.waveglow.denoiser.active,
+                                           'strength': config_data.inference.composite_inference.mel_2_audio.waveglow.denoiser.strength}},
+                                   'waveglow_triton': {
+                                       'param_config_path': config_data.inference.composite_inference.mel_2_audio.waveglow_triton.param_config_path,
+                                       'sigma': config_data.inference.composite_inference.mel_2_audio.waveglow_triton.sigma,
+                                       'max_spect_size': config_data.inference.composite_inference.mel_2_audio.waveglow_triton.max_spect_size,
+                                       'triton_model_name': config_data.inference.composite_inference.mel_2_audio.waveglow_triton.triton_model_name,
+                                       'triton_url': config_data.inference.composite_inference.mel_2_audio.waveglow_triton.triton_url}}},
+                 'caching': {'active': config_data.inference.caching.active,
+                             'memory_cache_max_size': config_data.inference.caching.memory_cache_max_size,
+                             'sampling_rate': config_data.inference.caching.sampling_rate,
+                             'load_cache': config_data.inference.caching.load_cache,
+                             'save_cache': config_data.inference.caching.save_cache,
+                             'cache_save_dir': config_data.inference.caching.cache_save_dir}}}
+
 
 @dataclass
 class DirSpeaker:
@@ -208,14 +249,15 @@ class DirTree:
 
     @staticmethod
     def load_from_path(
-        manager: 'TextToSpeechManager',
-        config_path_relative: str,
-        models_path: str = MODELS_PATH,
+            manager: 'TextToSpeechManager',
+            config_path_relative: str,
+            models_path: str = MODELS_PATH,
     ) -> 'DirTree':
         """
         construct dataclass from /models/ directory
         any time this function is called, the directory is rescanned
         will also read the config file data of all model setups
+        will assign new uuids to configs every time it is called
 
         Args:
             manager: superior of DirTree, instance of speech to text manager
@@ -304,12 +346,12 @@ class DirTree:
         )
 
     def extract_model_config_list(
-        self,
-        company_name: Union[str, None] = None,
-        language_code: Union[str, None] = None,
-        speaker_name: Union[str, None] = None,
-        domain_name: Union[str, None] = None,
-        model_setup_name: Union[str, None] = None,
+            self,
+            company_name: Union[str, None] = None,
+            language_code: Union[str, None] = None,
+            speaker_name: Union[str, None] = None,
+            domain_name: Union[str, None] = None,
+            model_setup_name: Union[str, None] = None,
     ) -> List[ModelConfig]:
         """
         extracts a list with all model setup configs

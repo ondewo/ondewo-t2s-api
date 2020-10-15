@@ -1,4 +1,4 @@
-from typing import Generator
+from typing import Generator, List
 
 import pytest
 
@@ -8,12 +8,13 @@ from grpc_config_server.tts_servicer import TextToSpeechConfigServer
 
 class TESTdockerclient():
     """mock class for docker client for grpc offline tests"""
-    def __init__(self):
+
+    def __init__(self) -> None:
         self.containers = self.Containers()
 
     class Containers:
         @staticmethod
-        def list():
+        def list() -> List:
             return []
 
 
@@ -23,8 +24,8 @@ class TESTTextToSpeechManager(TextToSpeechManager):
     # noinspection PyMissingConstructor
     def __init__(self) -> None:
         self.active_config_path = "./tests/tests_grpc/offline/active/config.yaml"
-        self._ = "./tests/tests_grpc/offline/active/config.yaml"
-        self.model_dir_tree, self.active_config = self.update_from_directory_tree()
+        self.models_path = "./tests/tests_grpc/offline/models"
+        self.model_dir_tree, self.active_config = self._update_from_directory_tree()
         self.docker_client = TESTdockerclient()
 
 

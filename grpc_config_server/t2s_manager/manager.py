@@ -18,13 +18,14 @@ class TextToSpeechManager:
 
     def __init__(self) -> None:
         # returning in-place as not to do the initial attr assignments outside of __init__()
-        self.model_dir_tree, self.active_config = self.update_from_directory_tree()
+        self.model_dir_tree, self.active_config = self._update_from_directory_tree()
         self.docker_client = docker.from_env()
 
-    def update_from_directory_tree(self) -> Tuple[DirTree, ModelConfig]:
+    def _update_from_directory_tree(self) -> Tuple[DirTree, ModelConfig]:
         """
         read the ./models directory tree and the active config yaml from the file system
         assigns the class attributes in-place, and returns them too
+        should only be called once on init, since it will assign new uuids to configs every time it is called
 
         Returns:
             self.model_dir_tree: directory tree object of ./models directory
@@ -33,8 +34,11 @@ class TextToSpeechManager:
         self.model_dir_tree = DirTree.load_from_path(
             manager=self, config_path_relative=self.config_path_relative, models_path=self.models_path)
         config_data = ModelConfig.read_config_data(config_path=self.active_config_path)
-        self.active_config = self.model_dir_tree.get_associated_model_setup(config_data=config_data)
+        self.update_active_config(config_data=config_data)
         return self.model_dir_tree, self.active_config
+
+    def update_active_config(self, config_data: dict) -> None:
+        self.active_config = self.model_dir_tree.get_associated_model_setup(config_data=config_data)
 
     def get_available_languages(self) -> List[str]:
         """get all available languages from the ./models directory tree object"""
@@ -78,6 +82,8 @@ class TextToSpeechManager:
         try:
             model_config = self.model_dir_tree.get_model_by_id(model_id=model_id)
             success, log_message = model_config.set(active_config_yaml=self.active_config_path)
+            self.active_config = self.model_dir_tree.get_associated_model_setup(
+                config_data=model_config.config_data)
             success2, log2 = self.restart_t2s_container()
             if not success2:
                 return success2, log_message + "\n" + log2
