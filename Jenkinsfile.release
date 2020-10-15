@@ -47,8 +47,14 @@ pipeline {
 
                     stage('Normal image') { agent { label 'cpu' }
                         stages{
-                            stage('Build') { steps {
-                                 sh(script: "docker build -t ${PUSH_NAME_RELEASE}  -f docker/Dockerfile.batchserver .", label: "build image")
+                            stage('Build') {
+                            environment {
+                                ssh_key_file = credentials('devops_ondewo_idrsa')
+                            }
+                            steps {
+                                 sh(script: """set +x
+                                        docker build -t ${PUSH_NAME_RELEASE} --build-arg SSH_PRIVATE_KEY=\"\$(cat ${ssh_key_file})\" -f docker/Dockerfile.batchserver .
+                                    set -x""", label: "build image")
                             } }
                             stage('Tests') {
                                  environment {
@@ -59,7 +65,9 @@ pipeline {
                                  }
                                  steps {
                                     sh(script: "mkdir ${testresults_folder}")
-                                    sh(script: "docker build -t ${TESTS_IMAGE_NAME} -f docker/Dockerfile.tests .", label: "build image")
+                                    sh(script: ""set +x
+                                           docker build -t ${TESTS_IMAGE_NAME} --build-arg SSH_PRIVATE_KEY=\"\$(cat ${ssh_key_file})\" -f docker/Dockerfile.tests .
+                                       set -x""", label: "build image")
                                     sh(script: "docker run --rm -e TESTFILE=${testresults_filename} -v ${testresults_folder}:/opt/ondewo-t2s/log  ${TESTS_IMAGE_NAME}", label: "run_tests")
                                  }
                                  post { always {
