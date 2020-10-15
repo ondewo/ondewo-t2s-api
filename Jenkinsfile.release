@@ -55,6 +55,7 @@ pipeline {
                                     PWD = pwd()
                                     testresults_folder = "${PWD}/test_results"
                                     testresults_filename = "pytest.xml"
+                                    ssh_key_file = credentials('devops_ondewo_idrsa')
                                  }
                                  steps {
                                     sh(script: "mkdir ${testresults_folder}")
