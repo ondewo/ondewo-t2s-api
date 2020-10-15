@@ -11,9 +11,8 @@ from inference.mel2audio.mbmelgan import MBMelGAN
 
 
 yaml = YAML(typ="safe")
-with open(Path("config", "config.yaml")) as f:
-    config: Dict[str, Any] = yaml.load(f)
-    model_config = config["inference"]["composite_inference"]["mel2audio"]["mb_melgan"]
+with open(Path("tests", "resources", "test_mbmelgan_config.yaml")) as f:
+    model_config: Dict[str, Any] = yaml.load(f)
 
 
 @pytest.fixture()
@@ -24,7 +23,7 @@ def mbmelgan() -> MBMelGAN:
 def test_preprocess(mbmelgan: MBMelGAN) -> None:
     mels = [np.zeros((80, 100), dtype=np.float32),
             np.zeros((80, 50), dtype=np.float32)]
-    prep = mbmelgan.preprocess(mels)
+    prep = mbmelgan._preprocess(mels)
 
     assert prep[0].dtype == np.float32
     assert prep[0].shape == (100, 80)
@@ -36,12 +35,12 @@ def test_preprocess(mbmelgan: MBMelGAN) -> None:
 
 @pytest.mark.parametrize("mels, expected_shapes",
                          [
-                             ([np.zeros((200, 80), dtype=np.float32)] * 100, [5, 20, 20, (200, 80)]),
-                             ([np.zeros((200, 80), dtype=np.float32)] * 113, [6, 20, 13, (200, 80)])
+                             ([np.zeros((80, 200), dtype=np.float32)] * 100, [5, 20, 20, (200, 80)]),
+                             ([np.zeros((80, 200), dtype=np.float32)] * 113, [6, 20, 13, (200, 80)])
                          ])
 def test_batch_inputs(mbmelgan: MBMelGAN, mels: List[np.ndarray], expected_shapes: List) -> None:
     mbmelgan.batch_size = 20
-    batched = mbmelgan.batch_inputs(mels)
+    batched = mbmelgan._batch_and_preprocess_inputs(mels)
 
     assert len(batched) == expected_shapes[0]
     assert len(batched[0]) == expected_shapes[1]
@@ -56,7 +55,7 @@ def test_inference_batches_and_postprocess(mbmelgan: MBMelGAN) -> None:
     mels = [np.zeros((80, 100), dtype=np.float32)]*mbmelgan.batch_size + \
            [np.zeros((80, 50), dtype=np.float32)]*mbmelgan.batch_size + \
            [np.zeros((80, 30), dtype=np.float32)]*3
-    res = mbmelgan.inference_batches_and_postprocess(b_mels, mels)
+    res = mbmelgan._inference_batches_and_postprocess(b_mels, mels)
 
     assert len(res) == len(mels)
     assert res[0].shape[0] == 100 * mbmelgan.hop_size
@@ -68,7 +67,7 @@ def test_postprocess(mbmelgan: MBMelGAN) -> None:
     mels = [np.zeros((80, 100), dtype=np.float32),
             np.zeros((80, 50), dtype=np.float32)]
     audio_t = tf.constant(np.zeros((2, 100000, 1)))
-    post = mbmelgan.postprocess(audio_t, mels)
+    post = mbmelgan._postprocess(audio_t, mels)
 
     assert post[0].dtype == np.float64
     assert post[0].shape[0] == 100 * mbmelgan.hop_size

@@ -58,7 +58,7 @@ Once you are done implementing a feature, follow the procedure below (activate t
 3. Run all python tests in your IDE or in docker with `make run_tests`
 4. Once you are done with testing, kill the server by running `docker kill ondewo-t2s-batch-server`
 5. Repeat the above steps for `release` (cythonized) version of the server
-6. Run `pre-commit run` and fix all the inconsistencies
+6. Stage changes, run `pre-commit run` and fix all the inconsistencies
 7. Commit+push your code and make sure the Jenkins pipeline is <span style="color:green">GREEN</span>
 8. Merge __develop__ into your feature branch and resolve conflicts
 9. Create a PR to __develop__ branch and tick "delete feature branch"
