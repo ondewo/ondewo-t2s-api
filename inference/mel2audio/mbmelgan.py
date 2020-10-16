@@ -20,7 +20,9 @@ class MBMelGAN(Mel2Audio):
     INPUT_SCALING: str = "standard"
 
     def __init__(self, config: Dict[str, Any]):
+        self._check_paths_exist([config["stats_path"], config["model_path"], config["config_path"]])
         self.config = config
+
         self.batch_size = self.config["batch_size"]
         self.scaler = StandardScaler()
         self.scaler.mean_, self.scaler.scale_ = np.load(
@@ -34,6 +36,7 @@ class MBMelGAN(Mel2Audio):
             is_build=True,
             name="mb_melgan"
         )
+        logger.info(f"Loaded MB-MelGAN model from path {self.config['model_path']}.")
 
         yaml = YAML(typ="safe")
         with open(self.config["config_path"]) as file:
@@ -65,8 +68,10 @@ class MBMelGAN(Mel2Audio):
     def mel2audio(self, mel_spectrograms: List[np.ndarray]) -> List[np.ndarray]:
         batched_input_mels: List[np.ndarray] = self._batch_and_preprocess_inputs(mel_spectrograms)
 
+        logger.info("Running MB-MelGAN inference in TensorFlow")
         result: List[np.ndarray] = self._inference_batches_and_postprocess(
             batched_input_mels, mel_spectrograms)
+        logger.info("Done MB-MelGAN inference in TensorFlow")
         return result
 
     def _inference_batches_and_postprocess(self,
