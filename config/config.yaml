@@ -20,6 +20,7 @@ inference:
                 length_scale: 1.0
                 noise_scale: 0.667
                 path: "models/glow-tts/de/G_florian.pth"
+                cleaners: ["english_cleaners"]
                 param_config_path: "models/glow-tts/de/config.json"
 
         mel2audio:
