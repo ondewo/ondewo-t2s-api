@@ -110,7 +110,7 @@ class TestNormalization:
         ]),
         ("Wie geht's dir???", ["Wie geht's dir?"])
     ]
-                             )
+    )
     def test_normalize_and_split(text: str, expected_result: str) -> None:
         normalized_text: List[str] = normalizer.normalize_and_split(text)
         assert isinstance(normalized_text, list)
@@ -199,7 +199,7 @@ class TestNormalization:
         ('www.google.de', 'weh weh weh punkt google punkt deh eh '),
         ('www.fundamt.gv.at', 'weh weh weh punkt fundamt punkt geh fau punkt ah teh ')
     ])
-    def test_normalize_url(text: str, expected_result: str):
+    def test_normalize_url(text: str, expected_result: str) -> None:
         resulting_text: str = normalizer.normalize_url(text)
         assert isinstance(resulting_text, str)
         assert resulting_text == expected_result
@@ -213,7 +213,7 @@ class TestNormalization:
          'text weh weh weh punkt google strich test punkt deh eh '
          'schrägstrich index  another text ')
     ])
-    def test_normalize_urls(text: str, expected_result: str):
+    def test_normalize_urls(text: str, expected_result: str) -> None:
         resulting_text: str = normalizer.normalize_urls(text)
         assert isinstance(resulting_text, str)
         assert resulting_text == expected_result

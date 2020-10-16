@@ -3,7 +3,7 @@ import numpy as np
 
 from inference.text2mel.text2mel import Text2Mel
 from glow_tts_reduced.inference import GlowTtsInference
-from inference.text2mel.constants import MODEL_PATH, BATCH_SIZE, CONFIG_PATH, LENGTH_SCALE, \
+from inference.text2mel.constants_text2mel import MODEL_PATH, BATCH_SIZE, CONFIG_PATH, LENGTH_SCALE, \
     NOISE_SCALE
 
 
