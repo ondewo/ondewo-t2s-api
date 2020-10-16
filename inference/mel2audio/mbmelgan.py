@@ -10,7 +10,6 @@ from tensorflow_tts.inference import TFAutoModel
 
 from inference.mel2audio.mel2audio import Mel2Audio
 from utils.logger import logger
-from utils.logger import logger
 
 
 class MBMelGAN(Mel2Audio):

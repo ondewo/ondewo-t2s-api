@@ -1,6 +1,8 @@
 braceexpand
 editdistance
 flask
+torch==1.6.0
+cython
 fluent-logger==0.9.6
 funcy
 msgpack==1.0.0
