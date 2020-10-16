@@ -34,13 +34,17 @@ RUN pip install torch==1.6.0
 # Install NeMo
 RUN pip install nemo_toolkit[all]==0.11
 
-COPY ./docker/batch_server_requirements.txt .
-RUN pip install -r batch_server_requirements.txt --ignore-installed
-
 RUN pip install cython
 COPY --from=private_installer /root/install/glow-tts ./glow-tts
 RUN cd glow-tts/monotonic_align; python setup.py build_ext --inplace; cd ../..
 RUN pip install -e glow-tts
+
+RUN apt-get update && apt-get -y upgrade && \
+	apt-get install -y git
+
+COPY ./docker/batch_server_requirements.txt .
+RUN pip install -r batch_server_requirements.txt --ignore-installed && \
+	pip install git+https://github.com/TensorSpeech/TensorflowTTS.git
 
 WORKDIR /opt/ondewo-t2s
 COPY ./utils ./utils
