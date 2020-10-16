@@ -13,7 +13,7 @@ RUN apt-get update && apt-get -y upgrade && \
 RUN git clone git@bitbucket.org:ondewo/glow-tts.git
 
 
-FROM dockerregistry.ondewo.com:5000/cuda:11.0-base-ubuntu18.04 AS uncythonized
+FROM dockerregistry.ondewo.com:5000/cuda:11.0-base-ubuntu18.04 AS dependencies
 
 RUN apt-get update && apt-get -y upgrade && \
 	apt-get install -y git
@@ -42,15 +42,3 @@ RUN pip install -e glow-tts
 
 COPY docker/test_requirements.txt .
 RUN pip install -r test_requirements.txt --ignore-installed
-WORKDIR /opt
-
-WORKDIR /opt/ondewo-t2s
-COPY ./normalization ./normalization
-COPY ./inference ./inference
-COPY ./batch_server ./batch_server
-COPY ./utils ./utils
-COPY ./tests ./tests
-COPY ./config ./config
-
-ENV PYTHONPATH /opt/ondewo-t2s
-CMD python -m pytest -vv --capture=no --junit-xml=log/"$TESTFILE" --ignore="tests/e2e" --ignore="tests/integration"
