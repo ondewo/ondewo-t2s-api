@@ -19,11 +19,11 @@ inference:
                 use_gpu: false
                 length_scale: 1.0
                 noise_scale: 0.667
-                path: "models/glow-tts/de/G_florian.pth"
-                param_config_path: "models/glow-tts/de/config.json"
+                path: "models/glow_tts/de/G_sandra.pth"
+                param_config_path: "models/glow_tts/de/config.json"
 
         mel2audio:
-            type: "waveglow"
+            type: "mb_melgan"
 
             waveglow:
                 batch_size: 4
@@ -40,6 +40,12 @@ inference:
                 max_spect_size: 1000
                 triton_model_name: "waveglow"
                 triton_url: "localhost:8001"
+
+            mb_melgan:
+                batch_size: 20
+                config_path: "models/mb_melgan/de/config.yml"
+                model_path: "models/mb_melgan/de/generator-1360000.h5"
+                stats_path: "models/mb_melgan/de/stats.npy"
 
     caching:
         active: false

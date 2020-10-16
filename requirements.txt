@@ -3,6 +3,7 @@ cython
 editdistance
 flask
 fluent-logger==0.9.6
+funcy
 msgpack==1.0.0
 nemo-toolkit[all]==0.11
 PyYAML==5.3.1

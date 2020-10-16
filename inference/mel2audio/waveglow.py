@@ -16,6 +16,7 @@ import numpy as np
 class Waveglow(Mel2Audio):
 
     def __init__(self, config: Dict[str, Any]):
+        self._check_paths_exist([config['param_config_path'], config['path']])
         self.config = config
         self.batch_size = config['batch_size']
 
