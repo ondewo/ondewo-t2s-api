@@ -4,9 +4,9 @@ from typing import List
 
 import pytest
 
-from normalization.text_preprocessing_de import TextNormalizer
+from normalization.text_preprocessing_de import TextNormalizerDe
 
-normalizer = TextNormalizer()
+normalizer = TextNormalizerDe()
 
 
 class TestNormalization:

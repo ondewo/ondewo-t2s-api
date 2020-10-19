@@ -2,8 +2,10 @@ import re
 from datetime import date, time
 from typing import Dict, List, Any
 
+from normalization.normalizer_interface import NormalizerInterface
 
-class TextNormalizer:
+
+class TextNormalizerDe(NormalizerInterface):
     pttrn_spaces_bw_num = re.compile(r'(\d)\s+(\d)')
     pttrn_numbers = re.compile(r'([^0-9]|\b)(\d+)([^0-9]|\b)')
     pttrn_space = re.compile(r'\s+')
