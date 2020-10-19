@@ -1,4 +1,5 @@
 *.pt
+*.pth
 *.h5
 data/ramona_deininger
 **/__pycache__/**
