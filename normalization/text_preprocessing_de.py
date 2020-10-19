@@ -371,6 +371,7 @@ class TextNormalizer:
         texts = texts_next
         texts = [self.fix_punctuation(item) for item in texts]
         texts = self.remove_unaudible_texts(texts=texts)
+        texts = [text.lower() for text in texts]
         return texts
 
     def split_text(self, text: str, max_len: int = 100) -> List[str]:

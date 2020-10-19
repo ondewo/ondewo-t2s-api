@@ -1,6 +1,7 @@
 cachetools
 flask
 fluent-logger==0.9.6
+funcy
 msgpack==1.0.0
 PyYAML==5.3.1
 tritonclient[all]==2.3.0
