@@ -1,57 +1,9 @@
 # ONDEWO T2S batch server configuration
 
-
-inference:
-    type: "composite"
-
-    composite_inference:
-        text2mel:
-            type: "glow_tts"
-
-            tacotron2:
-                batch_size: 8
-                path: "models/tacotron2/de/checkpoints_kerstin_eloqai/"
-                param_config_path: "models/tacotron2/de/tacotron2.yaml"
-                step: "1000"
-
-            glow_tts:
-                batch_size: 8
-                use_gpu: false
-                length_scale: 1.0
-                noise_scale: 0.667
-                path: "models/glow-tts/en/pretrained.pth"
-                cleaners: ["english_cleaners"]
-                param_config_path: "models/glow-tts/en/config.json"
-
-        mel2audio:
-            type: "mb_melgan"
-
-            waveglow:
-                batch_size: 4
-                path: "models/waveglow/checkpoints_waveglow_kerstin/WaveGlowNM.pt"
-                param_config_path: "models/waveglow/waveglow.yaml"
-                sigma: 0.6
-                denoiser:
-                    active: true
-                    strength: 0.05
-
-            waveglow_triton:
-                param_config_path: "models/waveglow/waveglow.yaml"
-                sigma: 0.6
-                max_spect_size: 1000
-                triton_model_name: "waveglow"
-                triton_url: "localhost:8001"
-
-            mb_melgan:
-                batch_size: 20
-                config_path: "models/mb_melgan/de/config.yml"
-                model_path: "models/mb_melgan/de/generator-680000.h5"
-                stats_path: "models/mb_melgan/de/stats.npy"
-
-    caching:
-        active: false
-        memory_cache_max_size: 20
-        sampling_rate: 22050
-        load_cache: true
-        save_cache: true
-        cache_save_dir: "models/cache"
+batch_size: 8
+use_gpu: false
+length_scale: 1.0
+noise_scale: 0.667
+path: "models/glow-tts/en/pretrained.pth"
+cleaners: ["english_cleaners"]
+param_config_path: "models/glow-tts/en/config.json"
