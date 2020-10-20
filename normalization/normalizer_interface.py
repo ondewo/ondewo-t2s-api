@@ -4,7 +4,7 @@ from typing import List
 
 class NormalizerInterface(ABC):
 
-    def normalize_and_split(self, text: str) -> List[str]:
+    def normalize_and_split(self, texts: List[str]) -> List[str]:
         """
 
         Args:

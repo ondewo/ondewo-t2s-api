@@ -1,13 +1,12 @@
 import os
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, Callable
 
 from flask import Flask
 from ruamel.yaml import YAML
 
 from inference.inference import Inference
 from inference.inference_factory import InferenceFactory
-from normalization.normalizer_factory import NormalizerFactory
-from normalization.normalizer_interface import NormalizerInterface
+from normalization.pipeline_constructor import NormalizerPipeline
 from normalization.postprocessor import Postprocessor
 
 server = Flask(__name__)
@@ -22,7 +21,7 @@ with open(config_file) as f:
 
 inference: Inference = InferenceFactory.get_inference(config['inference'])
 
-normalizer: NormalizerInterface = NormalizerFactory.get_inference(config=config['normalization'])
+preprocess_pipeline: NormalizerPipeline = NormalizerPipeline(config=config['normalization'])
 postprocessor = Postprocessor()
 
 # needed for Flask
