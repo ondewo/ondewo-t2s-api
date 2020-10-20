@@ -8,3 +8,4 @@ data/ramona_deininger
 .vscode/
 pytest.xml
 models/triton_repo*
+glow-tts/
