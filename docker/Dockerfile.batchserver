@@ -43,13 +43,12 @@ RUN apt-get update && apt-get -y upgrade && \
 	apt-get install -y git
 
 COPY ./docker/batch_server_requirements.txt .
+RUN pip install nvidia-pyindex
 RUN pip install -r batch_server_requirements.txt --ignore-installed && \
 	pip install git+https://github.com/TensorSpeech/TensorflowTTS.git
 
 WORKDIR /opt/ondewo-t2s
 COPY ./utils ./utils
-RUN cd utils/triton_client_lib && pip install --user --upgrade triton*.whl
-
 COPY ./inference ./inference
 COPY ./normalization ./normalization
 COPY ./batch_server ./batch_server

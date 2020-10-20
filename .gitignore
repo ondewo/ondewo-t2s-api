@@ -1,6 +1,6 @@
 *.pt
-*.h5
 *.pth
+*.h5
 data/ramona_deininger
 **/__pycache__/**
 **/.ipynb_checkpoints/**
