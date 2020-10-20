@@ -67,6 +67,8 @@ class TestNormalization:
     @staticmethod
     @pytest.mark.parametrize('date, expected_result', [
         ('01.01 1 Januar 2018  02 Januar', 'erster Januar erster Januar zweitausendachtzehn zweiter Januar'),
+        ('Was hast du am 3. April 1989 gemacht?',
+         'Was hast du am dritten April neunzehnhundertneunundachtzig gemacht?')
     ])
     def test_normalize_dates(date: str, expected_result: str) -> None:
         normalized_text_with_dates: str = normalizer.normalize_single_date(date)

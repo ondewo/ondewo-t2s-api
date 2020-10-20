@@ -41,7 +41,7 @@ class TextNormalizerDe(NormalizerInterface):
                       r'[aA]pril|[mM]ai|[jJ]uni|[jJ]uli|[aA]ugust|[sS]eptember|[oO]ktober|[nN]ovember|' \
                       r'[dD]ezember)|[01][0-9])\.?(?:((?: 19| 20)\d{2})|\s|\b|$))'
 
-    pttrn_date = re.compile(date_regex)
+    pttrn_date = re.compile(rf'(?:(m)\s*)?{date_regex}')
 
     pttrn_year = re.compile(r'(?:\s|\b|^)((?:19|20)\d{2})(?:\s|\b|$)')
 
@@ -281,10 +281,12 @@ class TextNormalizerDe(NormalizerInterface):
             return text
 
         for group in groups:
-            date_to_normalize: str = group[0].strip()
-            day: str = group[1] or group[4]
-            month: str = group[2] or group[5]
-            year: str = group[3] or group[6]
+            if group[0].strip() == 'm':
+                ending = 'ten'
+            date_to_normalize: str = group[1].strip()
+            day: str = group[2] or group[5]
+            month: str = group[3] or group[6]
+            year: str = group[4] or group[7]
             try:
                 month_int: int = self.month_dict.get(month) or int(month)
                 day_int: int = int(day)
