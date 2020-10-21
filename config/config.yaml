@@ -23,7 +23,7 @@ inference:
                 param_config_path: "models/glow_tts/de/config.json"
 
         mel2audio:
-            type: "mb_melgan_triton"
+            type: "mb_melgan_tf"
 
             waveglow:
                 batch_size: 4
@@ -41,7 +41,7 @@ inference:
                 triton_model_name: "waveglow"
                 triton_url: "localhost:8001"
 
-            mb_melgan:
+            mb_melgan_tf:
                 batch_size: 20
                 config_path: "models/mb_melgan/en/config.yml"
                 model_path: "models/mb_melgan/en/generator-1820000.h5"

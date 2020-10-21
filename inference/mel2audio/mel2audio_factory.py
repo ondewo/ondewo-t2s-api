@@ -12,7 +12,7 @@ class Mel2AudioFactory:
     MEL2AUDIO_DICT: Dict[str, Type] = {
         "waveglow": Waveglow,
         "waveglow_triton": WaveglowTriton,
-        "mb_melgan": MBMelGAN,
+        "mb_melgan_tf": MBMelGAN,
         "mb_melgan_triton": MBMelGANTriton
     }
 

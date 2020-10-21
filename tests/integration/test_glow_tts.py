@@ -4,7 +4,7 @@ from typing import Dict, Any, List
 import numpy as np
 from ruamel.yaml import YAML
 
-from inference.text2mel.constants import BATCH_SIZE
+from inference.text2mel.constants_text2mel import BATCH_SIZE
 from inference.text2mel.glow_tts import GlowTts
 
 yaml = YAML(typ="safe")

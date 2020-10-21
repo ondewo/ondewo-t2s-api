@@ -8,11 +8,11 @@ import tensorflow as tf
 from tensorflow_tts.inference import AutoConfig
 from tensorflow_tts.inference import TFAutoModel
 
-from inference.mel2audio.mel2audio import Mel2Audio
+from inference.mel2audio.mbmelgan_core import MBMelGANCore
 from utils.logger import logger
 
 
-class MBMelGAN(Mel2Audio):
+class MBMelGAN(MBMelGANCore):
 
     MEL_LOG: str = "log10"
     N_MEL_FEATURES: int = 80
@@ -21,13 +21,9 @@ class MBMelGAN(Mel2Audio):
 
     def __init__(self, config: Dict[str, Any]):
         self._check_paths_exist([config["stats_path"], config["model_path"], config["config_path"]])
-        self.config = config
+        super().__init__(config)
 
         self.batch_size = self.config["batch_size"]
-        self.scaler = StandardScaler()
-        self.scaler.mean_, self.scaler.scale_ = np.load(
-            self.config["stats_path"])
-        self.scaler.n_features_in_ = self.N_MEL_FEATURES
 
         model_config = AutoConfig.from_pretrained(self.config["config_path"])
         self.mb_melgan = TFAutoModel.from_pretrained(
@@ -37,17 +33,6 @@ class MBMelGAN(Mel2Audio):
             name="mb_melgan"
         )
         logger.info(f"Loaded MB-MelGAN model from path {self.config['model_path']}.")
-
-        yaml = YAML(typ="safe")
-        with open(self.config["config_path"]) as file:
-            self.hop_size = yaml.load(file)["hop_size"]
-
-    def _preprocess(self, mel_spectrograms: List[np.ndarray]) -> List[np.ndarray]:
-        mel_out: List[np.ndarray] = []
-        for mel in mel_spectrograms:
-            mel_out.append(self.scaler.transform(mel.T * np.log10(np.e)))
-        mel_out = tf.keras.preprocessing.sequence.pad_sequences(mel_out, dtype="float32", padding="post")
-        return mel_out
 
     def _batch_and_preprocess_inputs(self, mel_spectrograms: List[np.ndarray]) -> List[np.ndarray]:
         batched: List[np.ndarray] = []
@@ -82,17 +67,6 @@ class MBMelGAN(Mel2Audio):
             audio_tensor = self.mb_melgan.inference(input_mels)
             mel_spectrograms_slice = mel_spectrograms[i*self.batch_size: i*self.batch_size+len(input_mels)]
             result: List[np.ndarray] = self._postprocess(
-                audio_tensor, mel_spectrograms_slice)
+                audio_tensor.numpy(), mel_spectrograms_slice)
             final_result += result
         return final_result
-
-    def _postprocess(self,
-                     audio_tensor: tf.Tensor,
-                     mel_spectrograms: List[np.ndarray]) -> List[np.ndarray]:
-        audio_final: List[np.ndarray] = []
-        audios = audio_tensor[:, :, 0].numpy()
-        for i in range(audios.shape[0]):
-            audio_len = mel_spectrograms[i].shape[-1] * self.hop_size
-            audio_final.append(audios[i, :audio_len])
-
-        return audio_final
