@@ -1,9 +1,7 @@
 import time
-from typing import List, Dict, Any, Tuple
+from typing import List, Dict, Any
 
 import numpy as np
-from ruamel.yaml import YAML
-from sklearn.preprocessing import StandardScaler
 from tritonclient.grpc import InferenceServerClient, InferInput, InferRequestedOutput, InferResult
 
 from inference.mel2audio.mbmelgan_core import MBMelGANCore
@@ -21,11 +19,13 @@ class MBMelGANTriton(MBMelGANCore):
         self.triton_client = InferenceServerClient(url=self.config['triton_url'])
         self.triton_model_name: str = self.config['triton_model_name']
         triton_utils.check_triton_online(self.triton_client, self.triton_model_name)
+        self.batch_size = self.triton_client.get_model_config(self.triton_model_name, as_json=True)[
+            "config"]["max_batch_size"]
 
-    def inference_on_triton(self, spectrogram: np.ndarray) -> np.ndarray:
-        # Prepare inputs
-        input_1: InferInput = InferInput(name="input_1", shape=list(spectrogram.shape), datatype="FP32")
-        input_1.set_data_from_numpy(spectrogram)
+    def _inference_on_triton(self, spectrogram_batch: np.ndarray) -> np.ndarray:
+        # Prepare input
+        input_1: InferInput = InferInput(name="input_1", shape=list(spectrogram_batch.shape), datatype="FP32")
+        input_1.set_data_from_numpy(spectrogram_batch)
 
         # Prepare output
         output_1: InferRequestedOutput = InferRequestedOutput("output_1")
@@ -41,18 +41,11 @@ class MBMelGANTriton(MBMelGANCore):
     def mel2audio(self, mel_spectrograms: List[np.ndarray]) -> List[np.ndarray]:
         start_time: float = time.time()
 
-        # TODO: handle sending batches to Triton
-        audios: List[np.ndarray] = []
-        for spectrogram in mel_spectrograms:
-            # convert spectrogram to proper format
-            spectrogram = self._preprocess([spectrogram])
-            spectrogram = np.array(spectrogram)  # transform to np.ndarray
+        batched_input_mels: List[np.ndarray] = self._batch_and_preprocess_inputs(mel_spectrograms)
 
-            logger.info(f"Started inference on Triton for model {self.triton_model_name}.")
-            audio = self.inference_on_triton(spectrogram)
-            logger.info(f"Finished inference on Triton for model {self.triton_model_name}.")
-
-            audios += self._postprocess(audio, [spectrogram])
-
+        logger.info("Running MB-MelGAN inference in Triton")
+        result: List[np.ndarray] = self._inference_batches_and_postprocess(
+            batched_input_mels, mel_spectrograms, self._inference_on_triton)
+        logger.info("Done MB-MelGAN inference in Triton")
         logger.info(f"MB-MelGAN inference using Triton took {time.time() - start_time} seconds")
-        return audios
+        return result

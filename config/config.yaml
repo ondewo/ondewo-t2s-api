@@ -23,7 +23,7 @@ inference:
                 param_config_path: "models/glow_tts/de/config.json"
 
         mel2audio:
-            type: "mb_melgan_tf"
+            type: "mb_melgan_triton"
 
             waveglow:
                 batch_size: 4
