@@ -31,13 +31,11 @@ WORKDIR /ondewo/
 COPY grpc_config_server/requirements.txt grpc_config_server/requirements.txt
 RUN pip install -r grpc_config_server/requirements.txt
 
-# copy server code
+# copy server code and config (./models is volume-mapped)
 COPY grpc_config_server grpc_config_server
-
-COPY models models
 COPY config config
 
-CMD python -m grpc_config_server.tts_servicer
+CMD python -m grpc_config_server.tts_server
 
 # instantiate health check
 EXPOSE 7777

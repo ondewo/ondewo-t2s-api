@@ -13,4 +13,5 @@ services:
       - 7777:7777
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - ../models:/ondewo/models
 

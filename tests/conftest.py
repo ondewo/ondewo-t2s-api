@@ -3,7 +3,7 @@ from typing import Generator, List
 import pytest
 
 from grpc_config_server.t2s_manager.manager import TextToSpeechManager
-from grpc_config_server.tts_servicer import TextToSpeechConfigServer
+from grpc_config_server.tts_server import TextToSpeechConfigServer
 
 
 class TESTdockerclient():

@@ -18,7 +18,6 @@ if TYPE_CHECKING:
 class ModelConfig:
     name: str
     full_path: str
-    model_id: str
     config_yaml_path: str
     config_data: dict
     language_code: str
@@ -237,13 +236,13 @@ class DirTree:
                 return setup
         raise FileNotFoundError("Could not find path of active config.yaml. No files in " +
                                 "./model/<company>/<language>/<domain>/<speaker>/<setup>/config/config.yaml" +
-                                " match the config")
+                                " match the config.")
 
     def get_model_by_id(self, model_id: Type[str]) -> ModelConfig:
         """get the ModelConfig associated with this model_id"""
         setups = self.extract_model_config_list()
         for setup in setups:
-            if setup.model_id == model_id:
+            if setup.full_path == model_id:
                 return setup
         raise ModuleNotFoundError(f"could not find model configuration with this id: {model_id}!")
 
@@ -309,7 +308,6 @@ class DirTree:
                                 name=model_setup,
                                 full_path=mpath,
                                 config_yaml_path=config_yaml_path,
-                                model_id=str(uuid.uuid4()),
                                 language_code=language,
                                 config_data=config_data,
                             ))

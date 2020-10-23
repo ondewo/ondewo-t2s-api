@@ -124,7 +124,7 @@ build_grpc_server:
 	# ignore dockerignore by moving it before the build, and restore it afterwards
 	mkdir ignoreme
 	mv .dockerignore ignoreme/.dockerignore # move away .dockerignore
-	mv grpc_config_server/grpc_dockerignore .dockerignore
+	cp grpc_config_server/grpc_dockerignore .dockerignore
 	docker build -t t2s_grpc_server -f grpc_config_server/Dockerfile .
 	mv .dockerignore grpc_config_server/grpc_dockerignore
 	mv ignoreme/.dockerignore .dockerignore # restore .dockerignore

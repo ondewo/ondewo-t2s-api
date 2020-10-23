@@ -17,30 +17,30 @@ class Speech2TextConfigurationStub(object):
             channel: A grpc.Channel.
         """
         self.ListSupportedLanguages = channel.unary_unary(
-            '/ondewo.nlu.Speech2TextConfiguration/ListSupportedLanguages',
-            request_serializer=ondewo_dot_audio_dot_speech__to__text__pb2.ListLanguagesRequest.SerializeToString,
-            response_deserializer=ondewo_dot_audio_dot_speech__to__text__pb2.ListLanguagesResponse.FromString,
-        )
+                '/ondewo.nlu.Speech2TextConfiguration/ListSupportedLanguages',
+                request_serializer=ondewo_dot_audio_dot_speech__to__text__pb2.ListLanguagesRequest.SerializeToString,
+                response_deserializer=ondewo_dot_audio_dot_speech__to__text__pb2.ListLanguagesResponse.FromString,
+                )
         self.ListModelSetupsForLanguage = channel.unary_unary(
-            '/ondewo.nlu.Speech2TextConfiguration/ListModelSetupsForLanguage',
-            request_serializer=ondewo_dot_audio_dot_speech__to__text__pb2.ListModelSetupsForLangRequest.SerializeToString,
-            response_deserializer=ondewo_dot_audio_dot_speech__to__text__pb2.ModelSetupsResponse.FromString,
-        )
+                '/ondewo.nlu.Speech2TextConfiguration/ListModelSetupsForLanguage',
+                request_serializer=ondewo_dot_audio_dot_speech__to__text__pb2.ListModelSetupsForLangRequest.SerializeToString,
+                response_deserializer=ondewo_dot_audio_dot_speech__to__text__pb2.ModelSetupsResponse.FromString,
+                )
         self.ListAllModelSetups = channel.unary_unary(
-            '/ondewo.nlu.Speech2TextConfiguration/ListAllModelSetups',
-            request_serializer=ondewo_dot_audio_dot_speech__to__text__pb2.ListAllModelSetupsRequest.SerializeToString,
-            response_deserializer=ondewo_dot_audio_dot_speech__to__text__pb2.ModelSetupsResponse.FromString,
-        )
+                '/ondewo.nlu.Speech2TextConfiguration/ListAllModelSetups',
+                request_serializer=ondewo_dot_audio_dot_speech__to__text__pb2.ListAllModelSetupsRequest.SerializeToString,
+                response_deserializer=ondewo_dot_audio_dot_speech__to__text__pb2.ModelSetupsResponse.FromString,
+                )
         self.GetActiveModelConfig = channel.unary_unary(
-            '/ondewo.nlu.Speech2TextConfiguration/GetActiveModelConfig',
-            request_serializer=ondewo_dot_audio_dot_speech__to__text__pb2.GetActiveModelConfigRequest.SerializeToString,
-            response_deserializer=ondewo_dot_audio_dot_speech__to__text__pb2.ModelSetupResponse.FromString,
-        )
+                '/ondewo.nlu.Speech2TextConfiguration/GetActiveModelConfig',
+                request_serializer=ondewo_dot_audio_dot_speech__to__text__pb2.GetActiveModelConfigRequest.SerializeToString,
+                response_deserializer=ondewo_dot_audio_dot_speech__to__text__pb2.ModelSetupResponse.FromString,
+                )
         self.SetModelConfig = channel.unary_unary(
-            '/ondewo.nlu.Speech2TextConfiguration/SetModelConfig',
-            request_serializer=ondewo_dot_audio_dot_speech__to__text__pb2.SetModelConfigRequest.SerializeToString,
-            response_deserializer=ondewo_dot_audio_dot_speech__to__text__pb2.SetModelConfigResponse.FromString,
-        )
+                '/ondewo.nlu.Speech2TextConfiguration/SetModelConfig',
+                request_serializer=ondewo_dot_audio_dot_speech__to__text__pb2.SetModelConfigRequest.SerializeToString,
+                response_deserializer=ondewo_dot_audio_dot_speech__to__text__pb2.SetModelConfigResponse.FromString,
+                )
 
 
 class Speech2TextConfigurationServicer(object):
@@ -81,39 +81,38 @@ class Speech2TextConfigurationServicer(object):
 
 def add_Speech2TextConfigurationServicer_to_server(servicer, server):
     rpc_method_handlers = {
-        'ListSupportedLanguages': grpc.unary_unary_rpc_method_handler(
-            servicer.ListSupportedLanguages,
-            request_deserializer=ondewo_dot_audio_dot_speech__to__text__pb2.ListLanguagesRequest.FromString,
-            response_serializer=ondewo_dot_audio_dot_speech__to__text__pb2.ListLanguagesResponse.SerializeToString,
-        ),
-        'ListModelSetupsForLanguage': grpc.unary_unary_rpc_method_handler(
-            servicer.ListModelSetupsForLanguage,
-            request_deserializer=ondewo_dot_audio_dot_speech__to__text__pb2.ListModelSetupsForLangRequest.FromString,
-            response_serializer=ondewo_dot_audio_dot_speech__to__text__pb2.ModelSetupsResponse.SerializeToString,
-        ),
-        'ListAllModelSetups': grpc.unary_unary_rpc_method_handler(
-            servicer.ListAllModelSetups,
-            request_deserializer=ondewo_dot_audio_dot_speech__to__text__pb2.ListAllModelSetupsRequest.FromString,
-            response_serializer=ondewo_dot_audio_dot_speech__to__text__pb2.ModelSetupsResponse.SerializeToString,
-        ),
-        'GetActiveModelConfig': grpc.unary_unary_rpc_method_handler(
-            servicer.GetActiveModelConfig,
-            request_deserializer=ondewo_dot_audio_dot_speech__to__text__pb2.GetActiveModelConfigRequest.FromString,
-            response_serializer=ondewo_dot_audio_dot_speech__to__text__pb2.ModelSetupResponse.SerializeToString,
-        ),
-        'SetModelConfig': grpc.unary_unary_rpc_method_handler(
-            servicer.SetModelConfig,
-            request_deserializer=ondewo_dot_audio_dot_speech__to__text__pb2.SetModelConfigRequest.FromString,
-            response_serializer=ondewo_dot_audio_dot_speech__to__text__pb2.SetModelConfigResponse.SerializeToString,
-        ),
+            'ListSupportedLanguages': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListSupportedLanguages,
+                    request_deserializer=ondewo_dot_audio_dot_speech__to__text__pb2.ListLanguagesRequest.FromString,
+                    response_serializer=ondewo_dot_audio_dot_speech__to__text__pb2.ListLanguagesResponse.SerializeToString,
+            ),
+            'ListModelSetupsForLanguage': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListModelSetupsForLanguage,
+                    request_deserializer=ondewo_dot_audio_dot_speech__to__text__pb2.ListModelSetupsForLangRequest.FromString,
+                    response_serializer=ondewo_dot_audio_dot_speech__to__text__pb2.ModelSetupsResponse.SerializeToString,
+            ),
+            'ListAllModelSetups': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListAllModelSetups,
+                    request_deserializer=ondewo_dot_audio_dot_speech__to__text__pb2.ListAllModelSetupsRequest.FromString,
+                    response_serializer=ondewo_dot_audio_dot_speech__to__text__pb2.ModelSetupsResponse.SerializeToString,
+            ),
+            'GetActiveModelConfig': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetActiveModelConfig,
+                    request_deserializer=ondewo_dot_audio_dot_speech__to__text__pb2.GetActiveModelConfigRequest.FromString,
+                    response_serializer=ondewo_dot_audio_dot_speech__to__text__pb2.ModelSetupResponse.SerializeToString,
+            ),
+            'SetModelConfig': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetModelConfig,
+                    request_deserializer=ondewo_dot_audio_dot_speech__to__text__pb2.SetModelConfigRequest.FromString,
+                    response_serializer=ondewo_dot_audio_dot_speech__to__text__pb2.SetModelConfigResponse.SerializeToString,
+            ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-        'ondewo.nlu.Speech2TextConfiguration', rpc_method_handlers)
+            'ondewo.nlu.Speech2TextConfiguration', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
+
  # This class is part of an EXPERIMENTAL API.
-
-
 class Speech2TextConfiguration(object):
     """configuration of speech-to-text
     endpoints of speech-to-text service
@@ -121,85 +120,85 @@ class Speech2TextConfiguration(object):
 
     @staticmethod
     def ListSupportedLanguages(request,
-                               target,
-                               options=(),
-                               channel_credentials=None,
-                               call_credentials=None,
-                               insecure=False,
-                               compression=None,
-                               wait_for_ready=None,
-                               timeout=None,
-                               metadata=None):
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
         return grpc.experimental.unary_unary(request, target, '/ondewo.nlu.Speech2TextConfiguration/ListSupportedLanguages',
-                                             ondewo_dot_audio_dot_speech__to__text__pb2.ListLanguagesRequest.SerializeToString,
-                                             ondewo_dot_audio_dot_speech__to__text__pb2.ListLanguagesResponse.FromString,
-                                             options, channel_credentials,
-                                             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+            ondewo_dot_audio_dot_speech__to__text__pb2.ListLanguagesRequest.SerializeToString,
+            ondewo_dot_audio_dot_speech__to__text__pb2.ListLanguagesResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def ListModelSetupsForLanguage(request,
-                                   target,
-                                   options=(),
-                                   channel_credentials=None,
-                                   call_credentials=None,
-                                   insecure=False,
-                                   compression=None,
-                                   wait_for_ready=None,
-                                   timeout=None,
-                                   metadata=None):
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
         return grpc.experimental.unary_unary(request, target, '/ondewo.nlu.Speech2TextConfiguration/ListModelSetupsForLanguage',
-                                             ondewo_dot_audio_dot_speech__to__text__pb2.ListModelSetupsForLangRequest.SerializeToString,
-                                             ondewo_dot_audio_dot_speech__to__text__pb2.ModelSetupsResponse.FromString,
-                                             options, channel_credentials,
-                                             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+            ondewo_dot_audio_dot_speech__to__text__pb2.ListModelSetupsForLangRequest.SerializeToString,
+            ondewo_dot_audio_dot_speech__to__text__pb2.ModelSetupsResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def ListAllModelSetups(request,
-                           target,
-                           options=(),
-                           channel_credentials=None,
-                           call_credentials=None,
-                           insecure=False,
-                           compression=None,
-                           wait_for_ready=None,
-                           timeout=None,
-                           metadata=None):
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
         return grpc.experimental.unary_unary(request, target, '/ondewo.nlu.Speech2TextConfiguration/ListAllModelSetups',
-                                             ondewo_dot_audio_dot_speech__to__text__pb2.ListAllModelSetupsRequest.SerializeToString,
-                                             ondewo_dot_audio_dot_speech__to__text__pb2.ModelSetupsResponse.FromString,
-                                             options, channel_credentials,
-                                             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+            ondewo_dot_audio_dot_speech__to__text__pb2.ListAllModelSetupsRequest.SerializeToString,
+            ondewo_dot_audio_dot_speech__to__text__pb2.ModelSetupsResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def GetActiveModelConfig(request,
-                             target,
-                             options=(),
-                             channel_credentials=None,
-                             call_credentials=None,
-                             insecure=False,
-                             compression=None,
-                             wait_for_ready=None,
-                             timeout=None,
-                             metadata=None):
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
         return grpc.experimental.unary_unary(request, target, '/ondewo.nlu.Speech2TextConfiguration/GetActiveModelConfig',
-                                             ondewo_dot_audio_dot_speech__to__text__pb2.GetActiveModelConfigRequest.SerializeToString,
-                                             ondewo_dot_audio_dot_speech__to__text__pb2.ModelSetupResponse.FromString,
-                                             options, channel_credentials,
-                                             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+            ondewo_dot_audio_dot_speech__to__text__pb2.GetActiveModelConfigRequest.SerializeToString,
+            ondewo_dot_audio_dot_speech__to__text__pb2.ModelSetupResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def SetModelConfig(request,
-                       target,
-                       options=(),
-                       channel_credentials=None,
-                       call_credentials=None,
-                       insecure=False,
-                       compression=None,
-                       wait_for_ready=None,
-                       timeout=None,
-                       metadata=None):
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
         return grpc.experimental.unary_unary(request, target, '/ondewo.nlu.Speech2TextConfiguration/SetModelConfig',
-                                             ondewo_dot_audio_dot_speech__to__text__pb2.SetModelConfigRequest.SerializeToString,
-                                             ondewo_dot_audio_dot_speech__to__text__pb2.SetModelConfigResponse.FromString,
-                                             options, channel_credentials,
-                                             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+            ondewo_dot_audio_dot_speech__to__text__pb2.SetModelConfigRequest.SerializeToString,
+            ondewo_dot_audio_dot_speech__to__text__pb2.SetModelConfigResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

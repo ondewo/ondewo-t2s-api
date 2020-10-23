@@ -1,9 +1,11 @@
-import pytest
+from typing import List
+
 from google.protobuf.json_format import MessageToDict
 
 from grpc_config_server.ondewo.audio import text_to_speech_pb2
+from grpc_config_server.ondewo.audio.text_to_speech_pb2 import ModelSetup
 from grpc_config_server.t2s_manager.dir_dataclass import ModelConfig
-from grpc_config_server.tts_servicer import TextToSpeechConfigServer
+from grpc_config_server.tts_server import TextToSpeechConfigServer
 
 
 class TestTTSServicer:
@@ -11,9 +13,7 @@ class TestTTSServicer:
 
     def test_handle_list_supported_languages(self, server_offline: TextToSpeechConfigServer) -> None:
         response = server_offline.handle_list_supported_languages(
-            request=text_to_speech_pb2.ListLanguagesRequest(
-                identity=text_to_speech_pb2.Identifier()
-            )
+            request=text_to_speech_pb2.ListLanguagesRequest()
         )
         assert response.language_codes == ['de-DE', 'fr-FR'] or response.language_codes == ['fr-FR', 'de-DE']
 
@@ -21,7 +21,6 @@ class TestTTSServicer:
         test_code = "fr-FR"
         response = server_offline.handle_list_model_setups_for_language(
             request=text_to_speech_pb2.ListModelSetupsForLangRequest(
-                identity=text_to_speech_pb2.Identifier(),
                 language_code=test_code,
             )
         )
@@ -30,39 +29,32 @@ class TestTTSServicer:
             setup = MessageToDict(model_setup)
             assert "languageCode" in setup.keys()
             assert setup["languageCode"] == test_code
-            assert "modelSetupId" in setup.keys()
-            assert "directoryName" in setup.keys()
+            assert "directory" in setup.keys()
             assert "config" in setup.keys()
             assert "inference" in setup["config"].keys()
 
     def test_handle_list_all_model_setups(self, server_offline: TextToSpeechConfigServer) -> None:
         response = server_offline.handle_list_all_model_setups(
-            request=text_to_speech_pb2.ListAllModelSetupsRequest(
-                identity=text_to_speech_pb2.Identifier(),
-            )
+            request=text_to_speech_pb2.ListAllModelSetupsRequest()
         )
         assert len(response.model_setups) == 30
         for model_setup in response.model_setups:
             setup = MessageToDict(model_setup)
             assert "languageCode" in setup.keys()
-            assert "modelSetupId" in setup.keys()
-            assert "directoryName" in setup.keys()
+            assert "directory" in setup.keys()
             assert "config" in setup.keys()
             assert "inference" in setup["config"].keys()
 
     def test_handle_get_active_model_config(self, server_offline: TextToSpeechConfigServer) -> None:
         response = server_offline.handle_get_active_model_config(
-            request=text_to_speech_pb2.GetActiveModelConfigRequest(
-                identity=text_to_speech_pb2.Identifier(),
-            )
+            request=text_to_speech_pb2.GetActiveModelConfigRequest()
         )
         assert response.model_setup
         setup = MessageToDict(response.model_setup)
         assert "languageCode" in setup.keys()
         assert setup["languageCode"] == "fr-FR"
-        assert "modelSetupId" in setup.keys()
-        assert "directoryName" in setup.keys()
-        assert setup["directoryName"] == './tests/tests_grpc/offline/models/universeinc/fr-FR/astrology0815/sr001/0.0.1'
+        assert "directory" in setup.keys()
+        assert setup["directory"] == './tests/tests_grpc/offline/models/universeinc/fr-FR/astrology0815/sr001/0.0.1'
         assert "config" in setup.keys()
         assert "inference" in setup["config"].keys()
         assert "type" in setup["config"]["inference"].keys()
@@ -71,33 +63,31 @@ class TestTTSServicer:
         from_file = server_offline.manager.active_config
         from_file_setup = MessageToDict(text_to_speech_pb2.ModelSetup(
             language_code=from_file.language_code,
-            model_setup_id=from_file.model_id,
-            directory_name=from_file.full_path,
+            directory=from_file.full_path,
             config=ModelConfig.get_proto_from_dict(config_data=from_file.config_data),
         ))
         assert from_file_setup == setup
 
     def test_handle_set_model_config(self, server_offline: TextToSpeechConfigServer) -> None:
         response = server_offline.handle_list_all_model_setups(
-            request=text_to_speech_pb2.ListAllModelSetupsRequest(
-                identity=text_to_speech_pb2.Identifier(),
-            )
+            request=text_to_speech_pb2.ListAllModelSetupsRequest()
         )
-        all_model_setups = response.model_setups
+        all_model_setups: List[ModelSetup] = [config for config in response.model_setups]
 
         # set, and then reset configuration
         for test_type_name in ["testsetter1", "testsetterorig"]:
 
             # get model id
+            model_setup_id = ""
             for setup in all_model_setups:
                 if setup.config.inference.type == test_type_name:
-                    model_setup_id = setup.model_setup_id
+                    model_setup_id = setup.directory
                     break
 
             # set model with id
             response = server_offline.handle_set_model_config(
                 text_to_speech_pb2.SetModelConfigRequest(
-                    model_setup_id=model_setup_id,
+                    directory=model_setup_id,
                 )
             )
 

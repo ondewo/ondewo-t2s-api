@@ -60,8 +60,7 @@ class TextToSpeechManager:
         return [
             text_to_speech_pb2.ModelSetup(
                 language_code=model.language_code,
-                model_setup_id=model.model_id,
-                directory_name=model.full_path,
+                directory=model.full_path,
                 config=model.get_proto_config(),
             ) for model in self.model_dir_tree.extract_model_config_list(language_code=language_code)
         ]
@@ -73,7 +72,7 @@ class TextToSpeechManager:
         then attemps to 'docker restart' the container
 
         Args:
-            model_id: ID of the model configuration to set
+            model_id: ID of the model configuration to set / directory of the model setup
 
         Returns:
             bool: whether the operation succeeded
