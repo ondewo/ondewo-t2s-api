@@ -44,7 +44,8 @@ RUN apt-get update && apt-get -y upgrade && \
 	apt-get install -y git
 
 COPY docker/test_requirements.txt .
-RUN pip install -r test_requirements.txt --ignore-installed && \
+RUN pip install nvidia-pyindex && \
+    pip install -r test_requirements.txt --ignore-installed && \
     pip install git+https://github.com/TensorSpeech/TensorflowTTS.git
 WORKDIR /opt
 
