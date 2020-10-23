@@ -15,13 +15,13 @@ inference:
                 step: "1000"
 
             glow_tts:
-                batch_size: 8
+                batch_size: 1
                 use_gpu: false
                 length_scale: 1.0
                 noise_scale: 0.667
-                path: "models/glow-tts/en/pretrained.pth"
+                path: "models/glow-tts/de/G_kerstin.pth"
                 cleaners: []
-                param_config_path: "models/glow-tts/en/config.json"
+                param_config_path: "models/glow-tts/de/config.json"
 
         mel2audio:
             type: "mb_melgan"
@@ -57,7 +57,16 @@ inference:
         cache_save_dir: "models/cache"
 
 normalization:
-    language: "en"
+    language: "de"
 
     pipeline:
-        - "normalize_and_split"
+      - "fix_plus"
+      - "normalize_urls"
+      - "normalize_dates"
+      - "normalize_year"
+      - "normalize_time"
+      - "normalize_numbers"
+      - "split_texts"
+      - "fix_punctuation"
+      - "remove_unaudible_texts"
+      - "lower_case"

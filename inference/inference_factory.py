@@ -3,22 +3,19 @@ from typing import Dict, Any
 from ruamel.yaml import YAML
 
 from inference.cached_inference import CachedInference
+from inference.composite_inference import CompositeInference
 from inference.inference import Inference
-from inference.nemo_inference import NemoInference
-from inference.triton_inference import TritonInference
 
 
 class InferenceFactory:
 
     @classmethod
     def get_inference(cls, config: Dict[str, Any]) -> Inference:
-        if config.get('inference_type') == 'nemo':
-            inference_base: Inference = NemoInference(config=config)
-        elif config.get('inference_type') == 'triton':
-            inference_base = TritonInference(config=config)
+        if config.get('type') == 'composite':
+            inference_base: Inference = CompositeInference(config=config['composite_inference'])
         else:
             raise ValueError(
-                f'Inference type can be either "nemo" or "triton". Got {config.get("inference_type")}.')
+                f'Inference type can be: ["composite"]. Got {config.get("type")}.')
 
         caching_config: Dict[str, Any] = config['caching']
         if caching_config.get('active'):

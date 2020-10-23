@@ -4,9 +4,9 @@ from typing import List
 
 import pytest
 
-from normalization.text_preprocessing_de import TextNormalizer
+from normalization.text_preprocessing_de import TextNormalizerDe
 
-normalizer = TextNormalizer()
+normalizer = TextNormalizerDe()
 
 
 class TestNormalization:
@@ -60,13 +60,15 @@ class TestNormalization:
         ('ggg 1456lkkkk', 'ggg eins vier fünf sechs lkkkk'),
     ])
     def test_normalize_numbers(number: str, expected_result: str) -> None:
-        number_text = normalizer.normalize_numbers(number)
-        assert isinstance(number_text, str)
-        assert number_text == expected_result
+        number_text = normalizer.normalize_numbers([number])
+        assert isinstance(number_text, list)
+        assert number_text == [expected_result]
 
     @staticmethod
     @pytest.mark.parametrize('date, expected_result', [
         ('01.01 1 Januar 2018  02 Januar', 'erster Januar erster Januar zweitausendachtzehn zweiter Januar'),
+        ('Was hast du am 3. April 1989 gemacht?',
+         'Was hast du am dritten April neunzehnhundertneunundachtzig gemacht?')
     ])
     def test_normalize_dates(date: str, expected_result: str) -> None:
         normalized_text_with_dates: str = normalizer.normalize_single_date(date)
@@ -112,9 +114,9 @@ class TestNormalization:
     ]
     )
     def test_normalize_and_split(text: str, expected_result: str) -> None:
-        normalized_text: List[str] = normalizer.normalize_and_split(text)
+        normalized_text: List[str] = normalizer.normalize_and_split([text])
         assert isinstance(normalized_text, list)
-        assert normalized_text == expected_result
+        assert normalized_text == [text.lower() for text in expected_result]
 
     @staticmethod
     @pytest.mark.parametrize('time, expected_result', [
@@ -128,9 +130,9 @@ class TestNormalization:
         ('text 1:4 text', 'text 1:4 text'),
     ])
     def test_normalize_times(time: str, expected_result: str) -> None:
-        normalized_text_with_time: str = normalizer.normalize_time(time)
-        assert isinstance(normalized_text_with_time, str)
-        assert normalized_text_with_time == expected_result
+        normalized_text_with_time: List[str] = normalizer.normalize_time([time])
+        assert isinstance(normalized_text_with_time, list)
+        assert normalized_text_with_time == [expected_result]
 
     @staticmethod
     def test_split_word() -> None:
@@ -186,7 +188,7 @@ class TestNormalization:
           ' text text  text  text.']),
     ])
     def test_split_text(text: str, expected_result: str) -> None:
-        split_text: List[str] = normalizer.split_text(text)
+        split_text: List[str] = normalizer.split_texts([text])
         assert isinstance(split_text, list)
         assert all(map(lambda x: len(x) < 100, split_text))
         assert sum(map(lambda x: len(x.split()), split_text)) == len(
@@ -214,6 +216,6 @@ class TestNormalization:
          'schrägstrich index  another text ')
     ])
     def test_normalize_urls(text: str, expected_result: str) -> None:
-        resulting_text: str = normalizer.normalize_urls(text)
-        assert isinstance(resulting_text, str)
-        assert resulting_text == expected_result
+        resulting_text: List[str] = normalizer.normalize_urls([text])
+        assert isinstance(resulting_text, list)
+        assert resulting_text == [expected_result]

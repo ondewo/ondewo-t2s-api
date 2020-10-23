@@ -2,14 +2,14 @@ import re
 from typing import List
 import numpy as np
 
-from batch_server import normalizer, inference, postprocessor
+from batch_server import preprocess_pipeline, inference, postprocessor
 from utils.logger import logger
 
 
 def synthesize(text: str) -> np.array:
     if re.search(r'[A-Za-z0-9]+', text):
         logger.info(f'Text to transcribe: "{text}"')
-        texts: List[str] = normalizer.normalize_and_split(text)
+        texts: List[str] = preprocess_pipeline.apply([text])
         logger.info(f'After normalization texts are: {texts}')
 
         audio_list: List[np.ndarray] = inference.synthesize(texts=texts)
