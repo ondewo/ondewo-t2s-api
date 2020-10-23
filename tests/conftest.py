@@ -44,7 +44,7 @@ def mbmelgan_mocked(mocker: MockFixture) -> MBMelGAN:
     )
     mocker.patch(
         "inference.mel2audio.mel2audio.Mel2Audio._check_paths_exist",
-        lambda: None
+        lambda x, y: None
     )
     model_config = load_model_conf(Path("tests", "resources", "test_mbmelgan_config.yaml"))
 
