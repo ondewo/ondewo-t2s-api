@@ -31,9 +31,9 @@ WORKDIR /ondewo/
 COPY grpc_config_server/requirements.txt grpc_config_server/requirements.txt
 RUN pip install -r grpc_config_server/requirements.txt
 
-# copy server code and config (./models is volume-mapped)
+# copy server code (./models and ./config is volume-mapped)
 COPY grpc_config_server grpc_config_server
-COPY config config
+
 
 CMD python -m grpc_config_server.tts_server
 

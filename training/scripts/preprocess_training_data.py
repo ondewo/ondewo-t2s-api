@@ -1,9 +1,9 @@
 import json
 from typing import List
 
-from normalization.text_preprocessing_de import TextNormalizer
+from normalization.text_preprocessing_de import TextNormalizerDe
 
-normalizer = TextNormalizer()
+normalizer = TextNormalizerDe()
 
 
 def normalize(list_of_strings: List[str]) -> List[str]:

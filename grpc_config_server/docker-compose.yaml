@@ -14,4 +14,4 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ../models:/ondewo/models
-
+      - ../config:/ondewo/config
