@@ -1,0 +1,3 @@
+[submodule "ondewoapis"]
+	path = ondewoapis
+	url = git@bitbucket.org:ondewo/ondewoapis.git
