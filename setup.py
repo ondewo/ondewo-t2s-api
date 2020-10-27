@@ -4,7 +4,7 @@ long_description = ""
 # with open("README.md", "r") as f:
 #     long_description = f.read()
 
-with open("requirements.txt") as f:
+with open("grpc_config_server/requirements.txt") as f:
     requires = f.read().splitlines()
 
 setuptools.setup(
