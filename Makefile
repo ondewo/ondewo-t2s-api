@@ -114,3 +114,33 @@ install_dependencies_locally:
 	git clone git@bitbucket.org:ondewo/glow-tts.git
 	cd glow-tts/monotonic_align; python setup.py build_ext --inplace; cd ../..
 	pip install -e glow-tts
+
+
+# GENERATE PYTHON FILES FROM PROTOS
+# copy from nlu-client, changed output directory to ./grpc_config_server/ and only exporting /audio/ directory of ondewoapis
+ONDEWO_PROTOS_DIR=ondewoapis/ondewo/audio
+GOOGLE_APIS_DIR=ondewoapis/googleapis
+ONDEWO_APIS_DIR=ondewoapis
+PROTO_OUTPUT_FOLDER=grpc_config_server/
+
+generate_ondewo_protos:
+	for f in $$(find ${ONDEWO_PROTOS_DIR} -name '*.proto'); do \
+		python -m grpc_tools.protoc -I${GOOGLE_APIS_DIR} -I${ONDEWO_APIS_DIR} --python_out=${PROTO_OUTPUT_FOLDER} --mypy_out=${PROTO_OUTPUT_FOLDER} --grpc_python_out=${PROTO_OUTPUT_FOLDER} $$f; \
+	done
+	python grpc_config_server/utils/fix_imports.py # fix imports into subdirectory
+
+build_grpc_server:
+	# ignore dockerignore by moving it before the build, and restore it afterwards
+	mkdir ignoreme
+	mv .dockerignore ignoreme/.dockerignore # move away .dockerignore
+	cp grpc_config_server/grpc_dockerignore .dockerignore
+	docker build -t t2s_grpc_server -f grpc_config_server/Dockerfile .
+	mv .dockerignore grpc_config_server/grpc_dockerignore
+	mv ignoreme/.dockerignore .dockerignore # restore .dockerignore
+	rm -r ignoreme
+
+run_grpc_server:
+	docker-compose -f grpc_config_server/docker-compose.yaml up
+
+remove_grpc_exited_container:
+	docker-compose -f grpc_config_server/docker-compose.yaml rm -f

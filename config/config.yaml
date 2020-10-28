@@ -2,32 +2,33 @@
 
 
 inference:
-    type: "composite"
+    type: "testme1"
 
     composite_inference:
         text2mel:
-            type: "tacotron2"
+            type: "glow_tts"
 
             tacotron2:
                 batch_size: 8
-                path: "models/tacotron2/en/nvidia/"
-                param_config_path: "models/tacotron2/en/tacotron2.yaml"
-                step: "0"
+                path: "models/tacotron2/de/checkpoints_kerstin_eloqai/"
+                param_config_path: "models/tacotron2/de/tacotron2.yaml"
+                step: "1000"
 
             glow_tts:
                 batch_size: 8
                 use_gpu: false
                 length_scale: 1.0
                 noise_scale: 0.667
-                path: "models/glow_tts/de/G_sandra.pth"
-                param_config_path: "models/glow_tts/de/config.json"
+                batch_inference: false
+                path: "models/glow-tts/de/G_florian.pth"
+                param_config_path: "models/glow-tts/de/config.json"
 
         mel2audio:
             type: "mb_melgan_triton"
 
             waveglow:
                 batch_size: 4
-                path: "models/waveglow/checkpoints_waveglow_kerstin/WaveGlowNM.pt"
+                path: "models/waveglow/checkpoints_waveglow_florian/WaveGlowNM-STEP-3000.pt"
                 param_config_path: "models/waveglow/waveglow.yaml"
                 sigma: 0.6
                 denoiser:
@@ -37,7 +38,7 @@ inference:
             waveglow_triton:
                 param_config_path: "models/waveglow/waveglow.yaml"
                 sigma: 0.6
-                max_spect_size: 200
+                max_spect_size: 1000
                 triton_model_name: "waveglow"
                 triton_url: "localhost:8001"
 
