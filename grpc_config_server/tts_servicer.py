@@ -97,7 +97,7 @@ class TextToSpeechEndpoints(text_to_speech_pb2_grpc.Text2SpeechConfigurationServ
         request: text_to_speech_pb2.SetModelConfigRequest,
     ) -> text_to_speech_pb2.SetModelConfigResponse:
         success, log_message = self.manager.set_active_config(
-            model_id=request.directory)  # Type[str] != str wtf?!
+            model_id=request.directory)
         return text_to_speech_pb2.SetModelConfigResponse(
             request=request,
             success=success,
