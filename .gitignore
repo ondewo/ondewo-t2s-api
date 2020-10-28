@@ -9,3 +9,4 @@ data/ramona_deininger
 pytest.xml
 models/triton_repo*
 glow-tts/
+plots/
