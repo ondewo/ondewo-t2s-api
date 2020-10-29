@@ -39,6 +39,14 @@ class TextProcessor:
     def preprocess_text_batch(
             self, texts: List[str],
     ) -> Tuple[np.array, np.array]:
+        """
+
+        Args:
+            texts:
+
+        Returns:
+
+        """
 
         assert isinstance(texts, list), f"Expected batch of texts if form of list of strings, " \
                                         f"got: '{texts}' instead."
@@ -58,6 +66,15 @@ class TextProcessor:
 
     def _create_batch(self, txt_indexes_batch_list: List[np.array],
                       txt_lengths_list: List[int]) -> Tuple[np.array, ...]:
+        """
+
+        Args:
+            txt_indexes_batch_list:
+            txt_lengths_list:
+
+        Returns:
+
+        """
 
         max_length: int = max(txt_lengths_list)
         txt_lengths_batch_list: List[np.array] = [np.array([length]) for length in txt_lengths_list]
@@ -72,15 +89,23 @@ class TextProcessor:
         return txt_indexes_batch, txt_lengths_batch
 
     @staticmethod
-    def split_batch(mel_batch: np.array, txt_lengths_list: List[int], attn_gen: np.array) -> List[np.array]:
+    def split_batch(mel_batch: np.array, attn_gen: np.array) -> List[np.array]:
+        """
+
+        Args:
+            mel_batch:
+            attn_gen:
+
+        Returns:
+
+        """
         mel_list: List[np.array] = []
-        for mel, char_length, attn_mtrx in zip(
+        for mel, attn_mtrx in zip(
                 np.split(mel_batch, mel_batch.shape[0]),
-                txt_lengths_list,
                 np.split(attn_gen, mel_batch.shape[0])
         ):
             attn_mtrx = np.squeeze(attn_mtrx)
-            last_soundable_char_idx: int = char_length - 1
+            last_soundable_char_idx: int = attn_mtrx.shape[0] - 1
             while not np.count_nonzero(attn_mtrx[last_soundable_char_idx]) and last_soundable_char_idx >= 0:
                 last_soundable_char_idx -= 1
             attn_line = attn_mtrx[last_soundable_char_idx]

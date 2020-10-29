@@ -48,23 +48,17 @@ class GlowTts(Text2Mel):
             self.cleaners = []
 
     def text2mel(self, texts: List[str]) -> List[np.ndarray]:
-
-        if self.config[BATCH_SIZE] <= 1:
-            return self._generate_one_by_one(texts=texts)
-        else:
-            return self._generate_in_batches(texts=texts)
-
-    def _generate_one_by_one(self, texts: List[str]) -> List[np.array]:
-        mel_list: List[np.array] = []
-        for text in texts:
-            mel_list.append(self._generate_single(
-                text=text,
-                length_scale=self.config[LENGTH_SCALE],
-                noise_scale=self.config[NOISE_SCALE],
-            ))
-        return mel_list
+        return self._generate_in_batches(texts=texts)
 
     def _generate_in_batches(self, texts: List[str]) -> List[np.array]:
+        """
+
+        Args:
+            texts:
+
+        Returns:
+
+        """
         mel_list: List[np.array] = []
         while texts:
             text_batch = texts[:self.config[BATCH_SIZE]]
@@ -78,23 +72,38 @@ class GlowTts(Text2Mel):
             texts = texts[self.config[BATCH_SIZE]:]
         return mel_list
 
-    def _generate_single(self, text: str, noise_scale: float = 0.667, length_scale: float = 1.0) -> np.array:
-        mel, _ = self._generate(texts=[text], noise_scale=noise_scale, length_scale=length_scale)
-        return np.squeeze(mel)
-
     def _generate_batch_and_split(
             self, texts: List[str], noise_scale: float = 0.667, length_scale: float = 1.0
     ) -> List[np.array]:
-        txt_lengths_list: List[int] = list(map(len, texts))
+        """
+
+        Args:
+            texts:
+            noise_scale:
+            length_scale:
+
+        Returns:
+
+        """
         mel_gen, attn_gen = self._generate(texts=texts, noise_scale=noise_scale, length_scale=length_scale)
 
         mel_list: List[np.array] = self.text_processor.split_batch(
-            mel_gen, txt_lengths_list, attn_gen=attn_gen)
+            mel_gen, attn_gen=attn_gen)
 
         return mel_list
 
     def _generate(self, texts: List[str], noise_scale: float = 0.667, length_scale: float = 1.0
                   ) -> Tuple[np.array, ...]:
+        """
+
+        Args:
+            texts:
+            noise_scale:
+            length_scale:
+
+        Returns:
+
+        """
         txt_indexes_batch, txt_lengths_batch = \
             self.text_processor.preprocess_text_batch(texts=texts)
         txt_batch_torch = torch.tensor(txt_indexes_batch)
