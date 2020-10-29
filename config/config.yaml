@@ -2,7 +2,7 @@
 
 
 inference:
-    type: "testme1"
+    type: "composite"
 
     composite_inference:
         text2mel:
