@@ -6,7 +6,7 @@ import pytest
 from ruamel.yaml import YAML
 
 from inference.text2mel.constants_text2mel import BATCH_SIZE, CLEANERS
-from inference.text2mel.glow_tts import GlowTts
+from inference.text2mel.glow_tts_generator import GlowTts
 
 yaml = YAML(typ="safe")
 

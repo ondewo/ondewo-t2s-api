@@ -79,7 +79,8 @@ class GlowTts(Text2Mel):
         return mel_list
 
     def _generate_single(self, text: str, noise_scale: float = 0.667, length_scale: float = 1.0) -> np.array:
-        return self._generate(texts=[text], noise_scale=noise_scale, length_scale=length_scale)
+        mel, _ = self._generate(texts=[text], noise_scale=noise_scale, length_scale=length_scale)
+        return np.squeeze(mel)
 
     def _generate_batch_and_split(
             self, texts: List[str], noise_scale: float = 0.667, length_scale: float = 1.0
@@ -88,7 +89,7 @@ class GlowTts(Text2Mel):
         mel_gen, attn_gen = self._generate(texts=texts, noise_scale=noise_scale, length_scale=length_scale)
 
         mel_list: List[np.array] = self.text_processor.split_batch(
-            mel_gen.cpu().numpy(), txt_lengths_list, attn_gen=attn_gen)
+            mel_gen, txt_lengths_list, attn_gen=attn_gen)
 
         return mel_list
 

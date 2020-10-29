@@ -74,7 +74,7 @@ class TextProcessor:
     @staticmethod
     def split_batch(mel_batch: np.array, txt_lengths_list: List[int], attn_gen: np.array) -> List[np.array]:
         mel_list: List[np.array] = []
-        for tensor, char_length, attn_mtrx in zip(
+        for mel, char_length, attn_mtrx in zip(
                 np.split(mel_batch, mel_batch.shape[0]),
                 txt_lengths_list,
                 np.split(attn_gen, mel_batch.shape[0])
@@ -85,5 +85,5 @@ class TextProcessor:
                 last_soundable_char_idx -= 1
             attn_line = attn_mtrx[last_soundable_char_idx]
             audio_length: int = np.max(np.nonzero(attn_line))
-            mel_list.append(tensor[0, :, :audio_length])
+            mel_list.append(mel[0, :, :audio_length])
         return mel_list
