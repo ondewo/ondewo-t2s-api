@@ -19,9 +19,16 @@ inference:
                 use_gpu: false
                 length_scale: 1.0
                 noise_scale: 0.667
-                batch_inference: false
                 path: "models/glow-tts/de/G_florian.pth"
                 param_config_path: "models/glow-tts/de/config.json"
+
+            glow_tts_triton:
+                batch_size: 8
+                length_scale: 1.0
+                noise_scale: 0.667
+                max_text_length: 100
+                triton_url: "localhost:8001"
+                triton_model_name: "glow_tts"
 
         mel2audio:
             type: "waveglow"
