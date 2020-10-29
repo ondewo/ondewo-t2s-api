@@ -11,6 +11,7 @@ RUN apt-get update && apt-get -y upgrade && \
 	apt-get install -y git
 
 RUN git clone git@bitbucket.org:ondewo/glow-tts.git
+RUN cd glow-tts && git checkout f9232db076fd9dbd43987f9c6f9cf24c61c4bab2
 
 FROM dockerregistry.ondewo.com:5000/cuda:11.0-base-ubuntu18.04 AS uncythonized
 
