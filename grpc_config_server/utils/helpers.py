@@ -1,6 +1,8 @@
-from typing import Dict
+import os
+from typing import Dict, List
 
 from google.protobuf.struct_pb2 import Struct
+from utils.logger import logger
 
 
 def get_struct_from_dict(d: Dict) -> Struct:  # type: ignore
@@ -22,3 +24,11 @@ def get_struct_from_dict(d: Dict) -> Struct:  # type: ignore
             result[key] = value  # type: ignore
 
     return result
+
+
+def check_paths_exist(paths: List[str]) -> None:
+    for path in paths:
+        if not os.path.exists(path):
+            msg = f"Path '{path}' does not exist."
+            logger.error(msg)
+            raise ValueError(msg)

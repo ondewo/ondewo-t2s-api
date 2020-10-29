@@ -8,6 +8,7 @@ import tensorflow as tf
 from tensorflow_tts.inference import AutoConfig
 from tensorflow_tts.inference import TFAutoModel
 
+from grpc_config_server.utils.helpers import check_paths_exist
 from inference.mel2audio.mel2audio import Mel2Audio
 from utils.logger import logger
 
@@ -20,7 +21,7 @@ class MBMelGAN(Mel2Audio):
     INPUT_SCALING: str = "standard"
 
     def __init__(self, config: Dict[str, Any]):
-        self._check_paths_exist([config["stats_path"], config["model_path"], config["config_path"]])
+        check_paths_exist([config["stats_path"], config["model_path"], config["config_path"]])
         self.config = config
 
         self.batch_size = self.config["batch_size"]
