@@ -27,6 +27,7 @@ inference:
                 length_scale: 1.0
                 noise_scale: 0.667
                 max_text_length: 100
+                param_config_path: "models/glow-tts/de/config.json"
                 triton_url: "localhost:8001"
                 triton_model_name: "glow_tts"
 
