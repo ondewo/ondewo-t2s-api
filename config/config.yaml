@@ -19,16 +19,17 @@ inference:
                 use_gpu: false
                 length_scale: 1.0
                 noise_scale: 0.667
+                cleaners: ['english_cleaners']
                 batch_inference: false
-                path: "models/glow-tts/de/G_florian.pth"
-                param_config_path: "models/glow-tts/de/config.json"
+                path: "models/glow-tts/en/pretrained.pth"
+                param_config_path: "models/glow-tts/en/config.json"
 
         mel2audio:
-            type: "waveglow"
+            type: "mb_melgan"
 
             waveglow:
                 batch_size: 4
-                path: "models/waveglow/checkpoints_waveglow_florian/WaveGlowNM-STEP-3000.pt"
+                path: "models/waveglow/checkpoints_waveglow_kerstin/WaveGlowNM.pt"
                 param_config_path: "models/waveglow/waveglow.yaml"
                 sigma: 0.6
                 denoiser:
@@ -42,6 +43,12 @@ inference:
                 triton_model_name: "waveglow"
                 triton_url: "localhost:8001"
 
+            mb_melgan:
+                batch_size: 20
+                config_path: "models/mb_melgan/en/config.yml"
+                model_path: "models/mb_melgan/en/generator-1880000.h5"
+                stats_path: "models/mb_melgan/en/stats.npy"
+
     caching:
         active: false
         memory_cache_max_size: 20
@@ -49,3 +56,8 @@ inference:
         load_cache: true
         save_cache: true
         cache_save_dir: "models/cache"
+
+normalization:
+    language: "en"
+
+    pipeline:
