@@ -12,10 +12,10 @@ class TestPreprocessor:
     @pytest.mark.parametrize('language_code, text', [('en', 'english text'), ('de', 'eine deutsche texte')])
     def test_basic(language_code: str, text: str) -> None:
         preprocessor: TextProcessor = TextProcessor(language_code=language_code)
-        seq = preprocessor.text_to_sequence(text=text)
+        seq = preprocessor.text_to_sequence(text)
         assert isinstance(seq, list)
         assert len(seq) == len(text)
-        seq_np: np.array = np.array(preprocessor.text_to_sequence(text=text))[None, :]
+        seq_np: np.array = np.array(preprocessor.text_to_sequence(text))[None, :]
         assert seq_np.shape[1] == len(text)
         assert seq_np.shape[0] == 1
 
