@@ -2,7 +2,7 @@
 
 
 inference:
-    type: "testme1"
+    type: "glow_tts"
 
     composite_inference:
         text2mel:
@@ -17,6 +17,7 @@ inference:
             glow_tts:
                 batch_size: 8
                 use_gpu: false
+                cleaners: []
                 length_scale: 1.0
                 noise_scale: 0.667
                 path: "models/glow-tts/de/G_florian.pth"
@@ -26,6 +27,7 @@ inference:
                 batch_size: 8
                 length_scale: 1.0
                 noise_scale: 0.667
+                cleaners: []
                 max_text_length: 100
                 param_config_path: "models/glow-tts/de/config.json"
                 triton_url: "localhost:8001"

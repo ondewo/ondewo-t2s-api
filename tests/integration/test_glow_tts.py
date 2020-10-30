@@ -7,11 +7,13 @@ from ruamel.yaml import YAML
 
 from inference.text2mel.constants_text2mel import BATCH_SIZE, CLEANERS
 from inference.text2mel.glow_tts_generator import GlowTts
+from inference.text2mel.glow_tts_triton import GlowTTSTriton
 
 yaml = YAML(typ="safe")
 
 test_config_path_de: str = 'tests/resources/glow_tts_config_de.yaml'
 test_config_path_en: str = 'tests/resources/glow_tts_config_en.yaml'
+test_config_path_triton: str = 'tests/resources/glow_tts_config_triton.yaml'
 
 
 class TestGlowTts:
@@ -43,13 +45,17 @@ class TestGlowTts:
                                  'mit einem geschwächten Immunsystem jeden Alters.',
                                  'Sollten bei Ihnen Symptome des Coronavirus '
                                  '(Fieber, Husten oder Kurzatmigkeit & Atembeschwerden) auftreten:',
-                                 'Ruhe bewahren und zu Hause bleiben 1450 anrufen täglich von 0 bis 24 Uhr Allgemeine '
+                                 'Ruhe bewahren und zu Hause bleiben 1450 anrufen täglich von 0 '
+                                 'bis 24 Uhr Allgemeine '
                                  'Informationen zu Übertragung, Symptomen und Vorbeugung:',
                                  '0800 555 621 täglich von 0 bis 24 Uhr'
-                                 'Corona-Sorgenhotline Beratung bei Existenzängsten, Arbeitslosigkeit, finanzielle Unsicherheit,'
+                                 'Corona-Sorgenhotline Beratung bei Existenzängsten, Arbeitslosigkeit, '
+                                 'finanzielle Unsicherheit,'
                                  ' familiäre Belastungen, ...￼ +43 1 4000 53000 täglich von 8 bis 20 Uhr'
-                                 ' www.psd-wien.at/corona-sorgenhotline-wien.html Alle Informationen der Stadt zum Coronavirus:',
-                                 'www.wien.gv.at/coronavirus English: www.wien.gv.at/coronavirus-en Bosanski, Hrvatski, Srpski:',
+                                 ' www.psd-wien.at/corona-sorgenhotline-wien.html Alle Informationen der '
+                                 'Stadt zum Coronavirus:',
+                                 'www.wien.gv.at/coronavirus English: www.wien.gv.at/coronavirus-en Bosanski,'
+                                 ' Hrvatski, Srpski:',
                                  'www.wien.gv.at/coronavirus-bks Türkçe:',
                                  'www.wien.gv.at/coronavirus-tr ÖGS:',
                                  'www.wien.gv.at/coronavirus-oegs]', ]), ])
@@ -69,3 +75,13 @@ class TestGlowTts:
         assert len(mels) == len(texts_list)
         assert all([mel.shape[0] == 80 for mel in mels])
         assert all([mel.shape[1] > 45 for mel in mels])
+
+    @staticmethod
+    @pytest.mark.parametrize('texts_list', [
+        (['alles klar', 'noch ein text', 'und noch ein text'])])
+    def test_triton_inference(texts_list: List[str]) -> None:
+        with open(test_config_path_triton, 'r') as f:
+            test_config: Dict[str, Any] = yaml.load(f)
+        generator: GlowTTSTriton = GlowTTSTriton(config=test_config)
+        mels: List[np.array] = generator.text2mel(texts_list)
+        assert mels

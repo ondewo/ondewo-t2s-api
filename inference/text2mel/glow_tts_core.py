@@ -53,7 +53,7 @@ class GlowTtsCore(Text2Mel):
         """
         mel_list: List[np.array] = []
         while texts:
-            text_batch = texts[:self.config[BATCH_SIZE]]
+            text_batch = texts[:self.batch_size]
             mel_list.extend(
                 self._generate_batch_and_split(
                     texts=text_batch,
@@ -61,7 +61,7 @@ class GlowTtsCore(Text2Mel):
                     noise_scale=self.config[NOISE_SCALE]
                 )
             )
-            texts = texts[self.config[BATCH_SIZE]:]
+            texts = texts[self.batch_size:]
         return mel_list
 
     def _generate_batch_and_split(

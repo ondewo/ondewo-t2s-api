@@ -4,7 +4,7 @@ from ruamel.yaml import YAML
 
 from inference.cached_inference import CachedInference
 from inference.composite_inference import CompositeInference
-from inference.inference import Inference
+from inference.inference_interface import Inference
 
 
 class InferenceFactory:

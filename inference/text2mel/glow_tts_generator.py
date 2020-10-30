@@ -12,7 +12,7 @@ class GlowTts(GlowTtsCore):
     NAME: str = "glow_tts"
 
     def __init__(self, config: Dict[str, Any]):
-        super().__init__(config=config)
+        super(GlowTts, self).__init__(config=config)
         self.checkpoint_path = config[MODEL_PATH]
         self.model: models.FlowGenerator = models.FlowGenerator(
             n_vocab=len(self.text_processor.symbols),
