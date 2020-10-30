@@ -54,9 +54,6 @@ class GlowTTSTriton(GlowTtsCore):
             name="input__3", shape=list(length_scale_tensor.shape), datatype="FP32")
         length_scale_input.set_data_from_numpy(length_scale_tensor)
 
-        print(txt_indexes_batch.shape, txt_lengths_batch.shape,
-              noise_scale_tensor.shape, length_scale_tensor.shape)
-
         # Prepare output
         output_1: InferRequestedOutput = InferRequestedOutput("output__0")
         output_2: InferRequestedOutput = InferRequestedOutput("output__1")
