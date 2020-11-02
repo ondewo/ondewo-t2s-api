@@ -12,7 +12,7 @@ from inference.text2mel.text2mel import Text2Mel
 from utils.logger import logger
 
 
-class GlowTtsCore(Text2Mel):
+class GlowTTSCore(Text2Mel):
     NAME: str = ''
 
     def __init__(self, config: Dict[str, Any]):

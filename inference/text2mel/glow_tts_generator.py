@@ -5,14 +5,14 @@ import torch
 from glow_tts_reduced import utils, models
 
 from inference.text2mel.constants_text2mel import MODEL_PATH, USE_GPU, BATCH_SIZE
-from inference.text2mel.glow_tts_core import GlowTtsCore
+from inference.text2mel.glow_tts_core import GlowTTSCore
 
 
-class GlowTts(GlowTtsCore):
+class GlowTTS(GlowTTSCore):
     NAME: str = "glow_tts"
 
     def __init__(self, config: Dict[str, Any]):
-        super(GlowTts, self).__init__(config=config)
+        super(GlowTTS, self).__init__(config=config)
         self.checkpoint_path: str = config[MODEL_PATH]
         self.model: models.FlowGenerator = models.FlowGenerator(
             n_vocab=len(self.text_processor.symbols),
