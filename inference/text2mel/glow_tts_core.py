@@ -17,10 +17,10 @@ class GlowTtsCore(Text2Mel):
 
     def __init__(self, config: Dict[str, Any]):
         self.config = config
-        self.config_path = config[CONFIG_PATH]
+        self.model_config_path = config[CONFIG_PATH]
         self.cleaners = config.get(CLEANERS, [])
 
-        with open(self.config_path, 'r') as fi:
+        with open(self.model_config_path, 'r') as fi:
             self.hyperparams: utils.HParams = utils.HParams(**json.load(fi))
 
         if getattr(self.hyperparams, "cmudict_path", None) is not None:
