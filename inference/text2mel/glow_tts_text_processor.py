@@ -52,24 +52,24 @@ class TextProcessor:
                                         f"got: '{texts}' instead."
 
         # convert texts to the list of arrays
-        txt_indexes_batch_list: List[np.array] = []
+        txt_indices_batch_list: List[np.array] = []
         txt_lengths_list: List[int] = []
         for text in texts:
             sequence = np.array(self.text_to_sequence(text))[None, :]
-            txt_indexes_batch_list.append(sequence)
+            txt_indices_batch_list.append(sequence)
             txt_lengths_list.append(sequence.shape[1])
 
-        txt_indexes_batch, txt_lengths_padded_batch = self._create_batch(
-            txt_indexes_batch_list, txt_lengths_list)
+        txt_indices_batch, txt_lengths_padded_batch = self._create_batch(
+            txt_indices_batch_list, txt_lengths_list)
 
-        return txt_indexes_batch, txt_lengths_padded_batch
+        return txt_indices_batch, txt_lengths_padded_batch
 
-    def _create_batch(self, txt_indexes_batch_list: List[np.array],
+    def _create_batch(self, txt_indices_batch_list: List[np.array],
                       txt_lengths_list: List[int]) -> Tuple[np.array, ...]:
         """
 
         Args:
-            txt_indexes_batch_list:
+            txt_indices_batch_list:
             txt_lengths_list:
 
         Returns:
@@ -82,11 +82,11 @@ class TextProcessor:
         padder: Callable[[np.array], np.array] = lambda seq: np.pad(
             seq, pad_width=[[0, 0], [0, max_length - seq.shape[-1]]], mode='constant')
 
-        txt_indexes_batch_list = list(map(padder, txt_indexes_batch_list))
+        txt_indices_batch_list = list(map(padder, txt_indices_batch_list))
 
-        txt_indexes_batch = np.concatenate(txt_indexes_batch_list, axis=0)
+        txt_indices_batch = np.concatenate(txt_indices_batch_list, axis=0)
         txt_lengths_batch = np.concatenate(txt_lengths_batch_list, axis=0)
-        return txt_indexes_batch, txt_lengths_batch
+        return txt_indices_batch, txt_lengths_batch
 
     @staticmethod
     def split_batch(mel_batch: np.array, attn_gen: np.array) -> List[np.array]:

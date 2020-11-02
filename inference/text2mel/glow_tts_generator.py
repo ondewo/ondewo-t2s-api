@@ -13,14 +13,14 @@ class GlowTts(GlowTtsCore):
 
     def __init__(self, config: Dict[str, Any]):
         super(GlowTts, self).__init__(config=config)
-        self.checkpoint_path = config[MODEL_PATH]
+        self.checkpoint_path: str = config[MODEL_PATH]
         self.model: models.FlowGenerator = models.FlowGenerator(
             n_vocab=len(self.text_processor.symbols),
             out_channels=self.hyperparams.data.n_mel_channels,
             **self.hyperparams.model
         )
         self.batch_size: int = config[BATCH_SIZE]
-        self.use_gpu = config[USE_GPU]
+        self.use_gpu: bool = config[USE_GPU]
         if self.use_gpu:
             self.model = self.model.to("cuda")
         utils.load_checkpoint(self.checkpoint_path, self.model)
@@ -39,9 +39,9 @@ class GlowTts(GlowTtsCore):
         Returns:
 
         """
-        txt_indexes_batch, txt_lengths_batch = \
+        txt_indices_batch, txt_lengths_batch = \
             self.text_processor.preprocess_text_batch(texts=texts)
-        txt_batch_torch = torch.tensor(txt_indexes_batch)
+        txt_batch_torch = torch.tensor(txt_indices_batch)
         txt_lengths_torch = torch.tensor(txt_lengths_batch)
 
         if self.use_gpu:

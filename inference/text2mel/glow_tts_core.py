@@ -5,7 +5,7 @@ from typing import Tuple, Optional, Dict, Any, List
 import numpy as np
 from glow_tts_reduced import utils
 
-from inference.text2mel.constants_text2mel import BATCH_SIZE, CONFIG_PATH, LENGTH_SCALE, \
+from inference.text2mel.constants_text2mel import CONFIG_PATH, LENGTH_SCALE, \
     NOISE_SCALE, CLEANERS
 from inference.text2mel.glow_tts_text_processor import TextProcessor
 from inference.text2mel.text2mel import Text2Mel
@@ -17,8 +17,8 @@ class GlowTtsCore(Text2Mel):
 
     def __init__(self, config: Dict[str, Any]):
         self.config = config
-        self.model_config_path = config[CONFIG_PATH]
-        self.cleaners = config.get(CLEANERS, [])
+        self.model_config_path: str = config[CONFIG_PATH]
+        self.cleaners: List[str] = config.get(CLEANERS, [])
 
         with open(self.model_config_path, 'r') as fi:
             self.hyperparams: utils.HParams = utils.HParams(**json.load(fi))
