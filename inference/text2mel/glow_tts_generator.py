@@ -28,7 +28,7 @@ class GlowTts(GlowTtsCore):
         _ = self.model.eval()
 
     def _generate(self, texts: List[str], noise_scale: float = 0.667, length_scale: float = 1.0
-                  ) -> Tuple[np.array, ...]:
+                  ) -> Tuple[np.ndarray, ...]:
         """
 
         Args:

@@ -26,7 +26,7 @@ class GlowTTSTriton(GlowTtsCore):
                   texts: List[str],
                   noise_scale: float = 0.667,
                   length_scale: float = 1.0
-                  ) -> Tuple[np.array, ...]:
+                  ) -> Tuple[np.ndarray, ...]:
         txt_indexes_batch, txt_lengths_batch = \
             self.text_processor.preprocess_text_batch(texts=texts)
 
@@ -63,7 +63,7 @@ class GlowTTSTriton(GlowTtsCore):
             inputs=[sequence, lengths, noise_scale_input, length_scale_input],
             outputs=[output_1, output_2]
         )
-        mels: np.array = result.as_numpy("output__0")
-        attn: np.array = result.as_numpy("output__1")
+        mels: np.ndarray = result.as_numpy("output__0")
+        attn: np.ndarray = result.as_numpy("output__1")
 
         return mels, attn

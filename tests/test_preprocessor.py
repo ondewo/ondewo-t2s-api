@@ -15,7 +15,7 @@ class TestPreprocessor:
         seq = preprocessor.text_to_sequence(text)
         assert isinstance(seq, list)
         assert len(seq) == len(text)
-        seq_np: np.array = np.array(preprocessor.text_to_sequence(text))[None, :]
+        seq_np: np.ndarray = np.array(preprocessor.text_to_sequence(text))[None, :]
         assert seq_np.shape[1] == len(text)
         assert seq_np.shape[0] == 1
 

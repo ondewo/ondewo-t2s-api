@@ -38,7 +38,7 @@ class TextProcessor:
 
     def preprocess_text_batch(
             self, texts: List[str],
-    ) -> Tuple[np.array, np.array]:
+    ) -> Tuple[np.ndarray, np.ndarray]:
         """
 
         Args:
@@ -52,7 +52,7 @@ class TextProcessor:
                                         f"got: '{texts}' instead."
 
         # convert texts to the list of arrays
-        txt_indices_batch_list: List[np.array] = []
+        txt_indices_batch_list: List[np.ndarray] = []
         txt_lengths_list: List[int] = []
         for text in texts:
             sequence = np.array(self.text_to_sequence(text))[None, :]
@@ -64,8 +64,8 @@ class TextProcessor:
 
         return txt_indices_batch, txt_lengths_padded_batch
 
-    def _create_batch(self, txt_indices_batch_list: List[np.array],
-                      txt_lengths_list: List[int]) -> Tuple[np.array, ...]:
+    def _create_batch(self, txt_indices_batch_list: List[np.ndarray],
+                      txt_lengths_list: List[int]) -> Tuple[np.ndarray, ...]:
         """
 
         Args:
@@ -77,9 +77,9 @@ class TextProcessor:
         """
 
         max_length: int = max(txt_lengths_list)
-        txt_lengths_batch_list: List[np.array] = [np.array([length]) for length in txt_lengths_list]
+        txt_lengths_batch_list: List[np.ndarray] = [np.array([length]) for length in txt_lengths_list]
 
-        padder: Callable[[np.array], np.array] = lambda seq: np.pad(
+        padder: Callable[[np.ndarray], np.ndarray] = lambda seq: np.pad(
             seq, pad_width=[[0, 0], [0, max_length - seq.shape[-1]]], mode='constant')
 
         txt_indices_batch_list = list(map(padder, txt_indices_batch_list))
@@ -89,7 +89,7 @@ class TextProcessor:
         return txt_indices_batch, txt_lengths_batch
 
     @staticmethod
-    def split_batch(mel_batch: np.array, attn_gen: np.array) -> List[np.array]:
+    def split_batch(mel_batch: np.ndarray, attn_gen: np.ndarray) -> List[np.ndarray]:
         """
 
         Args:
@@ -99,7 +99,7 @@ class TextProcessor:
         Returns:
 
         """
-        mel_list: List[np.array] = []
+        mel_list: List[np.ndarray] = []
         for mel, attn_mtrx in zip(
                 np.split(mel_batch, mel_batch.shape[0]),
                 np.split(attn_gen, mel_batch.shape[0])

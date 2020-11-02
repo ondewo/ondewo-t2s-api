@@ -42,7 +42,7 @@ class GlowTtsCore(Text2Mel):
         logger.info(f"{self.NAME} inference took {time.time() - start_time} seconds")
         return result
 
-    def _generate_in_batches(self, texts: List[str]) -> List[np.array]:
+    def _generate_in_batches(self, texts: List[str]) -> List[np.ndarray]:
         """
 
         Args:
@@ -51,7 +51,7 @@ class GlowTtsCore(Text2Mel):
         Returns:
 
         """
-        mel_list: List[np.array] = []
+        mel_list: List[np.ndarray] = []
         while texts:
             text_batch = texts[:self.batch_size]
             mel_list.extend(
@@ -66,7 +66,7 @@ class GlowTtsCore(Text2Mel):
 
     def _generate_batch_and_split(
             self, texts: List[str], noise_scale: float = 0.667, length_scale: float = 1.0
-    ) -> List[np.array]:
+    ) -> List[np.ndarray]:
         """
 
         Args:
@@ -79,12 +79,12 @@ class GlowTtsCore(Text2Mel):
         """
         mel_gen, attn_gen = self._generate(texts=texts, noise_scale=noise_scale, length_scale=length_scale)
 
-        mel_list: List[np.array] = self.text_processor.split_batch(
+        mel_list: List[np.ndarray] = self.text_processor.split_batch(
             mel_gen, attn_gen=attn_gen)
 
         return mel_list
 
     def _generate(
             self, texts: List[str], noise_scale: float = 0.667, length_scale: float = 1.0
-    ) -> Tuple[np.array, ...]:
+    ) -> Tuple[np.ndarray, ...]:
         raise NotImplementedError('Method should be implemented in child class')

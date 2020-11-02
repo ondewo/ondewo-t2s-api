@@ -33,7 +33,7 @@ class TestGlowTts:
         if not use_cleaners:
             test_config[CLEANERS] = None
         generator: GlowTts = GlowTts(config=test_config)
-        mels: List[np.array] = generator.text2mel(texts_list)
+        mels: List[np.ndarray] = generator.text2mel(texts_list)
         assert len(mels) == 3
         assert all([mel.shape[0] == 80 for mel in mels])
         assert all([mel.shape[1] > 45 for mel in mels])
@@ -71,7 +71,7 @@ class TestGlowTts:
         if not use_cleaners:
             test_config[CLEANERS] = None
         generator: GlowTts = GlowTts(config=test_config)
-        mels: List[np.array] = generator.text2mel(texts_list)
+        mels: List[np.ndarray] = generator.text2mel(texts_list)
         assert len(mels) == len(texts_list)
         assert all([mel.shape[0] == 80 for mel in mels])
         assert all([mel.shape[1] > 45 for mel in mels])
@@ -83,5 +83,5 @@ class TestGlowTts:
         with open(test_config_path_triton, 'r') as f:
             test_config: Dict[str, Any] = yaml.load(f)
         generator: GlowTTSTriton = GlowTTSTriton(config=test_config)
-        mels: List[np.array] = generator.text2mel(texts_list)
+        mels: List[np.ndarray] = generator.text2mel(texts_list)
         assert mels
