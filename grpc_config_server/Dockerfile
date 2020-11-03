@@ -9,21 +9,11 @@ RUN go get github.com/fullstorydev/grpcurl/...
 RUN go install github.com/fullstorydev/grpcurl/cmd/grpcurl
 
 # install server
-FROM ubuntu:18.04 as lux_base_next
+FROM python:3.7-slim as pybase
 COPY --from=lux_base /root/go/bin/ /usr/local/bin/
 
 # install docker.io
 RUN apt update && apt install -y docker.io
-
-# install python
-RUN apt-get update && apt-get upgrade -y && apt-get clean && \
-    apt-get install -y curl python3.7 python3.7-dev python3.7-distutils && \
-    update-alternatives --install /usr/bin/python python /usr/bin/python3.7 1 && \
-    update-alternatives --set python /usr/bin/python3.7 && \
-    curl -s https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
-    python get-pip.py --force-reinstall && \
-    rm get-pip.py && \
-    apt-get remove -y curl
 
 WORKDIR /ondewo/
 
@@ -33,7 +23,6 @@ RUN pip install -r grpc_config_server/requirements.txt
 
 # copy server code (./models and ./config is volume-mapped)
 COPY grpc_config_server grpc_config_server
-
 
 CMD python -m grpc_config_server.tts_server
 
