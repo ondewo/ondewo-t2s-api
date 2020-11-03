@@ -6,7 +6,7 @@ import numpy as np
 from inference.text2mel.glow_tts_text_processor import TextProcessor
 
 
-class TestPreprocessor:
+class TestTextPreprocessor:
 
     @staticmethod
     @pytest.mark.parametrize('language_code, text', [('en', 'english text'), ('de', 'eine deutsche texte')])
@@ -23,7 +23,7 @@ class TestPreprocessor:
     @pytest.mark.parametrize('language_code, texts',
                              [
                                  ('en', ['english text', 'another english text']),
-                                 ('de', ['eine deutsche texte', 'eine andere deutsche texte']),
+                                 ('de', ['ein deutscher text', 'ein anderer deutsche text']),
                              ])
     def test_preprocess_text_batch(language_code: str, texts: List[str]) -> None:
         preprocessor: TextProcessor = TextProcessor(language_code=language_code)

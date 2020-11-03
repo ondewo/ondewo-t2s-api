@@ -9,7 +9,7 @@ class TextProcessor:
                  language_code: str,
                  cmudict_path: Optional[str] = None,
                  cleaners: Optional[List[str]] = None
-                 ) -> None:
+                 ):
         self.language_code = language_code
         self.cleaner_names = cleaners or []
 
