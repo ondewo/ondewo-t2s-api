@@ -109,12 +109,11 @@ make package_release: package_git_revision_and_version
 install_dependencies_locally:
 	pip install nvidia-pyindex
 	pip install -r requirements.txt
-	pip install utils/triton_client_lib/triton*.whl
 	pip install git+https://github.com/TensorSpeech/TensorflowTTS.git
 	git clone git@bitbucket.org:ondewo/ondewo-t2s-glow.git
-	cd glow-tts && git checkout 7ce19f083dbce05cc054f3220d9ef96ff2bf1311
+	cd ondewo-t2s-glow && git checkout 7ce19f083dbce05cc054f3220d9ef96ff2bf1311
 	cd monotonic_align; python setup.py build_ext --inplace; cd ../..
-	pip install -e glow-tts
+	pip install -e ondewo-t2s-glow
 
 
 # GENERATE PYTHON FILES FROM PROTOS
