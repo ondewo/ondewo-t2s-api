@@ -25,7 +25,7 @@ class GlowTTS(GlowTTSCore):
             self.model = self.model.to("cuda")
         utils.load_checkpoint(self.checkpoint_path, self.model)
         self.model.decoder.store_inverse()  # do not calcuate jacobians for fast decoding
-        _ = self.model.eval()
+        self.model.eval()
 
     def _generate(self, texts: List[str], noise_scale: float = 0.667, length_scale: float = 1.0
                   ) -> Tuple[np.ndarray, ...]:
