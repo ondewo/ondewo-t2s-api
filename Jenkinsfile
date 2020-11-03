@@ -30,7 +30,7 @@ pipeline {
                     }
                     steps {
                         sh(script: """set +x
-                            docker build -t ${PUSH_NAME_STREAM} --build-arg SSH_PRIVATE_KEY=\"\$(cat ${ssh_key_file})\" --no-cache --target uncythonized -f docker/Dockerfile.batchserver .
+                            docker build -t ${PUSH_NAME_STREAM} --build-arg SSH_PRIVATE_KEY=\"\$(cat ${ssh_key_file})\" --target uncythonized -f docker/Dockerfile.batchserver .
                             set -x"""
                             , label: "build image"
                         )
