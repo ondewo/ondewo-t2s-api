@@ -7,7 +7,7 @@ from glow_tts_reduced import utils
 
 from inference.text2mel.constants_text2mel import CONFIG_PATH, LENGTH_SCALE, \
     NOISE_SCALE, CLEANERS
-from inference.text2mel.glow_tts_text_processor import TextProcessor
+from inference.text2mel.glow_tts_text_processor import GlowTTSTextProcessor
 from inference.text2mel.text2mel import Text2Mel
 from utils.logger import logger
 
@@ -27,7 +27,7 @@ class GlowTTSCore(Text2Mel):
             cmudict_path: Optional[str] = self.hyperparams.cmudict_path
         else:
             cmudict_path = None
-        self.text_processor = TextProcessor(
+        self.text_processor = GlowTTSTextProcessor(
             language_code=self.hyperparams.data.language,
             cmudict_path=cmudict_path,
             cleaners=self.cleaners

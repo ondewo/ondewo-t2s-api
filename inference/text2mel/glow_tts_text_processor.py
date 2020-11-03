@@ -3,7 +3,7 @@ from typing import List, Optional, Callable, Tuple, Any
 import numpy as np
 
 
-class TextProcessor:
+class GlowTTSTextProcessor:
 
     def __init__(self,
                  language_code: str,
