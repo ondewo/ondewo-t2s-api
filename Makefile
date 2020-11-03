@@ -111,7 +111,7 @@ install_dependencies_locally:
 	pip install -r requirements.txt
 	pip install git+https://github.com/TensorSpeech/TensorflowTTS.git
 	git clone git@bitbucket.org:ondewo/ondewo-t2s-glow.git
-	cd ondewo-t2s-glow && git checkout 7ce19f083dbce05cc054f3220d9ef96ff2bf1311
+	cd ondewo-t2s-glow && git checkout d47b1421cc6d10070a80ebaeea74b6792d275fc0
 	cd monotonic_align; python setup.py build_ext --inplace; cd ../..
 	pip install -e ondewo-t2s-glow
 
