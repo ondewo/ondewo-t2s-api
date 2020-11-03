@@ -37,7 +37,7 @@ RUN pip install nemo_toolkit[all]==0.11
 
 RUN pip install cython
 COPY --from=private_installer /root/install/glow-tts ./glow-tts
-RUN cd glow-tts/monotonic_align; python setup.py build_ext --inplace; cd ../..
+RUN cd ondewo-t2s-glow/monotonic_align; python setup.py build_ext --inplace; cd ../..
 RUN pip install -e glow-tts
 
 COPY docker/test_requirements.txt .

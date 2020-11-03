@@ -115,5 +115,5 @@ install_dependencies_locally:
 	pip install utils/triton_client_lib/triton*.whl
 	pip install git+https://github.com/TensorSpeech/TensorflowTTS.git
 	git clone git@bitbucket.org:ondewo/glow-tts.git
-	cd glow-tts/monotonic_align; python setup.py build_ext --inplace; cd ../..
+	cd ondewo-t2s-glow/monotonic_align; python setup.py build_ext --inplace; cd ../..
 	pip install -e glow-tts
