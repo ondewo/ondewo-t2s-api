@@ -4,7 +4,7 @@ from typing import Optional, Dict, Any, Callable
 from flask import Flask
 from ruamel.yaml import YAML
 
-from inference.inference import Inference
+from inference.inference_interface import Inference
 from inference.inference_factory import InferenceFactory
 from normalization.pipeline_constructor import NormalizerPipeline
 from normalization.postprocessor import Postprocessor

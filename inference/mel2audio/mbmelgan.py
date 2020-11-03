@@ -6,6 +6,7 @@ from tensorflow_tts.inference import AutoConfig
 from tensorflow_tts.inference import TFAutoModel
 
 from inference.mel2audio.mbmelgan_core import MBMelGANCore
+from utils.helpers import check_paths_exist
 from utils.logger import logger
 
 
@@ -17,7 +18,7 @@ class MBMelGAN(MBMelGANCore):
     INPUT_SCALING: str = "standard"
 
     def __init__(self, config: Dict[str, Any]):
-        self._check_paths_exist([config["stats_path"], config["model_path"], config["config_path"]])
+        check_paths_exist([config["stats_path"], config["model_path"], config["config_path"]])
         super().__init__(config)
 
         self.batch_size = self.config["batch_size"]

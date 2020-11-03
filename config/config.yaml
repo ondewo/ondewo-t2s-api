@@ -17,12 +17,21 @@ inference:
             glow_tts:
                 batch_size: 8
                 use_gpu: false
+                cleaners: []
                 length_scale: 1.0
                 noise_scale: 0.667
-                cleaners: ['english_cleaners']
-                batch_inference: false
-                path: "models/glow-tts/en/pretrained.pth"
-                param_config_path: "models/glow-tts/en/config.json"
+                path: "models/glow-tts/de/G_florian.pth"
+                param_config_path: "models/glow-tts/de/config.json"
+
+            glow_tts_triton:
+                batch_size: 8
+                length_scale: 1.0
+                noise_scale: 0.667
+                cleaners: []
+                max_text_length: 100
+                param_config_path: "models/glow-tts/de/config.json"
+                triton_url: "localhost:8001"
+                triton_model_name: "glow_tts"
 
         mel2audio:
             type: "mb_melgan_triton"

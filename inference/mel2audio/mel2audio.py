@@ -9,13 +9,6 @@ from utils.logger import logger
 
 class Mel2Audio(ABC):
 
-    def _check_paths_exist(self, paths: List[str]) -> None:
-        for path in paths:
-            if not os.path.exists(path):
-                msg = f"Path '{path}' does not exist."
-                logger.error(msg)
-                raise ValueError(msg)
-
     @abstractmethod
     def mel2audio(self, mel_spectrograms: List[np.ndarray]) -> List[np.ndarray]:
         """Converts given mel-spectrograms to audio.
