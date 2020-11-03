@@ -1,0 +1,11 @@
+# ONDEWO T2S batch server configuration
+
+
+batch_size: 8
+use_gpu: false
+length_scale: 1.0
+noise_scale: 0.667
+batch_inference: false
+path: "models/glow-tts/de/G_kerstin.pth"
+param_config_path: "models/glow-tts/de/config.json"
+cleaners: ["german_cleaners"]
