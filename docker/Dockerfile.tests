@@ -49,9 +49,15 @@ RUN pip install -e ondewo-t2s-glow
 COPY --from=private_installer /root/install/tensorflowtts ./tensorflowtts
 RUN pip install -e tensorflowtts
 
-COPY ./docker/batch_server_requirements.txt .
+COPY ./docker/test_requirements.txt .
+COPY grpc_config_server/requirements.txt grpc_config_server/requirements.txt
+
 RUN pip install nvidia-pyindex
-RUN pip install -r batch_server_requirements.txt --ignore-installed
+RUN pip install -r test_requirements.txt --ignore-installed
+RUN pip install -r grpc_config_server/requirements.txt
+
+# install docker.io
+RUN apt update && apt install -y docker.io
 
 WORKDIR /opt/ondewo-t2s
 COPY ./normalization ./normalization
