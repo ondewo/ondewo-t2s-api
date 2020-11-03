@@ -6,16 +6,16 @@ inference:
 
     composite_inference:
         text2mel:
-            type: "glow_tts_triton"
+            type: "tacotron2"
 
             tacotron2:
                 batch_size: 8
-                path: "models/tacotron2/de/checkpoints_kerstin_eloqai/"
-                param_config_path: "models/tacotron2/de/tacotron2.yaml"
-                step: "1000"
+                path: "models/ondewo/de-DE/internal/kk001/0.0.1/tacotron2/"
+                param_config_path: "models/ondewo/de-DE/internal/kk001/0.0.1/tacotron2/tacotron2.yaml"
+                step: "7500"
 
             glow_tts:
-                batch_size: 5
+                batch_size: 8
                 use_gpu: false
                 length_scale: 1.0
                 noise_scale: 0.667
@@ -23,22 +23,12 @@ inference:
                 cleaners: []
                 param_config_path: "models/glow-tts/de/config.json"
 
-            glow_tts_triton:
-                batch_size: 8
-                length_scale: 1.0
-                noise_scale: 0.667
-                cleaners: []
-                max_text_length: 100
-                param_config_path: "models/glow-tts/de/config.json"
-                triton_url: "localhost:8001"
-                triton_model_name: "glow_tts"
-
         mel2audio:
             type: "mb_melgan"
 
             waveglow:
                 batch_size: 4
-                path: "models/waveglow/checkpoints_waveglow_kerstin/WaveGlowNM.pt"
+                path: "models/waveglow/pretrained/WaveGlowNM.pt"
                 param_config_path: "models/waveglow/waveglow.yaml"
                 sigma: 0.6
                 denoiser:
@@ -53,10 +43,10 @@ inference:
                 triton_url: "localhost:8001"
 
             mb_melgan:
-                batch_size: 20
-                config_path: "models/mb_melgan/en/config.yml"
-                model_path: "models/mb_melgan/en/generator-1880000.h5"
-                stats_path: "models/mb_melgan/en/stats.npy"
+                batch_size: 1
+                config_path: "models/ondewo/de-DE/internal/kk001/0.0.1/mb_melgan/en/config.yml"
+                model_path: "models/ondewo/de-DE/internal/kk001/0.0.1/mb_melgan/en/generator-1820000.h5"
+                stats_path: "models/ondewo/de-DE/internal/kk001/0.0.1/mb_melgan/de/stats.npy"
 
     caching:
         active: false
@@ -70,13 +60,4 @@ normalization:
     language: "de"
 
     pipeline:
-      - "fix_plus"
-      - "normalize_urls"
-      - "normalize_dates"
-      - "normalize_year"
-      - "normalize_time"
-      - "normalize_numbers"
-      - "split_texts"
-      - "fix_punctuation"
-      - "remove_unaudible_texts"
-      - "lower_case"
+        - "normalize_and_split"

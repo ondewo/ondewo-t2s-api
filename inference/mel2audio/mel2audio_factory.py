@@ -1,9 +1,9 @@
 from typing import Dict, Any, Type
 
+from inference.mel2audio.mbmelgan import MBMelGAN
 from inference.mel2audio.mel2audio import Mel2Audio
 from inference.mel2audio.waveglow import Waveglow
 from inference.mel2audio.waveglow_triton import WaveglowTriton
-from inference.mel2audio.mbmelgan import MBMelGAN
 
 
 class Mel2AudioFactory:

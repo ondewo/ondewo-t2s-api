@@ -21,9 +21,12 @@ build_batch_server: export SSH_PRIVATE_KEY="$$(cat ~/.ssh/id_rsa)"
 build_batch_server:
 	docker build -t ${IMAGE_TAG_BATCH} --build-arg SSH_PRIVATE_KEY=$(SSH_PRIVATE_KEY) --target uncythonized -f docker/Dockerfile.batchserver .
 
+build_batch_server_no_cache:
+	docker build -t ${IMAGE_TAG_BATCH} --no-cache=true --build-arg SSH_PRIVATE_KEY=$(SSH_PRIVATE_KEY) --target uncythonized -f docker/Dockerfile.batchserver .
+
 build_batch_server_release: export SSH_PRIVATE_KEY="$$(cat ~/.ssh/id_rsa)"
 build_batch_server_release:
-	docker build -t ${IMAGE_TAG_BATCH_RELEASE} --build-arg SSH_PRIVATE_KEY=$(SSH_PRIVATE_KEY) -f docker/Dockerfile.batchserver .
+	docker build -t ${IMAGE_TAG_BATCH_RELEASE} --no-cache=true --build-arg SSH_PRIVATE_KEY=$(SSH_PRIVATE_KEY) -f docker/Dockerfile.batchserver .
 
 build_training_image:
 	docker build -t ${IMAGE_TAG_TRAINING} training
@@ -34,7 +37,7 @@ run_triton:
 	--ulimit stack=67108864 --network=host \
 	-v${shell pwd}/models/triton_repo:/models \
 	--name triton-inference-server ${IMAGE_TAG_TRITON} \
-	tritonserver --model-repository=/models --strict-model-config=false --log-verbose=1
+	tritonserver --model-repository=/models --strict-model-config=false  --log-verbose=1
 
 run_triton_on_dgx:
 	-kill -9 $(ps aux | grep "ssh -N -f -L localhost:8001:dgx:8001 voice_user@dgx"| grep -v grep| awk '{print $2}')

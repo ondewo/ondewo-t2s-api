@@ -7,3 +7,5 @@ data/ramona_deininger
 .idea/
 .vscode/
 pytest.xml
+plots/
+**/model.savedmodel/**
