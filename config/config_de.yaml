@@ -6,7 +6,7 @@ inference:
 
     composite_inference:
         text2mel:
-            type: "glow_tts"
+            type: "glow_tts_triton"
 
             tacotron2:
                 batch_size: 8
@@ -22,6 +22,16 @@ inference:
                 path: "models/glow-tts/de/G_kerstin.pth"
                 cleaners: []
                 param_config_path: "models/glow-tts/de/config.json"
+
+            glow_tts_triton:
+                batch_size: 8
+                length_scale: 1.0
+                noise_scale: 0.667
+                cleaners: []
+                max_text_length: 100
+                param_config_path: "models/glow-tts/de/config.json"
+                triton_url: "localhost:8001"
+                triton_model_name: "glow_tts"
 
         mel2audio:
             type: "mb_melgan"

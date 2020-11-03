@@ -9,7 +9,7 @@ from cachetools import LFUCache
 from scipy.io.wavfile import read as read_wav
 from scipy.io.wavfile import write
 
-from inference.inference import Inference
+from inference.inference_interface import Inference
 from utils.logger import logger
 
 

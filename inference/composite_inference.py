@@ -1,7 +1,7 @@
 from typing import List, Dict, Any
 import numpy as np
 
-from inference.inference import Inference
+from inference.inference_interface import Inference
 from inference.mel2audio.mel2audio import Mel2Audio
 from inference.mel2audio.mel2audio_factory import Mel2AudioFactory
 from inference.text2mel.text2mel import Text2Mel
