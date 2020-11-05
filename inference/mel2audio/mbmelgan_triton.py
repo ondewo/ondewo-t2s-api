@@ -5,14 +5,15 @@ import numpy as np
 from tritonclient.grpc import InferenceServerClient, InferInput, InferRequestedOutput, InferResult
 
 from inference.mel2audio.mbmelgan_core import MBMelGANCore
-from inference.mel2audio import triton_utils
+from inference import triton_utils
+from utils.helpers import check_paths_exist
 from utils.logger import logger
 
 
 class MBMelGANTriton(MBMelGANCore):
 
     def __init__(self, config: Dict[str, Any]):
-        self._check_paths_exist([config["stats_path"], config["config_path"]])
+        check_paths_exist([config["stats_path"], config["config_path"]])
         super().__init__(config)
 
         # triton config

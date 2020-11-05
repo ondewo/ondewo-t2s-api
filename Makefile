@@ -113,6 +113,7 @@ make package_release: package_git_revision_and_version
 install_dependencies_locally:
 	pip install nvidia-pyindex
 	pip install -r requirements.txt
+	pip install -r grpc_config_server/requirements.txt
 	pip install git+https://github.com/TensorSpeech/TensorflowTTS.git
 	git clone git@bitbucket.org:ondewo/ondewo-t2s-glow.git
 	cd ondewo-t2s-glow && git checkout d47b1421cc6d10070a80ebaeea74b6792d275fc0

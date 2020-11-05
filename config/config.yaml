@@ -10,9 +10,9 @@ inference:
 
             tacotron2:
                 batch_size: 8
-                path: "models/tacotron2/de/checkpoints_kerstin_eloqai/"
+                path: "models/tacotron2/de/kerstin_PUN/"
                 param_config_path: "models/tacotron2/de/tacotron2.yaml"
-                step: "1000"
+                step: "7500"
 
             glow_tts:
                 batch_size: 8
@@ -20,7 +20,7 @@ inference:
                 cleaners: []
                 length_scale: 1.0
                 noise_scale: 0.667
-                path: "models/glow-tts/de/G_florian.pth"
+                path: "models/glow-tts/de/G_kerstin.pth"
                 param_config_path: "models/glow-tts/de/config.json"
 
             glow_tts_triton:
@@ -34,7 +34,7 @@ inference:
                 triton_model_name: "glow_tts"
 
         mel2audio:
-            type: "mb_melgan_triton"
+            type: "mb_melgan_tf"
 
             waveglow:
                 batch_size: 4
