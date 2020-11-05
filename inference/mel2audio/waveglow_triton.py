@@ -6,6 +6,7 @@ from tritongrpcclient import InferenceServerClient, InferInput, InferRequestedOu
 from inference.mel2audio.mel2audio import Mel2Audio
 import numpy as np
 from utils.logger import logger
+from inference import triton_utils
 import time
 
 
@@ -26,7 +27,7 @@ class WaveglowTriton(Mel2Audio):
         # triton config
         self.triton_client = InferenceServerClient(url=self.config['triton_url'])
         self.triton_model_name: str = self.config['triton_model_name']
-        self.test_triton()
+        triton_utils.check_triton_online(self.triton_client, self.triton_model_name)
 
     def test_triton(self) -> None:
         """Check if Triton server is active and the specified model is loaded.

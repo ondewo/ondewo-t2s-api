@@ -34,10 +34,11 @@ build_training_image:
 run_triton:
 	-docker rm -f triton-inference-server
 	docker run -d --shm-size=1g --gpus all --ulimit memlock=-1 \
-	--ulimit stack=67108864 --network=host \
-	-v${shell pwd}/models/triton_repo:/models \
-	--name triton-inference-server ${IMAGE_TAG_TRITON} \
-	tritonserver --model-repository=/models --strict-model-config=false  --log-verbose=1
+		--ulimit stack=67108864 --network=host \
+		-v${shell pwd}/models/triton_repo:/models \
+		--name triton-inference-server ${IMAGE_TAG_TRITON} \
+	tritonserver --model-repository=/models --strict-model-config=false \
+		--log-verbose=1 --backend-config=tensorflow,version=2
 
 run_triton_on_dgx:
 	-kill -9 $(ps aux | grep "ssh -N -f -L localhost:8001:dgx:8001 voice_user@dgx"| grep -v grep| awk '{print $2}')
@@ -64,7 +65,7 @@ run_batch_server:
 	--network=host \
 	-v ${shell pwd}/models:/opt/ondewo-t2s/models \
 	-v ${shell pwd}/config:/opt/ondewo-t2s/config \
-	--env CONFIG_FILE="config/config.yaml" \
+	--env CONFIG_FILE="config/config_de.yaml" \
 	--name ${BATCH_CONTAINER} \
 	${IMAGE_TAG_BATCH}
 
@@ -112,6 +113,7 @@ make package_release: package_git_revision_and_version
 install_dependencies_locally:
 	pip install nvidia-pyindex
 	pip install -r requirements.txt
+	pip install -r grpc_config_server/requirements.txt
 	pip install git+https://github.com/TensorSpeech/TensorflowTTS.git
 	git clone git@bitbucket.org:ondewo/ondewo-t2s-glow.git
 	cd ondewo-t2s-glow && git checkout d47b1421cc6d10070a80ebaeea74b6792d275fc0
