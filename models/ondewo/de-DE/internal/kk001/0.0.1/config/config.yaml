@@ -6,39 +6,29 @@ inference:
 
     composite_inference:
         text2mel:
-            type: "glow_tts"
+            type: "tacotron2"
 
             tacotron2:
                 batch_size: 8
-                path: "models/tacotron2/de/kerstin_PUN/"
-                param_config_path: "models/tacotron2/de/tacotron2.yaml"
+                path: "models/ondewo/de-DE/internal/kk001/0.0.1/tacotron2/"
+                param_config_path: "models/ondewo/de-DE/internal/kk001/0.0.1/tacotron2/tacotron2.yaml"
                 step: "7500"
 
             glow_tts:
                 batch_size: 8
                 use_gpu: false
-                cleaners: []
                 length_scale: 1.0
                 noise_scale: 0.667
                 path: "models/glow-tts/de/G_kerstin.pth"
-                param_config_path: "models/glow-tts/de/config.json"
-
-            glow_tts_triton:
-                batch_size: 8
-                length_scale: 1.0
-                noise_scale: 0.667
                 cleaners: []
-                max_text_length: 100
                 param_config_path: "models/glow-tts/de/config.json"
-                triton_url: "localhost:8001"
-                triton_model_name: "glow_tts"
 
         mel2audio:
-            type: "mb_melgan_tf"
+            type: "mb_melgan"
 
             waveglow:
                 batch_size: 4
-                path: "models/waveglow/checkpoints_waveglow_kerstin/WaveGlowNM.pt"
+                path: "models/waveglow/pretrained/WaveGlowNM.pt"
                 param_config_path: "models/waveglow/waveglow.yaml"
                 sigma: 0.6
                 denoiser:
@@ -52,17 +42,11 @@ inference:
                 triton_model_name: "waveglow"
                 triton_url: "localhost:8001"
 
-            mb_melgan_tf:
-                batch_size: 20
-                config_path: "models/mb_melgan/en/config.yml"
-                model_path: "models/mb_melgan/en/generator-1820000.h5"
-                stats_path: "models/mb_melgan/en/stats.npy"
-
-            mb_melgan_triton:
-                config_path: "models/mb_melgan/en/config.yml"
-                stats_path: "models/mb_melgan/en/stats.npy"
-                triton_model_name: "mb_melgan"
-                triton_url: "localhost:8001"
+            mb_melgan:
+                batch_size: 1
+                config_path: "models/ondewo/de-DE/internal/kk001/0.0.1/mb_melgan/en/config.yml"
+                model_path: "models/ondewo/de-DE/internal/kk001/0.0.1/mb_melgan/en/generator-1820000.h5"
+                stats_path: "models/ondewo/de-DE/internal/kk001/0.0.1/mb_melgan/de/stats.npy"
 
     caching:
         active: false
@@ -73,6 +57,7 @@ inference:
         cache_save_dir: "models/cache"
 
 normalization:
-    language: "en"
+    language: "de"
 
     pipeline:
+        - "normalize_and_split"

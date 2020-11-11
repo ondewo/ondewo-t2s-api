@@ -6,16 +6,16 @@ inference:
 
     composite_inference:
         text2mel:
-            type: "glow_tts_triton"
+            type: "glow_tts"
 
             tacotron2:
                 batch_size: 8
-                path: "models/tacotron2/de/checkpoints_kerstin_eloqai/"
+                path: "models/tacotron2/de/kerstin_PUN/"
                 param_config_path: "models/tacotron2/de/tacotron2.yaml"
                 step: "1000"
 
             glow_tts:
-                batch_size: 1
+                batch_size: 5
                 use_gpu: false
                 length_scale: 1.0
                 noise_scale: 0.667
@@ -34,7 +34,7 @@ inference:
                 triton_model_name: "glow_tts"
 
         mel2audio:
-            type: "mb_melgan"
+            type: "mb_melgan_tf"
 
             waveglow:
                 batch_size: 4
@@ -52,10 +52,10 @@ inference:
                 triton_model_name: "waveglow"
                 triton_url: "localhost:8001"
 
-            mb_melgan:
+            mb_melgan_tf:
                 batch_size: 20
                 config_path: "models/mb_melgan/en/config.yml"
-                model_path: "models/mb_melgan/en/generator-1880000.h5"
+                model_path: "models/mb_melgan/en/generator-1820000.h5"
                 stats_path: "models/mb_melgan/en/stats.npy"
 
     caching:
@@ -70,13 +70,13 @@ normalization:
     language: "de"
 
     pipeline:
-      - "fix_plus"
-      - "normalize_urls"
-      - "normalize_dates"
-      - "normalize_year"
-      - "normalize_time"
-      - "normalize_numbers"
-      - "split_texts"
-      - "fix_punctuation"
-      - "remove_unaudible_texts"
-      - "lower_case"
+        - "fix_plus"
+        - "normalize_urls"
+        - "normalize_dates"
+        - "normalize_year"
+        - "normalize_time"
+        - "normalize_numbers"
+        - "split_texts"
+        - "fix_punctuation"
+        - "remove_unaudible_texts"
+        - "lower_case"

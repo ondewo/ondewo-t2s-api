@@ -16,3 +16,10 @@
 ### ondewo-t2s v1.1.1
 * Migrated to CUDA 11 and Triton 2.2.0
 * Further improvement in automatic packaging and model deployment
+
+#### ondewo-t2s v1.2.0
+* New text-to-mel model: Glow-TTS
+* New mel-to-audio model: MB-MelGAN
+* Refactored inference module
+* Refactored pre-processing pipeline
+* Upgraded to Triton 2.3.0 client and server

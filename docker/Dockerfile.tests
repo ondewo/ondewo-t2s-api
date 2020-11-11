@@ -11,8 +11,10 @@ RUN apt-get update && apt-get -y upgrade && \
 	apt-get install -y git
 
 RUN git clone git@bitbucket.org:ondewo/ondewo-t2s-glow.git
-RUN cd ondewo-t2s-glow && git checkout d47b1421cc6d10070a80ebaeea74b6792d275fc0
+RUN cd ondewo-t2s-glow && git checkout ac7cf48df6e40ea6935b0bc51232374fa5efc6a0
 
+RUN git clone git@bitbucket.org:ondewo/tensorflowtts.git
+RUN cd tensorflowtts && git checkout 17963fd905eb04a73338681a440e6c2fa71e47a8
 
 FROM dockerregistry.ondewo.com:5000/cuda:11.0-base-ubuntu18.04 AS uncythonized
 
@@ -30,6 +32,9 @@ RUN apt-get install -y curl python3.7 python3.7-dev python3.7-distutils && \
     python get-pip.py --force-reinstall && \
     rm get-pip.py
 
+# Install TF
+RUN pip install tensorflow-gpu==2.3.0
+
 # Install PyTorch
 RUN pip install torch==1.6.0
 
@@ -38,20 +43,21 @@ RUN pip install nemo_toolkit[all]==0.11
 
 RUN pip install cython
 COPY --from=private_installer /root/install/ondewo-t2s-glow ./ondewo-t2s-glow
-RUN cd glow-tts/monotonic_align; python setup.py build_ext --inplace; cd ../..
+RUN cd ondewo-t2s-glow/monotonic_align; python setup.py build_ext --inplace; cd ../..
 RUN pip install -e ondewo-t2s-glow
 
-RUN apt-get update && apt-get -y upgrade && \
-	apt-get install -y git
+COPY --from=private_installer /root/install/tensorflowtts ./tensorflowtts
+RUN pip install -e tensorflowtts
 
-COPY docker/test_requirements.txt .
+COPY ./docker/test_requirements.txt .
 COPY grpc_config_server/requirements.txt grpc_config_server/requirements.txt
 
+RUN pip install nvidia-pyindex
+RUN pip install -r test_requirements.txt --ignore-installed
 RUN pip install -r grpc_config_server/requirements.txt
-RUN pip install -r test_requirements.txt --ignore-installed && \
-    pip install git+https://github.com/TensorSpeech/TensorflowTTS.git
 
-WORKDIR /opt
+# install docker.io
+RUN apt update && apt install -y docker.io
 
 WORKDIR /opt/ondewo-t2s
 COPY ./normalization ./normalization
