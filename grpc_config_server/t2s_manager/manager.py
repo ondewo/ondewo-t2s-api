@@ -65,7 +65,7 @@ class TextToSpeechManager:
             ) for model in self.model_dir_tree.extract_model_config_list(language_code=language_code)
         ]
 
-    def set_active_config(self, model_id: Type[str]) -> Tuple[bool, str]:
+    def set_active_config(self, model_id: str) -> Tuple[bool, str]:
         """
         set the model configuration associated with the ID as the active configuration
         replaces ./config/config.yaml with the file in the ./models/ directory associated with this ID

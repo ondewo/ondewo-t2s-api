@@ -1,8 +1,7 @@
 import os
-import uuid
 from dataclasses import dataclass
 from shutil import copy
-from typing import List, Union, Type, Tuple
+from typing import List, Union, Tuple
 from typing import TYPE_CHECKING
 
 import yaml
@@ -238,7 +237,7 @@ class DirTree:
                                 "./model/<company>/<language>/<domain>/<speaker>/<setup>/config/config.yaml" +
                                 " match the config.")
 
-    def get_model_by_id(self, model_id: Type[str]) -> ModelConfig:
+    def get_model_by_id(self, model_id: str) -> ModelConfig:
         """get the ModelConfig associated with this model_id"""
         setups = self.extract_model_config_list()
         for setup in setups:
