@@ -70,4 +70,4 @@ COPY ./grpc_config_server ./grpc_config_server
 COPY ./tests/tests_grpc/offline/models ./models
 
 ENV PYTHONPATH /opt/ondewo-t2s
-CMD python -m pytest -vv --capture=no --junit-xml=log/"$TESTFILE" --ignore="tests/e2e" --ignore="tests/integration"
+CMD python -m pytest -vv --capture=no --junit-xml=log/"$TESTFILE" --ignore="tests/e2e" --ignore="tests/integration" --ignore="tests/tests_grpc"

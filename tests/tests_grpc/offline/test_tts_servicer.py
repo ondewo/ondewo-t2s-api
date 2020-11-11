@@ -1,5 +1,7 @@
+import os
 from typing import List
 
+import pytest
 from google.protobuf.json_format import MessageToDict
 
 from grpc_config_server.ondewo.audio import text_to_speech_pb2
@@ -7,16 +9,31 @@ from grpc_config_server.ondewo.audio.text_to_speech_pb2 import ModelSetup
 from grpc_config_server.t2s_manager.dir_dataclass import ModelConfig
 from grpc_config_server.tts_server import TextToSpeechConfigServer
 
+DIRECTORY = "./config"
+
+
+def get_config_files():
+    """get all .yaml files in DIRECTORY to perform tests on"""
+    directory = DIRECTORY
+    config_files = []
+    all_in_dir = os.listdir(directory)
+    for file in all_in_dir:
+        if '.yaml' in file and 'config' in file:
+            config_files.append(directory + "/" + file)
+    return config_files
+
 
 class TestTTSServicer:
     """performs offline tests by using the handle_xxx() functions in the stt_servicer"""
 
+    @pytest.mark.parametrize('server_offline', get_config_files(), indirect=True)
     def test_handle_list_supported_languages(self, server_offline: TextToSpeechConfigServer) -> None:
         response = server_offline.handle_list_supported_languages(
             request=text_to_speech_pb2.ListLanguagesRequest()
         )
         assert response.language_codes == ['de-DE', 'fr-FR'] or response.language_codes == ['fr-FR', 'de-DE']
 
+    @pytest.mark.parametrize('server_offline', get_config_files(), indirect=True)
     def test_handle_list_model_setups_for_language(self, server_offline: TextToSpeechConfigServer) -> None:
         test_code = "fr-FR"
         response = server_offline.handle_list_model_setups_for_language(
@@ -33,6 +50,7 @@ class TestTTSServicer:
             assert "config" in setup.keys()
             assert "inference" in setup["config"].keys()
 
+    @pytest.mark.parametrize('server_offline', get_config_files(), indirect=True)
     def test_handle_list_all_model_setups(self, server_offline: TextToSpeechConfigServer) -> None:
         response = server_offline.handle_list_all_model_setups(
             request=text_to_speech_pb2.ListAllModelSetupsRequest()
@@ -45,6 +63,7 @@ class TestTTSServicer:
             assert "config" in setup.keys()
             assert "inference" in setup["config"].keys()
 
+    @pytest.mark.parametrize('server_offline', get_config_files(), indirect=True)
     def test_handle_get_active_model_config(self, server_offline: TextToSpeechConfigServer) -> None:
         response = server_offline.handle_get_active_model_config(
             request=text_to_speech_pb2.GetActiveModelConfigRequest()
@@ -68,6 +87,7 @@ class TestTTSServicer:
         ))
         assert from_file_setup == setup
 
+    @pytest.mark.parametrize('server_offline', get_config_files(), indirect=True)
     def test_handle_set_model_config(self, server_offline: TextToSpeechConfigServer) -> None:
         response = server_offline.handle_list_all_model_setups(
             request=text_to_speech_pb2.ListAllModelSetupsRequest()
