@@ -235,7 +235,7 @@ class DirTree:
                 return setup
         raise FileNotFoundError("Could not find path of active config.yaml. No files in " +
                                 "./model/<company>/<language>/<domain>/<speaker>/<setup>/config/config.yaml" +
-                                " match the config.")
+                                f" match the config in {self.manager.active_config_path}.")
 
     def get_model_by_id(self, model_id: str) -> ModelConfig:
         """get the ModelConfig associated with this model_id"""
