@@ -55,7 +55,7 @@ class TestTTSServicer:
         response = server_offline.handle_list_all_model_setups(
             request=text_to_speech_pb2.ListAllModelSetupsRequest()
         )
-        assert len(response.model_setups) == 30
+        assert len(response.model_setups) == 28
         for model_setup in response.model_setups:
             setup = MessageToDict(model_setup)
             assert "languageCode" in setup.keys()
@@ -71,13 +71,13 @@ class TestTTSServicer:
         assert response.model_setup
         setup = MessageToDict(response.model_setup)
         assert "languageCode" in setup.keys()
-        assert setup["languageCode"] == "fr-FR"
+        assert setup["languageCode"] == "de-DE"
         assert "directory" in setup.keys()
-        assert setup["directory"] == './tests/tests_grpc/offline/models/universeinc/fr-FR/astrology0815/sr001/0.0.1'
+        assert setup["directory"] == './tests/tests_grpc/offline/models/eloqai/de-DE/astrology0815/sr001/0.0.1'
         assert "config" in setup.keys()
         assert "inference" in setup["config"].keys()
         assert "type" in setup["config"]["inference"].keys()
-        assert setup["config"]["inference"]["type"] == "testsetterorig"
+        assert setup["config"]["inference"]["type"] == "composite"
 
         from_file = server_offline.manager.active_config
         from_file_setup = MessageToDict(text_to_speech_pb2.ModelSetup(
