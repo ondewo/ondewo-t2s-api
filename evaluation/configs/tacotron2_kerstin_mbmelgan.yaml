@@ -1,0 +1,83 @@
+# ONDEWO T2S batch server configuration
+
+
+inference:
+    type: "composite"
+
+    composite_inference:
+        text2mel:
+            type: "tacotron2"
+
+            tacotron2:
+                batch_size: 8
+                path: "models/tacotron2/de/kerstin_PUN/"
+                param_config_path: "models/tacotron2/de/tacotron2.yaml"
+                step: "1000"
+
+            glow_tts:
+                batch_size: 5
+                use_gpu: false
+                length_scale: 1.0
+                noise_scale: 0.667
+                batch_inference: false
+                path: "models/glow-tts/de/kerstin.pth"
+                cleaners: []
+                param_config_path: "models/glow-tts/de/config.json"
+
+            glow_tts_triton:
+                batch_size: 8
+                length_scale: 1.0
+                noise_scale: 0.667
+                cleaners: []
+                max_text_length: 100
+                param_config_path: "models/glow-tts/de/config.json"
+                triton_url: "localhost:8001"
+                triton_model_name: "glow_tts"
+
+        mel2audio:
+            type: "mb_melgan_tf"
+
+            waveglow:
+                batch_size: 4
+                path: "models/waveglow/checkpoints_waveglow_kerstin/WaveGlowNM.pt"
+                param_config_path: "models/waveglow/waveglow.yaml"
+                sigma: 0.6
+                denoiser:
+                    active: true
+                    strength: 0.05
+
+            waveglow_triton:
+                param_config_path: "models/waveglow/waveglow.yaml"
+                sigma: 0.6
+                max_spect_size: 1000
+                triton_model_name: "waveglow"
+                triton_url: "localhost:8001"
+
+            mb_melgan_tf:
+                batch_size: 20
+                config_path: "models/mb_melgan/en/config.yml"
+                model_path: "models/mb_melgan/en/generator-1820000.h5"
+                stats_path: "models/mb_melgan/de/stats.npy"
+
+    caching:
+        active: false
+        memory_cache_max_size: 20
+        sampling_rate: 22050
+        load_cache: true
+        save_cache: true
+        cache_save_dir: "models/cache"
+
+normalization:
+    language: "de"
+
+    pipeline:
+        - "fix_plus"
+        - "normalize_urls"
+        - "normalize_dates"
+        - "normalize_year"
+        - "normalize_time"
+        - "normalize_numbers"
+        - "split_texts"
+        - "fix_punctuation"
+        - "remove_unaudible_texts"
+        - "lower_case"
