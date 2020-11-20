@@ -6,13 +6,13 @@ inference:
 
     composite_inference:
         text2mel:
-            type: "glow_tts"
+            type: "tacotron2"
 
             tacotron2:
                 batch_size: 8
-                path: "models/tacotron2/de/kerstin_PUN/"
+                path: "models/tacotron2/de/eloqai_florian/"
                 param_config_path: "models/tacotron2/de/tacotron2.yaml"
-                step: "1000"
+                step: "10000"
 
             glow_tts:
                 batch_size: 5
@@ -56,7 +56,7 @@ inference:
             mb_melgan_tf:
                 batch_size: 20
                 config_path: "models/mb_melgan/en/config.yml"
-                model_path: "models/mb_melgan/en/generator-1000000.h5"
+                model_path: "models/mb_melgan/en/generator-1820000.h5"
                 stats_path: "models/mb_melgan/de/stats.npy"
 
     caching:
