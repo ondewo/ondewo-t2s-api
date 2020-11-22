@@ -11,3 +11,5 @@ models/triton_repo_test
 glow-tts/
 plots/
 **/model.savedmodel/**
+samples/
+models/mb_melgan
