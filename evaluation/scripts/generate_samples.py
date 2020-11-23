@@ -5,8 +5,7 @@ import multiprocessing
 from pathlib import Path
 from ruamel.yaml import YAML
 import numpy as np
-
-from scipy.io.wavfile import write as audio_write
+import soundfile as sf
 
 
 def gen_samples(config: Dict[str, Any], sentences: List[str], output_dir: Path) -> None:
@@ -22,7 +21,7 @@ def gen_samples(config: Dict[str, Any], sentences: List[str], output_dir: Path) 
     inference: Inference = InferenceFactory.get_inference(config['inference'])
 
     preprocess_pipeline: NormalizerPipeline = NormalizerPipeline(config=config['normalization'])
-    postprocessor = Postprocessor()
+    postprocessor = Postprocessor(config['postprocessing'])
 
     for i, sentence in enumerate(sentences):
         # infer
@@ -30,14 +29,9 @@ def gen_samples(config: Dict[str, Any], sentences: List[str], output_dir: Path) 
         audio_list: List[np.ndarray] = inference.synthesize(texts=texts)
         audio = postprocessor.postprocess(audio_list)
 
-        # convert and save wav
-        # conversion to 16-bit PCM
-        audio *= 32768
-        audio = audio.astype("int16")
-
         # save audio to file
         filepath = output_dir / f"sample_{i}.wav"
-        audio_write(str(filepath), 22050, audio)
+        sf.write(str(filepath), audio, 22050)
 
 
 def main() -> None:

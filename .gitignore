@@ -13,3 +13,4 @@ plots/
 **/model.savedmodel/**
 samples/
 models/mb_melgan
+evaluation/configs/
