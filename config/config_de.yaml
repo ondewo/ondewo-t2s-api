@@ -81,3 +81,12 @@ normalization:
         - "fix_punctuation"
         - "remove_unaudible_texts"
         - "lower_case"
+
+postprocessing:
+    silence_secs: 0.25
+
+    pipeline:
+        - "apodization"
+
+    apodization:
+        apodization_secs: 0.5

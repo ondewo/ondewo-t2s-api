@@ -22,7 +22,7 @@ with open(config_file) as f:
 inference: Inference = InferenceFactory.get_inference(config['inference'])
 
 preprocess_pipeline: NormalizerPipeline = NormalizerPipeline(config=config['normalization'])
-postprocessor = Postprocessor()
+postprocessor = Postprocessor(config['postprocessing'])
 
 # needed for Flask
 from batch_server import routes

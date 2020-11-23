@@ -11,6 +11,12 @@ Added GRPC config server. With this server it is possible to read and modify the
 Added support for Glow-TTS inference on Triton
 * [[OND232-84]](https://ondewo.atlassian.net/browse/OND232-84) -
 Added support for MB-MelGAN inference on Triton
+* [[OND232-37]](https://ondewo.atlassian.net/browse/OND232-37) -
+Added apodization to generated audio as part of postprocessing
+
+### Bug fixes
+* [[OND232-37]](https://ondewo.atlassian.net/browse/OND232-37) -
+Fixed postprocessing to not add silence at the start of generated audio
 
 ### Migration Guide
 * No extra steps necessary for migrating to this version.
