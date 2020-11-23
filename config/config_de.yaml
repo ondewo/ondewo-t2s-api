@@ -84,7 +84,9 @@ normalization:
 
 postprocessing:
     silence_secs: 0.25
-    apodization_secs: 0.5
 
     pipeline:
-        - "apodize"
+        - "apodization"
+
+    apodization:
+        apodization_secs: 0.5

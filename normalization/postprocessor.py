@@ -11,11 +11,11 @@ class Postprocessor():
 
         silence_secs = self.config["silence_secs"]
         self.silence = np.zeros((int(silence_secs * Postprocessor.sampling_rate),))
-        apodization_secs = self.config["silence_secs"]
+        apodization_secs = self.config["apodization"]["apodization_secs"]
         self.apodization_steps = int(apodization_secs * Postprocessor.sampling_rate)
 
         self.pipeline_map = {
-            "apodize": self._apodize
+            "apodization": self._apodize
         }
 
     def postprocess(self, audio_list: List[np.ndarray]) -> np.ndarray:
