@@ -28,7 +28,7 @@ class TestBatchServer:
 
     @staticmethod
     def test_normal_sentence() -> None:
-        text: str = "Hallo Robert, wie geht es dir?"
+        text: str = "Hallo Robert, wie geht es dir? Was machst du?"
         duration: float = TestBatchServer.send_text_to_server(text)
 
         # the output of text-2-speech is non-deterministic, but assume that the
