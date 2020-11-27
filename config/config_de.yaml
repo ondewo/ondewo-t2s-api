@@ -56,8 +56,8 @@ inference:
             mb_melgan_tf:
                 batch_size: 20
                 config_path: "models/mb_melgan/en/config.yml"
-                model_path: "models/mb_melgan/en/generator-1820000.h5"
-                stats_path: "models/mb_melgan/en/stats.npy"
+                model_path: "models/mb_melgan/en/generator-1360000.h5"
+                stats_path: "models/mb_melgan/de/stats.npy"
 
     caching:
         active: false
@@ -86,7 +86,22 @@ postprocessing:
     silence_secs: 0.25
 
     pipeline:
+        - "logmmse"
+        #- "wiener"
+        #- "mfcc_up"
         - "apodization"
 
+    logmmse:
+        initial_noise: 100
+        window_size: 0
+        noise_threshold: 0.15
+
+    wiener:
+        frame_len: 1024
+        lpc_order: 50
+        iterations: 10
+        alpha: 0.5
+        thresh: 0.1
+
     apodization:
-        apodization_secs: 0.5
+        apodization_secs: 0.25

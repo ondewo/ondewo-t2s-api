@@ -11,3 +11,8 @@ tritonclient[all]==2.3.0
 torch==1.6.0
 webdataset
 soundfile
+git+https://github.com/wilsonchingg/logmmse.git
+pyroomacoustics
+omegaconf
+python_speech_features
+pysndfx
