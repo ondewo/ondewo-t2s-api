@@ -21,8 +21,8 @@ inference:
                 length_scale: 1.0
                 noise_scale: 0.667
                 batch_inference: false
-                path: "models/glow-tts/de/G_kerstin.pth"
-                param_config_path: "models/glow-tts/de/config.json"
+                path: "models/glow-tts/en/pretrained.pth"
+                param_config_path: "models/glow-tts/en/config.json"
 
             glow_tts_triton:
                 batch_size: 8
@@ -56,7 +56,7 @@ inference:
             mb_melgan_tf:
                 batch_size: 20
                 config_path: "models/mb_melgan/en/config.yml"
-                model_path: "models/mb_melgan/en/generator-1820000.h5"
+                model_path: "models/mb_melgan/en/generator-1880000.h5"
                 stats_path: "models/mb_melgan/en/stats.npy"
 
             mb_melgan_triton:
@@ -77,3 +77,12 @@ normalization:
     language: "en"
 
     pipeline:
+
+postprocessing:
+    silence_secs: 0.25
+
+    pipeline:
+        - "apodization"
+
+    apodization:
+        apodization_secs: 0.5
