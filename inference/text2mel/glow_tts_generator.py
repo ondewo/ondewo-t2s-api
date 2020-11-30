@@ -49,7 +49,7 @@ class GlowTTS(GlowTTSCore):
             txt_lengths_torch = txt_lengths_torch.cuda()
 
         with torch.no_grad():
-            (mel_gen, *_), attn_gen, *_ = self.model(
+            (mel_gen, *_), (*_,), (attn_gen, *_) = self.model(
                 txt_batch_torch,
                 txt_lengths_torch,
                 gen=True,
