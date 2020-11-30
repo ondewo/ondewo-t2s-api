@@ -1,40 +1,20 @@
-from typing import List, Optional, Callable, Tuple, Any
+from typing import List, Optional, Callable, Tuple
+
+from glow_tts_reduced.text_processing.processor import TextProcessor
 
 import numpy as np
 
 
-class GlowTTSTextProcessor:
+class GlowTTSTextProcessor(TextProcessor):
 
-    def __init__(self,
-                 language_code: str,
-                 cmudict_path: Optional[str] = None,
-                 cleaners: Optional[List[str]] = None
-                 ):
-        self.language_code = language_code
-        self.cleaner_names = cleaners or []
-
-        if language_code == 'de':
-            from glow_tts_reduced.text_processing.text_de import text_to_sequence, cmudict
-            from glow_tts_reduced.text_processing.text_de.symbols import symbols
-        elif language_code == 'en':
-            from glow_tts_reduced.text_processing.text_en import text_to_sequence, cmudict
-            from glow_tts_reduced.text_processing.text_en.symbols import symbols
-
-        else:
-            raise ValueError(f'Language code {language_code} is not supported')
-
-        if cmudict_path:
-            self.phonemic_dict = cmudict.CMUDict(cmudict_path)
-        else:
-            self.phonemic_dict = None
-
-        def text_to_sequence_with_dict(text: str) -> List[int]:
-            return text_to_sequence(text=text, cleaner_names=self.cleaner_names,   # type: ignore
-                                    dictionary=self.phonemic_dict)
-
-        self.text_to_sequence: Callable[[str], List[int]] = text_to_sequence_with_dict
-        assert isinstance(symbols, list)
-        self.symbols = symbols
+    def __init__(self, language_code: str, add_blank: bool, cmudict_path: Optional[str] = None,
+                 cleaners: Optional[List[str]] = None):
+        super().__init__(
+            language_code=language_code,
+            add_blank=add_blank,
+            cmudict_path=cmudict_path,
+            cleaners=cleaners
+        )
 
     def preprocess_text_batch(
             self, texts: List[str],
@@ -67,10 +47,11 @@ class GlowTTSTextProcessor:
     def _create_batch(self, txt_indices_batch_list: List[np.ndarray],
                       txt_lengths_list: List[int]) -> Tuple[np.ndarray, ...]:
         """
-
+        creates batch of texts converted to indices as np.array form the list of arrays.
+        The main problem here is to add padding so that all rows are of the same length
         Args:
-            txt_indices_batch_list:
-            txt_lengths_list:
+            txt_indices_batch_list: list of arrays, each of which is representing one text
+            txt_lengths_list: list of integers that represent length of each text
 
         Returns:
 

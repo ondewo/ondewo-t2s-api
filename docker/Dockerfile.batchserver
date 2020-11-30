@@ -11,7 +11,7 @@ RUN apt-get update && apt-get -y upgrade && \
 	apt-get install -y git
 
 RUN git clone git@bitbucket.org:ondewo/ondewo-t2s-glow.git
-RUN cd ondewo-t2s-glow && git checkout ac7cf48df6e40ea6935b0bc51232374fa5efc6a0
+RUN cd ondewo-t2s-glow && git checkout 5ffb5489431ad092459dcdc05fcb12109cd02fd9
 
 RUN git clone git@bitbucket.org:ondewo/tensorflowtts.git
 RUN cd tensorflowtts && git checkout 17963fd905eb04a73338681a440e6c2fa71e47a8
