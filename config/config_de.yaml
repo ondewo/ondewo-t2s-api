@@ -85,7 +85,22 @@ postprocessing:
     silence_secs: 0.25
 
     pipeline:
+        - "logmmse"
+        #- "wiener"
+        #- "mfcc_up"
         - "apodization"
 
+    logmmse:
+        initial_noise: 100
+        window_size: 0
+        noise_threshold: 0.15
+
+    wiener:
+        frame_len: 1024
+        lpc_order: 50
+        iterations: 10
+        alpha: 0.5
+        thresh: 0.1
+
     apodization:
-        apodization_secs: 0.5
+        apodization_secs: 0.25
