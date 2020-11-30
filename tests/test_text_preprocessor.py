@@ -11,7 +11,8 @@ class TestTextPreprocessor:
     @staticmethod
     @pytest.mark.parametrize('language_code, text', [('en', 'english text'), ('de', 'eine deutsche texte')])
     def test_basic(language_code: str, text: str) -> None:
-        preprocessor: GlowTTSTextProcessor = GlowTTSTextProcessor(language_code=language_code, add_bank=False)
+        preprocessor: GlowTTSTextProcessor = GlowTTSTextProcessor(language_code=language_code,
+                                                                  add_blank=False)
         seq = preprocessor.text_to_sequence(text)
         assert isinstance(seq, list)
         assert len(seq) == len(text)+1
@@ -26,8 +27,9 @@ class TestTextPreprocessor:
                                  ('de', ['ein deutscher text', 'ein anderer deutsche text']),
                              ])
     def test_preprocess_text_batch(language_code: str, texts: List[str]) -> None:
-        preprocessor: GlowTTSTextProcessor = GlowTTSTextProcessor(language_code=language_code, add_bank=False)
+        preprocessor: GlowTTSTextProcessor = GlowTTSTextProcessor(language_code=language_code,
+                                                                  add_blank=False)
         txt_indexes_batch, txt_lengths_padded_batch = \
             preprocessor.preprocess_text_batch(texts=texts)
         assert txt_indexes_batch.shape[-1] == max(map(len, texts))+1
-        # assert all(txt_lengths_padded_batch == np.array(list(map(len, texts))))
+        assert all(txt_lengths_padded_batch == np.array(list(map(len, texts)))+np.ones(len(texts)))
