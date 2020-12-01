@@ -11,7 +11,7 @@ RUN apt-get update && apt-get -y upgrade && \
 	apt-get install -y git
 
 RUN git clone git@bitbucket.org:ondewo/ondewo-t2s-glow.git
-RUN cd ondewo-t2s-glow && git checkout 5ffb5489431ad092459dcdc05fcb12109cd02fd9
+RUN cd ondewo-t2s-glow && git checkout d10c1718d59d903ce2d99dfd258d396ff933c0e7
 
 
 FROM dockerregistry.ondewo.com:5000/cuda:11.0-base-ubuntu18.04 AS dependencies
