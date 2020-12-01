@@ -34,7 +34,7 @@ class Postprocessor():
             audio = np.concatenate((audio, self.silence, audio_part.astype(np.float64)))
 
         # run postprocessing pipeline
-        pipeline = self.config.get("pipeline", [])
+        pipeline = self.config.get("pipeline") or []
         for step in pipeline:
             audio = self.pipeline_map[step](audio)
 

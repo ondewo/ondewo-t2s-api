@@ -19,9 +19,9 @@ inference:
                 use_gpu: false
                 length_scale: 1.0
                 noise_scale: 0.667
-                path: "models/glow-tts/de/G_kerstin51.pth"
+                path: "models/glow-tts/de/kerstin_blank.pth"
                 cleaners: []
-                param_config_path: "models/glow-tts/de/config.json"
+                param_config_path: "models/glow-tts/de/config_blank.json"
 
             glow_tts_triton:
                 batch_size: 8
@@ -85,10 +85,10 @@ postprocessing:
     silence_secs: 0.25
 
     pipeline:
-        - "logmmse"
+        #- "logmmse"
         #- "wiener"
         #- "mfcc_up"
-        - "apodization"
+#        - "apodization"
 
     logmmse:
         initial_noise: 100

@@ -15,7 +15,7 @@ class GlowTTS(GlowTTSCore):
         super(GlowTTS, self).__init__(config=config)
         self.checkpoint_path: str = config[MODEL_PATH]
         self.model: models.FlowGenerator = models.FlowGenerator(
-            n_vocab=len(self.text_processor.symbols),
+            n_vocab=len(self.text_processor.symbols)+self.text_processor.add_blank,
             out_channels=self.hyperparams.data.n_mel_channels,
             **self.hyperparams.model
         )
