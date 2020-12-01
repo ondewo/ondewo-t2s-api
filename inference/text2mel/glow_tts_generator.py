@@ -2,7 +2,7 @@ from typing import Tuple, Dict, Any, List
 
 import numpy as np
 import torch
-from glow_tts_reduced import utils, models
+from glow_tts_reduced import models
 
 from inference.text2mel.constants_text2mel import MODEL_PATH, USE_GPU, BATCH_SIZE
 from inference.text2mel.glow_tts_core import GlowTTSCore
@@ -23,7 +23,14 @@ class GlowTTS(GlowTTSCore):
         self.use_gpu: bool = config[USE_GPU]
         if self.use_gpu:
             self.model = self.model.to("cuda")
-        utils.load_checkpoint(self.checkpoint_path, self.model)
+
+        # load trained model
+        self.state_dict = torch.load(self.checkpoint_path)
+        # handle both cases 1- model with optimization info or 2- pure model in the checkpoint
+        self.state_dict = self.state_dict.get('model') or self.state_dict
+        self.model.load_state_dict(state_dict=self.state_dict)
+
+        # set model to eval mode
         self.model.decoder.store_inverse()  # do not calcuate jacobians for fast decoding
         self.model.eval()
 

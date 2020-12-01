@@ -16,7 +16,7 @@ inference:
 
             glow_tts:
                 batch_size: 5
-                use_gpu: false
+                use_gpu: true
                 length_scale: 1.0
                 noise_scale: 0.667
                 path: "models/glow-tts/de/kerstin_blank.pth"
@@ -76,7 +76,7 @@ normalization:
         - "normalize_year"
         - "normalize_time"
         - "normalize_numbers"
-        - "split_texts"
+#        - "split_texts"
         - "fix_punctuation"
         - "remove_unaudible_texts"
         - "lower_case"
