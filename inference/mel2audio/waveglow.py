@@ -1,22 +1,23 @@
-import torch
-from nemo.core import NmTensor
-
-from inference.mel2audio.mel2audio import Mel2Audio
-from inference.mel2audio.nemo_modules.mel_spectrogram_data_layer_factory import get_mel_spectrogram_data_layer
-from utils.logger import logger
-from typing import Dict, Any, List
-from ruamel.yaml import YAML
 import time
+from typing import Dict, Any, List
 
 import nemo
 import nemo.collections.tts as nemo_tts
 import numpy as np
+import torch
+from nemo.core import NmTensor
+from ruamel.yaml import YAML
+
+from inference.mel2audio.mel2audio import Mel2Audio
+from inference.mel2audio.nemo_modules.mel_spectrogram_data_layer_factory import get_mel_spectrogram_data_layer
+from utils.helpers import check_paths_exist
+from utils.logger import logger
 
 
 class Waveglow(Mel2Audio):
 
     def __init__(self, config: Dict[str, Any]):
-        self._check_paths_exist([config['param_config_path'], config['path']])
+        check_paths_exist([config['param_config_path'], config['path']])
         self.config = config
         self.batch_size = config['batch_size']
 

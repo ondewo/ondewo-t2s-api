@@ -16,12 +16,12 @@ inference:
 
             glow_tts:
                 batch_size: 5
-                use_gpu: false
+                use_gpu: true
                 length_scale: 1.0
                 noise_scale: 0.667
-                path: "models/glow-tts/de/G_kerstin51.pth"
+                path: "models/glow-tts/de/kerstin_blank.pth"
                 cleaners: []
-                param_config_path: "models/glow-tts/de/config.json"
+                param_config_path: "models/glow-tts/de/config_blank.json"
 
             glow_tts_triton:
                 batch_size: 8
@@ -76,7 +76,7 @@ normalization:
         - "normalize_year"
         - "normalize_time"
         - "normalize_numbers"
-        - "split_texts"
+#        - "split_texts"
         - "fix_punctuation"
         - "remove_unaudible_texts"
         - "lower_case"
@@ -85,10 +85,10 @@ postprocessing:
     silence_secs: 0.25
 
     pipeline:
-        - "logmmse"
+        #- "logmmse"
         #- "wiener"
         #- "mfcc_up"
-        - "apodization"
+#        - "apodization"
 
     logmmse:
         initial_noise: 100

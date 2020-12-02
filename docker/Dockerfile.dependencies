@@ -10,9 +10,7 @@ RUN echo "StrictHostKeyChecking no" >> /root/.ssh/config
 RUN apt-get update && apt-get -y upgrade && \
 	apt-get install -y git
 
-RUN git clone git@bitbucket.org:ondewo/ondewo-t2s-glow.git
-RUN cd ondewo-t2s-glow && git checkout d47b1421cc6d10070a80ebaeea74b6792d275fc0
-
+RUN git clone git@bitbucket.org:ondewo/ondewo-t2s-glow.git && cd ondewo-t2s-glow && git checkout 6c9403c2a1f48ec785a6909652f330bac63bbee0
 
 FROM dockerregistry.ondewo.com:5000/cuda:11.0-base-ubuntu18.04 AS dependencies
 
