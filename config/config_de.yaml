@@ -19,7 +19,7 @@ inference:
                 use_gpu: true
                 length_scale: 1.0
                 noise_scale: 0.667
-                path: "models/glow-tts/de/kerstin_blank.pth"
+                path: "models/glow-tts/de/thorsten.pth"
                 cleaners: []
                 param_config_path: "models/glow-tts/de/config_blank.json"
 
