@@ -7,7 +7,8 @@ from tritonclient.grpc import InferenceServerClient, InferInput, InferRequestedO
 from inference.mel2audio.mbmelgan_core import MBMelGANCore
 from inference import triton_utils
 from utils.helpers import check_paths_exist
-from utils.logger import logger
+from pylog.logger import logger_console as logger
+from pylog.decorators import Timer
 
 
 class MBMelGANTriton(MBMelGANCore):
@@ -39,14 +40,12 @@ class MBMelGANTriton(MBMelGANCore):
 
         return result.as_numpy("output_1")
 
+    @Timer(log_arguments=False)
     def mel2audio(self, mel_spectrograms: List[np.ndarray]) -> List[np.ndarray]:
-        start_time: float = time.time()
+        logger.info("Running MB-MelGAN inference in Triton")
 
         batched_input_mels: List[np.ndarray] = self._batch_and_preprocess_inputs(mel_spectrograms)
 
-        logger.info("Running MB-MelGAN inference in Triton")
         result: List[np.ndarray] = self._inference_batches_and_postprocess(
             batched_input_mels, mel_spectrograms, self._inference_on_triton)
-        logger.info("Done MB-MelGAN inference in Triton")
-        logger.info(f"MB-MelGAN inference using Triton took {time.time() - start_time} seconds")
         return result

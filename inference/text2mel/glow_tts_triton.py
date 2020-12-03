@@ -5,7 +5,7 @@ from tritonclient.grpc import InferenceServerClient, InferInput, InferRequestedO
 
 from inference import triton_utils
 from inference.text2mel.glow_tts_core import GlowTTSCore
-from utils.logger import logger
+from pylog.logger import logger_console as logger
 
 
 class GlowTTSTriton(GlowTTSCore):
