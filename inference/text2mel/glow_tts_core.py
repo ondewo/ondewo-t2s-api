@@ -23,14 +23,16 @@ class GlowTTSCore(Text2Mel):
         with open(self.model_config_path, 'r') as fi:
             self.hyperparams: utils.HParams = utils.HParams(**json.load(fi))
 
-        if getattr(self.hyperparams, "cmudict_path", None) is not None:
-            cmudict_path: Optional[str] = self.hyperparams.cmudict_path
+        if getattr(self.hyperparams.data, "cmudict_path", None) is not None:
+            cmudict_path: Optional[str] = self.hyperparams.data.cmudict_path
         else:
             cmudict_path = None
+
         self.text_processor = GlowTTSTextProcessor(
             language_code=self.hyperparams.data.language,
             cmudict_path=cmudict_path,
-            cleaners=self.cleaners
+            cleaners=self.cleaners,
+            add_blank=getattr(self.hyperparams.data, "add_blank", False)
         )
         self.batch_size: int = 1
 
