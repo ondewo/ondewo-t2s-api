@@ -7,7 +7,8 @@ from tensorflow_tts.inference import TFAutoModel
 
 from inference.mel2audio.mbmelgan_core import MBMelGANCore
 from utils.helpers import check_paths_exist
-from utils.logger import logger
+from pylog.logger import logger_console as logger
+from pylog.decorators import timing
 
 
 class MBMelGAN(MBMelGANCore):
@@ -32,14 +33,14 @@ class MBMelGAN(MBMelGANCore):
         )
         logger.info(f"Loaded MB-MelGAN model from path {self.config['model_path']}.")
 
-    @log_durations(logger.info, label="MB-MelGAN inference")
+    @timing
     def mel2audio(self, mel_spectrograms: List[np.ndarray]) -> List[np.ndarray]:
         batched_input_mels: List[np.ndarray] = self._batch_and_preprocess_inputs(mel_spectrograms)
 
-        logger.info("Running MB-MelGAN inference in TensorFlow")
+        #logger.info("Running MB-MelGAN inference in TensorFlow")
         result: List[np.ndarray] = self._inference_batches_and_postprocess(
             batched_input_mels, mel_spectrograms, self._mb_melgan_inference)
-        logger.info("Done MB-MelGAN inference in TensorFlow")
+        #logger.info("Done MB-MelGAN inference in TensorFlow")
         return result
 
     def _mb_melgan_inference(self, input_mels: np.ndarray) -> np.ndarray:

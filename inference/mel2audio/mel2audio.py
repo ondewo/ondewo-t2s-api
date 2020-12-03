@@ -4,8 +4,6 @@ import os
 
 import numpy as np
 
-from utils.logger import logger
-
 
 class Mel2Audio(ABC):
 

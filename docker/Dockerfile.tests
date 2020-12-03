@@ -16,6 +16,8 @@ RUN cd ondewo-t2s-glow && git checkout ac7cf48df6e40ea6935b0bc51232374fa5efc6a0
 RUN git clone git@bitbucket.org:ondewo/tensorflowtts.git
 RUN cd tensorflowtts && git checkout 17963fd905eb04a73338681a440e6c2fa71e47a8
 
+RUN git clone git@bitbucket.org:ondewo/ondewo-logging.git
+
 FROM dockerregistry.ondewo.com:5000/cuda:11.0-base-ubuntu18.04 AS uncythonized
 
 RUN apt-get update && apt-get -y upgrade && \
@@ -48,6 +50,9 @@ RUN pip install -e ondewo-t2s-glow
 
 COPY --from=private_installer /root/install/tensorflowtts ./tensorflowtts
 RUN pip install -e tensorflowtts
+
+COPY --from=private_installer /root/install/ondewo-logging ./ondewo-logging
+RUN pip install -e ondewo-logging
 
 COPY ./docker/test_requirements.txt .
 COPY grpc_config_server/requirements.txt grpc_config_server/requirements.txt
