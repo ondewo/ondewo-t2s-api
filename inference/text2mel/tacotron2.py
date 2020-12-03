@@ -2,15 +2,15 @@ from abc import ABC
 
 from inference.text2mel.text2mel import Text2Mel
 from inference.text2mel.nemo_modules.text_data_layer_factory import get_text_data_layer
-from utils.logger import logger
 from typing import Dict, Any, List
 
 import nemo
 import nemo.collections.asr as nemo_asr
 import nemo.collections.tts as nemo_tts
 from ruamel.yaml import YAML
-import time
 import numpy as np
+from pylog.logger import logger_console as logger
+from pylog.decorators import Timer
 
 
 class Tacotron2(Text2Mel):
@@ -56,9 +56,8 @@ class Tacotron2(Text2Mel):
         self.tacotron_postnet.restore_from(self.postnet_path)
         logger.info(f"Loaded Tacotron2 model from {self.config['path']}")
 
+    @Timer(log_arguments=False)
     def text2mel(self, texts: List[str]) -> List[np.ndarray]:
-        start_time: float = time.time()
-
         # make graph
         data_layer = get_text_data_layer(texts, labels=self.labels, batch_size=self.batch_size,
                                          bos_id=self.bos_id, eos_id=self.eos_id, pad_id=self.pad_id)
@@ -89,5 +88,4 @@ class Tacotron2(Text2Mel):
             mel_len = mel_lens_formatted[index]
             mels_formatted[index] = mels_formatted[index][:, :mel_len]
 
-        logger.info(f"Tacotron2 inference took {time.time() - start_time} seconds.")
         return mels_formatted

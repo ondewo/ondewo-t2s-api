@@ -1,6 +1,6 @@
 from tritonclient.grpc import InferenceServerClient
 
-from utils.logger import logger
+from pylog.logger import logger_console as logger
 
 
 def check_triton_online(triton_client: InferenceServerClient, triton_model_name: str) -> None:

@@ -1,5 +1,4 @@
 import json
-import time
 from typing import Tuple, Optional, Dict, Any, List
 
 import numpy as np
@@ -9,7 +8,8 @@ from inference.text2mel.constants_text2mel import CONFIG_PATH, LENGTH_SCALE, \
     NOISE_SCALE, CLEANERS
 from inference.text2mel.glow_tts_text_processor import GlowTTSTextProcessor
 from inference.text2mel.text2mel import Text2Mel
-from utils.logger import logger
+from pylog.logger import logger_console as logger
+from pylog.decorators import Timer
 
 
 class GlowTTSCore(Text2Mel):
@@ -36,12 +36,11 @@ class GlowTTSCore(Text2Mel):
         )
         self.batch_size: int = 1
 
+    @Timer(log_arguments=False)
     def text2mel(self, texts: List[str]) -> List[np.ndarray]:
-        start_time: float = time.time()
         logger.info(f"Running {self.NAME} inference")
         result: List[np.ndarray] = self._generate_in_batches(texts=texts)
         logger.info(f"Done {self.NAME} inference")
-        logger.info(f"{self.NAME} inference took {time.time() - start_time} seconds")
         return result
 
     def _generate_in_batches(self, texts: List[str]) -> List[np.ndarray]:

@@ -16,7 +16,7 @@ from nemo.collections.tts import (
 )
 from ruamel.yaml import YAML
 
-from utils.logger import logger
+from pylog.logger import logger_console as logger
 
 
 def parse_args():

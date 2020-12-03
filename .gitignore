@@ -14,3 +14,4 @@ plots/
 samples/
 models/mb_melgan
 evaluation/configs/
+data/
