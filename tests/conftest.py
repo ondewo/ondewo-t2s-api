@@ -15,6 +15,7 @@ from ruamel.yaml import YAML
 
 from grpc_config_server.t2s_manager.manager import TextToSpeechManager
 from grpc_config_server.tts_server import TextToSpeechConfigServer
+from inference.mel2audio.hifigan_core import HiFiGANCore
 from inference.mel2audio.mbmelgan import MBMelGAN
 from inference.mel2audio.mbmelgan_triton import MBMelGANTriton
 
@@ -119,3 +120,21 @@ def server_offline(request: SubRequest) -> Generator:
     # return original config
     copy(src=save_path, dst=orig_config)
     os.remove(save_path)
+
+
+@pytest.fixture(scope='function')
+def mocked_hifi() -> HiFiGANCore:
+    config_dict: Dict[str, Any] = {
+        'batch_size': 4,
+        'config_file': 'tests/resources/config_hifi.json'
+    }
+    return MockedHiFi(config=config_dict)
+
+
+class MockedHiFi(HiFiGANCore):
+
+    def __init__(self, config: Dict[str, Any]):
+        super(MockedHiFi, self).__init__(config=config)
+
+    def _generate(self, mel: np.ndarray) -> np.ndarray:
+        return np.random.random((mel.shape[0], mel.shape[2]*self.hop_size))

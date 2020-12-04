@@ -34,7 +34,7 @@ inference:
                 triton_model_name: "glow_tts"
 
         mel2audio:
-            type: "mb_melgan_tf"
+            type: "hifi_gan"
 
             waveglow:
                 batch_size: 4
@@ -57,6 +57,12 @@ inference:
                 config_path: "models/mb_melgan/en/config.yml"
                 model_path: "models/mb_melgan/en/generator-1820000.h5"
                 stats_path: "models/mb_melgan/en/stats.npy"
+
+            hifi_gan:
+                use_gpu: True
+                batch_size: 20
+                config_path: "models/HiFiGan/universal/config.json"
+                model_path: "models/HiFiGan/universal/g_02500000"
 
     caching:
         active: false
