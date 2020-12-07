@@ -126,7 +126,7 @@ def server_offline(request: SubRequest) -> Generator:
 def mocked_hifi() -> HiFiGANCore:
     config_dict: Dict[str, Any] = {
         'batch_size': 4,
-        'config_file': 'tests/resources/config_hifi.json'
+        'config_path': 'tests/resources/config_hifi.json'
     }
     return MockedHiFi(config=config_dict)
 
