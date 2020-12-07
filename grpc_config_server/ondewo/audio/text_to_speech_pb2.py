@@ -3,7 +3,6 @@
 # source: ondewo/audio/text-to-speech.proto
 
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
-from google.protobuf import struct_pb2 as google_dot_protobuf_dot_struct__pb2
 from google.api import annotations_pb2 as google_dot_api_dot_annotations__pb2
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
@@ -20,8 +19,8 @@ DESCRIPTOR = _descriptor.FileDescriptor(
     syntax='proto3',
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
-    serialized_pb=b'\n!ondewo/audio/text-to-speech.proto\x12\nondewo.nlu\x1a\x1cgoogle/api/annotations.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1bgoogle/protobuf/empty.proto\"e\n\nModelSetup\x12\x15\n\rlanguage_code\x18\x01 \x01(\t\x12\x11\n\tdirectory\x18\x02 \x01(\t\x12-\n\x06\x63onfig\x18\x03 \x01(\x0b\x32\x1d.ondewo.nlu.Text2SpeechConfig\"=\n\x14ListLanguagesRequest\x12%\n\x05\x65mpty\x18\x01 \x01(\x0b\x32\x16.google.protobuf.Empty\"b\n\x15ListLanguagesResponse\x12\x31\n\x07request\x18\x01 \x01(\x0b\x32 .ondewo.nlu.ListLanguagesRequest\x12\x16\n\x0elanguage_codes\x18\x02 \x03(\t\"6\n\x1dListModelSetupsForLangRequest\x12\x15\n\rlanguage_code\x18\x01 \x01(\t\"B\n\x19ListAllModelSetupsRequest\x12%\n\x05\x65mpty\x18\x01 \x01(\x0b\x32\x16.google.protobuf.Empty\"C\n\x13ModelSetupsResponse\x12,\n\x0cmodel_setups\x18\x02 \x03(\x0b\x32\x16.ondewo.nlu.ModelSetup\"D\n\x1bGetActiveModelConfigRequest\x12%\n\x05\x65mpty\x18\x01 \x01(\x0b\x32\x16.google.protobuf.Empty\"{\n\x12ModelSetupResponse\x12\x38\n\x07request\x18\x01 \x01(\x0b\x32\'.ondewo.nlu.GetActiveModelConfigRequest\x12+\n\x0bmodel_setup\x18\x02 \x01(\x0b\x32\x16.ondewo.nlu.ModelSetup\"*\n\x15SetModelConfigRequest\x12\x11\n\tdirectory\x18\x01 \x01(\t\"r\n\x16SetModelConfigResponse\x12\x32\n\x07request\x18\x01 \x01(\x0b\x32!.ondewo.nlu.SetModelConfigRequest\x12\x0f\n\x07success\x18\x02 \x01(\x08\x12\x13\n\x0blog_message\x18\x03 \x01(\t\"\xa3\x01\n\x11Text2SpeechConfig\x12(\n\tinference\x18\x01 \x01(\x0b\x32\x15.ondewo.nlu.Inference\x12\x30\n\rnormalization\x18\x02 \x01(\x0b\x32\x19.ondewo.nlu.Normalization\x12\x32\n\x0epostprocessing\x18\x03 \x01(\x0b\x32\x1a.ondewo.nlu.Postprocessing\"|\n\tInference\x12\x0c\n\x04type\x18\x01 \x01(\t\x12;\n\x13\x63omposite_inference\x18\x02 \x01(\x0b\x32\x1e.ondewo.nlu.CompositeInference\x12$\n\x07\x63\x61\x63hing\x18\x03 \x01(\x0b\x32\x13.ondewo.nlu.Caching\"j\n\x12\x43ompositeInference\x12(\n\ntext_2_mel\x18\x01 \x01(\x0b\x32\x14.ondewo.nlu.Text2Mel\x12*\n\x0bmel_2_audio\x18\x02 \x01(\x0b\x32\x15.ondewo.nlu.Mel2Audio\"\x9e\x01\n\x08Text2Mel\x12\x0c\n\x04type\x18\x01 \x01(\t\x12)\n\ntacotron_2\x18\x02 \x01(\x0b\x32\x15.ondewo.nlu.Tacotron2\x12%\n\x08glow_tts\x18\x03 \x01(\x0b\x32\x13.ondewo.nlu.GlowTTS\x12\x32\n\x0fglow_tts_triton\x18\x04 \x01(\x0b\x32\x19.ondewo.nlu.GlowTTSTriton\"V\n\tTacotron2\x12\x12\n\nbatch_size\x18\x01 \x01(\x03\x12\x0c\n\x04path\x18\x02 \x01(\t\x12\x19\n\x11param_config_path\x18\x03 \x01(\t\x12\x0c\n\x04step\x18\x04 \x01(\t\"\x94\x01\n\x07GlowTTS\x12\x12\n\nbatch_size\x18\x01 \x01(\x03\x12\x0f\n\x07use_gpu\x18\x02 \x01(\x08\x12\x14\n\x0clength_scale\x18\x03 \x01(\x02\x12\x13\n\x0bnoise_scale\x18\x04 \x01(\x02\x12\x0c\n\x04path\x18\x05 \x01(\t\x12\x10\n\x08\x63leaners\x18\x06 \x03(\t\x12\x19\n\x11param_config_path\x18\x07 \x01(\t\"\xc3\x01\n\rGlowTTSTriton\x12\x12\n\nbatch_size\x18\x01 \x01(\x03\x12\x14\n\x0clength_scale\x18\x02 \x01(\x02\x12\x13\n\x0bnoise_scale\x18\x03 \x01(\x02\x12\x10\n\x08\x63leaners\x18\x04 \x03(\t\x12\x17\n\x0fmax_text_length\x18\x05 \x01(\x03\x12\x19\n\x11param_config_path\x18\x06 \x01(\t\x12\x12\n\ntriton_url\x18\x07 \x01(\t\x12\x19\n\x11triton_model_name\x18\x08 \x01(\t\"\xda\x01\n\tMel2Audio\x12\x0c\n\x04type\x18\x01 \x01(\t\x12&\n\x08waveglow\x18\x02 \x01(\x0b\x32\x14.ondewo.nlu.Waveglow\x12\x33\n\x0fwaveglow_triton\x18\x03 \x01(\x0b\x32\x1a.ondewo.nlu.WaveglowTriton\x12,\n\x0cmb_melgan_tf\x18\x04 \x01(\x0b\x32\x16.ondewo.nlu.MbMelganTf\x12\x34\n\x10mb_melgan_triton\x18\x05 \x01(\x0b\x32\x1a.ondewo.nlu.MbMelganTriton\"~\n\x08Waveglow\x12\x12\n\nbatch_size\x18\x01 \x01(\x03\x12\x0c\n\x04path\x18\x02 \x01(\t\x12\x19\n\x11param_config_path\x18\x03 \x01(\t\x12\r\n\x05sigma\x18\x04 \x01(\x02\x12&\n\x08\x64\x65noiser\x18\x05 \x01(\x0b\x32\x14.ondewo.nlu.Denoiser\",\n\x08\x44\x65noiser\x12\x0e\n\x06\x61\x63tive\x18\x01 \x01(\x08\x12\x10\n\x08strength\x18\x02 \x01(\x02\"\x81\x01\n\x0eWaveglowTriton\x12\x19\n\x11param_config_path\x18\x01 \x01(\t\x12\r\n\x05sigma\x18\x02 \x01(\x02\x12\x16\n\x0emax_spect_size\x18\x03 \x01(\x03\x12\x19\n\x11triton_model_name\x18\x04 \x01(\t\x12\x12\n\ntriton_url\x18\x05 \x01(\t\"]\n\nMbMelganTf\x12\x12\n\nbatch_size\x18\x01 \x01(\x03\x12\x13\n\x0b\x63onfig_path\x18\x02 \x01(\t\x12\x12\n\nmodel_path\x18\x03 \x01(\t\x12\x12\n\nstats_path\x18\x04 \x01(\t\"h\n\x0eMbMelganTriton\x12\x13\n\x0b\x63onfig_path\x18\x01 \x01(\t\x12\x12\n\nstats_path\x18\x02 \x01(\t\x12\x19\n\x11triton_model_name\x18\x03 \x01(\t\x12\x12\n\ntriton_url\x18\x04 \x01(\t\"\x8f\x01\n\x07\x43\x61\x63hing\x12\x0e\n\x06\x61\x63tive\x18\x01 \x01(\x08\x12\x1d\n\x15memory_cache_max_size\x18\x02 \x01(\x03\x12\x15\n\rsampling_rate\x18\x03 \x01(\x03\x12\x12\n\nload_cache\x18\x04 \x01(\x08\x12\x12\n\nsave_cache\x18\x05 \x01(\x08\x12\x16\n\x0e\x63\x61\x63he_save_dir\x18\x06 \x01(\t\"3\n\rNormalization\x12\x10\n\x08language\x18\x01 \x01(\t\x12\x10\n\x08pipeline\x18\x02 \x03(\t\"\xb0\x01\n\x0ePostprocessing\x12\x14\n\x0csilence_secs\x18\x01 \x01(\x02\x12\x10\n\x08pipeline\x18\x02 \x03(\t\x12$\n\x07logmnse\x18\x03 \x01(\x0b\x32\x13.ondewo.nlu.Logmnse\x12\"\n\x06wiener\x18\x04 \x01(\x0b\x32\x12.ondewo.nlu.Wiener\x12,\n\x0b\x61podization\x18\x05 \x01(\x0b\x32\x17.ondewo.nlu.Apodization\"N\n\x07Logmnse\x12\x15\n\rinitial_noise\x18\x01 \x01(\x03\x12\x13\n\x0bwindow_size\x18\x02 \x01(\x03\x12\x17\n\x0fnoise_threshold\x18\x03 \x01(\x02\"a\n\x06Wiener\x12\x11\n\tframe_len\x18\x01 \x01(\x03\x12\x11\n\tlpc_order\x18\x02 \x01(\x03\x12\x12\n\niterations\x18\x03 \x01(\x03\x12\r\n\x05\x61lpha\x18\x04 \x01(\x02\x12\x0e\n\x06thresh\x18\x05 \x01(\x02\"\'\n\x0b\x41podization\x12\x18\n\x10\x61podization_secs\x18\x01 \x01(\x02\x32\xf7\x06\n\x18Text2SpeechConfiguration\x12\xaa\x01\n\x16ListSupportedLanguages\x12 .ondewo.nlu.ListLanguagesRequest\x1a!.ondewo.nlu.ListLanguagesResponse\"K\x82\xd3\xe4\x93\x02\x45\"@/v2/{session=projects/*/agent/sessions/*}:ListSupportedLanguages:\x01*\x12\xb9\x01\n\x1aListModelSetupsForLanguage\x12).ondewo.nlu.ListModelSetupsForLangRequest\x1a\x1f.ondewo.nlu.ModelSetupsResponse\"O\x82\xd3\xe4\x93\x02I\"D/v2/{session=projects/*/agent/sessions/*}:ListModelSetupsForLanguage:\x01*\x12\xa5\x01\n\x12ListAllModelSetups\x12%.ondewo.nlu.ListAllModelSetupsRequest\x1a\x1f.ondewo.nlu.ModelSetupsResponse\"G\x82\xd3\xe4\x93\x02\x41\"</v2/{session=projects/*/agent/sessions/*}:ListAllModelSetups:\x01*\x12\xaa\x01\n\x14GetActiveModelConfig\x12\'.ondewo.nlu.GetActiveModelConfigRequest\x1a\x1e.ondewo.nlu.ModelSetupResponse\"I\x82\xd3\xe4\x93\x02\x43\">/v2/{session=projects/*/agent/sessions/*}:GetActiveModelConfig:\x01*\x12\x9c\x01\n\x0eSetModelConfig\x12!.ondewo.nlu.SetModelConfigRequest\x1a\".ondewo.nlu.SetModelConfigResponse\"C\x82\xd3\xe4\x93\x02=\"8/v2/{session=projects/*/agent/sessions/*}:SetModelConfig:\x01*b\x06proto3',
-    dependencies=[google_dot_api_dot_annotations__pb2.DESCRIPTOR, google_dot_protobuf_dot_struct__pb2.DESCRIPTOR, google_dot_protobuf_dot_empty__pb2.DESCRIPTOR, ])
+    serialized_pb=b'\n!ondewo/audio/text-to-speech.proto\x12\nondewo.nlu\x1a\x1cgoogle/api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\"e\n\nModelSetup\x12\x15\n\rlanguage_code\x18\x01 \x01(\t\x12\x11\n\tdirectory\x18\x02 \x01(\t\x12-\n\x06\x63onfig\x18\x03 \x01(\x0b\x32\x1d.ondewo.nlu.Text2SpeechConfig\"=\n\x14ListLanguagesRequest\x12%\n\x05\x65mpty\x18\x01 \x01(\x0b\x32\x16.google.protobuf.Empty\"b\n\x15ListLanguagesResponse\x12\x31\n\x07request\x18\x01 \x01(\x0b\x32 .ondewo.nlu.ListLanguagesRequest\x12\x16\n\x0elanguage_codes\x18\x02 \x03(\t\"6\n\x1dListModelSetupsForLangRequest\x12\x15\n\rlanguage_code\x18\x01 \x01(\t\"B\n\x19ListAllModelSetupsRequest\x12%\n\x05\x65mpty\x18\x01 \x01(\x0b\x32\x16.google.protobuf.Empty\"C\n\x13ModelSetupsResponse\x12,\n\x0cmodel_setups\x18\x02 \x03(\x0b\x32\x16.ondewo.nlu.ModelSetup\"D\n\x1bGetActiveModelConfigRequest\x12%\n\x05\x65mpty\x18\x01 \x01(\x0b\x32\x16.google.protobuf.Empty\"{\n\x12ModelSetupResponse\x12\x38\n\x07request\x18\x01 \x01(\x0b\x32\'.ondewo.nlu.GetActiveModelConfigRequest\x12+\n\x0bmodel_setup\x18\x02 \x01(\x0b\x32\x16.ondewo.nlu.ModelSetup\"*\n\x15SetModelConfigRequest\x12\x11\n\tdirectory\x18\x01 \x01(\t\"r\n\x16SetModelConfigResponse\x12\x32\n\x07request\x18\x01 \x01(\x0b\x32!.ondewo.nlu.SetModelConfigRequest\x12\x0f\n\x07success\x18\x02 \x01(\x08\x12\x13\n\x0blog_message\x18\x03 \x01(\t\"\xa3\x01\n\x11Text2SpeechConfig\x12(\n\tinference\x18\x01 \x01(\x0b\x32\x15.ondewo.nlu.Inference\x12\x30\n\rnormalization\x18\x02 \x01(\x0b\x32\x19.ondewo.nlu.Normalization\x12\x32\n\x0epostprocessing\x18\x03 \x01(\x0b\x32\x1a.ondewo.nlu.Postprocessing\"|\n\tInference\x12\x0c\n\x04type\x18\x01 \x01(\t\x12;\n\x13\x63omposite_inference\x18\x02 \x01(\x0b\x32\x1e.ondewo.nlu.CompositeInference\x12$\n\x07\x63\x61\x63hing\x18\x03 \x01(\x0b\x32\x13.ondewo.nlu.Caching\"f\n\x12\x43ompositeInference\x12&\n\x08text2mel\x18\x01 \x01(\x0b\x32\x14.ondewo.nlu.Text2Mel\x12(\n\tmel2audio\x18\x02 \x01(\x0b\x32\x15.ondewo.nlu.Mel2Audio\"\x9d\x01\n\x08Text2Mel\x12\x0c\n\x04type\x18\x01 \x01(\t\x12(\n\ttacotron2\x18\x02 \x01(\x0b\x32\x15.ondewo.nlu.Tacotron2\x12%\n\x08glow_tts\x18\x03 \x01(\x0b\x32\x13.ondewo.nlu.GlowTTS\x12\x32\n\x0fglow_tts_triton\x18\x04 \x01(\x0b\x32\x19.ondewo.nlu.GlowTTSTriton\"V\n\tTacotron2\x12\x12\n\nbatch_size\x18\x01 \x01(\x03\x12\x0c\n\x04path\x18\x02 \x01(\t\x12\x19\n\x11param_config_path\x18\x03 \x01(\t\x12\x0c\n\x04step\x18\x04 \x01(\t\"\x94\x01\n\x07GlowTTS\x12\x12\n\nbatch_size\x18\x01 \x01(\x03\x12\x0f\n\x07use_gpu\x18\x02 \x01(\x08\x12\x14\n\x0clength_scale\x18\x03 \x01(\x02\x12\x13\n\x0bnoise_scale\x18\x04 \x01(\x02\x12\x0c\n\x04path\x18\x05 \x01(\t\x12\x10\n\x08\x63leaners\x18\x06 \x03(\t\x12\x19\n\x11param_config_path\x18\x07 \x01(\t\"\xc3\x01\n\rGlowTTSTriton\x12\x12\n\nbatch_size\x18\x01 \x01(\x03\x12\x14\n\x0clength_scale\x18\x02 \x01(\x02\x12\x13\n\x0bnoise_scale\x18\x03 \x01(\x02\x12\x10\n\x08\x63leaners\x18\x04 \x03(\t\x12\x17\n\x0fmax_text_length\x18\x05 \x01(\x03\x12\x19\n\x11param_config_path\x18\x06 \x01(\t\x12\x12\n\ntriton_url\x18\x07 \x01(\t\x12\x19\n\x11triton_model_name\x18\x08 \x01(\t\"\xda\x01\n\tMel2Audio\x12\x0c\n\x04type\x18\x01 \x01(\t\x12&\n\x08waveglow\x18\x02 \x01(\x0b\x32\x14.ondewo.nlu.Waveglow\x12\x33\n\x0fwaveglow_triton\x18\x03 \x01(\x0b\x32\x1a.ondewo.nlu.WaveglowTriton\x12,\n\x0cmb_melgan_tf\x18\x04 \x01(\x0b\x32\x16.ondewo.nlu.MbMelganTf\x12\x34\n\x10mb_melgan_triton\x18\x05 \x01(\x0b\x32\x1a.ondewo.nlu.MbMelganTriton\"~\n\x08Waveglow\x12\x12\n\nbatch_size\x18\x01 \x01(\x03\x12\x0c\n\x04path\x18\x02 \x01(\t\x12\x19\n\x11param_config_path\x18\x03 \x01(\t\x12\r\n\x05sigma\x18\x04 \x01(\x02\x12&\n\x08\x64\x65noiser\x18\x05 \x01(\x0b\x32\x14.ondewo.nlu.Denoiser\",\n\x08\x44\x65noiser\x12\x0e\n\x06\x61\x63tive\x18\x01 \x01(\x08\x12\x10\n\x08strength\x18\x02 \x01(\x02\"\x81\x01\n\x0eWaveglowTriton\x12\x19\n\x11param_config_path\x18\x01 \x01(\t\x12\r\n\x05sigma\x18\x02 \x01(\x02\x12\x16\n\x0emax_spect_size\x18\x03 \x01(\x03\x12\x19\n\x11triton_model_name\x18\x04 \x01(\t\x12\x12\n\ntriton_url\x18\x05 \x01(\t\"]\n\nMbMelganTf\x12\x12\n\nbatch_size\x18\x01 \x01(\x03\x12\x13\n\x0b\x63onfig_path\x18\x02 \x01(\t\x12\x12\n\nmodel_path\x18\x03 \x01(\t\x12\x12\n\nstats_path\x18\x04 \x01(\t\"h\n\x0eMbMelganTriton\x12\x13\n\x0b\x63onfig_path\x18\x01 \x01(\t\x12\x12\n\nstats_path\x18\x02 \x01(\t\x12\x19\n\x11triton_model_name\x18\x03 \x01(\t\x12\x12\n\ntriton_url\x18\x04 \x01(\t\"\x8f\x01\n\x07\x43\x61\x63hing\x12\x0e\n\x06\x61\x63tive\x18\x01 \x01(\x08\x12\x1d\n\x15memory_cache_max_size\x18\x02 \x01(\x03\x12\x15\n\rsampling_rate\x18\x03 \x01(\x03\x12\x12\n\nload_cache\x18\x04 \x01(\x08\x12\x12\n\nsave_cache\x18\x05 \x01(\x08\x12\x16\n\x0e\x63\x61\x63he_save_dir\x18\x06 \x01(\t\"3\n\rNormalization\x12\x10\n\x08language\x18\x01 \x01(\t\x12\x10\n\x08pipeline\x18\x02 \x03(\t\"\xb0\x01\n\x0ePostprocessing\x12\x14\n\x0csilence_secs\x18\x01 \x01(\x02\x12\x10\n\x08pipeline\x18\x02 \x03(\t\x12$\n\x07logmmse\x18\x03 \x01(\x0b\x32\x13.ondewo.nlu.Logmnse\x12\"\n\x06wiener\x18\x04 \x01(\x0b\x32\x12.ondewo.nlu.Wiener\x12,\n\x0b\x61podization\x18\x05 \x01(\x0b\x32\x17.ondewo.nlu.Apodization\"N\n\x07Logmnse\x12\x15\n\rinitial_noise\x18\x01 \x01(\x03\x12\x13\n\x0bwindow_size\x18\x02 \x01(\x03\x12\x17\n\x0fnoise_threshold\x18\x03 \x01(\x02\"a\n\x06Wiener\x12\x11\n\tframe_len\x18\x01 \x01(\x03\x12\x11\n\tlpc_order\x18\x02 \x01(\x03\x12\x12\n\niterations\x18\x03 \x01(\x03\x12\r\n\x05\x61lpha\x18\x04 \x01(\x02\x12\x0e\n\x06thresh\x18\x05 \x01(\x02\"\'\n\x0b\x41podization\x12\x18\n\x10\x61podization_secs\x18\x01 \x01(\x02\x32\xf7\x06\n\x18Text2SpeechConfiguration\x12\xaa\x01\n\x16ListSupportedLanguages\x12 .ondewo.nlu.ListLanguagesRequest\x1a!.ondewo.nlu.ListLanguagesResponse\"K\x82\xd3\xe4\x93\x02\x45\"@/v2/{session=projects/*/agent/sessions/*}:ListSupportedLanguages:\x01*\x12\xb9\x01\n\x1aListModelSetupsForLanguage\x12).ondewo.nlu.ListModelSetupsForLangRequest\x1a\x1f.ondewo.nlu.ModelSetupsResponse\"O\x82\xd3\xe4\x93\x02I\"D/v2/{session=projects/*/agent/sessions/*}:ListModelSetupsForLanguage:\x01*\x12\xa5\x01\n\x12ListAllModelSetups\x12%.ondewo.nlu.ListAllModelSetupsRequest\x1a\x1f.ondewo.nlu.ModelSetupsResponse\"G\x82\xd3\xe4\x93\x02\x41\"</v2/{session=projects/*/agent/sessions/*}:ListAllModelSetups:\x01*\x12\xaa\x01\n\x14GetActiveModelConfig\x12\'.ondewo.nlu.GetActiveModelConfigRequest\x1a\x1e.ondewo.nlu.ModelSetupResponse\"I\x82\xd3\xe4\x93\x02\x43\">/v2/{session=projects/*/agent/sessions/*}:GetActiveModelConfig:\x01*\x12\x9c\x01\n\x0eSetModelConfig\x12!.ondewo.nlu.SetModelConfigRequest\x1a\".ondewo.nlu.SetModelConfigResponse\"C\x82\xd3\xe4\x93\x02=\"8/v2/{session=projects/*/agent/sessions/*}:SetModelConfig:\x01*b\x06proto3',
+    dependencies=[google_dot_api_dot_annotations__pb2.DESCRIPTOR, google_dot_protobuf_dot_empty__pb2.DESCRIPTOR, ])
 
 
 _MODELSETUP = _descriptor.Descriptor(
@@ -65,8 +64,8 @@ _MODELSETUP = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=138,
-    serialized_end=239,
+    serialized_start=108,
+    serialized_end=209,
 )
 
 
@@ -97,8 +96,8 @@ _LISTLANGUAGESREQUEST = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=241,
-    serialized_end=302,
+    serialized_start=211,
+    serialized_end=272,
 )
 
 
@@ -136,8 +135,8 @@ _LISTLANGUAGESRESPONSE = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=304,
-    serialized_end=402,
+    serialized_start=274,
+    serialized_end=372,
 )
 
 
@@ -168,8 +167,8 @@ _LISTMODELSETUPSFORLANGREQUEST = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=404,
-    serialized_end=458,
+    serialized_start=374,
+    serialized_end=428,
 )
 
 
@@ -200,8 +199,8 @@ _LISTALLMODELSETUPSREQUEST = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=460,
-    serialized_end=526,
+    serialized_start=430,
+    serialized_end=496,
 )
 
 
@@ -232,8 +231,8 @@ _MODELSETUPSRESPONSE = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=528,
-    serialized_end=595,
+    serialized_start=498,
+    serialized_end=565,
 )
 
 
@@ -264,8 +263,8 @@ _GETACTIVEMODELCONFIGREQUEST = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=597,
-    serialized_end=665,
+    serialized_start=567,
+    serialized_end=635,
 )
 
 
@@ -303,8 +302,8 @@ _MODELSETUPRESPONSE = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=667,
-    serialized_end=790,
+    serialized_start=637,
+    serialized_end=760,
 )
 
 
@@ -335,8 +334,8 @@ _SETMODELCONFIGREQUEST = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=792,
-    serialized_end=834,
+    serialized_start=762,
+    serialized_end=804,
 )
 
 
@@ -381,8 +380,8 @@ _SETMODELCONFIGRESPONSE = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=836,
-    serialized_end=950,
+    serialized_start=806,
+    serialized_end=920,
 )
 
 
@@ -427,8 +426,8 @@ _TEXT2SPEECHCONFIG = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=953,
-    serialized_end=1116,
+    serialized_start=923,
+    serialized_end=1086,
 )
 
 
@@ -473,8 +472,8 @@ _INFERENCE = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=1118,
-    serialized_end=1242,
+    serialized_start=1088,
+    serialized_end=1212,
 )
 
 
@@ -487,14 +486,14 @@ _COMPOSITEINFERENCE = _descriptor.Descriptor(
     create_key=_descriptor._internal_create_key,
     fields=[
         _descriptor.FieldDescriptor(
-            name='text_2_mel', full_name='ondewo.nlu.CompositeInference.text_2_mel', index=0,
+            name='text2mel', full_name='ondewo.nlu.CompositeInference.text2mel', index=0,
             number=1, type=11, cpp_type=10, label=1,
             has_default_value=False, default_value=None,
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='mel_2_audio', full_name='ondewo.nlu.CompositeInference.mel_2_audio', index=1,
+            name='mel2audio', full_name='ondewo.nlu.CompositeInference.mel2audio', index=1,
             number=2, type=11, cpp_type=10, label=1,
             has_default_value=False, default_value=None,
             message_type=None, enum_type=None, containing_type=None,
@@ -512,8 +511,8 @@ _COMPOSITEINFERENCE = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=1244,
-    serialized_end=1350,
+    serialized_start=1214,
+    serialized_end=1316,
 )
 
 
@@ -533,7 +532,7 @@ _TEXT2MEL = _descriptor.Descriptor(
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='tacotron_2', full_name='ondewo.nlu.Text2Mel.tacotron_2', index=1,
+            name='tacotron2', full_name='ondewo.nlu.Text2Mel.tacotron2', index=1,
             number=2, type=11, cpp_type=10, label=1,
             has_default_value=False, default_value=None,
             message_type=None, enum_type=None, containing_type=None,
@@ -565,8 +564,8 @@ _TEXT2MEL = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=1353,
-    serialized_end=1511,
+    serialized_start=1319,
+    serialized_end=1476,
 )
 
 
@@ -618,8 +617,8 @@ _TACOTRON2 = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=1513,
-    serialized_end=1599,
+    serialized_start=1478,
+    serialized_end=1564,
 )
 
 
@@ -692,8 +691,8 @@ _GLOWTTS = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=1602,
-    serialized_end=1750,
+    serialized_start=1567,
+    serialized_end=1715,
 )
 
 
@@ -773,8 +772,8 @@ _GLOWTTSTRITON = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=1753,
-    serialized_end=1948,
+    serialized_start=1718,
+    serialized_end=1913,
 )
 
 
@@ -833,8 +832,8 @@ _MEL2AUDIO = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=1951,
-    serialized_end=2169,
+    serialized_start=1916,
+    serialized_end=2134,
 )
 
 
@@ -893,8 +892,8 @@ _WAVEGLOW = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=2171,
-    serialized_end=2297,
+    serialized_start=2136,
+    serialized_end=2262,
 )
 
 
@@ -932,8 +931,8 @@ _DENOISER = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=2299,
-    serialized_end=2343,
+    serialized_start=2264,
+    serialized_end=2308,
 )
 
 
@@ -992,8 +991,8 @@ _WAVEGLOWTRITON = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=2346,
-    serialized_end=2475,
+    serialized_start=2311,
+    serialized_end=2440,
 )
 
 
@@ -1045,8 +1044,8 @@ _MBMELGANTF = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=2477,
-    serialized_end=2570,
+    serialized_start=2442,
+    serialized_end=2535,
 )
 
 
@@ -1098,8 +1097,8 @@ _MBMELGANTRITON = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=2572,
-    serialized_end=2676,
+    serialized_start=2537,
+    serialized_end=2641,
 )
 
 
@@ -1165,8 +1164,8 @@ _CACHING = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=2679,
-    serialized_end=2822,
+    serialized_start=2644,
+    serialized_end=2787,
 )
 
 
@@ -1204,8 +1203,8 @@ _NORMALIZATION = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=2824,
-    serialized_end=2875,
+    serialized_start=2789,
+    serialized_end=2840,
 )
 
 
@@ -1232,7 +1231,7 @@ _POSTPROCESSING = _descriptor.Descriptor(
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='logmnse', full_name='ondewo.nlu.Postprocessing.logmnse', index=2,
+            name='logmmse', full_name='ondewo.nlu.Postprocessing.logmmse', index=2,
             number=3, type=11, cpp_type=10, label=1,
             has_default_value=False, default_value=None,
             message_type=None, enum_type=None, containing_type=None,
@@ -1264,8 +1263,8 @@ _POSTPROCESSING = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=2878,
-    serialized_end=3054,
+    serialized_start=2843,
+    serialized_end=3019,
 )
 
 
@@ -1310,8 +1309,8 @@ _LOGMNSE = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=3056,
-    serialized_end=3134,
+    serialized_start=3021,
+    serialized_end=3099,
 )
 
 
@@ -1370,8 +1369,8 @@ _WIENER = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=3136,
-    serialized_end=3233,
+    serialized_start=3101,
+    serialized_end=3198,
 )
 
 
@@ -1402,8 +1401,8 @@ _APODIZATION = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=3235,
-    serialized_end=3274,
+    serialized_start=3200,
+    serialized_end=3239,
 )
 
 _MODELSETUP.fields_by_name['config'].message_type = _TEXT2SPEECHCONFIG
@@ -1420,9 +1419,9 @@ _TEXT2SPEECHCONFIG.fields_by_name['normalization'].message_type = _NORMALIZATION
 _TEXT2SPEECHCONFIG.fields_by_name['postprocessing'].message_type = _POSTPROCESSING
 _INFERENCE.fields_by_name['composite_inference'].message_type = _COMPOSITEINFERENCE
 _INFERENCE.fields_by_name['caching'].message_type = _CACHING
-_COMPOSITEINFERENCE.fields_by_name['text_2_mel'].message_type = _TEXT2MEL
-_COMPOSITEINFERENCE.fields_by_name['mel_2_audio'].message_type = _MEL2AUDIO
-_TEXT2MEL.fields_by_name['tacotron_2'].message_type = _TACOTRON2
+_COMPOSITEINFERENCE.fields_by_name['text2mel'].message_type = _TEXT2MEL
+_COMPOSITEINFERENCE.fields_by_name['mel2audio'].message_type = _MEL2AUDIO
+_TEXT2MEL.fields_by_name['tacotron2'].message_type = _TACOTRON2
 _TEXT2MEL.fields_by_name['glow_tts'].message_type = _GLOWTTS
 _TEXT2MEL.fields_by_name['glow_tts_triton'].message_type = _GLOWTTSTRITON
 _MEL2AUDIO.fields_by_name['waveglow'].message_type = _WAVEGLOW
@@ -1430,7 +1429,7 @@ _MEL2AUDIO.fields_by_name['waveglow_triton'].message_type = _WAVEGLOWTRITON
 _MEL2AUDIO.fields_by_name['mb_melgan_tf'].message_type = _MBMELGANTF
 _MEL2AUDIO.fields_by_name['mb_melgan_triton'].message_type = _MBMELGANTRITON
 _WAVEGLOW.fields_by_name['denoiser'].message_type = _DENOISER
-_POSTPROCESSING.fields_by_name['logmnse'].message_type = _LOGMNSE
+_POSTPROCESSING.fields_by_name['logmmse'].message_type = _LOGMNSE
 _POSTPROCESSING.fields_by_name['wiener'].message_type = _WIENER
 _POSTPROCESSING.fields_by_name['apodization'].message_type = _APODIZATION
 DESCRIPTOR.message_types_by_name['ModelSetup'] = _MODELSETUP
@@ -1675,8 +1674,8 @@ _TEXT2SPEECHCONFIGURATION = _descriptor.ServiceDescriptor(
     index=0,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
-    serialized_start=3277,
-    serialized_end=4164,
+    serialized_start=3242,
+    serialized_end=4129,
     methods=[
         _descriptor.MethodDescriptor(
             name='ListSupportedLanguages',

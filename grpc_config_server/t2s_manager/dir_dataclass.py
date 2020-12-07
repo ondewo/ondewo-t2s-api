@@ -5,6 +5,7 @@ from typing import List, Union, Tuple
 from typing import TYPE_CHECKING
 
 import yaml
+from google.protobuf.json_format import ParseDict, MessageToDict
 
 from grpc_config_server.config import MODELS_PATH
 from grpc_config_server.ondewo.audio import text_to_speech_pb2
@@ -39,166 +40,175 @@ class ModelConfig:
 
     @staticmethod
     def get_proto_from_dict(config_data: dict) -> text_to_speech_pb2.Text2SpeechConfig:
-        return text_to_speech_pb2.Text2SpeechConfig(
-            inference=text_to_speech_pb2.Inference(
-                type=config_data["inference"]["type"],
-                composite_inference=text_to_speech_pb2.CompositeInference(
-                    text_2_mel=text_to_speech_pb2.Text2Mel(
-                        type=config_data["inference"]["composite_inference"]["text2mel"]["type"],
-                        tacotron_2=text_to_speech_pb2.Tacotron2(
-                            batch_size=config_data["inference"]["composite_inference"]["text2mel"]["tacotron2"]
-                            ["batch_size"],
-                            path=config_data["inference"]["composite_inference"]["text2mel"]["tacotron2"]["path"],
-                            param_config_path=config_data["inference"]["composite_inference"]["text2mel"]["tacotron2"]
-                            ["param_config_path"],
-                            step=config_data["inference"]["composite_inference"]["text2mel"]["tacotron2"]["step"],
-                        ),
-                        glow_tts=text_to_speech_pb2.GlowTTS(
-                            batch_size=config_data["inference"]["composite_inference"]["text2mel"]["glow_tts"]
-                            ["batch_size"],
-                            use_gpu=config_data["inference"]["composite_inference"]["text2mel"]["glow_tts"]
-                            ["use_gpu"],
-                            length_scale=config_data["inference"]["composite_inference"]["text2mel"]["glow_tts"]
-                            ["length_scale"],
-                            noise_scale=config_data["inference"]["composite_inference"]["text2mel"]["glow_tts"]
-                            ["noise_scale"],
-                            path=config_data["inference"]["composite_inference"]["text2mel"]["glow_tts"]["path"],
-                            cleaners=config_data["inference"]["composite_inference"]["text2mel"]["glow_tts"]
-                            ["cleaners"],
-                            param_config_path=config_data["inference"]["composite_inference"]["text2mel"]["glow_tts"]
-                            ["param_config_path"],
-                        ),
-                    ),
-                    mel_2_audio=text_to_speech_pb2.Mel2Audio(
-                        type=config_data["inference"]["composite_inference"]["mel2audio"]["type"],
-                        waveglow=text_to_speech_pb2.Waveglow(
-                            batch_size=config_data["inference"]["composite_inference"]["mel2audio"]["waveglow"][
-                                "batch_size"],
-                            path=config_data["inference"]["composite_inference"]["mel2audio"]["waveglow"]["path"],
-                            param_config_path=config_data["inference"]["composite_inference"]["mel2audio"]["waveglow"]
-                            ["param_config_path"],
-                            sigma=config_data["inference"]["composite_inference"]["mel2audio"]["waveglow"]
-                            ["sigma"],
-                            denoiser=text_to_speech_pb2.Denoiser(
-                                active=config_data["inference"]["composite_inference"]["mel2audio"]["waveglow"]
-                                ["denoiser"]["active"],
-                                strength=config_data["inference"]["composite_inference"]["mel2audio"]["waveglow"]
-                                ["denoiser"]["strength"],
-                            ),
-                        ),
-                        waveglow_triton=text_to_speech_pb2.WaveglowTriton(
-                            param_config_path=config_data["inference"]["composite_inference"]["mel2audio"]
-                            ["waveglow_triton"]["param_config_path"],
-                            sigma=config_data["inference"]["composite_inference"]["mel2audio"]["waveglow_triton"]
-                            ["sigma"],
-                            max_spect_size=config_data["inference"]["composite_inference"]["mel2audio"]
-                            ["waveglow_triton"]["max_spect_size"],
-                            triton_model_name=config_data["inference"]["composite_inference"]["mel2audio"]
-                            ["waveglow_triton"]["triton_model_name"],
-                            triton_url=config_data["inference"]["composite_inference"]["mel2audio"]["waveglow_triton"]
-                            ["triton_url"],
-                        )
-                    )
-                ),
-                caching=text_to_speech_pb2.Caching(
-                    active=config_data["inference"]["caching"]["active"],
-                    memory_cache_max_size=config_data["inference"]["caching"]["memory_cache_max_size"],
-                    sampling_rate=config_data["inference"]["caching"]["sampling_rate"],
-                    load_cache=config_data["inference"]["caching"]["load_cache"],
-                    save_cache=config_data["inference"]["caching"]["save_cache"],
-                    cache_save_dir=config_data["inference"]["caching"]["cache_save_dir"],
-                )
-            ),
-            normalization=text_to_speech_pb2.Normalization(
-                language=config_data["normalization"]["language"],
-                pipeline=config_data["normalization"]["pipeline"]
-            ),
-            postprocessing=text_to_speech_pb2.Postprocessing(
-                silence_secs=config_data["postprocessing"]["silence_secs"],
-                pipeline=config_data["postprocessing"]["pipeline"],
-                logmnse=text_to_speech_pb2.Logmnse(
-                    initial_noise=config_data["postprocessing"]["logmnse"]["initial_noise"],
-                    window_size=config_data["postprocessing"]["logmnse"]["window_size"],
-                    noise_threshold=config_data["postprocessing"]["logmnse"]["noise_threshold"]
-                ),
-                wiener=text_to_speech_pb2.Wiener(
-                    frame_len=config_data["postprocessing"]["wiener"]["frame_len"],
-                    lpc_order=config_data["postprocessing"]["wiener"]["lpc_order"],
-                    iterations=config_data["postprocessing"]["wiener"]["iterations"],
-                    alpha=config_data["postprocessing"]["wiener"]["alpha"],
-                    thresh=config_data["postprocessing"]["wiener"]["thresh"]
-                ),
-                apodization=text_to_speech_pb2.Apodization(
-                    apodization_secs=config_data["postprocessing"]["apodization"]["apodization_secs"]
-                )
-            )
-        )
+        msg = text_to_speech_pb2.Text2SpeechConfig()
+        return ParseDict(config_data, msg)
 
     @staticmethod
     def get_dict_from_proto(config_data: text_to_speech_pb2.Text2SpeechConfig) -> dict:
-        return \
-            {
-                'inference': {'type': config_data.inference.type,
-                              'composite_inference': {
-                                  'text2mel': {'type': config_data.inference.composite_inference.text_2_mel.type,
-                                               'tacotron2': {
-                                                   'batch_size': config_data.inference.composite_inference.text_2_mel.tacotron_2.batch_size,
-                                                   'path': config_data.inference.composite_inference.text_2_mel.tacotron_2.path,
-                                                   'param_config_path': config_data.inference.composite_inference.text_2_mel.tacotron_2.param_config_path,
-                                                   'step': config_data.inference.composite_inference.text_2_mel.tacotron_2.step},
-                                               'glow_tts': {
-                                                   'batch_size': config_data.inference.composite_inference.text_2_mel.glow_tts.batch_size,
-                                                   'use_gpu': config_data.inference.composite_inference.text_2_mel.glow_tts.use_gpu,
-                                                   'length_scale': config_data.inference.composite_inference.text_2_mel.glow_tts.length_scale,
-                                                   'noise_scale': config_data.inference.composite_inference.text_2_mel.glow_tts.noise_scale,
-                                                   'path': config_data.inference.composite_inference.text_2_mel.glow_tts.path,
-                                                   'cleaners': config_data.inference.composite_inference.text_2_mel.glow_tts.cleaners,
-                                                   'param_config_path': config_data.inference.composite_inference.text_2_mel.glow_tts.param_config_path}},
-                                  'mel2audio': {'type': config_data.inference.composite_inference.mel_2_audio.type,
-                                                'waveglow': {
-                                                    'batch_size': config_data.inference.composite_inference.mel_2_audio.waveglow.batch_size,
-                                                    'path': config_data.inference.composite_inference.mel_2_audio.waveglow.path,
-                                                    'param_config_path': config_data.inference.composite_inference.mel_2_audio.waveglow.param_config_path,
-                                                    'sigma': config_data.inference.composite_inference.mel_2_audio.waveglow.sigma,
-                                                    'denoiser': {
-                                                        'active': config_data.inference.composite_inference.mel_2_audio.waveglow.denoiser.active,
-                                                        'strength': config_data.inference.composite_inference.mel_2_audio.waveglow.denoiser.strength}},
-                                                'waveglow_triton': {
-                                                    'param_config_path': config_data.inference.composite_inference.mel_2_audio.waveglow_triton.param_config_path,
-                                                    'sigma': config_data.inference.composite_inference.mel_2_audio.waveglow_triton.sigma,
-                                                    'max_spect_size': config_data.inference.composite_inference.mel_2_audio.waveglow_triton.max_spect_size,
-                                                    'triton_model_name': config_data.inference.composite_inference.mel_2_audio.waveglow_triton.triton_model_name,
-                                                    'triton_url': config_data.inference.composite_inference.mel_2_audio.waveglow_triton.triton_url}}},
-                              'caching': {'active': config_data.inference.caching.active,
-                                          'memory_cache_max_size': config_data.inference.caching.memory_cache_max_size,
-                                          'sampling_rate': config_data.inference.caching.sampling_rate,
-                                          'load_cache': config_data.inference.caching.load_cache,
-                                          'save_cache': config_data.inference.caching.save_cache,
-                                          'cache_save_dir': config_data.inference.caching.cache_save_dir}},
-                'normalization': {
-                    'language': config_data.normalization.language,
-                    'pipeline': config_data.normalization.pipeline
-                },
-                'postprocessing': {
-                    'silence_secs': config_data.postprocessing.silence_secs,
-                    'pipeline': config_data.postprocessing.pipeline,
-                    'logmnse': {
-                        'initial_noise': config_data.postprocessing.logmnse.initial_noise,
-                        'window_size': config_data.postprocessing.logmnse.window_size,
-                        'noise_threshold': config_data.postprocessing.logmnse.noise_threshold
-                    },
-                    'wiener': {
-                        'frame_len': config_data.postprocessing.wiener.frame_len,
-                        'lpc_order': config_data.postprocessing.wiener.lpc_order,
-                        'iterations': config_data.postprocessing.wiener.iterations,
-                        'alpha': config_data.postprocessing.wiener.alpha,
-                        'thresh': config_data.postprocessing.wiener.thresh
-                    },
-                    'apodization': {
-                        'apodization_secs': config_data.postprocessing.apodization.apodization_secs
-                    }
-                }
-            }
+        return MessageToDict(config_data, including_default_value_fields=True)
+
+    # @staticmethod
+    # def get_proto_from_dict(config_data: dict) -> text_to_speech_pb2.Text2SpeechConfig:
+    #     return text_to_speech_pb2.Text2SpeechConfig(
+    #         inference=text_to_speech_pb2.Inference(
+    #             type=config_data["inference"]["type"],
+    #             composite_inference=text_to_speech_pb2.CompositeInference(
+    #                 text_2_mel=text_to_speech_pb2.Text2Mel(
+    #                     type=config_data["inference"]["composite_inference"]["text2mel"]["type"],
+    #                     tacotron_2=text_to_speech_pb2.Tacotron2(
+    #                         batch_size=config_data["inference"]["composite_inference"]["text2mel"]["tacotron2"]
+    #                         ["batch_size"],
+    #                         path=config_data["inference"]["composite_inference"]["text2mel"]["tacotron2"]["path"],
+    #                         param_config_path=config_data["inference"]["composite_inference"]["text2mel"]["tacotron2"]
+    #                         ["param_config_path"],
+    #                         step=config_data["inference"]["composite_inference"]["text2mel"]["tacotron2"]["step"],
+    #                     ),
+    #                     glow_tts=text_to_speech_pb2.GlowTTS(
+    #                         batch_size=config_data["inference"]["composite_inference"]["text2mel"]["glow_tts"]
+    #                         ["batch_size"],
+    #                         use_gpu=config_data["inference"]["composite_inference"]["text2mel"]["glow_tts"]
+    #                         ["use_gpu"],
+    #                         length_scale=config_data["inference"]["composite_inference"]["text2mel"]["glow_tts"]
+    #                         ["length_scale"],
+    #                         noise_scale=config_data["inference"]["composite_inference"]["text2mel"]["glow_tts"]
+    #                         ["noise_scale"],
+    #                         path=config_data["inference"]["composite_inference"]["text2mel"]["glow_tts"]["path"],
+    #                         cleaners=config_data["inference"]["composite_inference"]["text2mel"]["glow_tts"]
+    #                         ["cleaners"],
+    #                         param_config_path=config_data["inference"]["composite_inference"]["text2mel"]["glow_tts"]
+    #                         ["param_config_path"],
+    #                     ),
+    #                 ),
+    #                 mel_2_audio=text_to_speech_pb2.Mel2Audio(
+    #                     type=config_data["inference"]["composite_inference"]["mel2audio"]["type"],
+    #                     waveglow=text_to_speech_pb2.Waveglow(
+    #                         batch_size=config_data["inference"]["composite_inference"]["mel2audio"]["waveglow"][
+    #                             "batch_size"],
+    #                         path=config_data["inference"]["composite_inference"]["mel2audio"]["waveglow"]["path"],
+    #                         param_config_path=config_data["inference"]["composite_inference"]["mel2audio"]["waveglow"]
+    #                         ["param_config_path"],
+    #                         sigma=config_data["inference"]["composite_inference"]["mel2audio"]["waveglow"]
+    #                         ["sigma"],
+    #                         denoiser=text_to_speech_pb2.Denoiser(
+    #                             active=config_data["inference"]["composite_inference"]["mel2audio"]["waveglow"]
+    #                             ["denoiser"]["active"],
+    #                             strength=config_data["inference"]["composite_inference"]["mel2audio"]["waveglow"]
+    #                             ["denoiser"]["strength"],
+    #                         ),
+    #                     ),
+    #                     waveglow_triton=text_to_speech_pb2.WaveglowTriton(
+    #                         param_config_path=config_data["inference"]["composite_inference"]["mel2audio"]
+    #                         ["waveglow_triton"]["param_config_path"],
+    #                         sigma=config_data["inference"]["composite_inference"]["mel2audio"]["waveglow_triton"]
+    #                         ["sigma"],
+    #                         max_spect_size=config_data["inference"]["composite_inference"]["mel2audio"]
+    #                         ["waveglow_triton"]["max_spect_size"],
+    #                         triton_model_name=config_data["inference"]["composite_inference"]["mel2audio"]
+    #                         ["waveglow_triton"]["triton_model_name"],
+    #                         triton_url=config_data["inference"]["composite_inference"]["mel2audio"]["waveglow_triton"]
+    #                         ["triton_url"],
+    #                     )
+    #                 )
+    #             ),
+    #             caching=text_to_speech_pb2.Caching(
+    #                 active=config_data["inference"]["caching"]["active"],
+    #                 memory_cache_max_size=config_data["inference"]["caching"]["memory_cache_max_size"],
+    #                 sampling_rate=config_data["inference"]["caching"]["sampling_rate"],
+    #                 load_cache=config_data["inference"]["caching"]["load_cache"],
+    #                 save_cache=config_data["inference"]["caching"]["save_cache"],
+    #                 cache_save_dir=config_data["inference"]["caching"]["cache_save_dir"],
+    #             )
+    #         ),
+    #         normalization=text_to_speech_pb2.Normalization(
+    #             language=config_data["normalization"]["language"],
+    #             pipeline=config_data["normalization"]["pipeline"]
+    #         ),
+    #         postprocessing=text_to_speech_pb2.Postprocessing(
+    #             silence_secs=config_data["postprocessing"]["silence_secs"],
+    #             pipeline=config_data["postprocessing"]["pipeline"],
+    #             logmmse=text_to_speech_pb2.Logmnse(
+    #                 initial_noise=config_data["postprocessing"]["logmmse"]["initial_noise"],
+    #                 window_size=config_data["postprocessing"]["logmmse"]["window_size"],
+    #                 noise_threshold=config_data["postprocessing"]["logmmse"]["noise_threshold"]
+    #             ),
+    #             wiener=text_to_speech_pb2.Wiener(
+    #                 frame_len=config_data["postprocessing"]["wiener"]["frame_len"],
+    #                 lpc_order=config_data["postprocessing"]["wiener"]["lpc_order"],
+    #                 iterations=config_data["postprocessing"]["wiener"]["iterations"],
+    #                 alpha=config_data["postprocessing"]["wiener"]["alpha"],
+    #                 thresh=config_data["postprocessing"]["wiener"]["thresh"]
+    #             ),
+    #             apodization=text_to_speech_pb2.Apodization(
+    #                 apodization_secs=config_data["postprocessing"]["apodization"]["apodization_secs"]
+    #             )
+    #         )
+    #     )
+    #
+    # @staticmethod
+    # def get_dict_from_proto(config_data: text_to_speech_pb2.Text2SpeechConfig) -> dict:
+    #     return \
+    #         {
+    #             'inference': {'type': config_data.inference.type,
+    #                           'composite_inference': {
+    #                               'text2mel': {'type': config_data.inference.composite_inference.text_2_mel.type,
+    #                                            'tacotron2': {
+    #                                                'batch_size': config_data.inference.composite_inference.text_2_mel.tacotron_2.batch_size,
+    #                                                'path': config_data.inference.composite_inference.text_2_mel.tacotron_2.path,
+    #                                                'param_config_path': config_data.inference.composite_inference.text_2_mel.tacotron_2.param_config_path,
+    #                                                'step': config_data.inference.composite_inference.text_2_mel.tacotron_2.step},
+    #                                            'glow_tts': {
+    #                                                'batch_size': config_data.inference.composite_inference.text_2_mel.glow_tts.batch_size,
+    #                                                'use_gpu': config_data.inference.composite_inference.text_2_mel.glow_tts.use_gpu,
+    #                                                'length_scale': config_data.inference.composite_inference.text_2_mel.glow_tts.length_scale,
+    #                                                'noise_scale': config_data.inference.composite_inference.text_2_mel.glow_tts.noise_scale,
+    #                                                'path': config_data.inference.composite_inference.text_2_mel.glow_tts.path,
+    #                                                'cleaners': config_data.inference.composite_inference.text_2_mel.glow_tts.cleaners,
+    #                                                'param_config_path': config_data.inference.composite_inference.text_2_mel.glow_tts.param_config_path}},
+    #                               'mel2audio': {'type': config_data.inference.composite_inference.mel_2_audio.type,
+    #                                             'waveglow': {
+    #                                                 'batch_size': config_data.inference.composite_inference.mel_2_audio.waveglow.batch_size,
+    #                                                 'path': config_data.inference.composite_inference.mel_2_audio.waveglow.path,
+    #                                                 'param_config_path': config_data.inference.composite_inference.mel_2_audio.waveglow.param_config_path,
+    #                                                 'sigma': config_data.inference.composite_inference.mel_2_audio.waveglow.sigma,
+    #                                                 'denoiser': {
+    #                                                     'active': config_data.inference.composite_inference.mel_2_audio.waveglow.denoiser.active,
+    #                                                     'strength': config_data.inference.composite_inference.mel_2_audio.waveglow.denoiser.strength}},
+    #                                             'waveglow_triton': {
+    #                                                 'param_config_path': config_data.inference.composite_inference.mel_2_audio.waveglow_triton.param_config_path,
+    #                                                 'sigma': config_data.inference.composite_inference.mel_2_audio.waveglow_triton.sigma,
+    #                                                 'max_spect_size': config_data.inference.composite_inference.mel_2_audio.waveglow_triton.max_spect_size,
+    #                                                 'triton_model_name': config_data.inference.composite_inference.mel_2_audio.waveglow_triton.triton_model_name,
+    #                                                 'triton_url': config_data.inference.composite_inference.mel_2_audio.waveglow_triton.triton_url}}},
+    #                           'caching': {'active': config_data.inference.caching.active,
+    #                                       'memory_cache_max_size': config_data.inference.caching.memory_cache_max_size,
+    #                                       'sampling_rate': config_data.inference.caching.sampling_rate,
+    #                                       'load_cache': config_data.inference.caching.load_cache,
+    #                                       'save_cache': config_data.inference.caching.save_cache,
+    #                                       'cache_save_dir': config_data.inference.caching.cache_save_dir}},
+    #             'normalization': {
+    #                 'language': config_data.normalization.language,
+    #                 'pipeline': config_data.normalization.pipeline
+    #             },
+    #             'postprocessing': {
+    #                 'silence_secs': config_data.postprocessing.silence_secs,
+    #                 'pipeline': config_data.postprocessing.pipeline,
+    #                 'logmmse': {
+    #                     'initial_noise': config_data.postprocessing.logmmse.initial_noise,
+    #                     'window_size': config_data.postprocessing.logmmse.window_size,
+    #                     'noise_threshold': config_data.postprocessing.logmmse.noise_threshold
+    #                 },
+    #                 'wiener': {
+    #                     'frame_len': config_data.postprocessing.wiener.frame_len,
+    #                     'lpc_order': config_data.postprocessing.wiener.lpc_order,
+    #                     'iterations': config_data.postprocessing.wiener.iterations,
+    #                     'alpha': config_data.postprocessing.wiener.alpha,
+    #                     'thresh': config_data.postprocessing.wiener.thresh
+    #                 },
+    #                 'apodization': {
+    #                     'apodization_secs': config_data.postprocessing.apodization.apodization_secs
+    #                 }
+    #             }
+    #         }
 
 
 @dataclass
