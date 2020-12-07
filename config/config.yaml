@@ -12,17 +12,16 @@ inference:
                 batch_size: 8
                 path: "models/tacotron2/de/kerstin_PUN/"
                 param_config_path: "models/tacotron2/de/tacotron2.yaml"
-                step: "7500"
+                step: "1000"
 
             glow_tts:
-                batch_size: 8
-                use_gpu: false
-                cleaners: []
+                batch_size: 5
+                use_gpu: true
                 length_scale: 1.0
                 noise_scale: 0.667
-                batch_inference: false
-                path: "models/glow-tts/en/pretrained.pth"
-                param_config_path: "models/glow-tts/en/config.json"
+                path: "models/glow-tts/de/kerstin_blank.pth"
+                cleaners: []
+                param_config_path: "models/glow-tts/de/config_blank.json"
 
             glow_tts_triton:
                 batch_size: 8
@@ -56,7 +55,7 @@ inference:
             mb_melgan_tf:
                 batch_size: 20
                 config_path: "models/mb_melgan/en/config.yml"
-                model_path: "models/mb_melgan/en/generator-1880000.h5"
+                model_path: "models/mb_melgan/en/generator-1820000.h5"
                 stats_path: "models/mb_melgan/en/stats.npy"
 
             mb_melgan_triton:
@@ -74,15 +73,40 @@ inference:
         cache_save_dir: "models/cache"
 
 normalization:
-    language: "en"
+    language: "de"
 
     pipeline:
+        - "fix_plus"
+        - "normalize_urls"
+        - "normalize_dates"
+        - "normalize_year"
+        - "normalize_time"
+        - "normalize_numbers"
+#        - "split_texts"
+        - "fix_punctuation"
+        - "remove_unaudible_texts"
+        - "lower_case"
 
 postprocessing:
     silence_secs: 0.25
 
     pipeline:
+        #- "logmmse"
+        #- "wiener"
+        #- "mfcc_up"
         - "apodization"
 
+    logmmse:
+        initial_noise: 100
+        window_size: 0
+        noise_threshold: 0.15
+
+    wiener:
+        frame_len: 1024
+        lpc_order: 50
+        iterations: 10
+        alpha: 0.5
+        thresh: 0.1
+
     apodization:
-        apodization_secs: 0.5
+        apodization_secs: 0.25
