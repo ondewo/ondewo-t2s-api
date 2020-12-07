@@ -22,11 +22,11 @@ class HiFiGan(HiFiGANCore):
 
     def _generate(self, mel: np.ndarray) -> np.ndarray:
         """
-
+        this is the function responsible for generation of the audio from the mel spectrogram
         Args:
-            mel:
+            mel: batch of mel spectrograms as numpy array of shape (batch_size, frequency, time)
 
-        Returns:
+        Returns: batch of audios in form of numpy array of shape (batch_size, time)
 
         """
         with torch.no_grad():
