@@ -38,9 +38,9 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Script for creating samples of wav")
     parser.add_argument("--config_dir", type=str, default="evaluation/configs",
                         help="Path to folder with configs of model setups")
-    parser.add_argument("--text_samples_path", type=str, default="evaluation/sentences_tirolia.txt",
+    parser.add_argument("--text_samples_path", type=str, default="evaluation/sentences.txt",
                         help="Path of the txt file with text samples (sentences)")
-    parser.add_argument("--n_samples", type=int, default=20,
+    parser.add_argument("--n_samples", type=int, default=10,
                         help="How many samples to generate per model setup, set to < 1 to use all")
     parser.add_argument("--output_dir", type=str, default="samples",
                         help="Path to folder where to output the samples")
@@ -64,12 +64,10 @@ def main() -> None:
             config: Dict[str, Any] = yaml.load(f)
             #config["inference"]["composite_inference"]["mel2audio"]["mb_melgan_tf"]["model_path"] = "/home/utanko/train.mb_melgan.germans/checkpoints/generator-300000.h5"
 
-        gen_samples(config, sentences, out_dir)
-
         # using multiprocessing so that GPU memory gets released after each run
-        # proc = multiprocessing.Process(target=gen_samples, args=(config, sentences, out_dir))
-        # proc.start()
-        # proc.join()
+        proc = multiprocessing.Process(target=gen_samples, args=(config, sentences, out_dir))
+        proc.start()
+        proc.join()
 
         # this part is used for evaluation of different mb_melgan generator (at different steps)
         # for steps in [500_000, 760_000, 1_000_000, 1_220_000, 1_360_000, 1_500_000, 1_760_000, 2_000_000]:
