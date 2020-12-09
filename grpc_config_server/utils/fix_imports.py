@@ -8,7 +8,7 @@ def fix_imports_in_ondewoapis() -> None:
     INFO: https://github.com/protocolbuffers/protobuf/pull/7470
     """
     script_path = os.path.realpath(__file__)
-    server_dir_name = script_path.split("ondewo-t2s-stella/")[1].split("/")[0]
+    server_dir_name = script_path.split("ondewo-t2s/")[1].split("/")[0]
     proto_output_dir = f"./{server_dir_name}/ondewo/audio/"
     files = os.listdir(proto_output_dir)
     for file in files:
