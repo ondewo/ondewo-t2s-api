@@ -66,7 +66,7 @@ run_batch_server:
 	--network=host \
 	-v ${shell pwd}/models:/opt/ondewo-t2s/models \
 	-v ${shell pwd}/config:/opt/ondewo-t2s/config \
-	--env CONFIG_FILE="config/config_de.yaml" \
+	--env CONFIG_FILE="config/config.yaml" \
 	--name ${BATCH_CONTAINER} \
 	${IMAGE_TAG_BATCH}
 

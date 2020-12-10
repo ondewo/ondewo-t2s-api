@@ -1,7 +1,7 @@
 from typing import Dict, Any, List
 
 import nemo
-import nemo.collections.tts as nemo_tts
+from nemo.collections.tts import WaveGlowInferNM
 import numpy as np
 import torch
 from nemo.core import NmTensor
@@ -29,7 +29,7 @@ class Waveglow(Mel2Audio):
 
         # load WaveGlow model
         self.neural_factory = nemo.core.NeuralModuleFactory(placement=nemo.core.DeviceType.GPU)
-        self.waveglow = nemo_tts.WaveGlowInferNM.import_from_config(
+        self.waveglow = WaveGlowInferNM.import_from_config(
             self.config['param_config_path'], "WaveGlowInferNM",
             overwrite_params={"sigma": self.config['sigma']}
         )

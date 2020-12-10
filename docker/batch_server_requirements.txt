@@ -8,3 +8,4 @@ git+https://github.com/wilsonchingg/logmmse.git
 pyroomacoustics
 python_speech_features
 pysndfx
+transformers==3.5.0

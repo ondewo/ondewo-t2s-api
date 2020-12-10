@@ -6,7 +6,7 @@ from typing import Dict, Any, List
 
 import nemo
 import nemo.collections.asr as nemo_asr
-import nemo.collections.tts as nemo_tts
+from nemo.collections.tts import TextEmbedding, Tacotron2Encoder, Tacotron2DecoderInfer, Tacotron2Postnet
 from ruamel.yaml import YAML
 import numpy as np
 from pylog.logger import logger_console as logger
@@ -42,16 +42,16 @@ class Tacotron2(Text2Mel):
         # load Tacotron2 parts
         self.tacotron_preprocessor = nemo_asr.AudioToMelSpectrogramPreprocessor.import_from_config(
             self.config['param_config_path'], "AudioToMelSpectrogramPreprocessor")
-        self.tacotron_embedding = nemo_tts.TextEmbedding.import_from_config(
+        self.tacotron_embedding = TextEmbedding.import_from_config(
             self.config['param_config_path'], "TextEmbedding")
         self.tacotron_embedding.restore_from(self.embedding_path)
-        self.tacotron_encoder = nemo_tts.Tacotron2Encoder.import_from_config(
+        self.tacotron_encoder = Tacotron2Encoder.import_from_config(
             self.config['param_config_path'], "Tacotron2Encoder")
         self.tacotron_encoder.restore_from(self.encoder_path)
-        self.tacotron_decoder = nemo_tts.Tacotron2DecoderInfer.import_from_config(
+        self.tacotron_decoder = Tacotron2DecoderInfer.import_from_config(
             self.config['param_config_path'], "Tacotron2DecoderInfer")
         self.tacotron_decoder.restore_from(self.decoder_path)
-        self.tacotron_postnet = nemo_tts.Tacotron2Postnet.import_from_config(
+        self.tacotron_postnet = Tacotron2Postnet.import_from_config(
             self.config['param_config_path'], "Tacotron2Postnet")
         self.tacotron_postnet.restore_from(self.postnet_path)
         logger.info(f"Loaded Tacotron2 model from {self.config['path']}")
