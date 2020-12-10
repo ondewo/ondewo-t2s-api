@@ -1,5 +1,6 @@
 from typing import Dict, Any, Type
 
+from inference.mel2audio.hifigan import HiFiGan
 from inference.mel2audio.mbmelgan import MBMelGAN
 from inference.mel2audio.mel2audio import Mel2Audio
 from inference.mel2audio.waveglow import Waveglow
@@ -13,7 +14,8 @@ class Mel2AudioFactory:
         "waveglow": Waveglow,
         "waveglow_triton": WaveglowTriton,
         "mb_melgan_tf": MBMelGAN,
-        "mb_melgan_triton": MBMelGANTriton
+        "mb_melgan_triton": MBMelGANTriton,
+        "hifi_gan": HiFiGan,
     }
 
     @classmethod
