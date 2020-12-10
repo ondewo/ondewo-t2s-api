@@ -8,19 +8,12 @@ inference:
         text2mel:
             type: "glow_tts"
 
-            tacotron2:
-                batch_size: 8
-                path: "models/tacotron2/de/kerstin_PUN/"
-                param_config_path: "models/tacotron2/de/tacotron2.yaml"
-                step: "7500"
-
             glow_tts:
                 batch_size: 8
                 use_gpu: false
                 cleaners: []
                 length_scale: 1.0
                 noise_scale: 0.667
-                batch_inference: false
                 path: "models/glow-tts/en/pretrained.pth"
                 param_config_path: "models/glow-tts/en/config.json"
 
@@ -35,16 +28,7 @@ inference:
                 triton_model_name: "glow_tts"
 
         mel2audio:
-            type: "mb_melgan_tf"
-
-            waveglow:
-                batch_size: 4
-                path: "models/waveglow/checkpoints_waveglow_kerstin/WaveGlowNM.pt"
-                param_config_path: "models/waveglow/waveglow.yaml"
-                sigma: 0.6
-                denoiser:
-                    active: true
-                    strength: 0.05
+            type: "hifi_gan"
 
             waveglow_triton:
                 param_config_path: "models/waveglow/waveglow.yaml"
@@ -53,17 +37,17 @@ inference:
                 triton_model_name: "waveglow"
                 triton_url: "localhost:8001"
 
-            mb_melgan_tf:
-                batch_size: 20
-                config_path: "models/mb_melgan/en/config.yml"
-                model_path: "models/mb_melgan/en/generator-1880000.h5"
-                stats_path: "models/mb_melgan/en/stats.npy"
-
             mb_melgan_triton:
                 config_path: "models/mb_melgan/en/config.yml"
                 stats_path: "models/mb_melgan/en/stats.npy"
                 triton_model_name: "mb_melgan"
                 triton_url: "localhost:8001"
+
+            hifi_gan:
+                use_gpu: True
+                batch_size: 20
+                config_path: "models/HiFiGan/universal/config.json"
+                model_path: "models/HiFiGan/universal/g_02500000"
 
     caching:
         active: false

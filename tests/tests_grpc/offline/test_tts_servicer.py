@@ -12,7 +12,7 @@ from grpc_config_server.tts_server import TextToSpeechConfigServer
 DIRECTORY = "./config"
 
 
-def get_config_files():
+def get_config_files() -> List[str]:
     """get all .yaml files in DIRECTORY to perform tests on"""
     directory = DIRECTORY
     config_files = []
@@ -41,7 +41,7 @@ class TestTTSServicer:
                 language_code=test_code,
             )
         )
-        assert len(response.model_setups) == 6
+        assert len(response.model_setups) == 2
         for model_setup in response.model_setups:
             setup = MessageToDict(model_setup)
             assert "languageCode" in setup.keys()
@@ -55,7 +55,7 @@ class TestTTSServicer:
         response = server_offline.handle_list_all_model_setups(
             request=text_to_speech_pb2.ListAllModelSetupsRequest()
         )
-        assert len(response.model_setups) == 28
+        assert len(response.model_setups) == 8
         for model_setup in response.model_setups:
             setup = MessageToDict(model_setup)
             assert "languageCode" in setup.keys()

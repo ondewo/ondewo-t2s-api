@@ -20,10 +20,8 @@ class HiFiGANCore(Mel2Audio):
         self.hop_size = self.hifi_config['hop_size']
 
     def _preprocess(self, mel_spectrograms: List[np.ndarray]) -> np.ndarray:
-        mel_out: List[np.ndarray] = []
-        for mel in mel_spectrograms:
-            mel_out.append(mel)
-        lengths = [mel.shape[1] for mel in mel_out]
+        mel_out: List[np.ndarray] = [mel for mel in mel_spectrograms]
+        lengths: List[int] = [mel.shape[1] for mel in mel_out]
         max_len = max(lengths)
         mel_out_padded = list(map(
             lambda mel: np.pad(mel, [(0, 0), (0, max_len - mel.shape[1])], mode='constant'),  # type: ignore

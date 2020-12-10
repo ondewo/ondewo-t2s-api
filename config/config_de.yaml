@@ -8,12 +8,6 @@ inference:
         text2mel:
             type: "glow_tts"
 
-            tacotron2:
-                batch_size: 8
-                path: "models/tacotron2/de/kerstin_PUN/"
-                param_config_path: "models/tacotron2/de/tacotron2.yaml"
-                step: "1000"
-
             glow_tts:
                 batch_size: 5
                 use_gpu: true
@@ -36,15 +30,6 @@ inference:
         mel2audio:
             type: "hifi_gan"
 
-            waveglow:
-                batch_size: 4
-                path: "models/waveglow/checkpoints_waveglow_kerstin/WaveGlowNM.pt"
-                param_config_path: "models/waveglow/waveglow.yaml"
-                sigma: 0.6
-                denoiser:
-                    active: true
-                    strength: 0.05
-
             waveglow_triton:
                 param_config_path: "models/waveglow/waveglow.yaml"
                 sigma: 0.6
@@ -52,11 +37,11 @@ inference:
                 triton_model_name: "waveglow"
                 triton_url: "localhost:8001"
 
-            mb_melgan_tf:
-                batch_size: 20
+            mb_melgan_triton:
                 config_path: "models/mb_melgan/en/config.yml"
-                model_path: "models/mb_melgan/en/generator-1820000.h5"
                 stats_path: "models/mb_melgan/en/stats.npy"
+                triton_model_name: "mb_melgan"
+                triton_url: "localhost:8001"
 
             hifi_gan:
                 use_gpu: True
