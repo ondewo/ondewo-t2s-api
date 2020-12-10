@@ -1,6 +1,6 @@
 cachetools
 flask
-fluent-logger==0.9.6
+fluent-logger
 msgpack==1.0.0
 PyYAML==5.3.1
 tritonclient[all]==2.3.0
@@ -8,3 +8,4 @@ git+https://github.com/wilsonchingg/logmmse.git
 pyroomacoustics
 python_speech_features
 pysndfx
+transformers==3.5.0

@@ -5,23 +5,25 @@
 ### New Features
 * [[OND232-81]](https://ondewo.atlassian.net/browse/OND232-81) -
 Added GRPC config server. With this server it is possible to read and modify the configuration of the T2S service.
-
-### Improvements
-* [[OND232-88]](https://ondewo.atlassian.net/browse/OND232-88) -
-Added support for Glow-TTS inference on Triton
-* [[OND232-84]](https://ondewo.atlassian.net/browse/OND232-84) -
-Added support for MB-MelGAN inference on Triton
 * [[OND232-37]](https://ondewo.atlassian.net/browse/OND232-37) -
 Added apodization to generated audio as part of postprocessing
 * [[OND232-114]](https://ondewo.atlassian.net/browse/OND232-37) -
 Added different postprocessing techniques
+
+### Improvements
+* [[OND232-110]](https://ondewo.atlassian.net/browse/OND232-110) -
+Added phonemization option for Glow-TTS
+* [[OND232-88]](https://ondewo.atlassian.net/browse/OND232-88) -
+Added support for Glow-TTS inference on Triton
+* [[OND232-84]](https://ondewo.atlassian.net/browse/OND232-84) -
+Added support for MB-MelGAN inference on Triton
 
 ### Bug fixes
 * [[OND232-37]](https://ondewo.atlassian.net/browse/OND232-37) -
 Fixed postprocessing to not add silence at the start of generated audio
 
 ### Migration Guide
-* No extra steps necessary for migrating to this version.
+* Change the config file to match the new structure.
 
 
 *****************
