@@ -73,7 +73,8 @@ class TestTTSServicer:
         assert "languageCode" in setup.keys()
         assert setup["languageCode"] == "de-DE"
         assert "directory" in setup.keys()
-        assert setup["directory"] == './tests/tests_grpc/offline/models/eloqai/de-DE/astrology0815/sr001/0.0.1'
+        assert setup["directory"] == \
+            './tests/tests_grpc/offline/models/eloqai/de-DE/astrology0815/sr001/0.0.1'
         assert "config" in setup.keys()
         assert "inference" in setup["config"].keys()
         assert "type" in setup["config"]["inference"].keys()
@@ -121,7 +122,7 @@ class TestTTSServicer:
             if not any(c.name == server_offline.manager.t2s_container_name for c in containers):
                 assert not response.success
                 assert response.log_message == "\nT2S container not running, " + \
-                                               f"expected name: {server_offline.manager.t2s_container_name}"
+                    f"expected name: {server_offline.manager.t2s_container_name}"
 
             else:
                 assert response.success

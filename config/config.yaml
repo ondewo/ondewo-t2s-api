@@ -9,13 +9,13 @@ inference:
             type: "glow_tts"
 
             glow_tts:
-                batch_size: 8
-                use_gpu: false
-                cleaners: []
+                batch_size: 5
+                use_gpu: true
                 length_scale: 1.0
                 noise_scale: 0.667
-                path: "models/glow-tts/en/pretrained.pth"
-                param_config_path: "models/glow-tts/en/config.json"
+                path: "models/glow-tts/de/thorsten.pth"
+                cleaners: []
+                param_config_path: "models/glow-tts/de/config_blank.json"
 
             glow_tts_triton:
                 batch_size: 8
@@ -58,15 +58,40 @@ inference:
         cache_save_dir: "models/cache"
 
 normalization:
-    language: "en"
+    language: "de"
 
     pipeline:
+        - "fix_plus"
+        - "normalize_urls"
+        - "normalize_dates"
+        - "normalize_year"
+        - "normalize_time"
+        - "normalize_numbers"
+#        - "split_texts"
+        - "fix_punctuation"
+        - "remove_unaudible_texts"
+        - "lower_case"
 
 postprocessing:
     silence_secs: 0.25
 
     pipeline:
-        - "apodization"
+        #- "logmmse"
+        #- "wiener"
+        #- "mfcc_up"
+#        - "apodization"
+
+    logmmse:
+        initial_noise: 100
+        window_size: 0
+        noise_threshold: 0.15
+
+    wiener:
+        frame_len: 1024
+        lpc_order: 50
+        iterations: 10
+        alpha: 0.5
+        thresh: 0.1
 
     apodization:
-        apodization_secs: 0.5
+        apodization_secs: 0.25
