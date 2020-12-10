@@ -6,7 +6,7 @@ pipeline {
         SANITIZED_DOCKER_TAG_NAME = "${env.BRANCH_NAME}".replace("release/", "")
         IMAGE_TAG = "${SANITIZED_DOCKER_TAG_NAME}"
         TESTS_IMAGE_NAME = "ondewo-t2s-tests"
-        RELEASE_FOLDER = "/var/dynadrive/fileserver/releases/ondewo-t2s"
+        RELEASE_FOLDER = "releases/${SANITIZED_DOCKER_TAG_NAME}"
 
         IMAGE_NAME_RELASE = "ondewo-t2s-batch-server-release"
         TTS_NAME = "${IMAGE_NAME_RELASE}:${IMAGE_TAG}"
