@@ -21,12 +21,13 @@ build_batch_server: export SSH_PRIVATE_KEY="$$(cat ~/.ssh/id_rsa)"
 build_batch_server:
 	docker build -t ${IMAGE_TAG_BATCH} --build-arg SSH_PRIVATE_KEY=$(SSH_PRIVATE_KEY) --target uncythonized -f docker/Dockerfile.batchserver .
 
+build_batch_server_no_cache: export SSH_PRIVATE_KEY="$$(cat ~/.ssh/id_rsa)"
 build_batch_server_no_cache:
 	docker build -t ${IMAGE_TAG_BATCH} --no-cache=true --build-arg SSH_PRIVATE_KEY=$(SSH_PRIVATE_KEY) --target uncythonized -f docker/Dockerfile.batchserver .
 
 build_batch_server_release: export SSH_PRIVATE_KEY="$$(cat ~/.ssh/id_rsa)"
 build_batch_server_release:
-	docker build -t ${IMAGE_TAG_BATCH_RELEASE} --no-cache=true --build-arg SSH_PRIVATE_KEY=$(SSH_PRIVATE_KEY) -f docker/Dockerfile.batchserver .
+	docker build -t ${IMAGE_TAG_BATCH_RELEASE} --build-arg SSH_PRIVATE_KEY=$(SSH_PRIVATE_KEY) -f docker/Dockerfile.batchserver .
 
 build_training_image:
 	docker build -t ${IMAGE_TAG_TRAINING} training
@@ -65,7 +66,7 @@ run_batch_server:
 	--network=host \
 	-v ${shell pwd}/models:/opt/ondewo-t2s/models \
 	-v ${shell pwd}/config:/opt/ondewo-t2s/config \
-	--env CONFIG_FILE="config/config_de.yaml" \
+	--env CONFIG_FILE="config/config.yaml" \
 	--name ${BATCH_CONTAINER} \
 	${IMAGE_TAG_BATCH}
 
@@ -98,17 +99,19 @@ make package_release: package_git_revision_and_version
 	echo "Where am I: `pwd`"
 	echo "My environment variables: `env`"
 
-	mkdir -p ${RELEASE_FOLDER}/${SANITIZED_DOCKER_TAG_NAME}
+	mkdir -p ${RELEASE_FOLDER}
 
 	# tar and zip images
-	docker save ${PUSH_NAME_RELEASE} | gzip > ${RELEASE_FOLDER}/${SANITIZED_DOCKER_TAG_NAME}/ondewo-t2s-batch-server-release-${SANITIZED_DOCKER_TAG_NAME}.tar.gz
+	docker save ${PUSH_NAME_RELEASE} | gzip > ${RELEASE_FOLDER}/ondewo-t2s-batch-server-release-${SANITIZED_DOCKER_TAG_NAME}.tar.gz
 
 	# add configs
 	rsync -av config package --exclude demo
 
-	# move to the release folder
-	rsync -av package/. ${RELEASE_FOLDER}/${SANITIZED_DOCKER_TAG_NAME} --exclude '.gitignore'
+	# move package to the release folder
+	rsync -av package/. ${RELEASE_FOLDER} --exclude '.gitignore'
 	rm -rf package
+
+	rsync -Phaz ${RELEASE_FOLDER} ondewo@releases.ondewo.com:releases/ondewo-t2s
 
 install_dependencies_locally:
 	pip install nvidia-pyindex

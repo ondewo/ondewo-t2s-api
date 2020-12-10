@@ -1,6 +1,6 @@
 from typing import Any, Dict, List
 import numpy as np
-from scipy.signal import tukey
+from scipy.signal.windows import tukey
 import logmmse
 from pyroomacoustics.denoise.iterative_wiener import apply_iterative_wiener
 import python_speech_features

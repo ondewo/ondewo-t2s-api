@@ -1,36 +1,50 @@
-# ONDEWO T2S batch server configuration for NeMO inference
-
-inference_type: 'nemo'
-
-caching:
-    active: false
-    memory_cache_max_size: 20
-    sampling_rate: 22050
-    load_cache: true
-    save_cache: true
-    cache_save_dir: "models/cache"
+# ONDEWO T2S batch server configuration
 
 
-neural_factory:
-    placement: 'GPU'
-    backend: 'pytorch'
-    batch_size: 1
+inference:
+    type: "composite"
 
-tacotron2:
-    nemo:
-        config-path: "models/tacotron2/en/tacotron2.yaml"
-        path: "models/tacotron2/en/nvidia/"
-        step: "0"
+    composite_inference:
+        text2mel:
+            type: "glow_tts"
 
-waveglow:
-    inference_type: 'nemo'
-    config-path: "models/waveglow/waveglow.yaml"
-    denoiser:
+            glow_tts:
+                batch_size: 8
+                use_gpu: false
+                cleaners: []
+                length_scale: 1.0
+                noise_scale: 0.667
+                batch_inference: false
+                path: "models/glow-tts/en/pretrained.pth"
+                param_config_path: "models/glow-tts/en/config.json"
+
+        mel2audio:
+            type: "mb_melgan_tf"
+
+            mb_melgan_tf:
+                batch_size: 20
+                config_path: "models/mb_melgan/en/config.yml"
+                model_path: "models/mb_melgan/en/generator-680000.h5"
+                stats_path: "models/mb_melgan/en/stats.npy"
+
+    caching:
         active: false
-        strength: 0.05
-    nemo:
-        path: "models/waveglow/WaveGlowNM.pt"
-        sigma: 0.6
-    triton:
-        triton_model: "waveglow"
-        triton-url: "localhost:8001"
+        memory_cache_max_size: 20
+        sampling_rate: 22050
+        load_cache: true
+        save_cache: true
+        cache_save_dir: "models/cache"
+
+normalization:
+    language: "en"
+
+    pipeline:
+
+postprocessing:
+    silence_secs: 0.25
+
+    pipeline:
+        - "apodization"
+
+    apodization:
+        apodization_secs: 0.5
