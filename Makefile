@@ -2,7 +2,7 @@ IMAGE_TAG_BATCH="dockerregistry.ondewo.com:5000/ondewo-t2s-batch-server:develop"
 IMAGE_TAG_BATCH_RELEASE="dockerregistry.ondewo.com:5000/ondewo-t2s-batch-server-release:develop"
 IMAGE_TAG_TRAINING="dockerregistry.ondewo.com:5000/ondewo-t2s-training"
 IMAGE_TAG_TESTS="ondewo-t2s-tests-image"
-IMAGE_TAG_TRITON="nvcr.io/nvidia/tritonserver:20.09-py3"
+IMAGE_TAG_TRITON="dockerregistry.ondewo.com:5000/nvidia/tritonserver:20.09-py3"
 BATCH_CONTAINER="ondewo-t2s-batch-server"
 BATCH_CONTAINER_RELEASE="ondewo-t2s-batch-server-release"
 TRAINING_CONTAINER="ondewo-t2s-training"
@@ -21,12 +21,13 @@ build_batch_server: export SSH_PRIVATE_KEY="$$(cat ~/.ssh/id_rsa)"
 build_batch_server:
 	docker build -t ${IMAGE_TAG_BATCH} --build-arg SSH_PRIVATE_KEY=$(SSH_PRIVATE_KEY) --target uncythonized -f docker/Dockerfile.batchserver .
 
+build_batch_server_no_cache: export SSH_PRIVATE_KEY="$$(cat ~/.ssh/id_rsa)"
 build_batch_server_no_cache:
 	docker build -t ${IMAGE_TAG_BATCH} --no-cache=true --build-arg SSH_PRIVATE_KEY=$(SSH_PRIVATE_KEY) --target uncythonized -f docker/Dockerfile.batchserver .
 
 build_batch_server_release: export SSH_PRIVATE_KEY="$$(cat ~/.ssh/id_rsa)"
 build_batch_server_release:
-	docker build -t ${IMAGE_TAG_BATCH_RELEASE} --no-cache=true --build-arg SSH_PRIVATE_KEY=$(SSH_PRIVATE_KEY) -f docker/Dockerfile.batchserver .
+	docker build -t ${IMAGE_TAG_BATCH_RELEASE} --build-arg SSH_PRIVATE_KEY=$(SSH_PRIVATE_KEY) -f docker/Dockerfile.batchserver .
 
 build_training_image:
 	docker build -t ${IMAGE_TAG_TRAINING} training
@@ -34,10 +35,11 @@ build_training_image:
 run_triton:
 	-docker rm -f triton-inference-server
 	docker run -d --shm-size=1g --gpus all --ulimit memlock=-1 \
-	--ulimit stack=67108864 --network=host \
-	-v${shell pwd}/models/triton_repo:/models \
-	--name triton-inference-server ${IMAGE_TAG_TRITON} \
-	tritonserver --model-repository=/models --strict-model-config=false  --log-verbose=1
+		--ulimit stack=67108864 --network=host \
+		-v${shell pwd}/models/triton_repo:/models \
+		--name triton-inference-server ${IMAGE_TAG_TRITON} \
+	tritonserver --model-repository=/models --strict-model-config=false \
+		--log-verbose=1 --backend-config=tensorflow,version=2
 
 run_triton_on_dgx:
 	-kill -9 $(ps aux | grep "ssh -N -f -L localhost:8001:dgx:8001 voice_user@dgx"| grep -v grep| awk '{print $2}')
@@ -97,23 +99,56 @@ make package_release: package_git_revision_and_version
 	echo "Where am I: `pwd`"
 	echo "My environment variables: `env`"
 
-	mkdir -p ${RELEASE_FOLDER}/${SANITIZED_DOCKER_TAG_NAME}
+	mkdir -p ${RELEASE_FOLDER}
 
 	# tar and zip images
-	docker save ${PUSH_NAME_RELEASE} | gzip > ${RELEASE_FOLDER}/${SANITIZED_DOCKER_TAG_NAME}/ondewo-t2s-batch-server-release-${SANITIZED_DOCKER_TAG_NAME}.tar.gz
+	docker save ${PUSH_NAME_RELEASE} | gzip > ${RELEASE_FOLDER}/ondewo-t2s-batch-server-release-${SANITIZED_DOCKER_TAG_NAME}.tar.gz
 
 	# add configs
 	rsync -av config package --exclude demo
 
-	# move to the release folder
-	rsync -av package/. ${RELEASE_FOLDER}/${SANITIZED_DOCKER_TAG_NAME} --exclude '.gitignore'
+	# move package to the release folder
+	rsync -av package/. ${RELEASE_FOLDER} --exclude '.gitignore'
 	rm -rf package
+
+	rsync -Phaz ${RELEASE_FOLDER} ondewo@releases.ondewo.com:releases/ondewo-t2s
 
 install_dependencies_locally:
 	pip install nvidia-pyindex
 	pip install -r requirements.txt
-	pip install utils/triton_client_lib/triton*.whl
+	pip install -r grpc_config_server/requirements.txt
 	pip install git+https://github.com/TensorSpeech/TensorflowTTS.git
-	git clone git@bitbucket.org:ondewo/glow-tts.git
-	cd ondewo-t2s-glow/monotonic_align; python setup.py build_ext --inplace; cd ../..
-	pip install -e glow-tts
+	git clone git@bitbucket.org:ondewo/ondewo-t2s-glow.git
+	cd ondewo-t2s-glow && git checkout d47b1421cc6d10070a80ebaeea74b6792d275fc0
+	cd monotonic_align; python setup.py build_ext --inplace; cd ../..
+	pip install -e ondewo-t2s-glow
+
+
+# GENERATE PYTHON FILES FROM PROTOS
+# copy from nlu-client, changed output directory to ./grpc_config_server/ and only exporting /audio/ directory of ondewoapis
+ONDEWO_PROTOS_DIR=ondewoapis/ondewo/audio
+GOOGLE_APIS_DIR=ondewoapis/googleapis
+ONDEWO_APIS_DIR=ondewoapis
+PROTO_OUTPUT_FOLDER=grpc_config_server/
+
+generate_ondewo_protos:
+	for f in $$(find ${ONDEWO_PROTOS_DIR} -name '*.proto'); do \
+		python -m grpc_tools.protoc -I${GOOGLE_APIS_DIR} -I${ONDEWO_APIS_DIR} --python_out=${PROTO_OUTPUT_FOLDER} --mypy_out=${PROTO_OUTPUT_FOLDER} --grpc_python_out=${PROTO_OUTPUT_FOLDER} $$f; \
+	done
+	python grpc_config_server/utils/fix_imports.py # fix imports into subdirectory
+
+build_grpc_server:
+	# ignore dockerignore by moving it before the build, and restore it afterwards
+	mkdir ignoreme
+	mv .dockerignore ignoreme/.dockerignore # move away .dockerignore
+	cp grpc_config_server/grpc_dockerignore .dockerignore
+	docker build -t t2s_grpc_server -f grpc_config_server/Dockerfile .
+	mv .dockerignore grpc_config_server/grpc_dockerignore
+	mv ignoreme/.dockerignore .dockerignore # restore .dockerignore
+	rm -r ignoreme
+
+run_grpc_server:
+	docker-compose -f grpc_config_server/docker-compose.yaml up
+
+remove_grpc_exited_container:
+	docker-compose -f grpc_config_server/docker-compose.yaml rm -f

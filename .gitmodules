@@ -1,0 +1,9 @@
+[submodule "ondewoapis"]
+	path = ondewoapis
+	url = git@bitbucket.org:ondewo/ondewoapis.git
+[submodule "ondewo-t2s-glow"]
+	path = ondewo-t2s-glow
+	url = git@bitbucket.org:ondewo/ondewo-t2s-glow.git
+[submodule "ondewo-logging"]
+	path = ondewo-logging
+	url = git@bitbucket.org:ondewo/ondewo-logging.git

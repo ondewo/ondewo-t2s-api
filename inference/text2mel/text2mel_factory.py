@@ -1,6 +1,7 @@
 from typing import Dict, Any, Type
 
-from inference.text2mel.glow_tts import GlowTts
+from inference.text2mel.glow_tts_generator import GlowTTS
+from inference.text2mel.glow_tts_triton import GlowTTSTriton
 from inference.text2mel.tacotron2 import Tacotron2
 from inference.text2mel.text2mel import Text2Mel
 
@@ -9,7 +10,8 @@ class Text2MelFactory:
 
     TEXT2MEL_DICT: Dict[str, Type] = {
         "tacotron2": Tacotron2,
-        "glow_tts": GlowTts,
+        "glow_tts": GlowTTS,
+        "glow_tts_triton": GlowTTSTriton,
     }
 
     @classmethod

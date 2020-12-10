@@ -5,8 +5,9 @@ from tritongrpcclient import InferenceServerClient, InferInput, InferRequestedOu
 
 from inference.mel2audio.mel2audio import Mel2Audio
 import numpy as np
-from utils.logger import logger
-import time
+from pylog.logger import logger_console as logger
+from pylog.decorators import Timer
+from inference import triton_utils
 
 
 class WaveglowTriton(Mel2Audio):
@@ -26,7 +27,7 @@ class WaveglowTriton(Mel2Audio):
         # triton config
         self.triton_client = InferenceServerClient(url=self.config['triton_url'])
         self.triton_model_name: str = self.config['triton_model_name']
-        self.test_triton()
+        triton_utils.check_triton_online(self.triton_client, self.triton_model_name)
 
     def test_triton(self) -> None:
         """Check if Triton server is active and the specified model is loaded.
@@ -57,8 +58,8 @@ class WaveglowTriton(Mel2Audio):
 
         return batched_result
 
+    @Timer(log_arguments=False)
     def mel2audio(self, mel_spectrograms: List[np.ndarray]) -> List[np.ndarray]:
-        start_time: float = time.time()
 
         z_shape = self.calculate_shape_of_z()
         z = np.random.normal(loc=0.0, scale=self.config['sigma'], size=z_shape).astype("float32")
@@ -83,7 +84,6 @@ class WaveglowTriton(Mel2Audio):
                 sample = audio[j][:sample_len]
                 audios.append(sample)
 
-        logger.info(f"WaveGlow inference using Triton took {time.time() - start_time} seconds")
         return audios
 
     def calculate_shape_of_z(self) -> Tuple[int, int, int, int]:

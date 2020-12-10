@@ -2,15 +2,15 @@ from abc import ABC
 
 from inference.text2mel.text2mel import Text2Mel
 from inference.text2mel.nemo_modules.text_data_layer_factory import get_text_data_layer
-from utils.logger import logger
 from typing import Dict, Any, List
 
 import nemo
 import nemo.collections.asr as nemo_asr
-import nemo.collections.tts as nemo_tts
+from nemo.collections.tts import TextEmbedding, Tacotron2Encoder, Tacotron2DecoderInfer, Tacotron2Postnet
 from ruamel.yaml import YAML
-import time
 import numpy as np
+from pylog.logger import logger_console as logger
+from pylog.decorators import Timer
 
 
 class Tacotron2(Text2Mel):
@@ -42,23 +42,22 @@ class Tacotron2(Text2Mel):
         # load Tacotron2 parts
         self.tacotron_preprocessor = nemo_asr.AudioToMelSpectrogramPreprocessor.import_from_config(
             self.config['param_config_path'], "AudioToMelSpectrogramPreprocessor")
-        self.tacotron_embedding = nemo_tts.TextEmbedding.import_from_config(
+        self.tacotron_embedding = TextEmbedding.import_from_config(
             self.config['param_config_path'], "TextEmbedding")
         self.tacotron_embedding.restore_from(self.embedding_path)
-        self.tacotron_encoder = nemo_tts.Tacotron2Encoder.import_from_config(
+        self.tacotron_encoder = Tacotron2Encoder.import_from_config(
             self.config['param_config_path'], "Tacotron2Encoder")
         self.tacotron_encoder.restore_from(self.encoder_path)
-        self.tacotron_decoder = nemo_tts.Tacotron2DecoderInfer.import_from_config(
+        self.tacotron_decoder = Tacotron2DecoderInfer.import_from_config(
             self.config['param_config_path'], "Tacotron2DecoderInfer")
         self.tacotron_decoder.restore_from(self.decoder_path)
-        self.tacotron_postnet = nemo_tts.Tacotron2Postnet.import_from_config(
+        self.tacotron_postnet = Tacotron2Postnet.import_from_config(
             self.config['param_config_path'], "Tacotron2Postnet")
         self.tacotron_postnet.restore_from(self.postnet_path)
         logger.info(f"Loaded Tacotron2 model from {self.config['path']}")
 
+    @Timer(log_arguments=False)
     def text2mel(self, texts: List[str]) -> List[np.ndarray]:
-        start_time: float = time.time()
-
         # make graph
         data_layer = get_text_data_layer(texts, labels=self.labels, batch_size=self.batch_size,
                                          bos_id=self.bos_id, eos_id=self.eos_id, pad_id=self.pad_id)
@@ -89,5 +88,4 @@ class Tacotron2(Text2Mel):
             mel_len = mel_lens_formatted[index]
             mels_formatted[index] = mels_formatted[index][:, :mel_len]
 
-        logger.info(f"Tacotron2 inference took {time.time() - start_time} seconds.")
         return mels_formatted

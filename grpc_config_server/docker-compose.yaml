@@ -1,0 +1,17 @@
+version: '3'
+services:
+
+  voip_server:
+    container_name: t2s_grpc_server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - MODULE_NAME=t2s_grpc_server
+    image: t2s_grpc_server
+    ports:
+      - 7777:7777
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ../models:/ondewo/models
+      - ../config:/ondewo/config

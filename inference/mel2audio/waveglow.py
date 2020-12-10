@@ -1,22 +1,23 @@
+from typing import Dict, Any, List
+
+import nemo
+from nemo.collections.tts import WaveGlowInferNM
+import numpy as np
 import torch
 from nemo.core import NmTensor
+from ruamel.yaml import YAML
 
 from inference.mel2audio.mel2audio import Mel2Audio
 from inference.mel2audio.nemo_modules.mel_spectrogram_data_layer_factory import get_mel_spectrogram_data_layer
-from utils.logger import logger
-from typing import Dict, Any, List
-from ruamel.yaml import YAML
-import time
-
-import nemo
-import nemo.collections.tts as nemo_tts
-import numpy as np
+from utils.helpers import check_paths_exist
+from pylog.logger import logger_console as logger
+from pylog.decorators import Timer
 
 
 class Waveglow(Mel2Audio):
 
     def __init__(self, config: Dict[str, Any]):
-        self._check_paths_exist([config['param_config_path'], config['path']])
+        check_paths_exist([config['param_config_path'], config['path']])
         self.config = config
         self.batch_size = config['batch_size']
 
@@ -28,7 +29,7 @@ class Waveglow(Mel2Audio):
 
         # load WaveGlow model
         self.neural_factory = nemo.core.NeuralModuleFactory(placement=nemo.core.DeviceType.GPU)
-        self.waveglow = nemo_tts.WaveGlowInferNM.import_from_config(
+        self.waveglow = WaveGlowInferNM.import_from_config(
             self.config['param_config_path'], "WaveGlowInferNM",
             overwrite_params={"sigma": self.config['sigma']}
         )
@@ -41,9 +42,8 @@ class Waveglow(Mel2Audio):
             self.denoiser_strength: float = self.config['denoiser']['strength']
             logger.info(f"Loaded WaveGlow denoiser with strength {self.denoiser_strength}.")
 
+    @Timer(log_arguments=False)
     def mel2audio(self, mel_spectrograms: List[np.ndarray]) -> List[np.ndarray]:
-        start_time: float = time.time()
-
         # make graph
         data_layer = get_mel_spectrogram_data_layer(mel_spectrograms, self.batch_size)
         # building inference pipeline
@@ -62,7 +62,6 @@ class Waveglow(Mel2Audio):
         if self.is_denoiser_active:
             audios_final = self.denoise(audios_final)
 
-        logger.info(f"WaveGlow inference took {time.time() - start_time} seconds")
         return audios_final
 
     def format_results(self,

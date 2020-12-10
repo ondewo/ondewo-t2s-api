@@ -1,36 +1,74 @@
-# ONDEWO T2S batch server configuration for NeMO inference
-
-inference_type: 'nemo'
-
-caching:
-    active: false
-    memory_cache_max_size: 20
-    sampling_rate: 22050
-    load_cache: true
-    save_cache: true
-    cache_save_dir: "models/cache"
+# ONDEWO T2S batch server configuration
 
 
-neural_factory:
-    placement: 'GPU'
-    backend: 'pytorch'
-    batch_size: 1
+inference:
+    type: "composite"
 
-tacotron2:
-    nemo:
-        config-path: "models/tacotron2/de/tacotron2.yaml"
-        path: "models/tacotron2/de/sandra/"
-        step: "7500"
+    composite_inference:
+        text2mel:
+            type: "glow_tts"
 
-waveglow:
-    inference_type: 'nemo'
-    config-path: "models/waveglow/waveglow.yaml"
-    denoiser:
+            glow_tts:
+                batch_size: 5
+                use_gpu: true
+                length_scale: 1.0
+                noise_scale: 0.667
+                path: "models/glow-tts/de/kerstin_blank.pth"
+                cleaners: []
+                param_config_path: "models/glow-tts/de/config_blank.json"
+
+        mel2audio:
+            type: "mb_melgan_tf"
+
+            mb_melgan_tf:
+                batch_size: 20
+                config_path: "models/mb_melgan/de/config.yml"
+                model_path: "models/mb_melgan/de/generator-680000.h5"
+                stats_path: "models/mb_melgan/de/stats.npy"
+
+    caching:
         active: false
-        strength: 0.05
-    nemo:
-        path: "models/waveglow/pretrained/WaveGlowNM.pt"
-        sigma: 0.6
-    triton:
-        triton_model: "waveglow"
-        triton-url: "localhost:8001"
+        memory_cache_max_size: 20
+        sampling_rate: 22050
+        load_cache: true
+        save_cache: true
+        cache_save_dir: "models/cache"
+
+normalization:
+    language: "de"
+
+    pipeline:
+        - "fix_plus"
+        - "normalize_urls"
+        - "normalize_dates"
+        - "normalize_year"
+        - "normalize_time"
+        - "normalize_numbers"
+#        - "split_texts"
+        - "fix_punctuation"
+        - "remove_unaudible_texts"
+        - "lower_case"
+
+postprocessing:
+    silence_secs: 0.25
+
+    pipeline:
+        #- "logmmse"
+        #- "wiener"
+        #- "mfcc_up"
+        - "apodization"
+
+    logmmse:
+        initial_noise: 100
+        window_size: 0
+        noise_threshold: 0.15
+
+    wiener:
+        frame_len: 1024
+        lpc_order: 50
+        iterations: 10
+        alpha: 0.5
+        thresh: 0.1
+
+    apodization:
+        apodization_secs: 0.25

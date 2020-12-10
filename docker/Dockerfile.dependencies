@@ -10,8 +10,7 @@ RUN echo "StrictHostKeyChecking no" >> /root/.ssh/config
 RUN apt-get update && apt-get -y upgrade && \
 	apt-get install -y git
 
-RUN git clone git@bitbucket.org:ondewo/glow-tts.git
-
+RUN git clone git@bitbucket.org:ondewo/ondewo-t2s-glow.git && cd ondewo-t2s-glow && git checkout 240f859308c26ffd5698ae300748adea35b3c57d
 
 FROM dockerregistry.ondewo.com:5000/cuda:11.0-base-ubuntu18.04 AS dependencies
 
@@ -36,9 +35,9 @@ RUN pip install torch==1.6.0
 RUN pip install nemo_toolkit[all]==0.11
 
 RUN pip install cython
-COPY --from=private_installer /root/install/glow-tts ./glow-tts
-RUN cd ondewo-t2s-glow/monotonic_align; python setup.py build_ext --inplace; cd ../..
-RUN pip install -e glow-tts
+COPY --from=private_installer /root/install/ondewo-t2s-glow ./ondewo-t2s-glow
+RUN cd glow-tts/monotonic_align; python setup.py build_ext --inplace; cd ../..
+RUN pip install -e ondewo-t2s-glow
 
 COPY docker/test_requirements.txt .
 RUN pip install -r test_requirements.txt --ignore-installed

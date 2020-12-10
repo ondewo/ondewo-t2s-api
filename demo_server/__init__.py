@@ -1,6 +1,6 @@
 import os
 from flask import Flask
-from utils.logger import logger
+from pylog.logger import logger_console as logger
 
 server = Flask(__name__)
 
