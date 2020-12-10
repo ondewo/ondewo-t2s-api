@@ -75,9 +75,7 @@ FROM dockerregistry.ondewo.com:5000/ondewo-cythonize-tools-3.7 AS cython_builder
 COPY --from=uncythonized /opt/ondewo-t2s/batch_server /tmp/transfer/to_cythonize/batch_server
 COPY --from=uncythonized /opt/ondewo-t2s/inference /tmp/transfer/to_cythonize/inference
 COPY --from=uncythonized /opt/ondewo-t2s/normalization /tmp/transfer/to_cythonize/normalization
-COPY --from=uncythonized /opt/ondewo-t2s/utils/logger.py /tmp/transfer/to_cythonize/utils/logger.py
-COPY --from=uncythonized /opt/ondewo-t2s/utils/version.py /tmp/transfer/to_cythonize/utils/version.py
-COPY --from=uncythonized /opt/ondewo-t2s/utils/constants.py /tmp/transfer/to_cythonize/utils/constants.py
+COPY --from=uncythonized /opt/ondewo-t2s/utils /tmp/transfer/to_cythonize/utils
 
 RUN ./cythonize.py \
 		--modules_to_cythonize ./to_cythonize \

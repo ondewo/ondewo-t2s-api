@@ -27,7 +27,7 @@ build_batch_server_no_cache:
 
 build_batch_server_release: export SSH_PRIVATE_KEY="$$(cat ~/.ssh/id_rsa)"
 build_batch_server_release:
-	docker build -t ${IMAGE_TAG_BATCH_RELEASE} --no-cache=true --build-arg SSH_PRIVATE_KEY=$(SSH_PRIVATE_KEY) -f docker/Dockerfile.batchserver .
+	docker build -t ${IMAGE_TAG_BATCH_RELEASE} --build-arg SSH_PRIVATE_KEY=$(SSH_PRIVATE_KEY) -f docker/Dockerfile.batchserver .
 
 build_training_image:
 	docker build -t ${IMAGE_TAG_TRAINING} training
