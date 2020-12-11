@@ -4,7 +4,7 @@ cython
 editdistance
 flask
 msgpack==1.0.0
-PyYAML==5.3.1
+ruamel.yaml
 tritonclient[all]==2.3.0
 torch
 webdataset
