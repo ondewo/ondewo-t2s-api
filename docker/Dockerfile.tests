@@ -1,5 +1,5 @@
 ARG PUSH_NAME_STREAM
-FROM dockerregistry.ondewo.com:5000/ondewo-t2s-batch-server:${PUSH_NAME_STREAM} AS test
+FROM ${PUSH_NAME_STREAM} AS test
 
 COPY ./docker/test_requirements.txt .
 COPY grpc_config_server/requirements.txt grpc_config_server/requirements.txt
