@@ -15,38 +15,38 @@ _sym_db = _symbol_database.Default()
 
 DESCRIPTOR = _descriptor.FileDescriptor(
     name='ondewo/audio/text-to-speech.proto',
-    package='ondewo.nlu',
+    package='ondewo.audio',
     syntax='proto3',
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
-    serialized_pb=b'\n!ondewo/audio/text-to-speech.proto\x12\nondewo.nlu\x1a\x1cgoogle/api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\"e\n\nModelSetup\x12\x15\n\rlanguage_code\x18\x01 \x01(\t\x12\x11\n\tdirectory\x18\x02 \x01(\t\x12-\n\x06\x63onfig\x18\x03 \x01(\x0b\x32\x1d.ondewo.nlu.Text2SpeechConfig\"=\n\x14ListLanguagesRequest\x12%\n\x05\x65mpty\x18\x01 \x01(\x0b\x32\x16.google.protobuf.Empty\"b\n\x15ListLanguagesResponse\x12\x31\n\x07request\x18\x01 \x01(\x0b\x32 .ondewo.nlu.ListLanguagesRequest\x12\x16\n\x0elanguage_codes\x18\x02 \x03(\t\"6\n\x1dListModelSetupsForLangRequest\x12\x15\n\rlanguage_code\x18\x01 \x01(\t\"B\n\x19ListAllModelSetupsRequest\x12%\n\x05\x65mpty\x18\x01 \x01(\x0b\x32\x16.google.protobuf.Empty\"C\n\x13ModelSetupsResponse\x12,\n\x0cmodel_setups\x18\x02 \x03(\x0b\x32\x16.ondewo.nlu.ModelSetup\"D\n\x1bGetActiveModelConfigRequest\x12%\n\x05\x65mpty\x18\x01 \x01(\x0b\x32\x16.google.protobuf.Empty\"{\n\x12ModelSetupResponse\x12\x38\n\x07request\x18\x01 \x01(\x0b\x32\'.ondewo.nlu.GetActiveModelConfigRequest\x12+\n\x0bmodel_setup\x18\x02 \x01(\x0b\x32\x16.ondewo.nlu.ModelSetup\"*\n\x15SetModelConfigRequest\x12\x11\n\tdirectory\x18\x01 \x01(\t\"r\n\x16SetModelConfigResponse\x12\x32\n\x07request\x18\x01 \x01(\x0b\x32!.ondewo.nlu.SetModelConfigRequest\x12\x0f\n\x07success\x18\x02 \x01(\x08\x12\x13\n\x0blog_message\x18\x03 \x01(\t\"\xa3\x01\n\x11Text2SpeechConfig\x12(\n\tinference\x18\x01 \x01(\x0b\x32\x15.ondewo.nlu.Inference\x12\x30\n\rnormalization\x18\x02 \x01(\x0b\x32\x19.ondewo.nlu.Normalization\x12\x32\n\x0epostprocessing\x18\x03 \x01(\x0b\x32\x1a.ondewo.nlu.Postprocessing\"|\n\tInference\x12\x0c\n\x04type\x18\x01 \x01(\t\x12;\n\x13\x63omposite_inference\x18\x02 \x01(\x0b\x32\x1e.ondewo.nlu.CompositeInference\x12$\n\x07\x63\x61\x63hing\x18\x03 \x01(\x0b\x32\x13.ondewo.nlu.Caching\"f\n\x12\x43ompositeInference\x12&\n\x08text2mel\x18\x01 \x01(\x0b\x32\x14.ondewo.nlu.Text2Mel\x12(\n\tmel2audio\x18\x02 \x01(\x0b\x32\x15.ondewo.nlu.Mel2Audio\"s\n\x08Text2Mel\x12\x0c\n\x04type\x18\x01 \x01(\t\x12%\n\x08glow_tts\x18\x03 \x01(\x0b\x32\x13.ondewo.nlu.GlowTTS\x12\x32\n\x0fglow_tts_triton\x18\x04 \x01(\x0b\x32\x19.ondewo.nlu.GlowTTSTriton\"\x94\x01\n\x07GlowTTS\x12\x12\n\nbatch_size\x18\x01 \x01(\x03\x12\x0f\n\x07use_gpu\x18\x02 \x01(\x08\x12\x14\n\x0clength_scale\x18\x03 \x01(\x02\x12\x13\n\x0bnoise_scale\x18\x04 \x01(\x02\x12\x0c\n\x04path\x18\x05 \x01(\t\x12\x10\n\x08\x63leaners\x18\x06 \x03(\t\x12\x19\n\x11param_config_path\x18\x07 \x01(\t\"\xc3\x01\n\rGlowTTSTriton\x12\x12\n\nbatch_size\x18\x01 \x01(\x03\x12\x14\n\x0clength_scale\x18\x02 \x01(\x02\x12\x13\n\x0bnoise_scale\x18\x03 \x01(\x02\x12\x10\n\x08\x63leaners\x18\x04 \x03(\t\x12\x17\n\x0fmax_text_length\x18\x05 \x01(\x03\x12\x19\n\x11param_config_path\x18\x06 \x01(\t\x12\x12\n\ntriton_url\x18\x07 \x01(\t\x12\x19\n\x11triton_model_name\x18\x08 \x01(\t\"\xab\x01\n\tMel2Audio\x12\x0c\n\x04type\x18\x01 \x01(\t\x12\x33\n\x0fwaveglow_triton\x18\x02 \x01(\x0b\x32\x1a.ondewo.nlu.WaveglowTriton\x12\x34\n\x10mb_melgan_triton\x18\x03 \x01(\x0b\x32\x1a.ondewo.nlu.MbMelganTriton\x12%\n\x08hifi_gan\x18\x04 \x01(\x0b\x32\x13.ondewo.nlu.HiFiGan\"W\n\x07HiFiGan\x12\x0f\n\x07use_gpu\x18\x01 \x01(\x08\x12\x12\n\nbatch_size\x18\x02 \x01(\x03\x12\x13\n\x0b\x63onfig_path\x18\x03 \x01(\t\x12\x12\n\nmodel_path\x18\x04 \x01(\t\"\x81\x01\n\x0eWaveglowTriton\x12\x19\n\x11param_config_path\x18\x01 \x01(\t\x12\r\n\x05sigma\x18\x02 \x01(\x02\x12\x16\n\x0emax_spect_size\x18\x03 \x01(\x03\x12\x19\n\x11triton_model_name\x18\x04 \x01(\t\x12\x12\n\ntriton_url\x18\x05 \x01(\t\"h\n\x0eMbMelganTriton\x12\x13\n\x0b\x63onfig_path\x18\x01 \x01(\t\x12\x12\n\nstats_path\x18\x02 \x01(\t\x12\x19\n\x11triton_model_name\x18\x03 \x01(\t\x12\x12\n\ntriton_url\x18\x04 \x01(\t\"\x8f\x01\n\x07\x43\x61\x63hing\x12\x0e\n\x06\x61\x63tive\x18\x01 \x01(\x08\x12\x1d\n\x15memory_cache_max_size\x18\x02 \x01(\x03\x12\x15\n\rsampling_rate\x18\x03 \x01(\x03\x12\x12\n\nload_cache\x18\x04 \x01(\x08\x12\x12\n\nsave_cache\x18\x05 \x01(\x08\x12\x16\n\x0e\x63\x61\x63he_save_dir\x18\x06 \x01(\t\"3\n\rNormalization\x12\x10\n\x08language\x18\x01 \x01(\t\x12\x10\n\x08pipeline\x18\x02 \x03(\t\"\xb0\x01\n\x0ePostprocessing\x12\x14\n\x0csilence_secs\x18\x01 \x01(\x02\x12\x10\n\x08pipeline\x18\x02 \x03(\t\x12$\n\x07logmmse\x18\x03 \x01(\x0b\x32\x13.ondewo.nlu.Logmnse\x12\"\n\x06wiener\x18\x04 \x01(\x0b\x32\x12.ondewo.nlu.Wiener\x12,\n\x0b\x61podization\x18\x05 \x01(\x0b\x32\x17.ondewo.nlu.Apodization\"N\n\x07Logmnse\x12\x15\n\rinitial_noise\x18\x01 \x01(\x03\x12\x13\n\x0bwindow_size\x18\x02 \x01(\x03\x12\x17\n\x0fnoise_threshold\x18\x03 \x01(\x02\"a\n\x06Wiener\x12\x11\n\tframe_len\x18\x01 \x01(\x03\x12\x11\n\tlpc_order\x18\x02 \x01(\x03\x12\x12\n\niterations\x18\x03 \x01(\x03\x12\r\n\x05\x61lpha\x18\x04 \x01(\x02\x12\x0e\n\x06thresh\x18\x05 \x01(\x02\"\'\n\x0b\x41podization\x12\x18\n\x10\x61podization_secs\x18\x01 \x01(\x02\x32\xf7\x06\n\x18Text2SpeechConfiguration\x12\xaa\x01\n\x16ListSupportedLanguages\x12 .ondewo.nlu.ListLanguagesRequest\x1a!.ondewo.nlu.ListLanguagesResponse\"K\x82\xd3\xe4\x93\x02\x45\"@/v2/{session=projects/*/agent/sessions/*}:ListSupportedLanguages:\x01*\x12\xb9\x01\n\x1aListModelSetupsForLanguage\x12).ondewo.nlu.ListModelSetupsForLangRequest\x1a\x1f.ondewo.nlu.ModelSetupsResponse\"O\x82\xd3\xe4\x93\x02I\"D/v2/{session=projects/*/agent/sessions/*}:ListModelSetupsForLanguage:\x01*\x12\xa5\x01\n\x12ListAllModelSetups\x12%.ondewo.nlu.ListAllModelSetupsRequest\x1a\x1f.ondewo.nlu.ModelSetupsResponse\"G\x82\xd3\xe4\x93\x02\x41\"</v2/{session=projects/*/agent/sessions/*}:ListAllModelSetups:\x01*\x12\xaa\x01\n\x14GetActiveModelConfig\x12\'.ondewo.nlu.GetActiveModelConfigRequest\x1a\x1e.ondewo.nlu.ModelSetupResponse\"I\x82\xd3\xe4\x93\x02\x43\">/v2/{session=projects/*/agent/sessions/*}:GetActiveModelConfig:\x01*\x12\x9c\x01\n\x0eSetModelConfig\x12!.ondewo.nlu.SetModelConfigRequest\x1a\".ondewo.nlu.SetModelConfigResponse\"C\x82\xd3\xe4\x93\x02=\"8/v2/{session=projects/*/agent/sessions/*}:SetModelConfig:\x01*b\x06proto3',
+    serialized_pb=b'\n!ondewo/audio/text-to-speech.proto\x12\x0condewo.audio\x1a\x1cgoogle/api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\"g\n\nModelSetup\x12\x15\n\rlanguage_code\x18\x01 \x01(\t\x12\x11\n\tdirectory\x18\x02 \x01(\t\x12/\n\x06\x63onfig\x18\x03 \x01(\x0b\x32\x1f.ondewo.audio.Text2SpeechConfig\"=\n\x14ListLanguagesRequest\x12%\n\x05\x65mpty\x18\x01 \x01(\x0b\x32\x16.google.protobuf.Empty\"d\n\x15ListLanguagesResponse\x12\x33\n\x07request\x18\x01 \x01(\x0b\x32\".ondewo.audio.ListLanguagesRequest\x12\x16\n\x0elanguage_codes\x18\x02 \x03(\t\"6\n\x1dListModelSetupsForLangRequest\x12\x15\n\rlanguage_code\x18\x01 \x01(\t\"B\n\x19ListAllModelSetupsRequest\x12%\n\x05\x65mpty\x18\x01 \x01(\x0b\x32\x16.google.protobuf.Empty\"E\n\x13ModelSetupsResponse\x12.\n\x0cmodel_setups\x18\x02 \x03(\x0b\x32\x18.ondewo.audio.ModelSetup\"D\n\x1bGetActiveModelConfigRequest\x12%\n\x05\x65mpty\x18\x01 \x01(\x0b\x32\x16.google.protobuf.Empty\"\x7f\n\x12ModelSetupResponse\x12:\n\x07request\x18\x01 \x01(\x0b\x32).ondewo.audio.GetActiveModelConfigRequest\x12-\n\x0bmodel_setup\x18\x02 \x01(\x0b\x32\x18.ondewo.audio.ModelSetup\"*\n\x15SetModelConfigRequest\x12\x11\n\tdirectory\x18\x01 \x01(\t\"t\n\x16SetModelConfigResponse\x12\x34\n\x07request\x18\x01 \x01(\x0b\x32#.ondewo.audio.SetModelConfigRequest\x12\x0f\n\x07success\x18\x02 \x01(\x08\x12\x13\n\x0blog_message\x18\x03 \x01(\t\"\xa9\x01\n\x11Text2SpeechConfig\x12*\n\tinference\x18\x01 \x01(\x0b\x32\x17.ondewo.audio.Inference\x12\x32\n\rnormalization\x18\x02 \x01(\x0b\x32\x1b.ondewo.audio.Normalization\x12\x34\n\x0epostprocessing\x18\x03 \x01(\x0b\x32\x1c.ondewo.audio.Postprocessing\"\x80\x01\n\tInference\x12\x0c\n\x04type\x18\x01 \x01(\t\x12=\n\x13\x63omposite_inference\x18\x02 \x01(\x0b\x32 .ondewo.audio.CompositeInference\x12&\n\x07\x63\x61\x63hing\x18\x03 \x01(\x0b\x32\x15.ondewo.audio.Caching\"j\n\x12\x43ompositeInference\x12(\n\x08text2mel\x18\x01 \x01(\x0b\x32\x16.ondewo.audio.Text2Mel\x12*\n\tmel2audio\x18\x02 \x01(\x0b\x32\x17.ondewo.audio.Mel2Audio\"w\n\x08Text2Mel\x12\x0c\n\x04type\x18\x01 \x01(\t\x12\'\n\x08glow_tts\x18\x03 \x01(\x0b\x32\x15.ondewo.audio.GlowTTS\x12\x34\n\x0fglow_tts_triton\x18\x04 \x01(\x0b\x32\x1b.ondewo.audio.GlowTTSTriton\"\x94\x01\n\x07GlowTTS\x12\x12\n\nbatch_size\x18\x01 \x01(\x03\x12\x0f\n\x07use_gpu\x18\x02 \x01(\x08\x12\x14\n\x0clength_scale\x18\x03 \x01(\x02\x12\x13\n\x0bnoise_scale\x18\x04 \x01(\x02\x12\x0c\n\x04path\x18\x05 \x01(\t\x12\x10\n\x08\x63leaners\x18\x06 \x03(\t\x12\x19\n\x11param_config_path\x18\x07 \x01(\t\"\xc3\x01\n\rGlowTTSTriton\x12\x12\n\nbatch_size\x18\x01 \x01(\x03\x12\x14\n\x0clength_scale\x18\x02 \x01(\x02\x12\x13\n\x0bnoise_scale\x18\x03 \x01(\x02\x12\x10\n\x08\x63leaners\x18\x04 \x03(\t\x12\x17\n\x0fmax_text_length\x18\x05 \x01(\x03\x12\x19\n\x11param_config_path\x18\x06 \x01(\t\x12\x12\n\ntriton_url\x18\x07 \x01(\t\x12\x19\n\x11triton_model_name\x18\x08 \x01(\t\"\xb1\x01\n\tMel2Audio\x12\x0c\n\x04type\x18\x01 \x01(\t\x12\x35\n\x0fwaveglow_triton\x18\x02 \x01(\x0b\x32\x1c.ondewo.audio.WaveglowTriton\x12\x36\n\x10mb_melgan_triton\x18\x03 \x01(\x0b\x32\x1c.ondewo.audio.MbMelganTriton\x12\'\n\x08hifi_gan\x18\x04 \x01(\x0b\x32\x15.ondewo.audio.HiFiGan\"W\n\x07HiFiGan\x12\x0f\n\x07use_gpu\x18\x01 \x01(\x08\x12\x12\n\nbatch_size\x18\x02 \x01(\x03\x12\x13\n\x0b\x63onfig_path\x18\x03 \x01(\t\x12\x12\n\nmodel_path\x18\x04 \x01(\t\"\x81\x01\n\x0eWaveglowTriton\x12\x19\n\x11param_config_path\x18\x01 \x01(\t\x12\r\n\x05sigma\x18\x02 \x01(\x02\x12\x16\n\x0emax_spect_size\x18\x03 \x01(\x03\x12\x19\n\x11triton_model_name\x18\x04 \x01(\t\x12\x12\n\ntriton_url\x18\x05 \x01(\t\"h\n\x0eMbMelganTriton\x12\x13\n\x0b\x63onfig_path\x18\x01 \x01(\t\x12\x12\n\nstats_path\x18\x02 \x01(\t\x12\x19\n\x11triton_model_name\x18\x03 \x01(\t\x12\x12\n\ntriton_url\x18\x04 \x01(\t\"\x8f\x01\n\x07\x43\x61\x63hing\x12\x0e\n\x06\x61\x63tive\x18\x01 \x01(\x08\x12\x1d\n\x15memory_cache_max_size\x18\x02 \x01(\x03\x12\x15\n\rsampling_rate\x18\x03 \x01(\x03\x12\x12\n\nload_cache\x18\x04 \x01(\x08\x12\x12\n\nsave_cache\x18\x05 \x01(\x08\x12\x16\n\x0e\x63\x61\x63he_save_dir\x18\x06 \x01(\t\"3\n\rNormalization\x12\x10\n\x08language\x18\x01 \x01(\t\x12\x10\n\x08pipeline\x18\x02 \x03(\t\"\xb6\x01\n\x0ePostprocessing\x12\x14\n\x0csilence_secs\x18\x01 \x01(\x02\x12\x10\n\x08pipeline\x18\x02 \x03(\t\x12&\n\x07logmmse\x18\x03 \x01(\x0b\x32\x15.ondewo.audio.Logmnse\x12$\n\x06wiener\x18\x04 \x01(\x0b\x32\x14.ondewo.audio.Wiener\x12.\n\x0b\x61podization\x18\x05 \x01(\x0b\x32\x19.ondewo.audio.Apodization\"N\n\x07Logmnse\x12\x15\n\rinitial_noise\x18\x01 \x01(\x03\x12\x13\n\x0bwindow_size\x18\x02 \x01(\x03\x12\x17\n\x0fnoise_threshold\x18\x03 \x01(\x02\"a\n\x06Wiener\x12\x11\n\tframe_len\x18\x01 \x01(\x03\x12\x11\n\tlpc_order\x18\x02 \x01(\x03\x12\x12\n\niterations\x18\x03 \x01(\x03\x12\r\n\x05\x61lpha\x18\x04 \x01(\x02\x12\x0e\n\x06thresh\x18\x05 \x01(\x02\"\'\n\x0b\x41podization\x12\x18\n\x10\x61podization_secs\x18\x01 \x01(\x02\x32\x8b\x07\n\x18Text2SpeechConfiguration\x12\xae\x01\n\x16ListSupportedLanguages\x12\".ondewo.audio.ListLanguagesRequest\x1a#.ondewo.audio.ListLanguagesResponse\"K\x82\xd3\xe4\x93\x02\x45\"@/v2/{session=projects/*/agent/sessions/*}:ListSupportedLanguages:\x01*\x12\xbd\x01\n\x1aListModelSetupsForLanguage\x12+.ondewo.audio.ListModelSetupsForLangRequest\x1a!.ondewo.audio.ModelSetupsResponse\"O\x82\xd3\xe4\x93\x02I\"D/v2/{session=projects/*/agent/sessions/*}:ListModelSetupsForLanguage:\x01*\x12\xa9\x01\n\x12ListAllModelSetups\x12\'.ondewo.audio.ListAllModelSetupsRequest\x1a!.ondewo.audio.ModelSetupsResponse\"G\x82\xd3\xe4\x93\x02\x41\"</v2/{session=projects/*/agent/sessions/*}:ListAllModelSetups:\x01*\x12\xae\x01\n\x14GetActiveModelConfig\x12).ondewo.audio.GetActiveModelConfigRequest\x1a .ondewo.audio.ModelSetupResponse\"I\x82\xd3\xe4\x93\x02\x43\">/v2/{session=projects/*/agent/sessions/*}:GetActiveModelConfig:\x01*\x12\xa0\x01\n\x0eSetModelConfig\x12#.ondewo.audio.SetModelConfigRequest\x1a$.ondewo.audio.SetModelConfigResponse\"C\x82\xd3\xe4\x93\x02=\"8/v2/{session=projects/*/agent/sessions/*}:SetModelConfig:\x01*b\x06proto3',
     dependencies=[google_dot_api_dot_annotations__pb2.DESCRIPTOR, google_dot_protobuf_dot_empty__pb2.DESCRIPTOR, ])
 
 
 _MODELSETUP = _descriptor.Descriptor(
     name='ModelSetup',
-    full_name='ondewo.nlu.ModelSetup',
+    full_name='ondewo.audio.ModelSetup',
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
     create_key=_descriptor._internal_create_key,
     fields=[
         _descriptor.FieldDescriptor(
-            name='language_code', full_name='ondewo.nlu.ModelSetup.language_code', index=0,
+            name='language_code', full_name='ondewo.audio.ModelSetup.language_code', index=0,
             number=1, type=9, cpp_type=9, label=1,
             has_default_value=False, default_value=b"".decode('utf-8'),
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='directory', full_name='ondewo.nlu.ModelSetup.directory', index=1,
+            name='directory', full_name='ondewo.audio.ModelSetup.directory', index=1,
             number=2, type=9, cpp_type=9, label=1,
             has_default_value=False, default_value=b"".decode('utf-8'),
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='config', full_name='ondewo.nlu.ModelSetup.config', index=2,
+            name='config', full_name='ondewo.audio.ModelSetup.config', index=2,
             number=3, type=11, cpp_type=10, label=1,
             has_default_value=False, default_value=None,
             message_type=None, enum_type=None, containing_type=None,
@@ -64,21 +64,21 @@ _MODELSETUP = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=108,
-    serialized_end=209,
+    serialized_start=110,
+    serialized_end=213,
 )
 
 
 _LISTLANGUAGESREQUEST = _descriptor.Descriptor(
     name='ListLanguagesRequest',
-    full_name='ondewo.nlu.ListLanguagesRequest',
+    full_name='ondewo.audio.ListLanguagesRequest',
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
     create_key=_descriptor._internal_create_key,
     fields=[
         _descriptor.FieldDescriptor(
-            name='empty', full_name='ondewo.nlu.ListLanguagesRequest.empty', index=0,
+            name='empty', full_name='ondewo.audio.ListLanguagesRequest.empty', index=0,
             number=1, type=11, cpp_type=10, label=1,
             has_default_value=False, default_value=None,
             message_type=None, enum_type=None, containing_type=None,
@@ -96,28 +96,28 @@ _LISTLANGUAGESREQUEST = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=211,
-    serialized_end=272,
+    serialized_start=215,
+    serialized_end=276,
 )
 
 
 _LISTLANGUAGESRESPONSE = _descriptor.Descriptor(
     name='ListLanguagesResponse',
-    full_name='ondewo.nlu.ListLanguagesResponse',
+    full_name='ondewo.audio.ListLanguagesResponse',
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
     create_key=_descriptor._internal_create_key,
     fields=[
         _descriptor.FieldDescriptor(
-            name='request', full_name='ondewo.nlu.ListLanguagesResponse.request', index=0,
+            name='request', full_name='ondewo.audio.ListLanguagesResponse.request', index=0,
             number=1, type=11, cpp_type=10, label=1,
             has_default_value=False, default_value=None,
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='language_codes', full_name='ondewo.nlu.ListLanguagesResponse.language_codes', index=1,
+            name='language_codes', full_name='ondewo.audio.ListLanguagesResponse.language_codes', index=1,
             number=2, type=9, cpp_type=9, label=3,
             has_default_value=False, default_value=[],
             message_type=None, enum_type=None, containing_type=None,
@@ -135,21 +135,21 @@ _LISTLANGUAGESRESPONSE = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=274,
-    serialized_end=372,
+    serialized_start=278,
+    serialized_end=378,
 )
 
 
 _LISTMODELSETUPSFORLANGREQUEST = _descriptor.Descriptor(
     name='ListModelSetupsForLangRequest',
-    full_name='ondewo.nlu.ListModelSetupsForLangRequest',
+    full_name='ondewo.audio.ListModelSetupsForLangRequest',
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
     create_key=_descriptor._internal_create_key,
     fields=[
         _descriptor.FieldDescriptor(
-            name='language_code', full_name='ondewo.nlu.ListModelSetupsForLangRequest.language_code', index=0,
+            name='language_code', full_name='ondewo.audio.ListModelSetupsForLangRequest.language_code', index=0,
             number=1, type=9, cpp_type=9, label=1,
             has_default_value=False, default_value=b"".decode('utf-8'),
             message_type=None, enum_type=None, containing_type=None,
@@ -167,21 +167,21 @@ _LISTMODELSETUPSFORLANGREQUEST = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=374,
-    serialized_end=428,
+    serialized_start=380,
+    serialized_end=434,
 )
 
 
 _LISTALLMODELSETUPSREQUEST = _descriptor.Descriptor(
     name='ListAllModelSetupsRequest',
-    full_name='ondewo.nlu.ListAllModelSetupsRequest',
+    full_name='ondewo.audio.ListAllModelSetupsRequest',
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
     create_key=_descriptor._internal_create_key,
     fields=[
         _descriptor.FieldDescriptor(
-            name='empty', full_name='ondewo.nlu.ListAllModelSetupsRequest.empty', index=0,
+            name='empty', full_name='ondewo.audio.ListAllModelSetupsRequest.empty', index=0,
             number=1, type=11, cpp_type=10, label=1,
             has_default_value=False, default_value=None,
             message_type=None, enum_type=None, containing_type=None,
@@ -199,21 +199,21 @@ _LISTALLMODELSETUPSREQUEST = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=430,
-    serialized_end=496,
+    serialized_start=436,
+    serialized_end=502,
 )
 
 
 _MODELSETUPSRESPONSE = _descriptor.Descriptor(
     name='ModelSetupsResponse',
-    full_name='ondewo.nlu.ModelSetupsResponse',
+    full_name='ondewo.audio.ModelSetupsResponse',
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
     create_key=_descriptor._internal_create_key,
     fields=[
         _descriptor.FieldDescriptor(
-            name='model_setups', full_name='ondewo.nlu.ModelSetupsResponse.model_setups', index=0,
+            name='model_setups', full_name='ondewo.audio.ModelSetupsResponse.model_setups', index=0,
             number=2, type=11, cpp_type=10, label=3,
             has_default_value=False, default_value=[],
             message_type=None, enum_type=None, containing_type=None,
@@ -231,21 +231,21 @@ _MODELSETUPSRESPONSE = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=498,
-    serialized_end=565,
+    serialized_start=504,
+    serialized_end=573,
 )
 
 
 _GETACTIVEMODELCONFIGREQUEST = _descriptor.Descriptor(
     name='GetActiveModelConfigRequest',
-    full_name='ondewo.nlu.GetActiveModelConfigRequest',
+    full_name='ondewo.audio.GetActiveModelConfigRequest',
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
     create_key=_descriptor._internal_create_key,
     fields=[
         _descriptor.FieldDescriptor(
-            name='empty', full_name='ondewo.nlu.GetActiveModelConfigRequest.empty', index=0,
+            name='empty', full_name='ondewo.audio.GetActiveModelConfigRequest.empty', index=0,
             number=1, type=11, cpp_type=10, label=1,
             has_default_value=False, default_value=None,
             message_type=None, enum_type=None, containing_type=None,
@@ -263,28 +263,28 @@ _GETACTIVEMODELCONFIGREQUEST = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=567,
-    serialized_end=635,
+    serialized_start=575,
+    serialized_end=643,
 )
 
 
 _MODELSETUPRESPONSE = _descriptor.Descriptor(
     name='ModelSetupResponse',
-    full_name='ondewo.nlu.ModelSetupResponse',
+    full_name='ondewo.audio.ModelSetupResponse',
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
     create_key=_descriptor._internal_create_key,
     fields=[
         _descriptor.FieldDescriptor(
-            name='request', full_name='ondewo.nlu.ModelSetupResponse.request', index=0,
+            name='request', full_name='ondewo.audio.ModelSetupResponse.request', index=0,
             number=1, type=11, cpp_type=10, label=1,
             has_default_value=False, default_value=None,
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='model_setup', full_name='ondewo.nlu.ModelSetupResponse.model_setup', index=1,
+            name='model_setup', full_name='ondewo.audio.ModelSetupResponse.model_setup', index=1,
             number=2, type=11, cpp_type=10, label=1,
             has_default_value=False, default_value=None,
             message_type=None, enum_type=None, containing_type=None,
@@ -302,21 +302,21 @@ _MODELSETUPRESPONSE = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=637,
-    serialized_end=760,
+    serialized_start=645,
+    serialized_end=772,
 )
 
 
 _SETMODELCONFIGREQUEST = _descriptor.Descriptor(
     name='SetModelConfigRequest',
-    full_name='ondewo.nlu.SetModelConfigRequest',
+    full_name='ondewo.audio.SetModelConfigRequest',
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
     create_key=_descriptor._internal_create_key,
     fields=[
         _descriptor.FieldDescriptor(
-            name='directory', full_name='ondewo.nlu.SetModelConfigRequest.directory', index=0,
+            name='directory', full_name='ondewo.audio.SetModelConfigRequest.directory', index=0,
             number=1, type=9, cpp_type=9, label=1,
             has_default_value=False, default_value=b"".decode('utf-8'),
             message_type=None, enum_type=None, containing_type=None,
@@ -334,35 +334,35 @@ _SETMODELCONFIGREQUEST = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=762,
-    serialized_end=804,
+    serialized_start=774,
+    serialized_end=816,
 )
 
 
 _SETMODELCONFIGRESPONSE = _descriptor.Descriptor(
     name='SetModelConfigResponse',
-    full_name='ondewo.nlu.SetModelConfigResponse',
+    full_name='ondewo.audio.SetModelConfigResponse',
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
     create_key=_descriptor._internal_create_key,
     fields=[
         _descriptor.FieldDescriptor(
-            name='request', full_name='ondewo.nlu.SetModelConfigResponse.request', index=0,
+            name='request', full_name='ondewo.audio.SetModelConfigResponse.request', index=0,
             number=1, type=11, cpp_type=10, label=1,
             has_default_value=False, default_value=None,
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='success', full_name='ondewo.nlu.SetModelConfigResponse.success', index=1,
+            name='success', full_name='ondewo.audio.SetModelConfigResponse.success', index=1,
             number=2, type=8, cpp_type=7, label=1,
             has_default_value=False, default_value=False,
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='log_message', full_name='ondewo.nlu.SetModelConfigResponse.log_message', index=2,
+            name='log_message', full_name='ondewo.audio.SetModelConfigResponse.log_message', index=2,
             number=3, type=9, cpp_type=9, label=1,
             has_default_value=False, default_value=b"".decode('utf-8'),
             message_type=None, enum_type=None, containing_type=None,
@@ -380,35 +380,35 @@ _SETMODELCONFIGRESPONSE = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=806,
-    serialized_end=920,
+    serialized_start=818,
+    serialized_end=934,
 )
 
 
 _TEXT2SPEECHCONFIG = _descriptor.Descriptor(
     name='Text2SpeechConfig',
-    full_name='ondewo.nlu.Text2SpeechConfig',
+    full_name='ondewo.audio.Text2SpeechConfig',
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
     create_key=_descriptor._internal_create_key,
     fields=[
         _descriptor.FieldDescriptor(
-            name='inference', full_name='ondewo.nlu.Text2SpeechConfig.inference', index=0,
+            name='inference', full_name='ondewo.audio.Text2SpeechConfig.inference', index=0,
             number=1, type=11, cpp_type=10, label=1,
             has_default_value=False, default_value=None,
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='normalization', full_name='ondewo.nlu.Text2SpeechConfig.normalization', index=1,
+            name='normalization', full_name='ondewo.audio.Text2SpeechConfig.normalization', index=1,
             number=2, type=11, cpp_type=10, label=1,
             has_default_value=False, default_value=None,
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='postprocessing', full_name='ondewo.nlu.Text2SpeechConfig.postprocessing', index=2,
+            name='postprocessing', full_name='ondewo.audio.Text2SpeechConfig.postprocessing', index=2,
             number=3, type=11, cpp_type=10, label=1,
             has_default_value=False, default_value=None,
             message_type=None, enum_type=None, containing_type=None,
@@ -426,35 +426,35 @@ _TEXT2SPEECHCONFIG = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=923,
-    serialized_end=1086,
+    serialized_start=937,
+    serialized_end=1106,
 )
 
 
 _INFERENCE = _descriptor.Descriptor(
     name='Inference',
-    full_name='ondewo.nlu.Inference',
+    full_name='ondewo.audio.Inference',
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
     create_key=_descriptor._internal_create_key,
     fields=[
         _descriptor.FieldDescriptor(
-            name='type', full_name='ondewo.nlu.Inference.type', index=0,
+            name='type', full_name='ondewo.audio.Inference.type', index=0,
             number=1, type=9, cpp_type=9, label=1,
             has_default_value=False, default_value=b"".decode('utf-8'),
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='composite_inference', full_name='ondewo.nlu.Inference.composite_inference', index=1,
+            name='composite_inference', full_name='ondewo.audio.Inference.composite_inference', index=1,
             number=2, type=11, cpp_type=10, label=1,
             has_default_value=False, default_value=None,
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='caching', full_name='ondewo.nlu.Inference.caching', index=2,
+            name='caching', full_name='ondewo.audio.Inference.caching', index=2,
             number=3, type=11, cpp_type=10, label=1,
             has_default_value=False, default_value=None,
             message_type=None, enum_type=None, containing_type=None,
@@ -472,28 +472,28 @@ _INFERENCE = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=1088,
-    serialized_end=1212,
+    serialized_start=1109,
+    serialized_end=1237,
 )
 
 
 _COMPOSITEINFERENCE = _descriptor.Descriptor(
     name='CompositeInference',
-    full_name='ondewo.nlu.CompositeInference',
+    full_name='ondewo.audio.CompositeInference',
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
     create_key=_descriptor._internal_create_key,
     fields=[
         _descriptor.FieldDescriptor(
-            name='text2mel', full_name='ondewo.nlu.CompositeInference.text2mel', index=0,
+            name='text2mel', full_name='ondewo.audio.CompositeInference.text2mel', index=0,
             number=1, type=11, cpp_type=10, label=1,
             has_default_value=False, default_value=None,
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='mel2audio', full_name='ondewo.nlu.CompositeInference.mel2audio', index=1,
+            name='mel2audio', full_name='ondewo.audio.CompositeInference.mel2audio', index=1,
             number=2, type=11, cpp_type=10, label=1,
             has_default_value=False, default_value=None,
             message_type=None, enum_type=None, containing_type=None,
@@ -511,35 +511,35 @@ _COMPOSITEINFERENCE = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=1214,
-    serialized_end=1316,
+    serialized_start=1239,
+    serialized_end=1345,
 )
 
 
 _TEXT2MEL = _descriptor.Descriptor(
     name='Text2Mel',
-    full_name='ondewo.nlu.Text2Mel',
+    full_name='ondewo.audio.Text2Mel',
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
     create_key=_descriptor._internal_create_key,
     fields=[
         _descriptor.FieldDescriptor(
-            name='type', full_name='ondewo.nlu.Text2Mel.type', index=0,
+            name='type', full_name='ondewo.audio.Text2Mel.type', index=0,
             number=1, type=9, cpp_type=9, label=1,
             has_default_value=False, default_value=b"".decode('utf-8'),
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='glow_tts', full_name='ondewo.nlu.Text2Mel.glow_tts', index=1,
+            name='glow_tts', full_name='ondewo.audio.Text2Mel.glow_tts', index=1,
             number=3, type=11, cpp_type=10, label=1,
             has_default_value=False, default_value=None,
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='glow_tts_triton', full_name='ondewo.nlu.Text2Mel.glow_tts_triton', index=2,
+            name='glow_tts_triton', full_name='ondewo.audio.Text2Mel.glow_tts_triton', index=2,
             number=4, type=11, cpp_type=10, label=1,
             has_default_value=False, default_value=None,
             message_type=None, enum_type=None, containing_type=None,
@@ -557,63 +557,63 @@ _TEXT2MEL = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=1318,
-    serialized_end=1433,
+    serialized_start=1347,
+    serialized_end=1466,
 )
 
 
 _GLOWTTS = _descriptor.Descriptor(
     name='GlowTTS',
-    full_name='ondewo.nlu.GlowTTS',
+    full_name='ondewo.audio.GlowTTS',
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
     create_key=_descriptor._internal_create_key,
     fields=[
         _descriptor.FieldDescriptor(
-            name='batch_size', full_name='ondewo.nlu.GlowTTS.batch_size', index=0,
+            name='batch_size', full_name='ondewo.audio.GlowTTS.batch_size', index=0,
             number=1, type=3, cpp_type=2, label=1,
             has_default_value=False, default_value=0,
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='use_gpu', full_name='ondewo.nlu.GlowTTS.use_gpu', index=1,
+            name='use_gpu', full_name='ondewo.audio.GlowTTS.use_gpu', index=1,
             number=2, type=8, cpp_type=7, label=1,
             has_default_value=False, default_value=False,
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='length_scale', full_name='ondewo.nlu.GlowTTS.length_scale', index=2,
+            name='length_scale', full_name='ondewo.audio.GlowTTS.length_scale', index=2,
             number=3, type=2, cpp_type=6, label=1,
             has_default_value=False, default_value=float(0),
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='noise_scale', full_name='ondewo.nlu.GlowTTS.noise_scale', index=3,
+            name='noise_scale', full_name='ondewo.audio.GlowTTS.noise_scale', index=3,
             number=4, type=2, cpp_type=6, label=1,
             has_default_value=False, default_value=float(0),
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='path', full_name='ondewo.nlu.GlowTTS.path', index=4,
+            name='path', full_name='ondewo.audio.GlowTTS.path', index=4,
             number=5, type=9, cpp_type=9, label=1,
             has_default_value=False, default_value=b"".decode('utf-8'),
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='cleaners', full_name='ondewo.nlu.GlowTTS.cleaners', index=5,
+            name='cleaners', full_name='ondewo.audio.GlowTTS.cleaners', index=5,
             number=6, type=9, cpp_type=9, label=3,
             has_default_value=False, default_value=[],
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='param_config_path', full_name='ondewo.nlu.GlowTTS.param_config_path', index=6,
+            name='param_config_path', full_name='ondewo.audio.GlowTTS.param_config_path', index=6,
             number=7, type=9, cpp_type=9, label=1,
             has_default_value=False, default_value=b"".decode('utf-8'),
             message_type=None, enum_type=None, containing_type=None,
@@ -631,70 +631,70 @@ _GLOWTTS = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=1436,
-    serialized_end=1584,
+    serialized_start=1469,
+    serialized_end=1617,
 )
 
 
 _GLOWTTSTRITON = _descriptor.Descriptor(
     name='GlowTTSTriton',
-    full_name='ondewo.nlu.GlowTTSTriton',
+    full_name='ondewo.audio.GlowTTSTriton',
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
     create_key=_descriptor._internal_create_key,
     fields=[
         _descriptor.FieldDescriptor(
-            name='batch_size', full_name='ondewo.nlu.GlowTTSTriton.batch_size', index=0,
+            name='batch_size', full_name='ondewo.audio.GlowTTSTriton.batch_size', index=0,
             number=1, type=3, cpp_type=2, label=1,
             has_default_value=False, default_value=0,
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='length_scale', full_name='ondewo.nlu.GlowTTSTriton.length_scale', index=1,
+            name='length_scale', full_name='ondewo.audio.GlowTTSTriton.length_scale', index=1,
             number=2, type=2, cpp_type=6, label=1,
             has_default_value=False, default_value=float(0),
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='noise_scale', full_name='ondewo.nlu.GlowTTSTriton.noise_scale', index=2,
+            name='noise_scale', full_name='ondewo.audio.GlowTTSTriton.noise_scale', index=2,
             number=3, type=2, cpp_type=6, label=1,
             has_default_value=False, default_value=float(0),
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='cleaners', full_name='ondewo.nlu.GlowTTSTriton.cleaners', index=3,
+            name='cleaners', full_name='ondewo.audio.GlowTTSTriton.cleaners', index=3,
             number=4, type=9, cpp_type=9, label=3,
             has_default_value=False, default_value=[],
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='max_text_length', full_name='ondewo.nlu.GlowTTSTriton.max_text_length', index=4,
+            name='max_text_length', full_name='ondewo.audio.GlowTTSTriton.max_text_length', index=4,
             number=5, type=3, cpp_type=2, label=1,
             has_default_value=False, default_value=0,
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='param_config_path', full_name='ondewo.nlu.GlowTTSTriton.param_config_path', index=5,
+            name='param_config_path', full_name='ondewo.audio.GlowTTSTriton.param_config_path', index=5,
             number=6, type=9, cpp_type=9, label=1,
             has_default_value=False, default_value=b"".decode('utf-8'),
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='triton_url', full_name='ondewo.nlu.GlowTTSTriton.triton_url', index=6,
+            name='triton_url', full_name='ondewo.audio.GlowTTSTriton.triton_url', index=6,
             number=7, type=9, cpp_type=9, label=1,
             has_default_value=False, default_value=b"".decode('utf-8'),
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='triton_model_name', full_name='ondewo.nlu.GlowTTSTriton.triton_model_name', index=7,
+            name='triton_model_name', full_name='ondewo.audio.GlowTTSTriton.triton_model_name', index=7,
             number=8, type=9, cpp_type=9, label=1,
             has_default_value=False, default_value=b"".decode('utf-8'),
             message_type=None, enum_type=None, containing_type=None,
@@ -712,42 +712,42 @@ _GLOWTTSTRITON = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=1587,
-    serialized_end=1782,
+    serialized_start=1620,
+    serialized_end=1815,
 )
 
 
 _MEL2AUDIO = _descriptor.Descriptor(
     name='Mel2Audio',
-    full_name='ondewo.nlu.Mel2Audio',
+    full_name='ondewo.audio.Mel2Audio',
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
     create_key=_descriptor._internal_create_key,
     fields=[
         _descriptor.FieldDescriptor(
-            name='type', full_name='ondewo.nlu.Mel2Audio.type', index=0,
+            name='type', full_name='ondewo.audio.Mel2Audio.type', index=0,
             number=1, type=9, cpp_type=9, label=1,
             has_default_value=False, default_value=b"".decode('utf-8'),
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='waveglow_triton', full_name='ondewo.nlu.Mel2Audio.waveglow_triton', index=1,
+            name='waveglow_triton', full_name='ondewo.audio.Mel2Audio.waveglow_triton', index=1,
             number=2, type=11, cpp_type=10, label=1,
             has_default_value=False, default_value=None,
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='mb_melgan_triton', full_name='ondewo.nlu.Mel2Audio.mb_melgan_triton', index=2,
+            name='mb_melgan_triton', full_name='ondewo.audio.Mel2Audio.mb_melgan_triton', index=2,
             number=3, type=11, cpp_type=10, label=1,
             has_default_value=False, default_value=None,
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='hifi_gan', full_name='ondewo.nlu.Mel2Audio.hifi_gan', index=3,
+            name='hifi_gan', full_name='ondewo.audio.Mel2Audio.hifi_gan', index=3,
             number=4, type=11, cpp_type=10, label=1,
             has_default_value=False, default_value=None,
             message_type=None, enum_type=None, containing_type=None,
@@ -765,42 +765,42 @@ _MEL2AUDIO = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=1785,
-    serialized_end=1956,
+    serialized_start=1818,
+    serialized_end=1995,
 )
 
 
 _HIFIGAN = _descriptor.Descriptor(
     name='HiFiGan',
-    full_name='ondewo.nlu.HiFiGan',
+    full_name='ondewo.audio.HiFiGan',
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
     create_key=_descriptor._internal_create_key,
     fields=[
         _descriptor.FieldDescriptor(
-            name='use_gpu', full_name='ondewo.nlu.HiFiGan.use_gpu', index=0,
+            name='use_gpu', full_name='ondewo.audio.HiFiGan.use_gpu', index=0,
             number=1, type=8, cpp_type=7, label=1,
             has_default_value=False, default_value=False,
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='batch_size', full_name='ondewo.nlu.HiFiGan.batch_size', index=1,
+            name='batch_size', full_name='ondewo.audio.HiFiGan.batch_size', index=1,
             number=2, type=3, cpp_type=2, label=1,
             has_default_value=False, default_value=0,
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='config_path', full_name='ondewo.nlu.HiFiGan.config_path', index=2,
+            name='config_path', full_name='ondewo.audio.HiFiGan.config_path', index=2,
             number=3, type=9, cpp_type=9, label=1,
             has_default_value=False, default_value=b"".decode('utf-8'),
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='model_path', full_name='ondewo.nlu.HiFiGan.model_path', index=3,
+            name='model_path', full_name='ondewo.audio.HiFiGan.model_path', index=3,
             number=4, type=9, cpp_type=9, label=1,
             has_default_value=False, default_value=b"".decode('utf-8'),
             message_type=None, enum_type=None, containing_type=None,
@@ -818,49 +818,49 @@ _HIFIGAN = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=1958,
-    serialized_end=2045,
+    serialized_start=1997,
+    serialized_end=2084,
 )
 
 
 _WAVEGLOWTRITON = _descriptor.Descriptor(
     name='WaveglowTriton',
-    full_name='ondewo.nlu.WaveglowTriton',
+    full_name='ondewo.audio.WaveglowTriton',
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
     create_key=_descriptor._internal_create_key,
     fields=[
         _descriptor.FieldDescriptor(
-            name='param_config_path', full_name='ondewo.nlu.WaveglowTriton.param_config_path', index=0,
+            name='param_config_path', full_name='ondewo.audio.WaveglowTriton.param_config_path', index=0,
             number=1, type=9, cpp_type=9, label=1,
             has_default_value=False, default_value=b"".decode('utf-8'),
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='sigma', full_name='ondewo.nlu.WaveglowTriton.sigma', index=1,
+            name='sigma', full_name='ondewo.audio.WaveglowTriton.sigma', index=1,
             number=2, type=2, cpp_type=6, label=1,
             has_default_value=False, default_value=float(0),
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='max_spect_size', full_name='ondewo.nlu.WaveglowTriton.max_spect_size', index=2,
+            name='max_spect_size', full_name='ondewo.audio.WaveglowTriton.max_spect_size', index=2,
             number=3, type=3, cpp_type=2, label=1,
             has_default_value=False, default_value=0,
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='triton_model_name', full_name='ondewo.nlu.WaveglowTriton.triton_model_name', index=3,
+            name='triton_model_name', full_name='ondewo.audio.WaveglowTriton.triton_model_name', index=3,
             number=4, type=9, cpp_type=9, label=1,
             has_default_value=False, default_value=b"".decode('utf-8'),
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='triton_url', full_name='ondewo.nlu.WaveglowTriton.triton_url', index=4,
+            name='triton_url', full_name='ondewo.audio.WaveglowTriton.triton_url', index=4,
             number=5, type=9, cpp_type=9, label=1,
             has_default_value=False, default_value=b"".decode('utf-8'),
             message_type=None, enum_type=None, containing_type=None,
@@ -878,42 +878,42 @@ _WAVEGLOWTRITON = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=2048,
-    serialized_end=2177,
+    serialized_start=2087,
+    serialized_end=2216,
 )
 
 
 _MBMELGANTRITON = _descriptor.Descriptor(
     name='MbMelganTriton',
-    full_name='ondewo.nlu.MbMelganTriton',
+    full_name='ondewo.audio.MbMelganTriton',
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
     create_key=_descriptor._internal_create_key,
     fields=[
         _descriptor.FieldDescriptor(
-            name='config_path', full_name='ondewo.nlu.MbMelganTriton.config_path', index=0,
+            name='config_path', full_name='ondewo.audio.MbMelganTriton.config_path', index=0,
             number=1, type=9, cpp_type=9, label=1,
             has_default_value=False, default_value=b"".decode('utf-8'),
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='stats_path', full_name='ondewo.nlu.MbMelganTriton.stats_path', index=1,
+            name='stats_path', full_name='ondewo.audio.MbMelganTriton.stats_path', index=1,
             number=2, type=9, cpp_type=9, label=1,
             has_default_value=False, default_value=b"".decode('utf-8'),
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='triton_model_name', full_name='ondewo.nlu.MbMelganTriton.triton_model_name', index=2,
+            name='triton_model_name', full_name='ondewo.audio.MbMelganTriton.triton_model_name', index=2,
             number=3, type=9, cpp_type=9, label=1,
             has_default_value=False, default_value=b"".decode('utf-8'),
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='triton_url', full_name='ondewo.nlu.MbMelganTriton.triton_url', index=3,
+            name='triton_url', full_name='ondewo.audio.MbMelganTriton.triton_url', index=3,
             number=4, type=9, cpp_type=9, label=1,
             has_default_value=False, default_value=b"".decode('utf-8'),
             message_type=None, enum_type=None, containing_type=None,
@@ -931,56 +931,56 @@ _MBMELGANTRITON = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=2179,
-    serialized_end=2283,
+    serialized_start=2218,
+    serialized_end=2322,
 )
 
 
 _CACHING = _descriptor.Descriptor(
     name='Caching',
-    full_name='ondewo.nlu.Caching',
+    full_name='ondewo.audio.Caching',
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
     create_key=_descriptor._internal_create_key,
     fields=[
         _descriptor.FieldDescriptor(
-            name='active', full_name='ondewo.nlu.Caching.active', index=0,
+            name='active', full_name='ondewo.audio.Caching.active', index=0,
             number=1, type=8, cpp_type=7, label=1,
             has_default_value=False, default_value=False,
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='memory_cache_max_size', full_name='ondewo.nlu.Caching.memory_cache_max_size', index=1,
+            name='memory_cache_max_size', full_name='ondewo.audio.Caching.memory_cache_max_size', index=1,
             number=2, type=3, cpp_type=2, label=1,
             has_default_value=False, default_value=0,
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='sampling_rate', full_name='ondewo.nlu.Caching.sampling_rate', index=2,
+            name='sampling_rate', full_name='ondewo.audio.Caching.sampling_rate', index=2,
             number=3, type=3, cpp_type=2, label=1,
             has_default_value=False, default_value=0,
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='load_cache', full_name='ondewo.nlu.Caching.load_cache', index=3,
+            name='load_cache', full_name='ondewo.audio.Caching.load_cache', index=3,
             number=4, type=8, cpp_type=7, label=1,
             has_default_value=False, default_value=False,
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='save_cache', full_name='ondewo.nlu.Caching.save_cache', index=4,
+            name='save_cache', full_name='ondewo.audio.Caching.save_cache', index=4,
             number=5, type=8, cpp_type=7, label=1,
             has_default_value=False, default_value=False,
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='cache_save_dir', full_name='ondewo.nlu.Caching.cache_save_dir', index=5,
+            name='cache_save_dir', full_name='ondewo.audio.Caching.cache_save_dir', index=5,
             number=6, type=9, cpp_type=9, label=1,
             has_default_value=False, default_value=b"".decode('utf-8'),
             message_type=None, enum_type=None, containing_type=None,
@@ -998,28 +998,28 @@ _CACHING = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=2286,
-    serialized_end=2429,
+    serialized_start=2325,
+    serialized_end=2468,
 )
 
 
 _NORMALIZATION = _descriptor.Descriptor(
     name='Normalization',
-    full_name='ondewo.nlu.Normalization',
+    full_name='ondewo.audio.Normalization',
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
     create_key=_descriptor._internal_create_key,
     fields=[
         _descriptor.FieldDescriptor(
-            name='language', full_name='ondewo.nlu.Normalization.language', index=0,
+            name='language', full_name='ondewo.audio.Normalization.language', index=0,
             number=1, type=9, cpp_type=9, label=1,
             has_default_value=False, default_value=b"".decode('utf-8'),
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='pipeline', full_name='ondewo.nlu.Normalization.pipeline', index=1,
+            name='pipeline', full_name='ondewo.audio.Normalization.pipeline', index=1,
             number=2, type=9, cpp_type=9, label=3,
             has_default_value=False, default_value=[],
             message_type=None, enum_type=None, containing_type=None,
@@ -1037,49 +1037,49 @@ _NORMALIZATION = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=2431,
-    serialized_end=2482,
+    serialized_start=2470,
+    serialized_end=2521,
 )
 
 
 _POSTPROCESSING = _descriptor.Descriptor(
     name='Postprocessing',
-    full_name='ondewo.nlu.Postprocessing',
+    full_name='ondewo.audio.Postprocessing',
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
     create_key=_descriptor._internal_create_key,
     fields=[
         _descriptor.FieldDescriptor(
-            name='silence_secs', full_name='ondewo.nlu.Postprocessing.silence_secs', index=0,
+            name='silence_secs', full_name='ondewo.audio.Postprocessing.silence_secs', index=0,
             number=1, type=2, cpp_type=6, label=1,
             has_default_value=False, default_value=float(0),
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='pipeline', full_name='ondewo.nlu.Postprocessing.pipeline', index=1,
+            name='pipeline', full_name='ondewo.audio.Postprocessing.pipeline', index=1,
             number=2, type=9, cpp_type=9, label=3,
             has_default_value=False, default_value=[],
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='logmmse', full_name='ondewo.nlu.Postprocessing.logmmse', index=2,
+            name='logmmse', full_name='ondewo.audio.Postprocessing.logmmse', index=2,
             number=3, type=11, cpp_type=10, label=1,
             has_default_value=False, default_value=None,
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='wiener', full_name='ondewo.nlu.Postprocessing.wiener', index=3,
+            name='wiener', full_name='ondewo.audio.Postprocessing.wiener', index=3,
             number=4, type=11, cpp_type=10, label=1,
             has_default_value=False, default_value=None,
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='apodization', full_name='ondewo.nlu.Postprocessing.apodization', index=4,
+            name='apodization', full_name='ondewo.audio.Postprocessing.apodization', index=4,
             number=5, type=11, cpp_type=10, label=1,
             has_default_value=False, default_value=None,
             message_type=None, enum_type=None, containing_type=None,
@@ -1097,35 +1097,35 @@ _POSTPROCESSING = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=2485,
-    serialized_end=2661,
+    serialized_start=2524,
+    serialized_end=2706,
 )
 
 
 _LOGMNSE = _descriptor.Descriptor(
     name='Logmnse',
-    full_name='ondewo.nlu.Logmnse',
+    full_name='ondewo.audio.Logmnse',
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
     create_key=_descriptor._internal_create_key,
     fields=[
         _descriptor.FieldDescriptor(
-            name='initial_noise', full_name='ondewo.nlu.Logmnse.initial_noise', index=0,
+            name='initial_noise', full_name='ondewo.audio.Logmnse.initial_noise', index=0,
             number=1, type=3, cpp_type=2, label=1,
             has_default_value=False, default_value=0,
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='window_size', full_name='ondewo.nlu.Logmnse.window_size', index=1,
+            name='window_size', full_name='ondewo.audio.Logmnse.window_size', index=1,
             number=2, type=3, cpp_type=2, label=1,
             has_default_value=False, default_value=0,
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='noise_threshold', full_name='ondewo.nlu.Logmnse.noise_threshold', index=2,
+            name='noise_threshold', full_name='ondewo.audio.Logmnse.noise_threshold', index=2,
             number=3, type=2, cpp_type=6, label=1,
             has_default_value=False, default_value=float(0),
             message_type=None, enum_type=None, containing_type=None,
@@ -1143,49 +1143,49 @@ _LOGMNSE = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=2663,
-    serialized_end=2741,
+    serialized_start=2708,
+    serialized_end=2786,
 )
 
 
 _WIENER = _descriptor.Descriptor(
     name='Wiener',
-    full_name='ondewo.nlu.Wiener',
+    full_name='ondewo.audio.Wiener',
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
     create_key=_descriptor._internal_create_key,
     fields=[
         _descriptor.FieldDescriptor(
-            name='frame_len', full_name='ondewo.nlu.Wiener.frame_len', index=0,
+            name='frame_len', full_name='ondewo.audio.Wiener.frame_len', index=0,
             number=1, type=3, cpp_type=2, label=1,
             has_default_value=False, default_value=0,
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='lpc_order', full_name='ondewo.nlu.Wiener.lpc_order', index=1,
+            name='lpc_order', full_name='ondewo.audio.Wiener.lpc_order', index=1,
             number=2, type=3, cpp_type=2, label=1,
             has_default_value=False, default_value=0,
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='iterations', full_name='ondewo.nlu.Wiener.iterations', index=2,
+            name='iterations', full_name='ondewo.audio.Wiener.iterations', index=2,
             number=3, type=3, cpp_type=2, label=1,
             has_default_value=False, default_value=0,
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='alpha', full_name='ondewo.nlu.Wiener.alpha', index=3,
+            name='alpha', full_name='ondewo.audio.Wiener.alpha', index=3,
             number=4, type=2, cpp_type=6, label=1,
             has_default_value=False, default_value=float(0),
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
         _descriptor.FieldDescriptor(
-            name='thresh', full_name='ondewo.nlu.Wiener.thresh', index=4,
+            name='thresh', full_name='ondewo.audio.Wiener.thresh', index=4,
             number=5, type=2, cpp_type=6, label=1,
             has_default_value=False, default_value=float(0),
             message_type=None, enum_type=None, containing_type=None,
@@ -1203,21 +1203,21 @@ _WIENER = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=2743,
-    serialized_end=2840,
+    serialized_start=2788,
+    serialized_end=2885,
 )
 
 
 _APODIZATION = _descriptor.Descriptor(
     name='Apodization',
-    full_name='ondewo.nlu.Apodization',
+    full_name='ondewo.audio.Apodization',
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
     create_key=_descriptor._internal_create_key,
     fields=[
         _descriptor.FieldDescriptor(
-            name='apodization_secs', full_name='ondewo.nlu.Apodization.apodization_secs', index=0,
+            name='apodization_secs', full_name='ondewo.audio.Apodization.apodization_secs', index=0,
             number=1, type=2, cpp_type=6, label=1,
             has_default_value=False, default_value=float(0),
             message_type=None, enum_type=None, containing_type=None,
@@ -1235,8 +1235,8 @@ _APODIZATION = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=2842,
-    serialized_end=2881,
+    serialized_start=2887,
+    serialized_end=2926,
 )
 
 _MODELSETUP.fields_by_name['config'].message_type = _TEXT2SPEECHCONFIG
@@ -1294,199 +1294,199 @@ _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 ModelSetup = _reflection.GeneratedProtocolMessageType('ModelSetup', (_message.Message,), {
     'DESCRIPTOR': _MODELSETUP,
     '__module__': 'ondewo.audio.text_to_speech_pb2'
-    # @@protoc_insertion_point(class_scope:ondewo.nlu.ModelSetup)
+    # @@protoc_insertion_point(class_scope:ondewo.audio.ModelSetup)
 })
 _sym_db.RegisterMessage(ModelSetup)
 
 ListLanguagesRequest = _reflection.GeneratedProtocolMessageType('ListLanguagesRequest', (_message.Message,), {
     'DESCRIPTOR': _LISTLANGUAGESREQUEST,
     '__module__': 'ondewo.audio.text_to_speech_pb2'
-    # @@protoc_insertion_point(class_scope:ondewo.nlu.ListLanguagesRequest)
+    # @@protoc_insertion_point(class_scope:ondewo.audio.ListLanguagesRequest)
 })
 _sym_db.RegisterMessage(ListLanguagesRequest)
 
 ListLanguagesResponse = _reflection.GeneratedProtocolMessageType('ListLanguagesResponse', (_message.Message,), {
     'DESCRIPTOR': _LISTLANGUAGESRESPONSE,
     '__module__': 'ondewo.audio.text_to_speech_pb2'
-    # @@protoc_insertion_point(class_scope:ondewo.nlu.ListLanguagesResponse)
+    # @@protoc_insertion_point(class_scope:ondewo.audio.ListLanguagesResponse)
 })
 _sym_db.RegisterMessage(ListLanguagesResponse)
 
 ListModelSetupsForLangRequest = _reflection.GeneratedProtocolMessageType('ListModelSetupsForLangRequest', (_message.Message,), {
     'DESCRIPTOR': _LISTMODELSETUPSFORLANGREQUEST,
     '__module__': 'ondewo.audio.text_to_speech_pb2'
-    # @@protoc_insertion_point(class_scope:ondewo.nlu.ListModelSetupsForLangRequest)
+    # @@protoc_insertion_point(class_scope:ondewo.audio.ListModelSetupsForLangRequest)
 })
 _sym_db.RegisterMessage(ListModelSetupsForLangRequest)
 
 ListAllModelSetupsRequest = _reflection.GeneratedProtocolMessageType('ListAllModelSetupsRequest', (_message.Message,), {
     'DESCRIPTOR': _LISTALLMODELSETUPSREQUEST,
     '__module__': 'ondewo.audio.text_to_speech_pb2'
-    # @@protoc_insertion_point(class_scope:ondewo.nlu.ListAllModelSetupsRequest)
+    # @@protoc_insertion_point(class_scope:ondewo.audio.ListAllModelSetupsRequest)
 })
 _sym_db.RegisterMessage(ListAllModelSetupsRequest)
 
 ModelSetupsResponse = _reflection.GeneratedProtocolMessageType('ModelSetupsResponse', (_message.Message,), {
     'DESCRIPTOR': _MODELSETUPSRESPONSE,
     '__module__': 'ondewo.audio.text_to_speech_pb2'
-    # @@protoc_insertion_point(class_scope:ondewo.nlu.ModelSetupsResponse)
+    # @@protoc_insertion_point(class_scope:ondewo.audio.ModelSetupsResponse)
 })
 _sym_db.RegisterMessage(ModelSetupsResponse)
 
 GetActiveModelConfigRequest = _reflection.GeneratedProtocolMessageType('GetActiveModelConfigRequest', (_message.Message,), {
     'DESCRIPTOR': _GETACTIVEMODELCONFIGREQUEST,
     '__module__': 'ondewo.audio.text_to_speech_pb2'
-    # @@protoc_insertion_point(class_scope:ondewo.nlu.GetActiveModelConfigRequest)
+    # @@protoc_insertion_point(class_scope:ondewo.audio.GetActiveModelConfigRequest)
 })
 _sym_db.RegisterMessage(GetActiveModelConfigRequest)
 
 ModelSetupResponse = _reflection.GeneratedProtocolMessageType('ModelSetupResponse', (_message.Message,), {
     'DESCRIPTOR': _MODELSETUPRESPONSE,
     '__module__': 'ondewo.audio.text_to_speech_pb2'
-    # @@protoc_insertion_point(class_scope:ondewo.nlu.ModelSetupResponse)
+    # @@protoc_insertion_point(class_scope:ondewo.audio.ModelSetupResponse)
 })
 _sym_db.RegisterMessage(ModelSetupResponse)
 
 SetModelConfigRequest = _reflection.GeneratedProtocolMessageType('SetModelConfigRequest', (_message.Message,), {
     'DESCRIPTOR': _SETMODELCONFIGREQUEST,
     '__module__': 'ondewo.audio.text_to_speech_pb2'
-    # @@protoc_insertion_point(class_scope:ondewo.nlu.SetModelConfigRequest)
+    # @@protoc_insertion_point(class_scope:ondewo.audio.SetModelConfigRequest)
 })
 _sym_db.RegisterMessage(SetModelConfigRequest)
 
 SetModelConfigResponse = _reflection.GeneratedProtocolMessageType('SetModelConfigResponse', (_message.Message,), {
     'DESCRIPTOR': _SETMODELCONFIGRESPONSE,
     '__module__': 'ondewo.audio.text_to_speech_pb2'
-    # @@protoc_insertion_point(class_scope:ondewo.nlu.SetModelConfigResponse)
+    # @@protoc_insertion_point(class_scope:ondewo.audio.SetModelConfigResponse)
 })
 _sym_db.RegisterMessage(SetModelConfigResponse)
 
 Text2SpeechConfig = _reflection.GeneratedProtocolMessageType('Text2SpeechConfig', (_message.Message,), {
     'DESCRIPTOR': _TEXT2SPEECHCONFIG,
     '__module__': 'ondewo.audio.text_to_speech_pb2'
-    # @@protoc_insertion_point(class_scope:ondewo.nlu.Text2SpeechConfig)
+    # @@protoc_insertion_point(class_scope:ondewo.audio.Text2SpeechConfig)
 })
 _sym_db.RegisterMessage(Text2SpeechConfig)
 
 Inference = _reflection.GeneratedProtocolMessageType('Inference', (_message.Message,), {
     'DESCRIPTOR': _INFERENCE,
     '__module__': 'ondewo.audio.text_to_speech_pb2'
-    # @@protoc_insertion_point(class_scope:ondewo.nlu.Inference)
+    # @@protoc_insertion_point(class_scope:ondewo.audio.Inference)
 })
 _sym_db.RegisterMessage(Inference)
 
 CompositeInference = _reflection.GeneratedProtocolMessageType('CompositeInference', (_message.Message,), {
     'DESCRIPTOR': _COMPOSITEINFERENCE,
     '__module__': 'ondewo.audio.text_to_speech_pb2'
-    # @@protoc_insertion_point(class_scope:ondewo.nlu.CompositeInference)
+    # @@protoc_insertion_point(class_scope:ondewo.audio.CompositeInference)
 })
 _sym_db.RegisterMessage(CompositeInference)
 
 Text2Mel = _reflection.GeneratedProtocolMessageType('Text2Mel', (_message.Message,), {
     'DESCRIPTOR': _TEXT2MEL,
     '__module__': 'ondewo.audio.text_to_speech_pb2'
-    # @@protoc_insertion_point(class_scope:ondewo.nlu.Text2Mel)
+    # @@protoc_insertion_point(class_scope:ondewo.audio.Text2Mel)
 })
 _sym_db.RegisterMessage(Text2Mel)
 
 GlowTTS = _reflection.GeneratedProtocolMessageType('GlowTTS', (_message.Message,), {
     'DESCRIPTOR': _GLOWTTS,
     '__module__': 'ondewo.audio.text_to_speech_pb2'
-    # @@protoc_insertion_point(class_scope:ondewo.nlu.GlowTTS)
+    # @@protoc_insertion_point(class_scope:ondewo.audio.GlowTTS)
 })
 _sym_db.RegisterMessage(GlowTTS)
 
 GlowTTSTriton = _reflection.GeneratedProtocolMessageType('GlowTTSTriton', (_message.Message,), {
     'DESCRIPTOR': _GLOWTTSTRITON,
     '__module__': 'ondewo.audio.text_to_speech_pb2'
-    # @@protoc_insertion_point(class_scope:ondewo.nlu.GlowTTSTriton)
+    # @@protoc_insertion_point(class_scope:ondewo.audio.GlowTTSTriton)
 })
 _sym_db.RegisterMessage(GlowTTSTriton)
 
 Mel2Audio = _reflection.GeneratedProtocolMessageType('Mel2Audio', (_message.Message,), {
     'DESCRIPTOR': _MEL2AUDIO,
     '__module__': 'ondewo.audio.text_to_speech_pb2'
-    # @@protoc_insertion_point(class_scope:ondewo.nlu.Mel2Audio)
+    # @@protoc_insertion_point(class_scope:ondewo.audio.Mel2Audio)
 })
 _sym_db.RegisterMessage(Mel2Audio)
 
 HiFiGan = _reflection.GeneratedProtocolMessageType('HiFiGan', (_message.Message,), {
     'DESCRIPTOR': _HIFIGAN,
     '__module__': 'ondewo.audio.text_to_speech_pb2'
-    # @@protoc_insertion_point(class_scope:ondewo.nlu.HiFiGan)
+    # @@protoc_insertion_point(class_scope:ondewo.audio.HiFiGan)
 })
 _sym_db.RegisterMessage(HiFiGan)
 
 WaveglowTriton = _reflection.GeneratedProtocolMessageType('WaveglowTriton', (_message.Message,), {
     'DESCRIPTOR': _WAVEGLOWTRITON,
     '__module__': 'ondewo.audio.text_to_speech_pb2'
-    # @@protoc_insertion_point(class_scope:ondewo.nlu.WaveglowTriton)
+    # @@protoc_insertion_point(class_scope:ondewo.audio.WaveglowTriton)
 })
 _sym_db.RegisterMessage(WaveglowTriton)
 
 MbMelganTriton = _reflection.GeneratedProtocolMessageType('MbMelganTriton', (_message.Message,), {
     'DESCRIPTOR': _MBMELGANTRITON,
     '__module__': 'ondewo.audio.text_to_speech_pb2'
-    # @@protoc_insertion_point(class_scope:ondewo.nlu.MbMelganTriton)
+    # @@protoc_insertion_point(class_scope:ondewo.audio.MbMelganTriton)
 })
 _sym_db.RegisterMessage(MbMelganTriton)
 
 Caching = _reflection.GeneratedProtocolMessageType('Caching', (_message.Message,), {
     'DESCRIPTOR': _CACHING,
     '__module__': 'ondewo.audio.text_to_speech_pb2'
-    # @@protoc_insertion_point(class_scope:ondewo.nlu.Caching)
+    # @@protoc_insertion_point(class_scope:ondewo.audio.Caching)
 })
 _sym_db.RegisterMessage(Caching)
 
 Normalization = _reflection.GeneratedProtocolMessageType('Normalization', (_message.Message,), {
     'DESCRIPTOR': _NORMALIZATION,
     '__module__': 'ondewo.audio.text_to_speech_pb2'
-    # @@protoc_insertion_point(class_scope:ondewo.nlu.Normalization)
+    # @@protoc_insertion_point(class_scope:ondewo.audio.Normalization)
 })
 _sym_db.RegisterMessage(Normalization)
 
 Postprocessing = _reflection.GeneratedProtocolMessageType('Postprocessing', (_message.Message,), {
     'DESCRIPTOR': _POSTPROCESSING,
     '__module__': 'ondewo.audio.text_to_speech_pb2'
-    # @@protoc_insertion_point(class_scope:ondewo.nlu.Postprocessing)
+    # @@protoc_insertion_point(class_scope:ondewo.audio.Postprocessing)
 })
 _sym_db.RegisterMessage(Postprocessing)
 
 Logmnse = _reflection.GeneratedProtocolMessageType('Logmnse', (_message.Message,), {
     'DESCRIPTOR': _LOGMNSE,
     '__module__': 'ondewo.audio.text_to_speech_pb2'
-    # @@protoc_insertion_point(class_scope:ondewo.nlu.Logmnse)
+    # @@protoc_insertion_point(class_scope:ondewo.audio.Logmnse)
 })
 _sym_db.RegisterMessage(Logmnse)
 
 Wiener = _reflection.GeneratedProtocolMessageType('Wiener', (_message.Message,), {
     'DESCRIPTOR': _WIENER,
     '__module__': 'ondewo.audio.text_to_speech_pb2'
-    # @@protoc_insertion_point(class_scope:ondewo.nlu.Wiener)
+    # @@protoc_insertion_point(class_scope:ondewo.audio.Wiener)
 })
 _sym_db.RegisterMessage(Wiener)
 
 Apodization = _reflection.GeneratedProtocolMessageType('Apodization', (_message.Message,), {
     'DESCRIPTOR': _APODIZATION,
     '__module__': 'ondewo.audio.text_to_speech_pb2'
-    # @@protoc_insertion_point(class_scope:ondewo.nlu.Apodization)
+    # @@protoc_insertion_point(class_scope:ondewo.audio.Apodization)
 })
 _sym_db.RegisterMessage(Apodization)
 
 
 _TEXT2SPEECHCONFIGURATION = _descriptor.ServiceDescriptor(
     name='Text2SpeechConfiguration',
-    full_name='ondewo.nlu.Text2SpeechConfiguration',
+    full_name='ondewo.audio.Text2SpeechConfiguration',
     file=DESCRIPTOR,
     index=0,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
-    serialized_start=2884,
-    serialized_end=3771,
+    serialized_start=2929,
+    serialized_end=3836,
     methods=[
         _descriptor.MethodDescriptor(
             name='ListSupportedLanguages',
-            full_name='ondewo.nlu.Text2SpeechConfiguration.ListSupportedLanguages',
+            full_name='ondewo.audio.Text2SpeechConfiguration.ListSupportedLanguages',
             index=0,
             containing_service=None,
             input_type=_LISTLANGUAGESREQUEST,
@@ -1496,7 +1496,7 @@ _TEXT2SPEECHCONFIGURATION = _descriptor.ServiceDescriptor(
         ),
         _descriptor.MethodDescriptor(
             name='ListModelSetupsForLanguage',
-            full_name='ondewo.nlu.Text2SpeechConfiguration.ListModelSetupsForLanguage',
+            full_name='ondewo.audio.Text2SpeechConfiguration.ListModelSetupsForLanguage',
             index=1,
             containing_service=None,
             input_type=_LISTMODELSETUPSFORLANGREQUEST,
@@ -1506,7 +1506,7 @@ _TEXT2SPEECHCONFIGURATION = _descriptor.ServiceDescriptor(
         ),
         _descriptor.MethodDescriptor(
             name='ListAllModelSetups',
-            full_name='ondewo.nlu.Text2SpeechConfiguration.ListAllModelSetups',
+            full_name='ondewo.audio.Text2SpeechConfiguration.ListAllModelSetups',
             index=2,
             containing_service=None,
             input_type=_LISTALLMODELSETUPSREQUEST,
@@ -1516,7 +1516,7 @@ _TEXT2SPEECHCONFIGURATION = _descriptor.ServiceDescriptor(
         ),
         _descriptor.MethodDescriptor(
             name='GetActiveModelConfig',
-            full_name='ondewo.nlu.Text2SpeechConfiguration.GetActiveModelConfig',
+            full_name='ondewo.audio.Text2SpeechConfiguration.GetActiveModelConfig',
             index=3,
             containing_service=None,
             input_type=_GETACTIVEMODELCONFIGREQUEST,
@@ -1526,7 +1526,7 @@ _TEXT2SPEECHCONFIGURATION = _descriptor.ServiceDescriptor(
         ),
         _descriptor.MethodDescriptor(
             name='SetModelConfig',
-            full_name='ondewo.nlu.Text2SpeechConfiguration.SetModelConfig',
+            full_name='ondewo.audio.Text2SpeechConfiguration.SetModelConfig',
             index=4,
             containing_service=None,
             input_type=_SETMODELCONFIGREQUEST,
