@@ -6,7 +6,7 @@ from pyroomacoustics.denoise.iterative_wiener import apply_iterative_wiener
 import python_speech_features
 from pysndfx import AudioEffectsChain
 
-from utils.logger import logger
+from pylog.logger import logger_console as logger
 
 
 class Postprocessor():

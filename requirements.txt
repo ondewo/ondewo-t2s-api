@@ -3,12 +3,10 @@ braceexpand
 cython
 editdistance
 flask
-fluent-logger==0.9.6
 msgpack==1.0.0
-nemo-toolkit[all]==0.11
-PyYAML==5.3.1
+ruamel.yaml
 tritonclient[all]==2.3.0
-torch==1.6.0
+torch
 webdataset
 soundfile
 git+https://github.com/wilsonchingg/logmmse.git

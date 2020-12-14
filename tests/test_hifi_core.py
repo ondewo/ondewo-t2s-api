@@ -1,9 +1,27 @@
-from typing import List
+from typing import List, Dict, Any
 
 import numpy as np
 import pytest
 
 from inference.mel2audio.hifigan_core import HiFiGANCore
+
+
+@pytest.fixture(scope='function')
+def mocked_hifi() -> HiFiGANCore:
+    config_dict: Dict[str, Any] = {
+        'batch_size': 4,
+        'config_path': 'tests/resources/config_hifi.json'
+    }
+    return MockedHiFi(config=config_dict)
+
+
+class MockedHiFi(HiFiGANCore):
+
+    def __init__(self, config: Dict[str, Any]):
+        super(MockedHiFi, self).__init__(config=config)
+
+    def _generate(self, mel: np.ndarray) -> np.ndarray:
+        return np.random.random((mel.shape[0], mel.shape[2] * self.hop_size))
 
 
 class TestHiFiCore:

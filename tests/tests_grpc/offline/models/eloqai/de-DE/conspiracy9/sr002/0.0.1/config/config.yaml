@@ -2,48 +2,33 @@
 
 
 inference:
-    type: "composite"
+    type: "testsetter1"
 
     composite_inference:
         text2mel:
             type: "glow_tts"
-
-            tacotron2:
-                batch_size: 8
-                path: "models/tacotron2/de/kerstin_PUN/"
-                param_config_path: "models/tacotron2/de/tacotron2.yaml"
-                step: "1000"
 
             glow_tts:
                 batch_size: 5
                 use_gpu: true
                 length_scale: 1.0
                 noise_scale: 0.667
-                path: "models/glow-tts/de/kerstin_blank.pth"
-                cleaners: []
+                path: "models/glow-tts/de/thorsten.pth"
+                cleaners: [ ]
                 param_config_path: "models/glow-tts/de/config_blank.json"
 
             glow_tts_triton:
                 batch_size: 8
                 length_scale: 1.0
                 noise_scale: 0.667
-                cleaners: ["german_cleaners"]
+                cleaners: [ ]
                 max_text_length: 100
                 param_config_path: "models/glow-tts/de/config.json"
                 triton_url: "localhost:8001"
                 triton_model_name: "glow_tts"
 
         mel2audio:
-            type: "mb_melgan_tf"
-
-            waveglow:
-                batch_size: 4
-                path: "models/waveglow/checkpoints_waveglow_kerstin/WaveGlowNM.pt"
-                param_config_path: "models/waveglow/waveglow.yaml"
-                sigma: 0.6
-                denoiser:
-                    active: true
-                    strength: 0.05
+            type: "hifi_gan"
 
             waveglow_triton:
                 param_config_path: "models/waveglow/waveglow.yaml"
@@ -52,17 +37,17 @@ inference:
                 triton_model_name: "waveglow"
                 triton_url: "localhost:8001"
 
-            mb_melgan_tf:
-                batch_size: 20
-                config_path: "models/mb_melgan/en/config.yml"
-                model_path: "models/mb_melgan/en/generator-1820000.h5"
-                stats_path: "models/mb_melgan/en/stats.npy"
-
             mb_melgan_triton:
                 config_path: "models/mb_melgan/en/config.yml"
                 stats_path: "models/mb_melgan/en/stats.npy"
                 triton_model_name: "mb_melgan"
                 triton_url: "localhost:8001"
+
+            hifi_gan:
+                use_gpu: True
+                batch_size: 20
+                config_path: "models/HiFiGan/universal/config.json"
+                model_path: "models/HiFiGan/universal/g_02500000"
 
     caching:
         active: false

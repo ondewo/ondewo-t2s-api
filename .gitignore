@@ -7,11 +7,12 @@ data/ramona_deininger
 .idea/
 .vscode/
 pytest.xml
-models/triton_repo_test
-glow-tts/
+ondewo-t2s-glow/
+ondewo-t2s-hifigan/
+ondewo-logging/
 plots/
 **/model.savedmodel/**
 samples/
-models/mb_melgan
+models/
 evaluation/configs/
 data/

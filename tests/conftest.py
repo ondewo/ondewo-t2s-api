@@ -1,69 +1,15 @@
 from __future__ import annotations
 
 import os
-from pathlib import Path
 from shutil import copy
-from typing import Generator, List, Dict, Any, Union
+from typing import Generator, List
 from typing import Optional
 
-import numpy as np
 import pytest
-import tensorflow as tf
 from _pytest.fixtures import SubRequest
-from pytest_mock import MockFixture
-from ruamel.yaml import YAML
 
 from grpc_config_server.t2s_manager.manager import TextToSpeechManager
 from grpc_config_server.tts_server import TextToSpeechConfigServer
-from inference.mel2audio.hifigan_core import HiFiGANCore
-from inference.mel2audio.mbmelgan import MBMelGAN
-from inference.mel2audio.mbmelgan_triton import MBMelGANTriton
-
-
-def load_model_conf(path: Union[Path, str]) -> Dict[str, Any]:
-    yaml = YAML(typ="safe")
-    with open(path) as f:
-        model_config: Dict[str, Any] = yaml.load(f)
-    return model_config
-
-
-class MockMBMelGANModel():
-
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        pass
-
-    def inference(self, input_mels: List[np.ndarray]) -> tf.Tensor:
-        arr: np.ndarray = np.zeros((len(input_mels), 100_000, 1))
-        return tf.constant(arr)
-
-
-class MockTFAutoModel():
-
-    @classmethod
-    def from_pretrained(cls, *args: Any, **kwargs: Any) -> MockMBMelGANModel:
-        return MockMBMelGANModel()
-
-
-@pytest.fixture(scope="function")
-def mbmelgan_mocked(mocker: MockFixture) -> MBMelGAN:
-    mocker.patch(
-        "inference.mel2audio.mbmelgan.TFAutoModel",
-        MockTFAutoModel
-    )
-    mocker.patch(
-        "inference.mel2audio.mbmelgan.check_paths_exist",
-        lambda x: None
-    )
-    model_config = load_model_conf(Path("tests", "resources", "test_mbmelgan_config.yaml"))
-
-    return MBMelGAN(config=model_config)
-
-
-@pytest.fixture(scope="session")
-def mbmelgan_triton() -> MBMelGANTriton:
-    model_config = load_model_conf(Path("tests", "resources", "test_mbmelgan_config.yaml"))
-
-    return MBMelGANTriton(config=model_config)
 
 
 class TESTdockerclient():
@@ -120,21 +66,3 @@ def server_offline(request: SubRequest) -> Generator:
     # return original config
     copy(src=save_path, dst=orig_config)
     os.remove(save_path)
-
-
-@pytest.fixture(scope='function')
-def mocked_hifi() -> HiFiGANCore:
-    config_dict: Dict[str, Any] = {
-        'batch_size': 4,
-        'config_path': 'tests/resources/config_hifi.json'
-    }
-    return MockedHiFi(config=config_dict)
-
-
-class MockedHiFi(HiFiGANCore):
-
-    def __init__(self, config: Dict[str, Any]):
-        super(MockedHiFi, self).__init__(config=config)
-
-    def _generate(self, mel: np.ndarray) -> np.ndarray:
-        return np.random.random((mel.shape[0], mel.shape[2]*self.hop_size))
