@@ -10,7 +10,7 @@ RUN echo "StrictHostKeyChecking no" >> /root/.ssh/config
 RUN apt-get update && apt-get -y upgrade && \
 	apt-get install -y git
 
-RUN git clone git@bitbucket.org:ondewo/ondewo-t2s-glow.git && cd ondewo-t2s-glow && git checkout ce31644615d27455d9294b0ba32b3f1222da8109
+RUN git clone git@bitbucket.org:ondewo/ondewo-t2s-glow.git && cd ondewo-t2s-glow && git checkout 935512cf01ef4530e0b9e74f77eded115eb47ecf
 
 RUN git clone git@bitbucket.org:ondewo/ondewo-logging.git
 
