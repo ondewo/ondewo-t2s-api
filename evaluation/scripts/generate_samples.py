@@ -34,9 +34,9 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Script for creating samples of wav")
     parser.add_argument("--config_dir", type=str, default="evaluation/configs",
                         help="Path to folder with configs of model setups")
-    parser.add_argument("--text_samples_path", type=str, default="evaluation/sentences.txt",
+    parser.add_argument("--text_samples_path", type=str, default="evaluation/sentences_en.txt",
                         help="Path of the txt file with text samples (sentences)")
-    parser.add_argument("--n_samples", type=int, default=10,
+    parser.add_argument("--n_samples", type=int, default=20,
                         help="How many samples to generate per model setup, set to < 1 to use all")
     parser.add_argument("--output_dir", type=str, default="samples",
                         help="Path to folder where to output the samples")
@@ -65,18 +65,8 @@ def main() -> None:
         proc.start()
         proc.join()
 
-        # this part is used for evaluation of different mb_melgan generator (at different steps)
-        # for steps in [500_000, 760_000, 1_000_000, 1_220_000, 1_360_000, 1_500_000, 1_760_000, 2_000_000]:
-        #     config["inference"]["composite_inference"]["mel2audio"]["mb_melgan_tf"]["model_path"] = f"/home/utanko/train.mb_melgan.libritts/checkpoints/generator-{steps}.h5"
-        #     out_dir_steps = out_dir / str(steps)
-        #     os.makedirs(out_dir_steps, exist_ok=True)
-        #     # using multiprocessing so that GPU memory gets released after each run
-        #     proc = multiprocessing.Process(target=gen_samples, args=(config, sentences, out_dir_steps))
-        #     proc.start()
-        #     proc.join()
-
     # Write the used sentences to file
-    with open(Path(args.output_dir) / "sentences.txt", "w") as f:
+    with open(Path(args.output_dir) / args.text_samples_path.split('/')[1], "w") as f:
         for sentence in sentences:
             f.write(sentence + "\n")
 
