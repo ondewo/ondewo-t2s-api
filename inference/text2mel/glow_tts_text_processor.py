@@ -13,7 +13,7 @@ class GlowTTSTextProcessor(TextProcessor):
             language_code=language_code,
             add_blank=add_blank,
             cmudict_path=cmudict_path,
-            cleaners=cleaners
+            cleaner_names=cleaners
         )
 
     def preprocess_text_batch(
