@@ -6,6 +6,8 @@ from hifi_gan.env import AttrDict
 from hifi_gan.models import Generator
 
 from inference.mel2audio.hifigan_core import HiFiGANCore
+from pylog.logger import logger_console as logger
+from pylog.decorators import Timer
 
 
 class HiFiGan(HiFiGANCore):
@@ -18,7 +20,9 @@ class HiFiGan(HiFiGANCore):
             self.device = torch.device('cuda')
         else:
             self.device = torch.device('cpu')
+        logger.info('Create HiFi model. Start.')
         self.generator: Generator = self._get_model()
+        logger.info('HiFi model is ready.')
 
     def _generate(self, mel: np.ndarray) -> np.ndarray:
         """
@@ -35,6 +39,7 @@ class HiFiGan(HiFiGANCore):
         numpy_audio = numpy_audio[:, 0, :]
         return numpy_audio
 
+    @Timer(log_arguments=False)
     def _get_model(self) -> Generator:
         generator = Generator(self.hcf).to(self.device)
         state_dict_g = torch.load(self.model_path, map_location=self.device)
