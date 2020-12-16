@@ -18,28 +18,13 @@ RUN git clone git@bitbucket.org:ondewo/ondewo-t2s-hifigan.git && cd ondewo-t2s-h
 
 FROM nvcr.io/nvidia/cuda:11.0-runtime-ubuntu20.04 AS uncythonized
 
-# install software packages
-RUN apt update && apt -y upgrade && DEBIAN_FRONTEND="noninteractive" apt install -y \
-    build-essential \
-    curl \
-    g++ \
-    gcc \
-    git \
-    gzip \
-    make \
-    p7zip \
-    parallel \
-    rsync \
-    sed \
-    ssh \
-    tar \
-    tmux \
-    tree \
-    unzip \
-    vim \
-    wget \
-    && apt autoremove
+RUN apt-get update && apt-get -y upgrade && \
+	apt-get install -y git sox
 
+# Upgrade installed packages
+RUN apt-get update && apt-get upgrade -y && apt-get install -y libsndfile1-dev
+
+# Install Python 3.7
 RUN apt-get install -y curl python3.7 python3.7-dev python3.7-distutils && \
     update-alternatives --install /usr/bin/python python /usr/bin/python3.7 1 && \
     update-alternatives --set python /usr/bin/python3.7 && \
@@ -47,14 +32,10 @@ RUN apt-get install -y curl python3.7 python3.7-dev python3.7-distutils && \
     python get-pip.py --force-reinstall && \
     rm get-pip.py
 
-RUN pip install torch==1.7.0+cu110 torchvision==0.8.1+cu110 torchaudio===0.7.0 -f https://download.pytorch.org/whl/torch_stable.html
-
-RUN apt-get update && apt-get -y upgrade && \
-	apt-get install -y git sox && apt-get install -y libsndfile1-dev
-
+# Install PyTorch
+RUN pip install torch==1.7
 
 RUN pip install cython
-
 COPY --from=private_installer /root/install/ondewo-t2s-glow ./ondewo-t2s-glow
 RUN cd ondewo-t2s-glow/monotonic_align; python setup.py build_ext --inplace; cd ../..
 RUN pip install -e ondewo-t2s-glow
