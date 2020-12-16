@@ -12,6 +12,8 @@
 * [[OND232-132]](https://ondewo.atlassian.net/browse/OND232-132) - Remove support of non-triton waveglow,
   mb-melgan models, and remove tacatron2 to get rid of tf and nemo.
 
+## Release ONDEWO T2S 1.3.1
+
 ### New Features
 
 * [[OND232-81]](https://ondewo.atlassian.net/browse/OND232-81) - Added GRPC config server. With this server it
