@@ -34,7 +34,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Script for creating samples of wav")
     parser.add_argument("--config_dir", type=str, default="evaluation/configs",
                         help="Path to folder with configs of model setups")
-    parser.add_argument("--text_samples_path", type=str, default="evaluation/sentences_en.txt",
+    parser.add_argument("--text_samples_path", type=str, default="evaluation/sentences_eloqai.txt",
                         help="Path of the txt file with text samples (sentences)")
     parser.add_argument("--n_samples", type=int, default=20,
                         help="How many samples to generate per model setup, set to < 1 to use all")
