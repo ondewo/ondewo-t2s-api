@@ -9,8 +9,12 @@
 * [[OND232-124]](https://ondewo.atlassian.net/browse/OND232-124) - Updated Glow-TTS to include blanks between
   phonemes
 * [[OND232-131]](https://ondewo.atlassian.net/browse/OND232-131) - Added HiFi model for mel2audio
+* [[OND232-132]](https://ondewo.atlassian.net/browse/OND232-132) - get rid of tf and nemo dependencies
+
+### Removed features
+
 * [[OND232-132]](https://ondewo.atlassian.net/browse/OND232-132) - Remove support of non-triton waveglow,
-  mb-melgan models, and remove tacatron2 to get rid of tf and nemo.
+  mb-melgan models, and remove tacatron2.
 
 ## Release ONDEWO T2S 1.3.1
 
