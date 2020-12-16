@@ -16,7 +16,9 @@
 * [[OND232-132]](https://ondewo.atlassian.net/browse/OND232-132) - Remove support of non-triton waveglow,
   mb-melgan models, and remove tacatron2.
 
-## Release ONDEWO T2S 1.3.1
+*****************
+
+## Release ONDEWO T2S 1.3.0
 
 ### New Features
 
