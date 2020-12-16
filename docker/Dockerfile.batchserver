@@ -16,9 +16,7 @@ RUN git clone git@bitbucket.org:ondewo/ondewo-logging.git
 
 RUN git clone git@bitbucket.org:ondewo/ondewo-t2s-hifigan.git && cd ondewo-t2s-hifigan && git checkout 1d691b8abc13275649be72809b681333bc47f1e6
 
-FROM nvcr.io/nvidia/cuda:11.0-runtime-ubuntu20.04 AS uncythonized
-ENV TZ=Europe/Vienna
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+FROM dockerregistry.ondewo.com:5000/cuda:11.0-base-ubuntu18.04 AS uncythonized
 
 RUN apt-get update && apt-get -y upgrade && \
 	apt-get install -y git sox && apt-get install -y libsndfile1-dev
