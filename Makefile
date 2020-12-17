@@ -102,6 +102,7 @@ make package_release: package_git_revision_and_version
 	mkdir -p ${RELEASE_FOLDER}
 
 	# tar and zip images
+	docker pull ${PUSH_NAME_RELEASE}
 	docker save ${PUSH_NAME_RELEASE} | gzip > ${RELEASE_FOLDER}/ondewo-t2s-batch-server-release-${SANITIZED_DOCKER_TAG_NAME}.tar.gz
 
 	# add configs
