@@ -5,6 +5,6 @@ batch_size: 8
 use_gpu: false
 length_scale: 1.0
 noise_scale: 0.667
-path: "models/glow-tts/de/G_kerstin.pth"
-param_config_path: "models/glow-tts/de/config.json"
+path: "models/glow-tts/de/kerstin_blank.pth"
+param_config_path: "models/glow-tts/de/config_blank.json"
 cleaners: ["german_cleaners"]

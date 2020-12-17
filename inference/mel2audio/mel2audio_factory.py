@@ -1,8 +1,7 @@
 from typing import Dict, Any, Type
 
-from inference.mel2audio.mbmelgan import MBMelGAN
+from inference.mel2audio.hifigan import HiFiGan
 from inference.mel2audio.mel2audio import Mel2Audio
-from inference.mel2audio.waveglow import Waveglow
 from inference.mel2audio.waveglow_triton import WaveglowTriton
 from inference.mel2audio.mbmelgan_triton import MBMelGANTriton
 
@@ -10,10 +9,9 @@ from inference.mel2audio.mbmelgan_triton import MBMelGANTriton
 class Mel2AudioFactory:
 
     MEL2AUDIO_DICT: Dict[str, Type] = {
-        "waveglow": Waveglow,
         "waveglow_triton": WaveglowTriton,
-        "mb_melgan_tf": MBMelGAN,
-        "mb_melgan_triton": MBMelGANTriton
+        "mb_melgan_triton": MBMelGANTriton,
+        "hifi_gan": HiFiGan,
     }
 
     @classmethod

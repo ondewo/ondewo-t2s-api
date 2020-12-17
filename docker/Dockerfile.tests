@@ -1,57 +1,5 @@
-FROM dockerregistry.ondewo.com:5000/ubuntu:18.04 AS private_installer
-ARG SSH_PRIVATE_KEY
-RUN mkdir /root/install
-WORKDIR /root/install
-RUN mkdir /root/.ssh/
-RUN echo "${SSH_PRIVATE_KEY}" > /root/.ssh/id_rsa
-RUN chmod 600 /root/.ssh/id_rsa
-RUN echo "StrictHostKeyChecking no" >> /root/.ssh/config
-
-RUN apt-get update && apt-get -y upgrade && \
-	apt-get install -y git
-
-RUN git clone git@bitbucket.org:ondewo/ondewo-t2s-glow.git && cd ondewo-t2s-glow && git checkout 240f859308c26ffd5698ae300748adea35b3c57d
-
-RUN git clone git@bitbucket.org:ondewo/tensorflowtts.git
-RUN cd tensorflowtts && git checkout 17963fd905eb04a73338681a440e6c2fa71e47a8
-
-RUN git clone git@bitbucket.org:ondewo/ondewo-logging.git
-
-FROM dockerregistry.ondewo.com:5000/cuda:11.0-base-ubuntu18.04 AS uncythonized
-
-RUN apt-get update && apt-get -y upgrade && \
-	apt-get install -y git sox
-
-# Upgrade installed packages
-RUN apt-get update && apt-get upgrade -y && apt-get install -y libsndfile1-dev
-
-# Install Python 3.7
-RUN apt-get install -y curl python3.7 python3.7-dev python3.7-distutils && \
-    update-alternatives --install /usr/bin/python python /usr/bin/python3.7 1 && \
-    update-alternatives --set python /usr/bin/python3.7 && \
-    curl -s https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
-    python get-pip.py --force-reinstall && \
-    rm get-pip.py
-
-# Install TF
-RUN pip install tensorflow-gpu==2.3.0
-
-# Install PyTorch
-RUN pip install torch==1.6.0
-
-# Install NeMo
-RUN pip install nemo_toolkit[all]==0.11
-
-RUN pip install cython
-COPY --from=private_installer /root/install/ondewo-t2s-glow ./ondewo-t2s-glow
-RUN cd ondewo-t2s-glow/monotonic_align; python setup.py build_ext --inplace; cd ../..
-RUN pip install -e ondewo-t2s-glow
-
-COPY --from=private_installer /root/install/tensorflowtts ./tensorflowtts
-RUN pip install -e tensorflowtts
-
-COPY --from=private_installer /root/install/ondewo-logging ./ondewo-logging
-RUN pip install -e ondewo-logging
+ARG PUSH_NAME_STREAM
+FROM ${PUSH_NAME_STREAM} AS test
 
 COPY ./docker/test_requirements.txt .
 COPY grpc_config_server/requirements.txt grpc_config_server/requirements.txt

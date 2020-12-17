@@ -1,7 +1,8 @@
-from typing import Any, Dict, Callable, List, Optional
+from typing import Any, Dict, List, Optional
+
+from pylog.logger import logger_console as logger
 
 from normalization.normalizer_interface import NormalizerInterface
-from pylog.logger import logger_console as logger
 
 
 class NormalizerPipeline:

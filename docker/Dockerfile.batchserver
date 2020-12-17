@@ -10,48 +10,27 @@ RUN echo "StrictHostKeyChecking no" >> /root/.ssh/config
 RUN apt-get update && apt-get -y upgrade && \
 	apt-get install -y git
 
-RUN git clone git@bitbucket.org:ondewo/ondewo-t2s-glow.git && cd ondewo-t2s-glow && git checkout 240f859308c26ffd5698ae300748adea35b3c57d
-
-RUN git clone git@bitbucket.org:ondewo/tensorflowtts.git
-RUN cd tensorflowtts && git checkout 17963fd905eb04a73338681a440e6c2fa71e47a8
+RUN git clone git@bitbucket.org:ondewo/ondewo-t2s-glow.git && cd ondewo-t2s-glow && git checkout 10a14619467d4239c3d7077b927db25a4dc2b4fb
 
 RUN git clone git@bitbucket.org:ondewo/ondewo-logging.git
 
-FROM dockerregistry.ondewo.com:5000/cuda:11.0-base-ubuntu18.04 AS uncythonized
+RUN git clone git@bitbucket.org:ondewo/ondewo-t2s-hifigan.git && cd ondewo-t2s-hifigan && git checkout 1d691b8abc13275649be72809b681333bc47f1e6
+
+FROM dockerregistry.ondewo.com:5000/base-cuda-pytorch:1.0.0 AS uncythonized
 
 RUN apt-get update && apt-get -y upgrade && \
-	apt-get install -y git sox
-
-# Upgrade installed packages
-RUN apt-get update && apt-get upgrade -y && apt-get install -y libsndfile1-dev
-
-# Install Python 3.7
-RUN apt-get install -y curl python3.7 python3.7-dev python3.7-distutils && \
-    update-alternatives --install /usr/bin/python python /usr/bin/python3.7 1 && \
-    update-alternatives --set python /usr/bin/python3.7 && \
-    curl -s https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
-    python get-pip.py --force-reinstall && \
-    rm get-pip.py
-
-# Install TF
-RUN pip install tensorflow-gpu==2.3.0
-
-# Install PyTorch
-RUN pip install torch==1.6.0
-
-# Install NeMo
-RUN pip install nemo_toolkit[all]==0.11
+	apt-get install -y git sox && apt-get install -y libsndfile1-dev
 
 RUN pip install cython
 COPY --from=private_installer /root/install/ondewo-t2s-glow ./ondewo-t2s-glow
 RUN cd ondewo-t2s-glow/monotonic_align; python setup.py build_ext --inplace; cd ../..
 RUN pip install -e ondewo-t2s-glow
 
-COPY --from=private_installer /root/install/tensorflowtts ./tensorflowtts
-RUN pip install -e tensorflowtts
-
 COPY --from=private_installer /root/install/ondewo-logging ./ondewo-logging
 RUN pip install -e ondewo-logging
+
+COPY --from=private_installer /root/install/ondewo-t2s-hifigan ./ondewo-t2s-hifigan
+RUN pip install -e ondewo-t2s-hifigan
 
 COPY ./docker/batch_server_requirements.txt .
 RUN pip install nvidia-pyindex
@@ -70,7 +49,7 @@ CMD flask run --host=0.0.0.0 --port=40015
 
 
 # ========Cythonization Image=======
-FROM dockerregistry.ondewo.com:5000/ondewo-cythonize-tools-3.7 AS cython_builder
+FROM dockerregistry.ondewo.com:5000/ondewo-cythonize-tools-3.8 AS cython_builder
 
 COPY --from=uncythonized /opt/ondewo-t2s/batch_server /tmp/transfer/to_cythonize/batch_server
 COPY --from=uncythonized /opt/ondewo-t2s/inference /tmp/transfer/to_cythonize/inference

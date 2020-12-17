@@ -2,7 +2,7 @@ fluent-logger==0.9.6
 msgpack
 pytest
 pytest-mock
-PyYAML==5.3.1
+ruamel.yaml
 tritonclient[all]==2.3.0
 git+https://github.com/wilsonchingg/logmmse.git
 pyroomacoustics

@@ -3,6 +3,7 @@ from typing import Tuple, Dict, Any, List
 import numpy as np
 import torch
 from glow_tts_reduced import models
+from pylog.logger import logger_console as logger
 
 from inference.text2mel.constants_text2mel import MODEL_PATH, USE_GPU, BATCH_SIZE
 from inference.text2mel.glow_tts_core import GlowTTSCore
@@ -14,6 +15,8 @@ class GlowTTS(GlowTTSCore):
     def __init__(self, config: Dict[str, Any]):
         super(GlowTTS, self).__init__(config=config)
         self.checkpoint_path: str = config[MODEL_PATH]
+
+        logger.info('Create glow-tts model. Start.')
         self.model: models.FlowGenerator = models.FlowGenerator(
             n_vocab=len(self.text_processor.symbols)+self.text_processor.add_blank,
             out_channels=self.hyperparams.data.n_mel_channels,
@@ -25,6 +28,7 @@ class GlowTTS(GlowTTSCore):
             self.model = self.model.to("cuda")
 
         # load trained model
+        logger.info('Load glow-tts model. Start.')
         self.state_dict = torch.load(self.checkpoint_path)
         # handle both cases 1- model with optimization info or 2- pure model in the checkpoint
         self.state_dict = self.state_dict.get('model') or self.state_dict
@@ -33,6 +37,7 @@ class GlowTTS(GlowTTSCore):
         # set model to eval mode
         self.model.decoder.store_inverse()  # do not calcuate jacobians for fast decoding
         self.model.eval()
+        logger.info('Glow-tts model is ready.')
 
     def _generate(self, texts: List[str], noise_scale: float = 0.667, length_scale: float = 1.0
                   ) -> Tuple[np.ndarray, ...]:
