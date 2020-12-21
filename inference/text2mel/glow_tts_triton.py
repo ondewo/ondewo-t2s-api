@@ -21,12 +21,12 @@ class GlowTTSTriton(GlowTTSCore):
             "config"].get("max_batch_size", 1)
         logger.info(f"Triton inference server for the model {self.triton_model_name} is ready.")
         # warm up model
-        self._generate(texts=['dummy_text'])
+        self._generate(texts=['dummy_text'], length_scale=1.0, noise_scale=0.667)
 
     def _generate(self,
                   texts: List[str],
-                  noise_scale: float = 0.667,
-                  length_scale: float = 1.0
+                  noise_scale: float,
+                  length_scale: float,
                   ) -> Tuple[np.ndarray, ...]:
         txt_indexes_batch, txt_lengths_batch = \
             self.text_processor.preprocess_text_batch(texts=texts)

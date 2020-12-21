@@ -11,6 +11,7 @@ from inference import triton_utils
 
 
 class WaveglowTriton(Mel2Audio):
+    NAME: str = 'waveglow_triton'
 
     def __init__(self, config: Dict[str, Any]):
         self.config: Dict[str, Any] = config

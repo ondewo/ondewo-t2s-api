@@ -5,9 +5,73 @@ import grpc
 from grpc_config_server.ondewo.audio import text_to_speech_pb2 as ondewo_dot_audio_dot_text__to__speech__pb2
 
 
+class Text2SpeechStub(object):
+    """endpoints of t2s generate service
+    """
+
+    def __init__(self, channel):
+        """Constructor.
+
+        Args:
+            channel: A grpc.Channel.
+        """
+        self.Synthesize = channel.unary_unary(
+            '/ondewo.audio.Text2Speech/Synthesize',
+            request_serializer=ondewo_dot_audio_dot_text__to__speech__pb2.SynthesizeRequest.SerializeToString,
+            response_deserializer=ondewo_dot_audio_dot_text__to__speech__pb2.SynthesizeResponse.FromString,
+        )
+
+
+class Text2SpeechServicer(object):
+    """endpoints of t2s generate service
+    """
+
+    def Synthesize(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+
+def add_Text2SpeechServicer_to_server(servicer, server):
+    rpc_method_handlers = {
+        'Synthesize': grpc.unary_unary_rpc_method_handler(
+            servicer.Synthesize,
+            request_deserializer=ondewo_dot_audio_dot_text__to__speech__pb2.SynthesizeRequest.FromString,
+            response_serializer=ondewo_dot_audio_dot_text__to__speech__pb2.SynthesizeResponse.SerializeToString,
+        ),
+    }
+    generic_handler = grpc.method_handlers_generic_handler(
+        'ondewo.audio.Text2Speech', rpc_method_handlers)
+    server.add_generic_rpc_handlers((generic_handler,))
+
+ # This class is part of an EXPERIMENTAL API.
+
+
+class Text2Speech(object):
+    """endpoints of t2s generate service
+    """
+
+    @staticmethod
+    def Synthesize(request,
+                   target,
+                   options=(),
+                   channel_credentials=None,
+                   call_credentials=None,
+                   insecure=False,
+                   compression=None,
+                   wait_for_ready=None,
+                   timeout=None,
+                   metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/ondewo.audio.Text2Speech/Synthesize',
+                                             ondewo_dot_audio_dot_text__to__speech__pb2.SynthesizeRequest.SerializeToString,
+                                             ondewo_dot_audio_dot_text__to__speech__pb2.SynthesizeResponse.FromString,
+                                             options, channel_credentials,
+                                             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+
 class Text2SpeechConfigurationStub(object):
-    """configuration of text-to-speech
-    endpoints of text-to-speech service
+    """endpoints of text-to-speech config service
     """
 
     def __init__(self, channel):
@@ -44,8 +108,7 @@ class Text2SpeechConfigurationStub(object):
 
 
 class Text2SpeechConfigurationServicer(object):
-    """configuration of text-to-speech
-    endpoints of text-to-speech service
+    """endpoints of text-to-speech config service
     """
 
     def ListSupportedLanguages(self, request, context):
@@ -115,8 +178,7 @@ def add_Text2SpeechConfigurationServicer_to_server(servicer, server):
 
 
 class Text2SpeechConfiguration(object):
-    """configuration of text-to-speech
-    endpoints of text-to-speech service
+    """endpoints of text-to-speech config service
     """
 
     @staticmethod

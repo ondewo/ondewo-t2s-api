@@ -130,7 +130,7 @@ install_dependencies_locally:
 ONDEWO_PROTOS_DIR=ondewoapis/ondewo/audio
 GOOGLE_APIS_DIR=ondewoapis/googleapis
 ONDEWO_APIS_DIR=ondewoapis
-PROTO_OUTPUT_FOLDER=grpc_config_server/
+PROTO_OUTPUT_FOLDER=grpc_server/
 
 generate_ondewo_protos:
 	for f in $$(find ${ONDEWO_PROTOS_DIR} -name '*.proto'); do \

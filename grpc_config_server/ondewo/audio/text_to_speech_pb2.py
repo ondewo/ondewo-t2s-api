@@ -3,7 +3,6 @@
 # source: ondewo/audio/text-to-speech.proto
 
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
-from google.api import annotations_pb2 as google_dot_api_dot_annotations__pb2
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
 from google.protobuf import reflection as _reflection
@@ -19,8 +18,107 @@ DESCRIPTOR = _descriptor.FileDescriptor(
     syntax='proto3',
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
-    serialized_pb=b'\n!ondewo/audio/text-to-speech.proto\x12\x0condewo.audio\x1a\x1cgoogle/api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\"g\n\nModelSetup\x12\x15\n\rlanguage_code\x18\x01 \x01(\t\x12\x11\n\tdirectory\x18\x02 \x01(\t\x12/\n\x06\x63onfig\x18\x03 \x01(\x0b\x32\x1f.ondewo.audio.Text2SpeechConfig\"=\n\x14ListLanguagesRequest\x12%\n\x05\x65mpty\x18\x01 \x01(\x0b\x32\x16.google.protobuf.Empty\"d\n\x15ListLanguagesResponse\x12\x33\n\x07request\x18\x01 \x01(\x0b\x32\".ondewo.audio.ListLanguagesRequest\x12\x16\n\x0elanguage_codes\x18\x02 \x03(\t\"6\n\x1dListModelSetupsForLangRequest\x12\x15\n\rlanguage_code\x18\x01 \x01(\t\"B\n\x19ListAllModelSetupsRequest\x12%\n\x05\x65mpty\x18\x01 \x01(\x0b\x32\x16.google.protobuf.Empty\"E\n\x13ModelSetupsResponse\x12.\n\x0cmodel_setups\x18\x02 \x03(\x0b\x32\x18.ondewo.audio.ModelSetup\"D\n\x1bGetActiveModelConfigRequest\x12%\n\x05\x65mpty\x18\x01 \x01(\x0b\x32\x16.google.protobuf.Empty\"\x7f\n\x12ModelSetupResponse\x12:\n\x07request\x18\x01 \x01(\x0b\x32).ondewo.audio.GetActiveModelConfigRequest\x12-\n\x0bmodel_setup\x18\x02 \x01(\x0b\x32\x18.ondewo.audio.ModelSetup\"*\n\x15SetModelConfigRequest\x12\x11\n\tdirectory\x18\x01 \x01(\t\"t\n\x16SetModelConfigResponse\x12\x34\n\x07request\x18\x01 \x01(\x0b\x32#.ondewo.audio.SetModelConfigRequest\x12\x0f\n\x07success\x18\x02 \x01(\x08\x12\x13\n\x0blog_message\x18\x03 \x01(\t\"\xa9\x01\n\x11Text2SpeechConfig\x12*\n\tinference\x18\x01 \x01(\x0b\x32\x17.ondewo.audio.Inference\x12\x32\n\rnormalization\x18\x02 \x01(\x0b\x32\x1b.ondewo.audio.Normalization\x12\x34\n\x0epostprocessing\x18\x03 \x01(\x0b\x32\x1c.ondewo.audio.Postprocessing\"\x80\x01\n\tInference\x12\x0c\n\x04type\x18\x01 \x01(\t\x12=\n\x13\x63omposite_inference\x18\x02 \x01(\x0b\x32 .ondewo.audio.CompositeInference\x12&\n\x07\x63\x61\x63hing\x18\x03 \x01(\x0b\x32\x15.ondewo.audio.Caching\"j\n\x12\x43ompositeInference\x12(\n\x08text2mel\x18\x01 \x01(\x0b\x32\x16.ondewo.audio.Text2Mel\x12*\n\tmel2audio\x18\x02 \x01(\x0b\x32\x17.ondewo.audio.Mel2Audio\"w\n\x08Text2Mel\x12\x0c\n\x04type\x18\x01 \x01(\t\x12\'\n\x08glow_tts\x18\x03 \x01(\x0b\x32\x15.ondewo.audio.GlowTTS\x12\x34\n\x0fglow_tts_triton\x18\x04 \x01(\x0b\x32\x1b.ondewo.audio.GlowTTSTriton\"\x94\x01\n\x07GlowTTS\x12\x12\n\nbatch_size\x18\x01 \x01(\x03\x12\x0f\n\x07use_gpu\x18\x02 \x01(\x08\x12\x14\n\x0clength_scale\x18\x03 \x01(\x02\x12\x13\n\x0bnoise_scale\x18\x04 \x01(\x02\x12\x0c\n\x04path\x18\x05 \x01(\t\x12\x10\n\x08\x63leaners\x18\x06 \x03(\t\x12\x19\n\x11param_config_path\x18\x07 \x01(\t\"\xc3\x01\n\rGlowTTSTriton\x12\x12\n\nbatch_size\x18\x01 \x01(\x03\x12\x14\n\x0clength_scale\x18\x02 \x01(\x02\x12\x13\n\x0bnoise_scale\x18\x03 \x01(\x02\x12\x10\n\x08\x63leaners\x18\x04 \x03(\t\x12\x17\n\x0fmax_text_length\x18\x05 \x01(\x03\x12\x19\n\x11param_config_path\x18\x06 \x01(\t\x12\x12\n\ntriton_url\x18\x07 \x01(\t\x12\x19\n\x11triton_model_name\x18\x08 \x01(\t\"\xb1\x01\n\tMel2Audio\x12\x0c\n\x04type\x18\x01 \x01(\t\x12\x35\n\x0fwaveglow_triton\x18\x02 \x01(\x0b\x32\x1c.ondewo.audio.WaveglowTriton\x12\x36\n\x10mb_melgan_triton\x18\x03 \x01(\x0b\x32\x1c.ondewo.audio.MbMelganTriton\x12\'\n\x08hifi_gan\x18\x04 \x01(\x0b\x32\x15.ondewo.audio.HiFiGan\"W\n\x07HiFiGan\x12\x0f\n\x07use_gpu\x18\x01 \x01(\x08\x12\x12\n\nbatch_size\x18\x02 \x01(\x03\x12\x13\n\x0b\x63onfig_path\x18\x03 \x01(\t\x12\x12\n\nmodel_path\x18\x04 \x01(\t\"\x81\x01\n\x0eWaveglowTriton\x12\x19\n\x11param_config_path\x18\x01 \x01(\t\x12\r\n\x05sigma\x18\x02 \x01(\x02\x12\x16\n\x0emax_spect_size\x18\x03 \x01(\x03\x12\x19\n\x11triton_model_name\x18\x04 \x01(\t\x12\x12\n\ntriton_url\x18\x05 \x01(\t\"h\n\x0eMbMelganTriton\x12\x13\n\x0b\x63onfig_path\x18\x01 \x01(\t\x12\x12\n\nstats_path\x18\x02 \x01(\t\x12\x19\n\x11triton_model_name\x18\x03 \x01(\t\x12\x12\n\ntriton_url\x18\x04 \x01(\t\"\x8f\x01\n\x07\x43\x61\x63hing\x12\x0e\n\x06\x61\x63tive\x18\x01 \x01(\x08\x12\x1d\n\x15memory_cache_max_size\x18\x02 \x01(\x03\x12\x15\n\rsampling_rate\x18\x03 \x01(\x03\x12\x12\n\nload_cache\x18\x04 \x01(\x08\x12\x12\n\nsave_cache\x18\x05 \x01(\x08\x12\x16\n\x0e\x63\x61\x63he_save_dir\x18\x06 \x01(\t\"3\n\rNormalization\x12\x10\n\x08language\x18\x01 \x01(\t\x12\x10\n\x08pipeline\x18\x02 \x03(\t\"\xb6\x01\n\x0ePostprocessing\x12\x14\n\x0csilence_secs\x18\x01 \x01(\x02\x12\x10\n\x08pipeline\x18\x02 \x03(\t\x12&\n\x07logmmse\x18\x03 \x01(\x0b\x32\x15.ondewo.audio.Logmnse\x12$\n\x06wiener\x18\x04 \x01(\x0b\x32\x14.ondewo.audio.Wiener\x12.\n\x0b\x61podization\x18\x05 \x01(\x0b\x32\x19.ondewo.audio.Apodization\"N\n\x07Logmnse\x12\x15\n\rinitial_noise\x18\x01 \x01(\x03\x12\x13\n\x0bwindow_size\x18\x02 \x01(\x03\x12\x17\n\x0fnoise_threshold\x18\x03 \x01(\x02\"a\n\x06Wiener\x12\x11\n\tframe_len\x18\x01 \x01(\x03\x12\x11\n\tlpc_order\x18\x02 \x01(\x03\x12\x12\n\niterations\x18\x03 \x01(\x03\x12\r\n\x05\x61lpha\x18\x04 \x01(\x02\x12\x0e\n\x06thresh\x18\x05 \x01(\x02\"\'\n\x0b\x41podization\x12\x18\n\x10\x61podization_secs\x18\x01 \x01(\x02\x32\x8b\x07\n\x18Text2SpeechConfiguration\x12\xae\x01\n\x16ListSupportedLanguages\x12\".ondewo.audio.ListLanguagesRequest\x1a#.ondewo.audio.ListLanguagesResponse\"K\x82\xd3\xe4\x93\x02\x45\"@/v2/{session=projects/*/agent/sessions/*}:ListSupportedLanguages:\x01*\x12\xbd\x01\n\x1aListModelSetupsForLanguage\x12+.ondewo.audio.ListModelSetupsForLangRequest\x1a!.ondewo.audio.ModelSetupsResponse\"O\x82\xd3\xe4\x93\x02I\"D/v2/{session=projects/*/agent/sessions/*}:ListModelSetupsForLanguage:\x01*\x12\xa9\x01\n\x12ListAllModelSetups\x12\'.ondewo.audio.ListAllModelSetupsRequest\x1a!.ondewo.audio.ModelSetupsResponse\"G\x82\xd3\xe4\x93\x02\x41\"</v2/{session=projects/*/agent/sessions/*}:ListAllModelSetups:\x01*\x12\xae\x01\n\x14GetActiveModelConfig\x12).ondewo.audio.GetActiveModelConfigRequest\x1a .ondewo.audio.ModelSetupResponse\"I\x82\xd3\xe4\x93\x02\x43\">/v2/{session=projects/*/agent/sessions/*}:GetActiveModelConfig:\x01*\x12\xa0\x01\n\x0eSetModelConfig\x12#.ondewo.audio.SetModelConfigRequest\x1a$.ondewo.audio.SetModelConfigResponse\"C\x82\xd3\xe4\x93\x02=\"8/v2/{session=projects/*/agent/sessions/*}:SetModelConfig:\x01*b\x06proto3',
-    dependencies=[google_dot_api_dot_annotations__pb2.DESCRIPTOR, google_dot_protobuf_dot_empty__pb2.DESCRIPTOR, ])
+    serialized_pb=b'\n!ondewo/audio/text-to-speech.proto\x12\x0condewo.audio\x1a\x1bgoogle/protobuf/empty.proto\"\x80\x01\n\x11SynthesizeRequest\x12\x10\n\x08model_id\x18\x01 \x01(\t\x12\x0c\n\x04text\x18\x02 \x01(\t\x12\x14\n\x0clength_scale\x18\x03 \x01(\x02\x12\x13\n\x0bnoise_scale\x18\x04 \x01(\x02\x12\x13\n\x0bsample_rate\x18\x05 \x01(\x05\x12\x0b\n\x03pcm\x18\x06 \x01(\x05\"#\n\x12SynthesizeResponse\x12\r\n\x05\x61udio\x18\x01 \x01(\x0c\"g\n\nModelSetup\x12\x15\n\rlanguage_code\x18\x01 \x01(\t\x12\x11\n\tdirectory\x18\x02 \x01(\t\x12/\n\x06\x63onfig\x18\x03 \x01(\x0b\x32\x1f.ondewo.audio.Text2SpeechConfig\"=\n\x14ListLanguagesRequest\x12%\n\x05\x65mpty\x18\x01 \x01(\x0b\x32\x16.google.protobuf.Empty\"d\n\x15ListLanguagesResponse\x12\x33\n\x07request\x18\x01 \x01(\x0b\x32\".ondewo.audio.ListLanguagesRequest\x12\x16\n\x0elanguage_codes\x18\x02 \x03(\t\"6\n\x1dListModelSetupsForLangRequest\x12\x15\n\rlanguage_code\x18\x01 \x01(\t\"B\n\x19ListAllModelSetupsRequest\x12%\n\x05\x65mpty\x18\x01 \x01(\x0b\x32\x16.google.protobuf.Empty\"E\n\x13ModelSetupsResponse\x12.\n\x0cmodel_setups\x18\x02 \x03(\x0b\x32\x18.ondewo.audio.ModelSetup\"D\n\x1bGetActiveModelConfigRequest\x12%\n\x05\x65mpty\x18\x01 \x01(\x0b\x32\x16.google.protobuf.Empty\"\x7f\n\x12ModelSetupResponse\x12:\n\x07request\x18\x01 \x01(\x0b\x32).ondewo.audio.GetActiveModelConfigRequest\x12-\n\x0bmodel_setup\x18\x02 \x01(\x0b\x32\x18.ondewo.audio.ModelSetup\"*\n\x15SetModelConfigRequest\x12\x11\n\tdirectory\x18\x01 \x01(\t\"t\n\x16SetModelConfigResponse\x12\x34\n\x07request\x18\x01 \x01(\x0b\x32#.ondewo.audio.SetModelConfigRequest\x12\x0f\n\x07success\x18\x02 \x01(\x08\x12\x13\n\x0blog_message\x18\x03 \x01(\t\"\xa9\x01\n\x11Text2SpeechConfig\x12*\n\tinference\x18\x01 \x01(\x0b\x32\x17.ondewo.audio.Inference\x12\x32\n\rnormalization\x18\x02 \x01(\x0b\x32\x1b.ondewo.audio.Normalization\x12\x34\n\x0epostprocessing\x18\x03 \x01(\x0b\x32\x1c.ondewo.audio.Postprocessing\"\x80\x01\n\tInference\x12\x0c\n\x04type\x18\x01 \x01(\t\x12=\n\x13\x63omposite_inference\x18\x02 \x01(\x0b\x32 .ondewo.audio.CompositeInference\x12&\n\x07\x63\x61\x63hing\x18\x03 \x01(\x0b\x32\x15.ondewo.audio.Caching\"j\n\x12\x43ompositeInference\x12(\n\x08text2mel\x18\x01 \x01(\x0b\x32\x16.ondewo.audio.Text2Mel\x12*\n\tmel2audio\x18\x02 \x01(\x0b\x32\x17.ondewo.audio.Mel2Audio\"w\n\x08Text2Mel\x12\x0c\n\x04type\x18\x01 \x01(\t\x12\'\n\x08glow_tts\x18\x03 \x01(\x0b\x32\x15.ondewo.audio.GlowTTS\x12\x34\n\x0fglow_tts_triton\x18\x04 \x01(\x0b\x32\x1b.ondewo.audio.GlowTTSTriton\"\x94\x01\n\x07GlowTTS\x12\x12\n\nbatch_size\x18\x01 \x01(\x03\x12\x0f\n\x07use_gpu\x18\x02 \x01(\x08\x12\x14\n\x0clength_scale\x18\x03 \x01(\x02\x12\x13\n\x0bnoise_scale\x18\x04 \x01(\x02\x12\x0c\n\x04path\x18\x05 \x01(\t\x12\x10\n\x08\x63leaners\x18\x06 \x03(\t\x12\x19\n\x11param_config_path\x18\x07 \x01(\t\"\xc3\x01\n\rGlowTTSTriton\x12\x12\n\nbatch_size\x18\x01 \x01(\x03\x12\x14\n\x0clength_scale\x18\x02 \x01(\x02\x12\x13\n\x0bnoise_scale\x18\x03 \x01(\x02\x12\x10\n\x08\x63leaners\x18\x04 \x03(\t\x12\x17\n\x0fmax_text_length\x18\x05 \x01(\x03\x12\x19\n\x11param_config_path\x18\x06 \x01(\t\x12\x12\n\ntriton_url\x18\x07 \x01(\t\x12\x19\n\x11triton_model_name\x18\x08 \x01(\t\"\xb1\x01\n\tMel2Audio\x12\x0c\n\x04type\x18\x01 \x01(\t\x12\x35\n\x0fwaveglow_triton\x18\x02 \x01(\x0b\x32\x1c.ondewo.audio.WaveglowTriton\x12\x36\n\x10mb_melgan_triton\x18\x03 \x01(\x0b\x32\x1c.ondewo.audio.MbMelganTriton\x12\'\n\x08hifi_gan\x18\x04 \x01(\x0b\x32\x15.ondewo.audio.HiFiGan\"W\n\x07HiFiGan\x12\x0f\n\x07use_gpu\x18\x01 \x01(\x08\x12\x12\n\nbatch_size\x18\x02 \x01(\x03\x12\x13\n\x0b\x63onfig_path\x18\x03 \x01(\t\x12\x12\n\nmodel_path\x18\x04 \x01(\t\"\x81\x01\n\x0eWaveglowTriton\x12\x19\n\x11param_config_path\x18\x01 \x01(\t\x12\r\n\x05sigma\x18\x02 \x01(\x02\x12\x16\n\x0emax_spect_size\x18\x03 \x01(\x03\x12\x19\n\x11triton_model_name\x18\x04 \x01(\t\x12\x12\n\ntriton_url\x18\x05 \x01(\t\"h\n\x0eMbMelganTriton\x12\x13\n\x0b\x63onfig_path\x18\x01 \x01(\t\x12\x12\n\nstats_path\x18\x02 \x01(\t\x12\x19\n\x11triton_model_name\x18\x03 \x01(\t\x12\x12\n\ntriton_url\x18\x04 \x01(\t\"\x8f\x01\n\x07\x43\x61\x63hing\x12\x0e\n\x06\x61\x63tive\x18\x01 \x01(\x08\x12\x1d\n\x15memory_cache_max_size\x18\x02 \x01(\x03\x12\x15\n\rsampling_rate\x18\x03 \x01(\x03\x12\x12\n\nload_cache\x18\x04 \x01(\x08\x12\x12\n\nsave_cache\x18\x05 \x01(\x08\x12\x16\n\x0e\x63\x61\x63he_save_dir\x18\x06 \x01(\t\"3\n\rNormalization\x12\x10\n\x08language\x18\x01 \x01(\t\x12\x10\n\x08pipeline\x18\x02 \x03(\t\"\xb6\x01\n\x0ePostprocessing\x12\x14\n\x0csilence_secs\x18\x01 \x01(\x02\x12\x10\n\x08pipeline\x18\x02 \x03(\t\x12&\n\x07logmmse\x18\x03 \x01(\x0b\x32\x15.ondewo.audio.Logmnse\x12$\n\x06wiener\x18\x04 \x01(\x0b\x32\x14.ondewo.audio.Wiener\x12.\n\x0b\x61podization\x18\x05 \x01(\x0b\x32\x19.ondewo.audio.Apodization\"N\n\x07Logmnse\x12\x15\n\rinitial_noise\x18\x01 \x01(\x03\x12\x13\n\x0bwindow_size\x18\x02 \x01(\x03\x12\x17\n\x0fnoise_threshold\x18\x03 \x01(\x02\"a\n\x06Wiener\x12\x11\n\tframe_len\x18\x01 \x01(\x03\x12\x11\n\tlpc_order\x18\x02 \x01(\x03\x12\x12\n\niterations\x18\x03 \x01(\x03\x12\r\n\x05\x61lpha\x18\x04 \x01(\x02\x12\x0e\n\x06thresh\x18\x05 \x01(\x02\"\'\n\x0b\x41podization\x12\x18\n\x10\x61podization_secs\x18\x01 \x01(\x02\x32`\n\x0bText2Speech\x12Q\n\nSynthesize\x12\x1f.ondewo.audio.SynthesizeRequest\x1a .ondewo.audio.SynthesizeResponse\"\x00\x32\x99\x04\n\x18Text2SpeechConfiguration\x12\x63\n\x16ListSupportedLanguages\x12\".ondewo.audio.ListLanguagesRequest\x1a#.ondewo.audio.ListLanguagesResponse\"\x00\x12n\n\x1aListModelSetupsForLanguage\x12+.ondewo.audio.ListModelSetupsForLangRequest\x1a!.ondewo.audio.ModelSetupsResponse\"\x00\x12\x62\n\x12ListAllModelSetups\x12\'.ondewo.audio.ListAllModelSetupsRequest\x1a!.ondewo.audio.ModelSetupsResponse\"\x00\x12\x65\n\x14GetActiveModelConfig\x12).ondewo.audio.GetActiveModelConfigRequest\x1a .ondewo.audio.ModelSetupResponse\"\x00\x12]\n\x0eSetModelConfig\x12#.ondewo.audio.SetModelConfigRequest\x1a$.ondewo.audio.SetModelConfigResponse\"\x00\x62\x06proto3',
+    dependencies=[google_dot_protobuf_dot_empty__pb2.DESCRIPTOR, ])
+
+
+_SYNTHESIZEREQUEST = _descriptor.Descriptor(
+    name='SynthesizeRequest',
+    full_name='ondewo.audio.SynthesizeRequest',
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name='model_id', full_name='ondewo.audio.SynthesizeRequest.model_id', index=0,
+            number=1, type=9, cpp_type=9, label=1,
+            has_default_value=False, default_value=b"".decode('utf-8'),
+            message_type=None, enum_type=None, containing_type=None,
+            is_extension=False, extension_scope=None,
+            serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+        _descriptor.FieldDescriptor(
+            name='text', full_name='ondewo.audio.SynthesizeRequest.text', index=1,
+            number=2, type=9, cpp_type=9, label=1,
+            has_default_value=False, default_value=b"".decode('utf-8'),
+            message_type=None, enum_type=None, containing_type=None,
+            is_extension=False, extension_scope=None,
+            serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+        _descriptor.FieldDescriptor(
+            name='length_scale', full_name='ondewo.audio.SynthesizeRequest.length_scale', index=2,
+            number=3, type=2, cpp_type=6, label=1,
+            has_default_value=False, default_value=float(0),
+            message_type=None, enum_type=None, containing_type=None,
+            is_extension=False, extension_scope=None,
+            serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+        _descriptor.FieldDescriptor(
+            name='noise_scale', full_name='ondewo.audio.SynthesizeRequest.noise_scale', index=3,
+            number=4, type=2, cpp_type=6, label=1,
+            has_default_value=False, default_value=float(0),
+            message_type=None, enum_type=None, containing_type=None,
+            is_extension=False, extension_scope=None,
+            serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+        _descriptor.FieldDescriptor(
+            name='sample_rate', full_name='ondewo.audio.SynthesizeRequest.sample_rate', index=4,
+            number=5, type=5, cpp_type=1, label=1,
+            has_default_value=False, default_value=0,
+            message_type=None, enum_type=None, containing_type=None,
+            is_extension=False, extension_scope=None,
+            serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+        _descriptor.FieldDescriptor(
+            name='pcm', full_name='ondewo.audio.SynthesizeRequest.pcm', index=5,
+            number=6, type=5, cpp_type=1, label=1,
+            has_default_value=False, default_value=0,
+            message_type=None, enum_type=None, containing_type=None,
+            is_extension=False, extension_scope=None,
+            serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    ],
+    extensions=[
+    ],
+    nested_types=[],
+    enum_types=[
+    ],
+    serialized_options=None,
+    is_extendable=False,
+    syntax='proto3',
+    extension_ranges=[],
+    oneofs=[
+    ],
+    serialized_start=81,
+    serialized_end=209,
+)
+
+
+_SYNTHESIZERESPONSE = _descriptor.Descriptor(
+    name='SynthesizeResponse',
+    full_name='ondewo.audio.SynthesizeResponse',
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name='audio', full_name='ondewo.audio.SynthesizeResponse.audio', index=0,
+            number=1, type=12, cpp_type=9, label=1,
+            has_default_value=False, default_value=b"",
+            message_type=None, enum_type=None, containing_type=None,
+            is_extension=False, extension_scope=None,
+            serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    ],
+    extensions=[
+    ],
+    nested_types=[],
+    enum_types=[
+    ],
+    serialized_options=None,
+    is_extendable=False,
+    syntax='proto3',
+    extension_ranges=[],
+    oneofs=[
+    ],
+    serialized_start=211,
+    serialized_end=246,
+)
 
 
 _MODELSETUP = _descriptor.Descriptor(
@@ -64,8 +162,8 @@ _MODELSETUP = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=110,
-    serialized_end=213,
+    serialized_start=248,
+    serialized_end=351,
 )
 
 
@@ -96,8 +194,8 @@ _LISTLANGUAGESREQUEST = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=215,
-    serialized_end=276,
+    serialized_start=353,
+    serialized_end=414,
 )
 
 
@@ -135,8 +233,8 @@ _LISTLANGUAGESRESPONSE = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=278,
-    serialized_end=378,
+    serialized_start=416,
+    serialized_end=516,
 )
 
 
@@ -167,8 +265,8 @@ _LISTMODELSETUPSFORLANGREQUEST = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=380,
-    serialized_end=434,
+    serialized_start=518,
+    serialized_end=572,
 )
 
 
@@ -199,8 +297,8 @@ _LISTALLMODELSETUPSREQUEST = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=436,
-    serialized_end=502,
+    serialized_start=574,
+    serialized_end=640,
 )
 
 
@@ -231,8 +329,8 @@ _MODELSETUPSRESPONSE = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=504,
-    serialized_end=573,
+    serialized_start=642,
+    serialized_end=711,
 )
 
 
@@ -263,8 +361,8 @@ _GETACTIVEMODELCONFIGREQUEST = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=575,
-    serialized_end=643,
+    serialized_start=713,
+    serialized_end=781,
 )
 
 
@@ -302,8 +400,8 @@ _MODELSETUPRESPONSE = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=645,
-    serialized_end=772,
+    serialized_start=783,
+    serialized_end=910,
 )
 
 
@@ -334,8 +432,8 @@ _SETMODELCONFIGREQUEST = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=774,
-    serialized_end=816,
+    serialized_start=912,
+    serialized_end=954,
 )
 
 
@@ -380,8 +478,8 @@ _SETMODELCONFIGRESPONSE = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=818,
-    serialized_end=934,
+    serialized_start=956,
+    serialized_end=1072,
 )
 
 
@@ -426,8 +524,8 @@ _TEXT2SPEECHCONFIG = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=937,
-    serialized_end=1106,
+    serialized_start=1075,
+    serialized_end=1244,
 )
 
 
@@ -472,8 +570,8 @@ _INFERENCE = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=1109,
-    serialized_end=1237,
+    serialized_start=1247,
+    serialized_end=1375,
 )
 
 
@@ -511,8 +609,8 @@ _COMPOSITEINFERENCE = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=1239,
-    serialized_end=1345,
+    serialized_start=1377,
+    serialized_end=1483,
 )
 
 
@@ -557,8 +655,8 @@ _TEXT2MEL = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=1347,
-    serialized_end=1466,
+    serialized_start=1485,
+    serialized_end=1604,
 )
 
 
@@ -631,8 +729,8 @@ _GLOWTTS = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=1469,
-    serialized_end=1617,
+    serialized_start=1607,
+    serialized_end=1755,
 )
 
 
@@ -712,8 +810,8 @@ _GLOWTTSTRITON = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=1620,
-    serialized_end=1815,
+    serialized_start=1758,
+    serialized_end=1953,
 )
 
 
@@ -765,8 +863,8 @@ _MEL2AUDIO = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=1818,
-    serialized_end=1995,
+    serialized_start=1956,
+    serialized_end=2133,
 )
 
 
@@ -818,8 +916,8 @@ _HIFIGAN = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=1997,
-    serialized_end=2084,
+    serialized_start=2135,
+    serialized_end=2222,
 )
 
 
@@ -878,8 +976,8 @@ _WAVEGLOWTRITON = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=2087,
-    serialized_end=2216,
+    serialized_start=2225,
+    serialized_end=2354,
 )
 
 
@@ -931,8 +1029,8 @@ _MBMELGANTRITON = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=2218,
-    serialized_end=2322,
+    serialized_start=2356,
+    serialized_end=2460,
 )
 
 
@@ -998,8 +1096,8 @@ _CACHING = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=2325,
-    serialized_end=2468,
+    serialized_start=2463,
+    serialized_end=2606,
 )
 
 
@@ -1037,8 +1135,8 @@ _NORMALIZATION = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=2470,
-    serialized_end=2521,
+    serialized_start=2608,
+    serialized_end=2659,
 )
 
 
@@ -1097,8 +1195,8 @@ _POSTPROCESSING = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=2524,
-    serialized_end=2706,
+    serialized_start=2662,
+    serialized_end=2844,
 )
 
 
@@ -1143,8 +1241,8 @@ _LOGMNSE = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=2708,
-    serialized_end=2786,
+    serialized_start=2846,
+    serialized_end=2924,
 )
 
 
@@ -1203,8 +1301,8 @@ _WIENER = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=2788,
-    serialized_end=2885,
+    serialized_start=2926,
+    serialized_end=3023,
 )
 
 
@@ -1235,8 +1333,8 @@ _APODIZATION = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=2887,
-    serialized_end=2926,
+    serialized_start=3025,
+    serialized_end=3064,
 )
 
 _MODELSETUP.fields_by_name['config'].message_type = _TEXT2SPEECHCONFIG
@@ -1263,6 +1361,8 @@ _MEL2AUDIO.fields_by_name['hifi_gan'].message_type = _HIFIGAN
 _POSTPROCESSING.fields_by_name['logmmse'].message_type = _LOGMNSE
 _POSTPROCESSING.fields_by_name['wiener'].message_type = _WIENER
 _POSTPROCESSING.fields_by_name['apodization'].message_type = _APODIZATION
+DESCRIPTOR.message_types_by_name['SynthesizeRequest'] = _SYNTHESIZEREQUEST
+DESCRIPTOR.message_types_by_name['SynthesizeResponse'] = _SYNTHESIZERESPONSE
 DESCRIPTOR.message_types_by_name['ModelSetup'] = _MODELSETUP
 DESCRIPTOR.message_types_by_name['ListLanguagesRequest'] = _LISTLANGUAGESREQUEST
 DESCRIPTOR.message_types_by_name['ListLanguagesResponse'] = _LISTLANGUAGESRESPONSE
@@ -1290,6 +1390,20 @@ DESCRIPTOR.message_types_by_name['Logmnse'] = _LOGMNSE
 DESCRIPTOR.message_types_by_name['Wiener'] = _WIENER
 DESCRIPTOR.message_types_by_name['Apodization'] = _APODIZATION
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
+
+SynthesizeRequest = _reflection.GeneratedProtocolMessageType('SynthesizeRequest', (_message.Message,), {
+    'DESCRIPTOR': _SYNTHESIZEREQUEST,
+    '__module__': 'ondewo.audio.text_to_speech_pb2'
+    # @@protoc_insertion_point(class_scope:ondewo.audio.SynthesizeRequest)
+})
+_sym_db.RegisterMessage(SynthesizeRequest)
+
+SynthesizeResponse = _reflection.GeneratedProtocolMessageType('SynthesizeResponse', (_message.Message,), {
+    'DESCRIPTOR': _SYNTHESIZERESPONSE,
+    '__module__': 'ondewo.audio.text_to_speech_pb2'
+    # @@protoc_insertion_point(class_scope:ondewo.audio.SynthesizeResponse)
+})
+_sym_db.RegisterMessage(SynthesizeResponse)
 
 ModelSetup = _reflection.GeneratedProtocolMessageType('ModelSetup', (_message.Message,), {
     'DESCRIPTOR': _MODELSETUP,
@@ -1474,15 +1588,41 @@ Apodization = _reflection.GeneratedProtocolMessageType('Apodization', (_message.
 _sym_db.RegisterMessage(Apodization)
 
 
-_TEXT2SPEECHCONFIGURATION = _descriptor.ServiceDescriptor(
-    name='Text2SpeechConfiguration',
-    full_name='ondewo.audio.Text2SpeechConfiguration',
+_TEXT2SPEECH = _descriptor.ServiceDescriptor(
+    name='Text2Speech',
+    full_name='ondewo.audio.Text2Speech',
     file=DESCRIPTOR,
     index=0,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
-    serialized_start=2929,
-    serialized_end=3836,
+    serialized_start=3066,
+    serialized_end=3162,
+    methods=[
+        _descriptor.MethodDescriptor(
+            name='Synthesize',
+            full_name='ondewo.audio.Text2Speech.Synthesize',
+            index=0,
+            containing_service=None,
+            input_type=_SYNTHESIZEREQUEST,
+            output_type=_SYNTHESIZERESPONSE,
+            serialized_options=None,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ])
+_sym_db.RegisterServiceDescriptor(_TEXT2SPEECH)
+
+DESCRIPTOR.services_by_name['Text2Speech'] = _TEXT2SPEECH
+
+
+_TEXT2SPEECHCONFIGURATION = _descriptor.ServiceDescriptor(
+    name='Text2SpeechConfiguration',
+    full_name='ondewo.audio.Text2SpeechConfiguration',
+    file=DESCRIPTOR,
+    index=1,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+    serialized_start=3165,
+    serialized_end=3702,
     methods=[
         _descriptor.MethodDescriptor(
             name='ListSupportedLanguages',
@@ -1491,7 +1631,7 @@ _TEXT2SPEECHCONFIGURATION = _descriptor.ServiceDescriptor(
             containing_service=None,
             input_type=_LISTLANGUAGESREQUEST,
             output_type=_LISTLANGUAGESRESPONSE,
-            serialized_options=b'\202\323\344\223\002E\"@/v2/{session=projects/*/agent/sessions/*}:ListSupportedLanguages:\001*',
+            serialized_options=None,
             create_key=_descriptor._internal_create_key,
         ),
         _descriptor.MethodDescriptor(
@@ -1501,7 +1641,7 @@ _TEXT2SPEECHCONFIGURATION = _descriptor.ServiceDescriptor(
             containing_service=None,
             input_type=_LISTMODELSETUPSFORLANGREQUEST,
             output_type=_MODELSETUPSRESPONSE,
-            serialized_options=b'\202\323\344\223\002I\"D/v2/{session=projects/*/agent/sessions/*}:ListModelSetupsForLanguage:\001*',
+            serialized_options=None,
             create_key=_descriptor._internal_create_key,
         ),
         _descriptor.MethodDescriptor(
@@ -1511,7 +1651,7 @@ _TEXT2SPEECHCONFIGURATION = _descriptor.ServiceDescriptor(
             containing_service=None,
             input_type=_LISTALLMODELSETUPSREQUEST,
             output_type=_MODELSETUPSRESPONSE,
-            serialized_options=b'\202\323\344\223\002A\"</v2/{session=projects/*/agent/sessions/*}:ListAllModelSetups:\001*',
+            serialized_options=None,
             create_key=_descriptor._internal_create_key,
         ),
         _descriptor.MethodDescriptor(
@@ -1521,7 +1661,7 @@ _TEXT2SPEECHCONFIGURATION = _descriptor.ServiceDescriptor(
             containing_service=None,
             input_type=_GETACTIVEMODELCONFIGREQUEST,
             output_type=_MODELSETUPRESPONSE,
-            serialized_options=b'\202\323\344\223\002C\">/v2/{session=projects/*/agent/sessions/*}:GetActiveModelConfig:\001*',
+            serialized_options=None,
             create_key=_descriptor._internal_create_key,
         ),
         _descriptor.MethodDescriptor(
@@ -1531,7 +1671,7 @@ _TEXT2SPEECHCONFIGURATION = _descriptor.ServiceDescriptor(
             containing_service=None,
             input_type=_SETMODELCONFIGREQUEST,
             output_type=_SETMODELCONFIGRESPONSE,
-            serialized_options=b'\202\323\344\223\002=\"8/v2/{session=projects/*/agent/sessions/*}:SetModelConfig:\001*',
+            serialized_options=None,
             create_key=_descriptor._internal_create_key,
         ),
     ])

@@ -1,0 +1,1 @@
+CONFIG_DIR_ENV: str = 'CONFIG_DIR'

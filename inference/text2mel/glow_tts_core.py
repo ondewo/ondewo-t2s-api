@@ -37,13 +37,15 @@ class GlowTTSCore(Text2Mel):
         self.batch_size: int = 1
 
     @Timer(log_arguments=False)
-    def text2mel(self, texts: List[str]) -> List[np.ndarray]:
+    def text2mel(self, texts: List[str], length_scale: Optional[float] = None,
+                 noise_scale: Optional[float] = None) -> List[np.ndarray]:
         logger.info(f"Running {self.NAME} inference")
         result: List[np.ndarray] = self._generate_in_batches(texts=texts)
         logger.info(f"Done {self.NAME} inference")
         return result
 
-    def _generate_in_batches(self, texts: List[str]) -> List[np.ndarray]:
+    def _generate_in_batches(self, texts: List[str], length_scale: Optional[float] = None,
+                             noise_scale: Optional[float] = None) -> List[np.ndarray]:
         """
 
         Args:
@@ -58,15 +60,15 @@ class GlowTTSCore(Text2Mel):
             mel_list.extend(
                 self._generate_batch_and_split(
                     texts=text_batch,
-                    length_scale=self.config[LENGTH_SCALE],
-                    noise_scale=self.config[NOISE_SCALE]
+                    length_scale=length_scale or self.config[LENGTH_SCALE],
+                    noise_scale=noise_scale or self.config[NOISE_SCALE]
                 )
             )
             texts = texts[self.batch_size:]
         return mel_list
 
     def _generate_batch_and_split(
-            self, texts: List[str], noise_scale: float = 0.667, length_scale: float = 1.0
+            self, texts: List[str], noise_scale: float, length_scale: float
     ) -> List[np.ndarray]:
         """
 
@@ -86,6 +88,5 @@ class GlowTTSCore(Text2Mel):
         return mel_list
 
     def _generate(
-            self, texts: List[str], noise_scale: float = 0.667, length_scale: float = 1.0
-    ) -> Tuple[np.ndarray, ...]:
+            self, texts: List[str], noise_scale: float, length_scale: float) -> Tuple[np.ndarray, ...]:
         raise NotImplementedError('Method should be implemented in child class')

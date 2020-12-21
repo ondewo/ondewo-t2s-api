@@ -39,8 +39,7 @@ class GlowTTS(GlowTTSCore):
         self.model.eval()
         logger.info('Glow-tts model is ready.')
 
-    def _generate(self, texts: List[str], noise_scale: float = 0.667, length_scale: float = 1.0
-                  ) -> Tuple[np.ndarray, ...]:
+    def _generate(self, texts: List[str], noise_scale: float, length_scale: float) -> Tuple[np.ndarray, ...]:
         """
 
         Args:

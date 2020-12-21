@@ -16,6 +16,10 @@ class CompositeInference(Inference):
         self.mel2audio: Mel2Audio = Mel2AudioFactory.get_mel2audio(config['mel2audio'])
         logger.info('CompositeInference is ready.')
 
+    @property
+    def name(self) -> str:
+        return f'{self.text2mel.NAME}/{self.mel2audio.NAME}'
+
     def synthesize(self, texts: List[str]) -> List[np.ndarray]:
         mel_spectrograms: List[np.ndarray] = self.text2mel.text2mel(texts)
         audios: List[np.ndarray] = self.mel2audio.mel2audio(mel_spectrograms)

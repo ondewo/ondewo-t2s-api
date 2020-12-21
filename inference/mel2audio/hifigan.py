@@ -11,6 +11,8 @@ from pylog.decorators import Timer
 
 
 class HiFiGan(HiFiGANCore):
+    NAME: str = 'hifi_gan'
+
     def __init__(self, config: Dict[str, Any]):
         super(HiFiGan, self).__init__(config=config)
         self.model_path = self.config['model_path']

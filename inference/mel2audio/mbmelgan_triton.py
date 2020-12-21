@@ -12,6 +12,7 @@ from pylog.decorators import Timer
 
 
 class MBMelGANTriton(MBMelGANCore):
+    NAME: str = 'mbmelgan_triton'
 
     def __init__(self, config: Dict[str, Any]):
         check_paths_exist([config["stats_path"], config["config_path"]])
