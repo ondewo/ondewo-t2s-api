@@ -2,18 +2,17 @@ import io
 import re
 from typing import List, Tuple, Optional
 
+import google.protobuf.empty_pb2 as empty_pb2
 import grpc
+import numpy as np
+import soundfile as sf
 from pylog.logger import logger_console as logger
 
 from grpc_server.model_manager import ModelManager
 from grpc_server.ondewo.audio import text_to_speech_pb2_grpc, text_to_speech_pb2
-
-import numpy as np
-
 from inference.inference_interface import Inference
 from normalization.pipeline_constructor import NormalizerPipeline
 from normalization.postprocessor import Postprocessor
-import soundfile as sf
 
 
 class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
@@ -21,6 +20,12 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
     def Synthesize(self, request: text_to_speech_pb2.SynthesizeRequest,
                    context: grpc.ServicerContext) -> text_to_speech_pb2.SynthesizeResponse:
         return self.handle_synthersize_request(request)
+
+    def ListActiveModelIds(
+            self, request: empty_pb2.Empty,
+            context: grpc.ServicerContext,
+    ) -> text_to_speech_pb2.ListActiveModelIdsResponse:
+        return self.handle_list_all_model_setup_request()
 
     @staticmethod
     def handle_synthersize_request(request: text_to_speech_pb2.SynthesizeRequest
@@ -63,3 +68,8 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
         return text_to_speech_pb2.SynthesizeResponse(
             audio=out.read()
         )
+
+    @staticmethod
+    def handle_list_all_model_setup_request() -> text_to_speech_pb2.ListActiveModelIdsResponse:
+        ids: List[str] = ModelManager.get_all_model_ids()
+        return text_to_speech_pb2.ListActiveModelIdsResponse(ids=ids)

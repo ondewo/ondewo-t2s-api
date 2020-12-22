@@ -20,7 +20,16 @@ class CompositeInference(Inference):
     def name(self) -> str:
         return f'{self.text2mel.NAME}/{self.mel2audio.NAME}'
 
-    def synthesize(self, texts: List[str]) -> List[np.ndarray]:
-        mel_spectrograms: List[np.ndarray] = self.text2mel.text2mel(texts)
+    def synthesize(
+            self,
+            texts: List[str],
+            length_scale: float = 1.0,
+            noise_scale: float = 0.0
+    ) -> List[np.ndarray]:
+        mel_spectrograms: List[np.ndarray] = self.text2mel.text2mel(
+            texts=texts,
+            length_scale=length_scale,
+            noise_scale=noise_scale
+        )
         audios: List[np.ndarray] = self.mel2audio.mel2audio(mel_spectrograms)
         return audios
