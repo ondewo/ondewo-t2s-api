@@ -4,18 +4,16 @@ from typing import Optional, List, Dict, Any
 from uuid import uuid4
 
 import grpc
+from pylog.logger import logger_console as logger
 from ruamel import yaml
 
 from grpc_server.constants import CONFIG_DIR_ENV
 from grpc_server.model_manager import ModelManager
-from grpc_server.ondewo.audio import text_to_speech_pb2, text_to_speech_pb2_grpc
+from grpc_server.ondewo.audio import text_to_speech_pb2_grpc
 from grpc_server.servicer import Text2SpeechServicer
 from grpc_server.utils import get_list_of_config_files
 from inference.inference_factory import InferenceFactory
 from inference.inference_interface import Inference
-
-from pylog.logger import logger_console as logger
-
 from normalization.pipeline_constructor import NormalizerPipeline
 from normalization.postprocessor import Postprocessor
 
@@ -50,8 +48,8 @@ class Server:
             raise EnvironmentError(error_message)
         config_files: List[str] = get_list_of_config_files(config_dir)
         for config_file in config_files:
-            with open(config_file) as f:
-                config: Dict[str, Any] = yaml.load(f)
+            with open(os.path.join(config_dir, config_file)) as f:
+                config: Dict[str, Any] = yaml.load(f, Loader=yaml.Loader)
             inference_type = config['inference']
             inference: Inference = InferenceFactory.get_inference(inference_type)
             preprocess_pipeline: NormalizerPipeline = NormalizerPipeline(config=config['normalization'])

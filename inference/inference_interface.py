@@ -6,7 +6,6 @@ import numpy
 
 class Inference(ABC):
 
-    @abstractmethod
     @property
     def name(self) -> str:
         """
@@ -14,12 +13,15 @@ class Inference(ABC):
         Returns: name of the Inference method (not unique)
 
         """
+        raise NotImplementedError('Not available in parent class. Should be defined in child.')
 
     @abstractmethod
-    def synthesize(self, texts: List[str]) -> List[numpy.ndarray]:
+    def synthesize(self, texts: List[str], length_scale: float, noise_scale: float) -> List[numpy.ndarray]:
         """
 
         Args:
+            noise_scale:
+            length_scale:
             texts: list of texts
 
         Returns: list of audio files one for each text in the same order

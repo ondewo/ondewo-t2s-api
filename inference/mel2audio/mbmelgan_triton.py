@@ -50,3 +50,7 @@ class MBMelGANTriton(MBMelGANCore):
         result: List[np.ndarray] = self._inference_batches_and_postprocess(
             batched_input_mels, mel_spectrograms, self._inference_on_triton)
         return result
+
+
+if __name__ == '__main__':
+    print('ok!')

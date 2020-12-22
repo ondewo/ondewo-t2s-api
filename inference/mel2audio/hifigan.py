@@ -22,7 +22,7 @@ class HiFiGan(HiFiGANCore):
             self.device = torch.device('cuda')
         else:
             self.device = torch.device('cpu')
-        logger.info('Create HiFi model. Start.')
+        logger.info('Creating and loading HiFi model...')
         self.generator: Generator = self._get_model()
         logger.info('HiFi model is ready.')
 

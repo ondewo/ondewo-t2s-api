@@ -16,7 +16,7 @@ class GlowTTS(GlowTTSCore):
         super(GlowTTS, self).__init__(config=config)
         self.checkpoint_path: str = config[MODEL_PATH]
 
-        logger.info('Create glow-tts model. Start.')
+        logger.info('Creating and loading glow-tts model...')
         self.model: models.FlowGenerator = models.FlowGenerator(
             n_vocab=len(self.text_processor.symbols)+self.text_processor.add_blank,
             out_channels=self.hyperparams.data.n_mel_channels,
@@ -28,7 +28,6 @@ class GlowTTS(GlowTTSCore):
             self.model = self.model.to("cuda")
 
         # load trained model
-        logger.info('Load glow-tts model. Start.')
         self.state_dict = torch.load(self.checkpoint_path)
         # handle both cases 1- model with optimization info or 2- pure model in the checkpoint
         self.state_dict = self.state_dict.get('model') or self.state_dict

@@ -104,7 +104,12 @@ class CachedInference(Inference):
         if self.save_cache:
             self.saving_queue.put((text, np.copy(audio)))
 
-    def synthesize(self, texts: List[str]) -> List[np.ndarray]:
+    def synthesize(self, texts: List[str], length_scale: float, noise_scale: float) -> List[np.ndarray]:
+
+        logger.warning(f'You are using cached inference with length scale and noise scale '
+                       f'{length_scale, noise_scale}. Note that changing these values '
+                       f'will not be available for cached audio. You can only set it up once before caching.')
+
         # Firstly, update the file cache
         try:
             while not self.saved_file_queue.empty():
@@ -129,7 +134,11 @@ class CachedInference(Inference):
 
         if len(texts_not_in_cache) > 0:
             logger.info(f'Start synthesizing audio for texts {texts_not_in_cache}')
-            audio_list: List[np.ndarray] = self.inference.synthesize(texts=texts_not_in_cache)
+            audio_list: List[np.ndarray] = self.inference.synthesize(
+                texts=texts_not_in_cache,
+                length_scale=length_scale,
+                noise_scale=noise_scale
+            )
             logger.info('Synthesizing is finished.')
             for text, audio in zip(texts_not_in_cache, audio_list):
                 audio_result[text] = audio

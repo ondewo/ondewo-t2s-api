@@ -1,4 +1,4 @@
-from typing import Dict, Tuple, Optional
+from typing import Dict, Tuple, Optional, List, KeysView
 
 from inference.inference_interface import Inference
 from pylog.logger import logger_console as logger
@@ -27,3 +27,7 @@ class ModelManager:
     @classmethod
     def del_model(cls, model_id: str) -> None:
         del cls._models[model_id]
+
+    @classmethod
+    def get_all_model_ids(cls) -> KeysView[str]:
+        return cls._models.keys()

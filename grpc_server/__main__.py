@@ -9,7 +9,7 @@ parser.add_argument(
     required=True,
 )
 parser.add_argument(
-    '-h', '--host',
+    '-ht', '--host',
     help='Host of the server.',
     required=True,
 )
