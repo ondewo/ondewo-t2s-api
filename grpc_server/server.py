@@ -9,7 +9,7 @@ from ruamel import yaml
 
 from grpc_server.constants import CONFIG_DIR_ENV
 from grpc_server.model_manager import ModelManager
-from grpc_server.ondewo.audio import text_to_speech_pb2_grpc
+from ondewo_grpc.ondewo.audio import text_to_speech_pb2_grpc
 from grpc_server.servicer import Text2SpeechServicer
 from grpc_server.utils import get_list_of_config_files
 from inference.inference_factory import InferenceFactory

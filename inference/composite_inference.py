@@ -1,4 +1,4 @@
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 import numpy as np
 
 from inference.inference_interface import Inference
@@ -23,8 +23,8 @@ class CompositeInference(Inference):
     def synthesize(
             self,
             texts: List[str],
-            length_scale: float = 1.0,
-            noise_scale: float = 0.0
+            length_scale: Optional[float] = None,
+            noise_scale: Optional[float] = None,
     ) -> List[np.ndarray]:
         mel_spectrograms: List[np.ndarray] = self.text2mel.text2mel(
             texts=texts,

@@ -9,7 +9,7 @@ import soundfile as sf
 from pylog.logger import logger_console as logger
 
 from grpc_server.model_manager import ModelManager
-from grpc_server.ondewo.audio import text_to_speech_pb2_grpc, text_to_speech_pb2
+from ondewo_grpc.ondewo.audio import text_to_speech_pb2_grpc, text_to_speech_pb2
 from inference.inference_interface import Inference
 from normalization.pipeline_constructor import NormalizerPipeline
 from normalization.postprocessor import Postprocessor
@@ -43,8 +43,8 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
         text = request.text
         sample_rate: int = request.sample_rate or 22050
         pcm = text_to_speech_pb2.SynthesizeRequest.PCM.Name(request.pcm)
-        length_scale: float = request.length_scale or 1.0
-        noise_scale: float = request.noise_scale or 0.0
+        length_scale: Optional[float] = request.length_scale or None
+        noise_scale: Optional[float] = request.noise_scale or None
 
         if re.search(r'[A-Za-z0-9]+', text):
             logger.info(f'Text to transcribe: "{text}"')

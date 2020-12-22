@@ -40,7 +40,8 @@ class GlowTTSCore(Text2Mel):
     def text2mel(self, texts: List[str], length_scale: Optional[float] = None,
                  noise_scale: Optional[float] = None) -> List[np.ndarray]:
         logger.info(f"Running {self.NAME} inference")
-        result: List[np.ndarray] = self._generate_in_batches(texts=texts)
+        result: List[np.ndarray] = self._generate_in_batches(texts=texts, length_scale=length_scale,
+                                                             noise_scale=noise_scale)
         logger.info(f"Done {self.NAME} inference")
         return result
 

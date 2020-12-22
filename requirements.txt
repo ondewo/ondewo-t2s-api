@@ -14,3 +14,10 @@ pyroomacoustics
 omegaconf
 python_speech_features
 pysndfx
+google-api-core==1.13.0
+googleapis-common-protos==1.5.10
+grpcio==1.31.0
+grpcio-reflection==1.31.0
+grpcio-tools==1.31.0
+protobuf==3.13.0
+mypy-protobuf
