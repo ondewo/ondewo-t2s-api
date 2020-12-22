@@ -42,7 +42,7 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
         # extract parameters from request
         text = request.text
         sample_rate: int = request.sample_rate or 22050
-        pcm = text_to_speech_pb2.SynthesizeRequest.PCM.Name(request.pcm)
+        pcm: str = text_to_speech_pb2.SynthesizeRequest.PCM.Name(request.pcm)
         length_scale: Optional[float] = request.length_scale or None
         noise_scale: Optional[float] = request.noise_scale or None
 
