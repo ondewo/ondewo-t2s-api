@@ -1,8 +1,8 @@
-from typing import Dict, Tuple, Optional, List, KeysView
+from typing import Dict, Tuple, Optional, List
 
-from inference.inference_interface import Inference
 from pylog.logger import logger_console as logger
 
+from inference.inference_interface import Inference
 from normalization.pipeline_constructor import NormalizerPipeline
 from normalization.postprocessor import Postprocessor
 
@@ -29,5 +29,5 @@ class ModelManager:
         del cls._models[model_id]
 
     @classmethod
-    def get_all_model_ids(cls) -> KeysView[str]:
-        return cls._models.keys()
+    def get_all_model_ids(cls) -> List[str]:
+        return list(cls._models.keys())
