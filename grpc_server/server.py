@@ -1,21 +1,16 @@
 import os
 from concurrent import futures
 from typing import Optional, List, Dict, Any
-from uuid import uuid4
 
 import grpc
 from pylog.logger import logger_console as logger
 from ruamel import yaml
 
 from grpc_server.constants import CONFIG_DIR_ENV
-from grpc_server.model_manager import ModelManager
-from ondewo_grpc.ondewo.audio import text_to_speech_pb2_grpc
 from grpc_server.servicer import Text2SpeechServicer
-from grpc_server.utils import get_list_of_config_files
-from inference.inference_factory import InferenceFactory
-from inference.inference_interface import Inference
-from normalization.pipeline_constructor import NormalizerPipeline
-from normalization.postprocessor import Postprocessor
+from grpc_server.t2s_pipeline_manager import T2SPipelineManager
+from grpc_server.utils import get_list_of_config_files, create_t2s_pipeline_from_config
+from ondewo_grpc.ondewo.audio import text_to_speech_pb2_grpc
 
 
 class Server:
@@ -39,7 +34,8 @@ class Server:
         logger.info('GRPC started at {}'.format(self.connection_string))
         self.server.wait_for_termination()
 
-    def load_models_from_configs(self) -> None:
+    @staticmethod
+    def load_models_from_configs() -> None:
         config_dir: Optional[str] = os.getenv(CONFIG_DIR_ENV)
         if not config_dir:
             error_message: str = "No CONFIG_DIR environmental variable found. " \
@@ -48,15 +44,14 @@ class Server:
             raise EnvironmentError(error_message)
         config_files: List[str] = get_list_of_config_files(config_dir)
         for config_file in config_files:
-            with open(os.path.join(config_dir, config_file)) as f:
+            with open(os.path.join(config_dir, config_file), 'r') as f:
                 config: Dict[str, Any] = yaml.load(f, Loader=yaml.Loader)
-            inference_type = config['inference']
-            inference: Inference = InferenceFactory.get_inference(inference_type)
-            preprocess_pipeline: NormalizerPipeline = NormalizerPipeline(config=config['normalization'])
-            postprocessor = Postprocessor(config['postprocessing'])
-            model_id: str = f'{inference.name}-{uuid4()}'
-            logger.info(f'Model was loaded with id {model_id}')
-            ModelManager.register_model_set(
-                model_id=model_id,
-                model_set=(preprocess_pipeline, inference, postprocessor)
-            )
+            preprocess_pipeline, inference, postprocessor, config = create_t2s_pipeline_from_config(config)
+
+            # persist t2s_pipeline_id
+            with open(os.path.join(config_dir, config_file), 'w') as f:
+                yaml.safe_dump(config, f)
+            T2SPipelineManager.register_t2s_pipeline(
+                t2s_pipeline_id=config['id'],
+                t2s_pipeline=(preprocess_pipeline, inference, postprocessor, config))
+            logger.info(f'Model was loaded with id {config["id"]}')

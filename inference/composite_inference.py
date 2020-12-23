@@ -18,7 +18,7 @@ class CompositeInference(Inference):
 
     @property
     def name(self) -> str:
-        return f'{self.text2mel.NAME}/{self.mel2audio.NAME}'
+        return f'{self.text2mel.NAME}&{self.mel2audio.NAME}'
 
     def synthesize(
             self,
