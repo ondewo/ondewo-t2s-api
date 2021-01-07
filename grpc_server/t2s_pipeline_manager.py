@@ -1,14 +1,15 @@
-from typing import Dict, Tuple, Optional, List, Any
+from typing import Dict, Tuple, Optional, List
 
-from pylog.logger import logger_console as logger
+from ondewologging.logger import logger_console as logger
 
 from inference.inference_interface import Inference
 from normalization.pipeline_constructor import NormalizerPipeline
 from normalization.postprocessor import Postprocessor
+from utils.data_classes.config_dataclass import T2SConfigDataclass
 
 
 class T2SPipelineManager:
-    _t2s_pipelines: Dict[str, Tuple[NormalizerPipeline, Inference, Postprocessor, Dict[str, Any]]] = {}
+    _t2s_pipelines: Dict[str, Tuple[NormalizerPipeline, Inference, Postprocessor, T2SConfigDataclass]] = {}
 
     @classmethod
     def _clear_t2s_pipelines(cls) -> None:
@@ -18,14 +19,14 @@ class T2SPipelineManager:
     def register_t2s_pipeline(
             cls,
             t2s_pipeline_id: str,
-            t2s_pipeline: Tuple[NormalizerPipeline, Inference, Postprocessor, Dict[str, Any]]
+            t2s_pipeline: Tuple[NormalizerPipeline, Inference, Postprocessor, T2SConfigDataclass]
     ) -> None:
         cls._t2s_pipelines[t2s_pipeline_id] = t2s_pipeline
 
     @classmethod
     def get_t2s_pipeline(
             cls, t2s_pipeline_id: str
-    ) -> Optional[Tuple[NormalizerPipeline, Inference, Postprocessor, Dict[str, Any]]]:
+    ) -> Optional[Tuple[NormalizerPipeline, Inference, Postprocessor, T2SConfigDataclass]]:
         logger.info(f"trying to get model set with id {t2s_pipeline_id}. available id's: "
                     f"{T2SPipelineManager.get_all_t2s_pipeline_ids()}")
         return cls._t2s_pipelines.get(t2s_pipeline_id)

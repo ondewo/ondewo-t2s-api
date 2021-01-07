@@ -1,24 +1,25 @@
 import json
-from typing import Tuple, Optional, Dict, Any, List
+from typing import Tuple, Optional, List, Union
 
 import numpy as np
 from glow_tts_reduced import utils
+from ondewologging.decorators import Timer
+from ondewologging.logger import logger_console as logger
 
-from inference.text2mel.constants_text2mel import CONFIG_PATH, LENGTH_SCALE, \
-    NOISE_SCALE, CLEANERS
+from inference.text2mel.constants_text2mel import LENGTH_SCALE, \
+    NOISE_SCALE
 from inference.text2mel.glow_tts_text_processor import GlowTTSTextProcessor
 from inference.text2mel.text2mel import Text2Mel
-from pylog.logger import logger_console as logger
-from pylog.decorators import Timer
+from utils.data_classes.config_dataclass import GlowTTSDataclass, GlowTTSTritonDataclass
 
 
 class GlowTTSCore(Text2Mel):
     NAME: str = ''
 
-    def __init__(self, config: Dict[str, Any]):
+    def __init__(self, config: Union[GlowTTSDataclass, GlowTTSTritonDataclass]):
         self.config = config
-        self.model_config_path: str = config[CONFIG_PATH]
-        self.cleaners: List[str] = config.get(CLEANERS, [])
+        self.model_config_path: str = config.param_config_path
+        self.cleaners: List[str] = config.cleaners
 
         with open(self.model_config_path, 'r') as fi:
             self.hyperparams: utils.HParams = utils.HParams(**json.load(fi))
@@ -39,7 +40,8 @@ class GlowTTSCore(Text2Mel):
     @Timer(log_arguments=False)
     def text2mel(self, texts: List[str], length_scale: Optional[float] = None,
                  noise_scale: Optional[float] = None) -> List[np.ndarray]:
-        logger.info(f"Running {self.NAME} inference")
+        logger.info(f""
+                    f"Running {self.NAME} inference")
         result: List[np.ndarray] = self._generate_in_batches(texts=texts, length_scale=length_scale,
                                                              noise_scale=noise_scale)
         logger.info(f"Done {self.NAME} inference")
@@ -61,8 +63,8 @@ class GlowTTSCore(Text2Mel):
             mel_list.extend(
                 self._generate_batch_and_split(
                     texts=text_batch,
-                    length_scale=length_scale or self.config[LENGTH_SCALE],
-                    noise_scale=noise_scale or self.config[NOISE_SCALE]
+                    length_scale=length_scale or self.config.length_scale,
+                    noise_scale=noise_scale or self.config.noise_scale
                 )
             )
             texts = texts[self.batch_size:]

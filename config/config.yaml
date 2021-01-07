@@ -1,8 +1,5 @@
 # ONDEWO T2S batch server configuration
 
-id: ""
-
-description: "German, male, thorsten dataset"
 
 inference:
     type: "composite"

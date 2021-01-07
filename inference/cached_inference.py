@@ -10,16 +10,18 @@ from scipy.io.wavfile import read as read_wav
 from scipy.io.wavfile import write
 
 from inference.inference_interface import Inference
-from pylog.logger import logger_console as logger
+from ondewologging.logger import logger_console as logger
+
+from utils.data_classes.config_dataclass import CachingDataclass
 
 
 class CachedInference(Inference):
 
-    def __init__(self, inference: Inference, config: Dict[str, Any]):
-        self.save_cache: bool = config['save_cache']
-        self.memory_cache_max_size: int = config['memory_cache_max_size']
-        self.cache_save_dir: str = config['cache_save_dir']
-        self.sr: int = config['sampling_rate']
+    def __init__(self, inference: Inference, config: CachingDataclass):
+        self.save_cache: bool = config.save_cache
+        self.memory_cache_max_size: int = config.memory_cache_max_size
+        self.cache_save_dir: str = config.cache_save_dir
+        self.sr: int = config.sampling_rate
 
         self.inference: Inference = inference
 
@@ -30,7 +32,7 @@ class CachedInference(Inference):
         # Key: text, value: audio filename
         self.file_cache: Dict[str, str] = {}
 
-        if config['load_cache']:
+        if config.load_cache:
             logger.info('Started loading the cache from filesystem.')
             self.load_cache()
             logger.info(f'Loading of the memory cache is done. '

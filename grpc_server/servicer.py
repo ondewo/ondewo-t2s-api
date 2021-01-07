@@ -6,15 +6,16 @@ import google.protobuf.empty_pb2 as empty_pb2
 import grpc
 import numpy as np
 import soundfile as sf
-from google.protobuf.json_format import ParseDict, MessageToDict
-from pylog.logger import logger_console as logger
+from google.protobuf.json_format import ParseDict
+from ondewologging.logger import logger_console as logger
 
 from grpc_server.t2s_pipeline_manager import T2SPipelineManager
 from grpc_server.utils import create_t2s_pipeline_from_config
-from ondewo_grpc.ondewo.t2s import text_to_speech_pb2_grpc, text_to_speech_pb2
 from inference.inference_interface import Inference
 from normalization.pipeline_constructor import NormalizerPipeline
 from normalization.postprocessor import Postprocessor
+from ondewo_grpc.ondewo.t2s import text_to_speech_pb2_grpc, text_to_speech_pb2
+from utils.data_classes.config_dataclass import T2SConfigDataclass
 
 
 class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
@@ -49,7 +50,7 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
     def handle_synthesize_request(request: text_to_speech_pb2.SynthesizeRequest
                                   ) -> text_to_speech_pb2.SynthesizeResponse:
         # get model set for
-        t2s_pipeline: Optional[Tuple[NormalizerPipeline, Inference, Postprocessor, Dict[str, Any]]] = \
+        t2s_pipeline: Optional[Tuple[NormalizerPipeline, Inference, Postprocessor, T2SConfigDataclass]] = \
             T2SPipelineManager.get_t2s_pipeline(request.t2s_pipeline_id)
         if t2s_pipeline is None:
             raise ModuleNotFoundError(f'Model set with model id {request.t2s_pipeline_id} is not registered'
@@ -108,14 +109,13 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
     @staticmethod
     def handle_create_t2s_pipeline_request(
             request: text_to_speech_pb2.Text2SpeechConfig) -> text_to_speech_pb2.T2sPipelineId:
-        config: Dict[str, Any] = MessageToDict(
-            request, including_default_value_fields=True, preserving_proto_field_name=True)
+        config: T2SConfigDataclass = T2SConfigDataclass.from_proto(proto=request)
         preprocess_pipeline, inference, postprocessor, config = create_t2s_pipeline_from_config(config)
         T2SPipelineManager.register_t2s_pipeline(
-            t2s_pipeline_id=config['id'],
+            t2s_pipeline_id=config.id,
             t2s_pipeline=(preprocess_pipeline, inference, postprocessor, config)
         )
-        t2s_pipeline_id: str = config['id']
+        t2s_pipeline_id: str = config.id
         return text_to_speech_pb2.T2sPipelineId(id=t2s_pipeline_id)
 
     @staticmethod
@@ -129,10 +129,15 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
     @staticmethod
     def handle_update_t2s_pipeline_request(
             request: text_to_speech_pb2.Text2SpeechConfig) -> empty_pb2.Empty:
-        config: Dict[str, Any] = MessageToDict(request, including_default_value_fields=True)
+
+        config: T2SConfigDataclass = T2SConfigDataclass.from_proto(proto=request)
+        if config.id not in T2SPipelineManager.get_all_t2s_pipeline_ids():
+            logger.error(f'The t2s pipeline id {config.id} is not found. '
+                         f'Existing ids are {T2SPipelineManager.get_all_t2s_pipeline_ids()}')
+            raise ModuleNotFoundError(f'The t2s pipeline id {config.id} is not found.')
         preprocess_pipeline, inference, postprocessor, config = create_t2s_pipeline_from_config(config)
         T2SPipelineManager.register_t2s_pipeline(
-            t2s_pipeline_id=config['id'],
+            t2s_pipeline_id=config.id,
             t2s_pipeline=(preprocess_pipeline, inference, postprocessor, config)
         )
         return empty_pb2.Empty()

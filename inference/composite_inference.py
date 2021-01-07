@@ -6,14 +6,16 @@ from inference.mel2audio.mel2audio import Mel2Audio
 from inference.mel2audio.mel2audio_factory import Mel2AudioFactory
 from inference.text2mel.text2mel import Text2Mel
 from inference.text2mel.text2mel_factory import Text2MelFactory
-from pylog.logger import logger_console as logger
+from ondewologging.logger import logger_console as logger
+
+from utils.data_classes.config_dataclass import CompositeInferenceDataclass
 
 
 class CompositeInference(Inference):
 
-    def __init__(self, config: Dict[str, Any]):
-        self.text2mel: Text2Mel = Text2MelFactory.get_text2mel(config['text2mel'])
-        self.mel2audio: Mel2Audio = Mel2AudioFactory.get_mel2audio(config['mel2audio'])
+    def __init__(self, config: CompositeInferenceDataclass):
+        self.text2mel: Text2Mel = Text2MelFactory.get_text2mel(config.text2mel)
+        self.mel2audio: Mel2Audio = Mel2AudioFactory.get_mel2audio(config.mel2audio)
         logger.info('CompositeInference is ready.')
 
     @property

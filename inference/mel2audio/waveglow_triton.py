@@ -5,29 +5,32 @@ from tritongrpcclient import InferenceServerClient, InferInput, InferRequestedOu
 
 from inference.mel2audio.mel2audio import Mel2Audio
 import numpy as np
-from pylog.logger import logger_console as logger
-from pylog.decorators import Timer
+from ondewologging.logger import logger_console as logger
+from ondewologging.decorators import Timer
 from inference import triton_utils
+from utils.data_classes.config_dataclass import WaveglowTritonDataclass
 
 
 class WaveglowTriton(Mel2Audio):
     NAME: str = 'waveglow_triton'
 
-    def __init__(self, config: Dict[str, Any]):
-        self.config: Dict[str, Any] = config
+    def __init__(self, config: WaveglowTritonDataclass):
+        self.config: WaveglowTritonDataclass = config
 
         # waveglow params
         yaml = YAML(typ="safe")
-        with open(self.config['param_config_path']) as file:
+        with open(self.config.param_config_path) as file:
             self.param_config = yaml.load(file)
         self.n_group: int = self.param_config['WaveGlowNM']['init_params']['n_group']
-        self.win_stride: int = self.param_config['AudioToMelSpectrogramPreprocessor']['init_params']['n_window_stride']
-        self.win_size: int = self.param_config['AudioToMelSpectrogramPreprocessor']['init_params']['n_window_size']
-        self.max_spect_size = config['max_spect_size']
+        self.win_stride: int = \
+            self.param_config['AudioToMelSpectrogramPreprocessor']['init_params']['n_window_stride']
+        self.win_size: int = \
+            self.param_config['AudioToMelSpectrogramPreprocessor']['init_params']['n_window_size']
+        self.max_spect_size = config.max_spect_size
 
         # triton config
-        self.triton_client = InferenceServerClient(url=self.config['triton_url'])
-        self.triton_model_name: str = self.config['triton_model_name']
+        self.triton_client = InferenceServerClient(url=self.config.triton_url)
+        self.triton_model_name: str = self.config.triton_model_name
         triton_utils.check_triton_online(self.triton_client, self.triton_model_name)
 
     def test_triton(self) -> None:
@@ -63,7 +66,7 @@ class WaveglowTriton(Mel2Audio):
     def mel2audio(self, mel_spectrograms: List[np.ndarray]) -> List[np.ndarray]:
 
         z_shape = self.calculate_shape_of_z()
-        z = np.random.normal(loc=0.0, scale=self.config['sigma'], size=z_shape).astype("float32")
+        z = np.random.normal(loc=0.0, scale=self.config.sigma, size=z_shape).astype("float32")
 
         # TODO: handle sending batches to Triton
         audios: List[np.ndarray] = []

@@ -3,18 +3,19 @@ from typing import Tuple, Dict, Any, List
 import numpy as np
 import torch
 from glow_tts_reduced import models
-from pylog.logger import logger_console as logger
+from ondewologging.logger import logger_console as logger
 
 from inference.text2mel.constants_text2mel import MODEL_PATH, USE_GPU, BATCH_SIZE
 from inference.text2mel.glow_tts_core import GlowTTSCore
+from utils.data_classes.config_dataclass import GlowTTSDataclass
 
 
 class GlowTTS(GlowTTSCore):
     NAME: str = "glow_tts"
 
-    def __init__(self, config: Dict[str, Any]):
+    def __init__(self, config: GlowTTSDataclass):
         super(GlowTTS, self).__init__(config=config)
-        self.checkpoint_path: str = config[MODEL_PATH]
+        self.checkpoint_path: str = config.path
 
         logger.info('Creating and loading glow-tts model...')
         self.model: models.FlowGenerator = models.FlowGenerator(
@@ -22,8 +23,8 @@ class GlowTTS(GlowTTSCore):
             out_channels=self.hyperparams.data.n_mel_channels,
             **self.hyperparams.model
         )
-        self.batch_size: int = config[BATCH_SIZE]
-        self.use_gpu: bool = config[USE_GPU]
+        self.batch_size: int = config.batch_size
+        self.use_gpu: bool = config.use_gpu
         if self.use_gpu:
             self.model = self.model.to("cuda")
 

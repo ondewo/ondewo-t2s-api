@@ -1,7 +1,7 @@
 from threading import Thread
 from time import sleep, time
 import os
-from pylog.logger import logger_console as logger
+from ondewologging.logger import logger_console as logger
 
 from . import BATCH_DE_URL, BATCH_EN_URL, WORK_DIR
 from typing import Dict, List

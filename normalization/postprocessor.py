@@ -6,18 +6,20 @@ from pyroomacoustics.denoise.iterative_wiener import apply_iterative_wiener
 import python_speech_features
 from pysndfx import AudioEffectsChain
 
-from pylog.logger import logger_console as logger
+from ondewologging.logger import logger_console as logger
+
+from utils.data_classes.config_dataclass import PostprocessingDataclass
 
 
 class Postprocessor():
     sampling_rate = 22_050
 
-    def __init__(self, config: Dict[str, Any]):
+    def __init__(self, config: PostprocessingDataclass):
         self.config = config
 
-        silence_secs = self.config["silence_secs"]
+        silence_secs = self.config.silence_secs
         self.silence = np.zeros((int(silence_secs * Postprocessor.sampling_rate),)).astype(np.float64)
-        apodization_secs = self.config["apodization"]["apodization_secs"]
+        apodization_secs = self.config.apodization.apodization_secs
         self.apodization_steps = int(apodization_secs * Postprocessor.sampling_rate)
 
         self.pipeline_map = {
@@ -34,7 +36,7 @@ class Postprocessor():
             audio = np.concatenate((audio, self.silence, audio_part.astype(np.float64)))
 
         # run postprocessing pipeline
-        pipeline = self.config.get("pipeline") or []
+        pipeline = self.config.pipeline or []
         for step in pipeline:
             audio = self.pipeline_map[step](audio)
 
@@ -44,9 +46,9 @@ class Postprocessor():
     def _apply_logmmse(self, audio: np.ndarray) -> np.ndarray:
         try:
             out = logmmse.logmmse(audio, Postprocessor.sampling_rate, output_file=None,
-                                  initial_noise=self.config["logmmse"]["initial_noise"],
-                                  window_size=self.config["logmmse"]["window_size"],
-                                  noise_threshold=self.config["logmmse"]["noise_threshold"])
+                                  initial_noise=self.config.logmmse.initial_noise,
+                                  window_size=self.config.logmmse.window_size,
+                                  noise_threshold=self.config.logmmse.noise_threshold)
 
             # BUG: there is some weird behaviour with logmmse where it sometimes returns result as
             # [audio_array, array_type]
@@ -60,11 +62,11 @@ class Postprocessor():
 
     # apply iterative wiener
     def _apply_wiener(self, audio: np.ndarray) -> np.ndarray:
-        return apply_iterative_wiener(audio, frame_len=self.config["wiener"]["frame_len"],
-                                      lpc_order=self.config["wiener"]["lpc_order"],
-                                      iterations=self.config["wiener"]["iterations"],
-                                      alpha=self.config["wiener"]["alpha"],
-                                      thresh=self.config["wiener"]["thresh"])
+        return apply_iterative_wiener(audio, frame_len=self.config.wiener.frame_len,
+                                      lpc_order=self.config.wiener.lpc_order,
+                                      iterations=self.config.wiener.iterations,
+                                      alpha=self.config.wiener.alpha,
+                                      thresh=self.config.wiener.thresh)
 
     # apply mfcc up, adapted from: https://github.com/dodiku/noise_reduction/blob/master/noise.py
     def _apply_mfcc_up(self, audio: np.ndarray) -> np.ndarray:

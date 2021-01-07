@@ -6,18 +6,20 @@ from hifi_gan.env import AttrDict
 from hifi_gan.models import Generator
 
 from inference.mel2audio.hifigan_core import HiFiGANCore
-from pylog.logger import logger_console as logger
-from pylog.decorators import Timer
+from ondewologging.logger import logger_console as logger
+from ondewologging.decorators import Timer
+
+from utils.data_classes.config_dataclass import HiFiGanDataclass
 
 
 class HiFiGan(HiFiGANCore):
     NAME: str = 'hifi_gan'
 
-    def __init__(self, config: Dict[str, Any]):
+    def __init__(self, config: HiFiGanDataclass):
         super(HiFiGan, self).__init__(config=config)
-        self.model_path = self.config['model_path']
+        self.model_path = self.config.model_path
         self.hcf = AttrDict(self.hifi_config)
-        if self.config['use_gpu'] and torch.cuda.is_available():
+        if self.config.use_gpu and torch.cuda.is_available():
             torch.cuda.manual_seed(self.hcf.seed)
             self.device = torch.device('cuda')
         else:

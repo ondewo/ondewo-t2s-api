@@ -1,19 +1,20 @@
 import json
-from typing import Any, Callable, Dict, List
+from typing import List
 
 import numpy as np
-from pylog.decorators import Timer
-from pylog.logger import logger_console as logger
+from ondewologging.decorators import Timer
+from ondewologging.logger import logger_console as logger
 
 from inference.mel2audio.mel2audio import Mel2Audio
+from utils.data_classes.config_dataclass import HiFiGanDataclass
 
 
 class HiFiGANCore(Mel2Audio):
 
-    def __init__(self, config: Dict[str, Any]):
+    def __init__(self, config: HiFiGanDataclass):
         self.config = config
-        self.batch_size = config['batch_size']
-        self.config_file = config['config_path']
+        self.batch_size = config.batch_size
+        self.config_file = config.config_path
         with open(self.config_file) as f:
             data = f.read()
         self.hifi_config = json.loads(data)
