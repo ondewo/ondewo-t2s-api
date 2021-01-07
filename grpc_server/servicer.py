@@ -108,7 +108,8 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
     @staticmethod
     def handle_create_t2s_pipeline_request(
             request: text_to_speech_pb2.Text2SpeechConfig) -> text_to_speech_pb2.T2sPipelineId:
-        config: Dict[str, Any] = MessageToDict(request, including_default_value_fields=True)
+        config: Dict[str, Any] = MessageToDict(
+            request, including_default_value_fields=True, preserving_proto_field_name=True)
         preprocess_pipeline, inference, postprocessor, config = create_t2s_pipeline_from_config(config)
         T2SPipelineManager.register_t2s_pipeline(
             t2s_pipeline_id=config['id'],

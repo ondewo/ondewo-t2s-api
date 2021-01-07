@@ -127,9 +127,9 @@ install_dependencies_locally:
 
 # GENERATE PYTHON FILES FROM PROTOS
 # copy from nlu-client, changed output directory to ./grpc_config_server/ and only exporting /audio/ directory of ondewoapis
-ONDEWO_PROTOS_DIR=ondewoapis/ondewo/audio
-GOOGLE_APIS_DIR=ondewoapis/googleapis
-ONDEWO_APIS_DIR=ondewoapis
+ONDEWO_PROTOS_DIR=ondewo-t2s-api/ondewo/t2s
+GOOGLE_APIS_DIR=ondewo-t2s-api/googleapis
+ONDEWO_APIS_DIR=ondewo-t2s-api
 PROTO_OUTPUT_FOLDER=ondewo_grpc
 
 generate_ondewo_protos:
