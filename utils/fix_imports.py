@@ -9,7 +9,7 @@ def fix_imports_in_ondewoapis(server_dir_name: str) -> None:
     INFO: https://github.com/protocolbuffers/protobuf/pull/7470
     """
 
-    proto_output_dir = f"./{server_dir_name}/ondewo/audio/"
+    proto_output_dir = f"./{server_dir_name}/ondewo/t2s/"
     files = os.listdir(proto_output_dir)
     for file in files:
         if "_pb2_grpc.py" in file:
@@ -17,7 +17,7 @@ def fix_imports_in_ondewoapis(server_dir_name: str) -> None:
             with open(path, "rt") as f:
                 data = f.read()
                 print(f"    FIXING SUBDIRECTORY IMPORTS IN: {path}")
-                data = data.replace("from ondewo.audio import", f"from {server_dir_name}.ondewo.audio import")
+                data = data.replace("from ondewo.t2s import", f"from {server_dir_name}.ondewo.t2s import")
             with open(path, "wt") as f:
                 f.write(data)
 

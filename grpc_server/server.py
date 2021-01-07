@@ -10,7 +10,7 @@ from grpc_server.constants import CONFIG_DIR_ENV
 from grpc_server.servicer import Text2SpeechServicer
 from grpc_server.t2s_pipeline_manager import T2SPipelineManager
 from grpc_server.utils import get_list_of_config_files, create_t2s_pipeline_from_config
-from ondewo_grpc.ondewo.audio import text_to_speech_pb2_grpc
+from ondewo_grpc.ondewo.t2s import text_to_speech_pb2_grpc
 
 
 class Server:

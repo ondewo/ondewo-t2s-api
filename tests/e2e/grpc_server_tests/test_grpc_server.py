@@ -2,7 +2,7 @@ import io
 
 import soundfile as sf
 
-from ondewo_grpc.ondewo.audio import text_to_speech_pb2
+from ondewo_grpc.ondewo.t2s import text_to_speech_pb2
 from tests.e2e.grpc_server_tests.execution_manager import ExecutionManager
 from tests.e2e.grpc_server_tests.operations import OperationSynthesize, OperationListActiveModelIds
 

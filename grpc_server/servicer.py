@@ -11,7 +11,7 @@ from pylog.logger import logger_console as logger
 
 from grpc_server.t2s_pipeline_manager import T2SPipelineManager
 from grpc_server.utils import create_t2s_pipeline_from_config
-from ondewo_grpc.ondewo.audio import text_to_speech_pb2_grpc, text_to_speech_pb2
+from ondewo_grpc.ondewo.t2s import text_to_speech_pb2_grpc, text_to_speech_pb2
 from inference.inference_interface import Inference
 from normalization.pipeline_constructor import NormalizerPipeline
 from normalization.postprocessor import Postprocessor
