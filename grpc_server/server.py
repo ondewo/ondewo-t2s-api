@@ -48,11 +48,13 @@ class Server:
             with open(os.path.join(config_dir, config_file), 'r') as f:
                 config_dict: Dict[str, Any] = yaml.load(f, Loader=yaml.Loader)
                 config = T2SConfigDataclass.from_dict(config_dict)  # type: ignore
+            if not config.active:
+                continue
             preprocess_pipeline, inference, postprocessor, config = create_t2s_pipeline_from_config(config)
 
             # persist t2s_pipeline_id
             with open(os.path.join(config_dir, config_file), 'w') as f:
-                config_dict = config.to_json()
+                config_dict = config.to_dict()
                 yaml.safe_dump(config_dict, f)
             T2SPipelineManager.register_t2s_pipeline(
                 t2s_pipeline_id=config.id,

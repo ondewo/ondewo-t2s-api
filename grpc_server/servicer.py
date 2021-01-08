@@ -1,16 +1,19 @@
 import io
+import os
 import re
-from typing import List, Tuple, Optional, Dict, Any
+from typing import List, Tuple, Optional, Any, Dict
 
 import google.protobuf.empty_pb2 as empty_pb2
 import grpc
 import numpy as np
 import soundfile as sf
-from google.protobuf.json_format import ParseDict
 from ondewologging.logger import logger_console as logger
+from ruamel import yaml
 
+from grpc_server.constants import CONFIG_DIR_ENV
 from grpc_server.t2s_pipeline_manager import T2SPipelineManager
-from grpc_server.utils import create_t2s_pipeline_from_config
+from grpc_server.utils import create_t2s_pipeline_from_config, get_list_of_config_files, generate_config_path, \
+    get_config_path_by_id
 from inference.inference_interface import Inference
 from normalization.pipeline_constructor import NormalizerPipeline
 from normalization.postprocessor import Postprocessor
@@ -103,8 +106,7 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
             raise ModuleNotFoundError(f'Pipeline with id {t2s_pipeline_id} '
                                       f'is not registered in T2SPipelineManager.')
         _, _, _, config = t2s_pipeline
-        msg = text_to_speech_pb2.Text2SpeechConfig()
-        return ParseDict(config, msg)
+        return config.to_proto()
 
     @staticmethod
     def handle_create_t2s_pipeline_request(
@@ -116,6 +118,13 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
             t2s_pipeline=(preprocess_pipeline, inference, postprocessor, config)
         )
         t2s_pipeline_id: str = config.id
+
+        # create config file
+        config_file_path: str = generate_config_path()
+        with open(config_file_path, 'w') as f:
+            config_dict = config.to_dict()  # type: ignore
+            yaml.safe_dump(config_dict, f)
+
         return text_to_speech_pb2.T2sPipelineId(id=t2s_pipeline_id)
 
     @staticmethod
@@ -123,7 +132,13 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
         if request.id not in T2SPipelineManager.get_all_t2s_pipeline_ids():
             raise ModuleNotFoundError(f'Pipeline with id {request.id} '
                                       f'is not registered in T2SPipelineManager.')
+        # delete pipeline from the manager
         T2SPipelineManager.del_t2s_pipeline(t2s_pipeline_id=request.id)
+
+        # delete pipeline file
+        config_file_path: Optional[str] = get_config_path_by_id(request.id)
+        if config_file_path:
+            os.remove(config_file_path)
         return empty_pb2.Empty()
 
     @staticmethod
@@ -135,9 +150,17 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
             logger.error(f'The t2s pipeline id {config.id} is not found. '
                          f'Existing ids are {T2SPipelineManager.get_all_t2s_pipeline_ids()}')
             raise ModuleNotFoundError(f'The t2s pipeline id {config.id} is not found.')
+
+        # update pipeline in the manager
         preprocess_pipeline, inference, postprocessor, config = create_t2s_pipeline_from_config(config)
         T2SPipelineManager.register_t2s_pipeline(
             t2s_pipeline_id=config.id,
             t2s_pipeline=(preprocess_pipeline, inference, postprocessor, config)
         )
+
+        # persist updated pipeline
+        config_file_path = get_config_path_by_id(config.id) or generate_config_path()
+        with open(config_file_path, 'w') as f:
+            config_dict = config.to_dict()  # type: ignore
+            yaml.safe_dump(config_dict, f)
         return empty_pb2.Empty()

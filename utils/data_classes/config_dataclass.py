@@ -402,6 +402,7 @@ class PostprocessingDataclass:
 class T2SConfigDataclass:
     id: str
     description: str
+    active: bool
     inference: InferenceDataclass
     normalization: NormalizationDataclass
     postprocessing: PostprocessingDataclass
@@ -419,6 +420,7 @@ class T2SConfigDataclass:
     def from_proto(cls, proto: text_to_speech_pb2.Text2SpeechConfig) -> 'T2SConfigDataclass':
         return cls(
             id=proto.id,
+            active=proto.active,
             description=proto.description,
             inference=InferenceDataclass.from_proto(proto=proto.inference),
             normalization=NormalizationDataclass.from_proto(proto=proto.normalization),

@@ -1,12 +1,16 @@
 import os
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 from uuid import uuid4
 
+from ruamel import yaml
+
+from grpc_server.constants import CONFIG_DIR_ENV
 from inference.inference_factory import InferenceFactory
 from inference.inference_interface import Inference
 from normalization.pipeline_constructor import NormalizerPipeline
 from normalization.postprocessor import Postprocessor
 from utils.data_classes.config_dataclass import T2SConfigDataclass
+from ondewologging.logger import logger_console as logger
 
 
 def get_list_of_config_files(config_dir: str) -> List[str]:
@@ -24,3 +28,33 @@ def create_t2s_pipeline_from_config(
     t2s_pipeline_id: str = config.id or f'{inference.name}-{uuid4()}'
     config.id = t2s_pipeline_id
     return preprocess_pipeline, inference, postprocessor, config
+
+
+def generate_config_path() -> str:
+    config_dir = get_config_dir()
+    config_file_name: str = f'config-{uuid4()}.yaml'
+    return os.path.join(config_dir, config_file_name)
+
+
+def get_config_dir() -> str:
+    config_dir: Optional[str] = os.getenv(CONFIG_DIR_ENV)
+    if not config_dir:
+        error_message: str = "No CONFIG_DIR environmental variable found. " \
+                             "Please set the CONFIG_DIR variable."
+        logger.error(error_message)
+        raise EnvironmentError(error_message)
+    assert isinstance(config_dir, str)
+    return config_dir
+
+
+def get_config_path_by_id(config_id: str) -> Optional[str]:
+    config_dir: str = get_config_dir()
+    config_files: List[str] = get_list_of_config_files(config_dir)
+    for config_file in config_files:
+        config_file_path: str = os.path.join(config_dir, config_file)
+        with open(config_file_path, 'r') as f:
+            pipeline_id: str = yaml.load(f, Loader=yaml.Loader)['id']
+        if pipeline_id == config_id:
+            config_file_path_by_id = config_file_path
+            return config_file_path_by_id
+    return None

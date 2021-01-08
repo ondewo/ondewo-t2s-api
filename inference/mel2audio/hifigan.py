@@ -14,16 +14,12 @@ from utils.data_classes.config_dataclass import HiFiGanDataclass
 
 class HiFiGan(HiFiGANCore):
     NAME: str = 'hifi_gan'
+    models_cache: Dict[str, Generator] = {}
 
     def __init__(self, config: HiFiGanDataclass):
         super(HiFiGan, self).__init__(config=config)
         self.model_path = self.config.model_path
         self.hcf = AttrDict(self.hifi_config)
-        if self.config.use_gpu and torch.cuda.is_available():
-            torch.cuda.manual_seed(self.hcf.seed)
-            self.device = torch.device('cuda')
-        else:
-            self.device = torch.device('cpu')
         logger.info('Creating and loading HiFi model...')
         self.generator: Generator = self._get_model()
         logger.info('HiFi model is ready.')
@@ -45,6 +41,18 @@ class HiFiGan(HiFiGANCore):
 
     @Timer(log_arguments=False)
     def _get_model(self) -> Generator:
+        key_word = f'{self.model_path}-{"cuda"*self.config.use_gpu+"cpu"*(not self.config.use_gpu)}'
+        if key_word in self.models_cache:
+            return self.models_cache[key_word]
+
+        if self.config.use_gpu and torch.cuda.is_available():
+            torch.cuda.manual_seed(self.hcf.seed)
+            self.device = torch.device('cuda')
+        elif not torch.cuda.is_available():
+            logger.warning('Cuda is not available. CPU inference will be used.')
+            self.device = torch.device('cpu')
+        else:
+            self.device = torch.device('cpu')
         generator = Generator(self.hcf).to(self.device)
         state_dict_g = torch.load(self.model_path, map_location=self.device)
         generator.load_state_dict(state_dict_g['generator'])
