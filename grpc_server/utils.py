@@ -55,6 +55,5 @@ def get_config_path_by_id(config_id: str) -> Optional[str]:
         with open(config_file_path, 'r') as f:
             pipeline_id: str = yaml.load(f, Loader=yaml.Loader)['id']
         if pipeline_id == config_id:
-            config_file_path_by_id = config_file_path
-            return config_file_path_by_id
+            return config_file_path
     return None

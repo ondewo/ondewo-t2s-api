@@ -3,6 +3,7 @@ from typing import Tuple, List, Dict
 import numpy as np
 import torch
 from glow_tts_reduced import models
+from ondewologging.decorators import Timer
 from ondewologging.logger import logger_console as logger
 
 from inference.text2mel.glow_tts_core import GlowTTSCore
@@ -23,9 +24,11 @@ class GlowTTS(GlowTTSCore):
         self.model: models.FlowGenerator = self._get_model()
         logger.info('Glow-tts model is ready.')
 
+    @Timer(log_arguments=False)
     def _get_model(self) -> models.FlowGenerator:
         key_word: str = f'{self.checkpoint_path}-{"cuda"*self.use_gpu+"cpu"*(not self.use_gpu)}'
         if key_word in self.models_cache:
+            logger.info(f"Model is in the cache with a key {key_word}.")
             return self.models_cache[key_word]
 
         model = models.FlowGenerator(

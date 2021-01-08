@@ -410,6 +410,7 @@ class T2SConfigDataclass:
     def to_proto(self) -> text_to_speech_pb2.Text2SpeechConfig:
         return text_to_speech_pb2.Text2SpeechConfig(
             id=self.id,
+            active=self.active,
             description=self.description,
             inference=self.inference.to_proto(),
             normalization=self.normalization.to_proto(),

@@ -43,6 +43,7 @@ class HiFiGan(HiFiGANCore):
     def _get_model(self) -> Generator:
         key_word = f'{self.model_path}-{"cuda"*self.config.use_gpu+"cpu"*(not self.config.use_gpu)}'
         if key_word in self.models_cache:
+            logger.info(f"Model is in the cache with a key {key_word}.")
             return self.models_cache[key_word]
 
         if self.config.use_gpu and torch.cuda.is_available():
@@ -58,4 +59,5 @@ class HiFiGan(HiFiGANCore):
         generator.load_state_dict(state_dict_g['generator'])
         generator.eval()
         generator.remove_weight_norm()
+        self.models_cache[key_word] = generator
         return generator

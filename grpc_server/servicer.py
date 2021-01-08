@@ -1,7 +1,7 @@
 import io
 import os
 import re
-from typing import List, Tuple, Optional, Any, Dict
+from typing import List, Tuple, Optional
 
 import google.protobuf.empty_pb2 as empty_pb2
 import grpc
@@ -10,9 +10,8 @@ import soundfile as sf
 from ondewologging.logger import logger_console as logger
 from ruamel import yaml
 
-from grpc_server.constants import CONFIG_DIR_ENV
 from grpc_server.t2s_pipeline_manager import T2SPipelineManager
-from grpc_server.utils import create_t2s_pipeline_from_config, get_list_of_config_files, generate_config_path, \
+from grpc_server.utils import create_t2s_pipeline_from_config, generate_config_path, \
     get_config_path_by_id
 from inference.inference_interface import Inference
 from normalization.pipeline_constructor import NormalizerPipeline

@@ -1,6 +1,6 @@
-description: German, male, thorsten dataset
+active: true
+description: German, male, thorsten d
 id: glow_tts&hifi_gan-e976dd6c-2f41-484b-aec2-3e6868d37280
-active: True
 inference:
   caching: {active: false, cache_save_dir: models/cache, load_cache: true, memory_cache_max_size: 20,
     sampling_rate: 22050, save_cache: true}
@@ -12,13 +12,13 @@ inference:
         triton_model_name: mb_melgan, triton_url: "localhost:8001"}
       type: hifi_gan
       waveglow_triton: {max_spect_size: 1000, param_config_path: models/waveglow/waveglow.yaml,
-        sigma: 0.6, triton_model_name: waveglow, triton_url: "localhost:8001"}
+        sigma: 0.6000000238418579, triton_model_name: waveglow, triton_url: "localhost:8001"}
     text2mel:
       glow_tts:
         batch_size: 5
         cleaners: []
         length_scale: 1.0
-        noise_scale: 0.667
+        noise_scale: 0.6669999957084656
         param_config_path: models/glow-tts/de/config_blank.json
         path: models/glow-tts/de/thorsten_blank.pth
         use_gpu: true
@@ -27,7 +27,7 @@ inference:
         cleaners: []
         length_scale: 1.0
         max_text_length: 100
-        noise_scale: 0.667
+        noise_scale: 0.6669999957084656
         param_config_path: models/glow-tts/de/config.json
         triton_model_name: glow_tts
         triton_url: localhost:8001
@@ -39,7 +39,7 @@ normalization:
     normalize_numbers, fix_punctuation, remove_unaudible_texts, lower_case]
 postprocessing:
   apodization: {apodization_secs: 0.25}
-  logmmse: {initial_noise: 100, noise_threshold: 0.15, window_size: 0}
-  pipeline: null
+  logmmse: {initial_noise: 100, noise_threshold: 0.15000000596046448, window_size: 0}
+  pipeline: []
   silence_secs: 0.25
-  wiener: {alpha: 0.5, frame_len: 1024, iterations: 10, lpc_order: 50, thresh: 0.1}
+  wiener: {alpha: 0.5, frame_len: 1024, iterations: 10, lpc_order: 50, thresh: 0.10000000149011612}
