@@ -12,7 +12,7 @@ from ruamel import yaml
 
 from grpc_server.t2s_pipeline_manager import T2SPipelineManager
 from grpc_server.utils import create_t2s_pipeline_from_config, generate_config_path, \
-    get_config_path_by_id
+    get_config_path_by_id, get_all_pipelines_from_config_files, get_config_by_id
 from inference.inference_interface import Inference
 from normalization.pipeline_constructor import NormalizerPipeline
 from normalization.postprocessor import Postprocessor
@@ -26,10 +26,10 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
                    context: grpc.ServicerContext) -> text_to_speech_pb2.SynthesizeResponse:
         return self.handle_synthesize_request(request)
 
-    def ListActiveT2sPipelineIds(
+    def ListAllT2sPipelines(
             self, request: empty_pb2.Empty,
             context: grpc.ServicerContext,
-    ) -> text_to_speech_pb2.ListActiveT2sPipelineIdsResponse:
+    ) -> text_to_speech_pb2.ListAllT2sPipelinesResponse:
         return self.handle_list_all_t2s_pipeline_ids_request()
 
     def GetT2sPipeline(self, request: text_to_speech_pb2.T2sPipelineId,
@@ -91,20 +91,23 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
         )
 
     @staticmethod
-    def handle_list_all_t2s_pipeline_ids_request() -> text_to_speech_pb2.ListActiveT2sPipelineIdsResponse:
-        ids: List[str] = T2SPipelineManager.get_all_t2s_pipeline_ids()
-        return text_to_speech_pb2.ListActiveT2sPipelineIdsResponse(ids=ids)
+    def handle_list_all_t2s_pipeline_ids_request() -> text_to_speech_pb2.ListAllT2sPipelinesResponse:
+        pipelines_registered: List[T2SConfigDataclass] = \
+            T2SPipelineManager.get_all_t2s_pipeline_descriptions()
+        pipelines_persisted: List[T2SConfigDataclass] = get_all_pipelines_from_config_files()
+        pipelines = list(set(pipelines_persisted + pipelines_registered))
+        return text_to_speech_pb2.ListAllT2sPipelinesResponse(
+            pipelines=[pipeline.to_proto() for pipeline in pipelines]
+        )
 
     @staticmethod
     def handle_get_t2s_pipeline_request(
             request: text_to_speech_pb2.T2sPipelineId
     ) -> text_to_speech_pb2.Text2SpeechConfig:
         t2s_pipeline_id: str = request.id
-        t2s_pipeline = T2SPipelineManager.get_t2s_pipeline(t2s_pipeline_id=t2s_pipeline_id)
-        if t2s_pipeline is None:
-            raise ModuleNotFoundError(f'Pipeline with id {t2s_pipeline_id} '
-                                      f'is not registered in T2SPipelineManager.')
-        _, _, _, config = t2s_pipeline
+        config: Optional[T2SConfigDataclass] = get_config_by_id(config_id=t2s_pipeline_id)
+        if config is None:
+            raise ModuleNotFoundError(f'Pipeline with id {t2s_pipeline_id} is not found.')
         return config.to_proto()
 
     @staticmethod
@@ -151,11 +154,14 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
             raise ModuleNotFoundError(f'The t2s pipeline id {config.id} is not found.')
 
         # update pipeline in the manager
-        preprocess_pipeline, inference, postprocessor, config = create_t2s_pipeline_from_config(config)
-        T2SPipelineManager.register_t2s_pipeline(
-            t2s_pipeline_id=config.id,
-            t2s_pipeline=(preprocess_pipeline, inference, postprocessor, config)
-        )
+        if config.active:
+            preprocess_pipeline, inference, postprocessor, config = create_t2s_pipeline_from_config(config)
+            T2SPipelineManager.register_t2s_pipeline(
+                t2s_pipeline_id=config.id,
+                t2s_pipeline=(preprocess_pipeline, inference, postprocessor, config)
+            )
+        else:
+            T2SPipelineManager.del_t2s_pipeline(t2s_pipeline_id=config.id)
 
         # persist updated pipeline
         config_file_path = get_config_path_by_id(config.id) or generate_config_path()

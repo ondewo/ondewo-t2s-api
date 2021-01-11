@@ -9,7 +9,7 @@ from ruamel import yaml
 from grpc_server.constants import CONFIG_DIR_ENV
 from grpc_server.servicer import Text2SpeechServicer
 from grpc_server.t2s_pipeline_manager import T2SPipelineManager
-from grpc_server.utils import get_list_of_config_files, create_t2s_pipeline_from_config
+from grpc_server.utils import get_list_of_config_files, create_t2s_pipeline_from_config, get_config_dir
 from ondewo_grpc.ondewo.t2s import text_to_speech_pb2_grpc
 from utils.data_classes.config_dataclass import T2SConfigDataclass
 
@@ -37,12 +37,7 @@ class Server:
 
     @staticmethod
     def load_models_from_configs() -> None:
-        config_dir: Optional[str] = os.getenv(CONFIG_DIR_ENV)
-        if not config_dir:
-            error_message: str = "No CONFIG_DIR environmental variable found. " \
-                                 "Please set the CONFIG_DIR variable."
-            logger.error(error_message)
-            raise EnvironmentError(error_message)
+        config_dir: str = get_config_dir()
         config_files: List[str] = get_list_of_config_files(config_dir)
         for config_file in config_files:
             with open(os.path.join(config_dir, config_file), 'r') as f:

@@ -1,5 +1,5 @@
 active: true
-description: German, male, thorsten
+description: German, male, thorst
 id: glow_tts&hifi_gan-e976dd6c-2f41-484b-aec2-3e6868d37280
 inference:
   caching: {active: false, cache_save_dir: models/cache, load_cache: true, memory_cache_max_size: 20,

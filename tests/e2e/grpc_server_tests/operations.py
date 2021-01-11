@@ -29,7 +29,7 @@ class OperationSynthesize(OperationNode):
         assert not isinstance(self.result, text_to_speech_pb2.SynthesizeResponse)
 
 
-class OperationListActiveModelIds(OperationNode):
+class OperationListAllPipelines(OperationNode):
     def __init__(self, expected_to_fail: bool = False):
         super().__init__(expected_to_fail)
         self.stub = text_to_speech_pb2_grpc.Text2SpeechStub(channel=self.channel)
@@ -43,11 +43,11 @@ class OperationListActiveModelIds(OperationNode):
         return self.result
 
     def _basic_positive_validate(self) -> None:
-        super(OperationListActiveModelIds, self)._basic_positive_validate()
+        super(OperationListAllPipelines, self)._basic_positive_validate()
         assert isinstance(self.result, text_to_speech_pb2.ListActiveT2sPipelineIdsResponse)
 
     def _basic_negative_validate(self) -> None:
-        super(OperationListActiveModelIds, self)._basic_negative_validate()
+        super(OperationListAllPipelines, self)._basic_negative_validate()
         assert not isinstance(self.result, text_to_speech_pb2.ListActiveT2sPipelineIdsResponse)
 
 
@@ -57,7 +57,7 @@ class OperationGetT2sPipeline(OperationNode):
         self.stub = text_to_speech_pb2_grpc.Text2SpeechStub(channel=self.channel)
         self.request = request
 
-    def execute_grpc(self) -> Optional[text_to_speech_pb2.ListActiveT2sPipelineIdsResponse]:
+    def execute_grpc(self) -> Optional[text_to_speech_pb2.Text2SpeechConfig]:
         f: Callable[[], Any] = lambda: self.stub.GetT2sPipeline(
             self.request,
         )

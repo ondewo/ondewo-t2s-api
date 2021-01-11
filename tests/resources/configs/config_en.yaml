@@ -1,6 +1,6 @@
 active: true
-description: German, male, thorsten
-id: glow_tts&hifi_gan-e976dd6c-2f41-484b-aec2-3e6868d37280
+description: German, male, thorst
+id: glow_tts&hifi_gan-0118e07a-8447-4c87-9f6b-4802a7dd7a07
 inference:
   caching: {active: false, cache_save_dir: models/cache, load_cache: true, memory_cache_max_size: 20,
     sampling_rate: 22050, save_cache: true}
@@ -17,10 +17,10 @@ inference:
       glow_tts:
         batch_size: 5
         cleaners: []
-        length_scale: 1.0
+        length_scale: 0.5
         noise_scale: 0.6669999957084656
-        param_config_path: models/glow-tts/de/config_blank.json
-        path: models/glow-tts/de/thorsten_blank.pth
+        param_config_path: models/glow-tts/en/config.json
+        path: models/glow-tts/en/pretrained.pth
         use_gpu: true
       glow_tts_triton:
         batch_size: 8
@@ -28,15 +28,14 @@ inference:
         length_scale: 1.0
         max_text_length: 100
         noise_scale: 0.6669999957084656
-        param_config_path: models/glow-tts/de/config.json
+        param_config_path: models/glow-tts/en/config.json
         triton_model_name: glow_tts
         triton_url: localhost:8001
       type: glow_tts
   type: composite
 normalization:
   language: de
-  pipeline: [fix_plus, normalize_urls, normalize_dates, normalize_year, normalize_time,
-    normalize_numbers, fix_punctuation, remove_unaudible_texts, lower_case]
+  pipeline: []
 postprocessing:
   apodization: {apodization_secs: 0.25}
   logmmse: {initial_noise: 100, noise_threshold: 0.15000000596046448, window_size: 0}

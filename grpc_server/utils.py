@@ -18,6 +18,23 @@ def get_list_of_config_files(config_dir: str) -> List[str]:
     return list(filter(lambda path: path.endswith('.yaml'), list_of_objects))
 
 
+def get_all_config_paths() -> List[str]:
+    config_dir: str = get_config_dir()
+    config_file_list: List[str] = get_list_of_config_files(config_dir=config_dir)
+    return [os.path.join(config_dir, config_file) for config_file in config_file_list]
+
+
+def get_all_pipelines_from_config_files() -> List[T2SConfigDataclass]:
+    config_paths: List[str] = get_all_config_paths()
+    description_list: List[T2SConfigDataclass] = []
+    for config_path in config_paths:
+        with open(config_path, 'r') as f:
+            config_dict = yaml.load(f, Loader=yaml.Loader)
+            config: T2SConfigDataclass = T2SConfigDataclass.from_dict(config_dict)  # type: ignore
+            description_list.append(config)
+    return description_list
+
+
 def create_t2s_pipeline_from_config(
         config: T2SConfigDataclass
 ) -> Tuple[NormalizerPipeline, Inference, Postprocessor, T2SConfigDataclass]:
@@ -57,3 +74,13 @@ def get_config_path_by_id(config_id: str) -> Optional[str]:
         if pipeline_id == config_id:
             return config_file_path
     return None
+
+
+def get_config_by_id(config_id: str) -> Optional[T2SConfigDataclass]:
+    config_path: Optional[str] = get_config_path_by_id(config_id=config_id)
+    if config_path is None:
+        return None
+    with open(config_path, 'r') as f:
+        config_dict = yaml.load(f, Loader=yaml.Loader)
+        config: T2SConfigDataclass = T2SConfigDataclass.from_dict(config_dict)  # type: ignore
+    return config

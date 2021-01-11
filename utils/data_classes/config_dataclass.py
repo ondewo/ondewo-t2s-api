@@ -1,3 +1,4 @@
+import json
 from dataclasses import dataclass, field
 from typing import List
 
@@ -427,3 +428,7 @@ class T2SConfigDataclass:
             normalization=NormalizationDataclass.from_proto(proto=proto.normalization),
             postprocessing=PostprocessingDataclass.from_proto(proto=proto.postprocessing),
         )
+
+    def __hash__(self) -> int:
+        config_str: str = self.to_json()  # type: ignore
+        return hash(config_str)
