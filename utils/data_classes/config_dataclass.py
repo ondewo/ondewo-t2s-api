@@ -400,9 +400,35 @@ class PostprocessingDataclass:
 
 @dataclass_json
 @dataclass
+class DescriptionDataclass(object):
+    language: str
+    speaker_sex: str
+    pipeline_owner: str
+    comments: str
+
+    def to_proto(self) -> text_to_speech_pb2.Description:
+        return text_to_speech_pb2.Description(
+            language=self.language,
+            speaker_sex=self.speaker_sex,
+            pipeline_owner=self.pipeline_owner,
+            comments=self.comments
+        )
+
+    @classmethod
+    def from_proto(cls, proto: text_to_speech_pb2.Description) -> 'DescriptionDataclass':
+        return cls(
+            language=proto.language,
+            speaker_sex=proto.speaker_sex,
+            pipeline_owner=proto.pipeline_owner,
+            comments=proto.comments
+        )
+
+
+@dataclass_json
+@dataclass
 class T2SConfigDataclass:
     id: str
-    description: str
+    description: DescriptionDataclass
     active: bool
     inference: InferenceDataclass
     normalization: NormalizationDataclass
@@ -412,7 +438,7 @@ class T2SConfigDataclass:
         return text_to_speech_pb2.Text2SpeechConfig(
             id=self.id,
             active=self.active,
-            description=self.description,
+            description=self.description.to_proto(),
             inference=self.inference.to_proto(),
             normalization=self.normalization.to_proto(),
             postprocessing=self.postprocessing.to_proto(),
@@ -423,7 +449,7 @@ class T2SConfigDataclass:
         return cls(
             id=proto.id,
             active=proto.active,
-            description=proto.description,
+            description=DescriptionDataclass.from_proto(proto=proto.description),
             inference=InferenceDataclass.from_proto(proto=proto.inference),
             normalization=NormalizationDataclass.from_proto(proto=proto.normalization),
             postprocessing=PostprocessingDataclass.from_proto(proto=proto.postprocessing),

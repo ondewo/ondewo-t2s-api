@@ -9,6 +9,7 @@ from inference.inference_factory import InferenceFactory
 from inference.inference_interface import Inference
 from normalization.pipeline_constructor import NormalizerPipeline
 from normalization.postprocessor import Postprocessor
+from ondewo_grpc.ondewo.t2s import text_to_speech_pb2
 from utils.data_classes.config_dataclass import T2SConfigDataclass
 from ondewologging.logger import logger_console as logger
 
@@ -84,3 +85,31 @@ def get_config_by_id(config_id: str) -> Optional[T2SConfigDataclass]:
         config_dict = yaml.load(f, Loader=yaml.Loader)
         config: T2SConfigDataclass = T2SConfigDataclass.from_dict(config_dict)  # type: ignore
     return config
+
+
+def filter_on_languages(languages: List[str],
+                        pipelines: List[T2SConfigDataclass]) -> List[T2SConfigDataclass]:
+    return list(filter(lambda config: config.description.language in languages, pipelines))
+
+
+def filter_on_speaker_sexes(speaker_sexes: List[str],
+                            pipelines: List[T2SConfigDataclass]) -> List[T2SConfigDataclass]:
+    return list(filter(lambda config: config.description.speaker_sex in speaker_sexes, pipelines))
+
+
+def filter_on_pipeline_owners(pipeline_owners: List[str],
+                              pipelines: List[T2SConfigDataclass]) -> List[T2SConfigDataclass]:
+    return list(filter(lambda config: config.description.pipeline_owner in pipeline_owners, pipelines))
+
+
+def filter_pipelines(
+        pipelines: List[T2SConfigDataclass],
+        request: text_to_speech_pb2.ListT2sPipelinesRequest
+) -> List[T2SConfigDataclass]:
+    if request.languages:
+        pipelines = filter_on_languages(languages=list(request.languages), pipelines=pipelines)
+    if request.speaker_sexes:
+        pipelines = filter_on_speaker_sexes(speaker_sexes=list(request.speaker_sexes), pipelines=pipelines)
+    if request.pipeline_owners:
+        pipelines = filter_on_pipeline_owners(pipeline_owners=list(request.languages), pipelines=pipelines)
+    return pipelines

@@ -13,7 +13,7 @@ class T2SPipelineManager:
     _t2s_pipelines: Dict[str, Tuple[NormalizerPipeline, Inference, Postprocessor, T2SConfigDataclass]] = {}
 
     @classmethod
-    def _clear_t2s_pipelines(cls) -> None:
+    def clear_t2s_pipelines(cls) -> None:
         cls._t2s_pipelines = {}
 
     @classmethod

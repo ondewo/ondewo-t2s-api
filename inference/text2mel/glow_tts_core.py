@@ -1,5 +1,5 @@
 import json
-from typing import Tuple, Optional, List, Union
+from typing import Tuple, Optional, List, Union, Dict
 
 import numpy as np
 from glow_tts_reduced import utils
@@ -15,6 +15,7 @@ from utils.data_classes.config_dataclass import GlowTTSDataclass, GlowTTSTritonD
 
 class GlowTTSCore(Text2Mel):
     NAME: str = ''
+    text_preprpcessor_cache: Dict[str, GlowTTSTextProcessor] = {}
 
     def __init__(self, config: Union[GlowTTSDataclass, GlowTTSTritonDataclass]):
         self.config = config
@@ -25,13 +26,13 @@ class GlowTTSCore(Text2Mel):
             self.hyperparams: utils.HParams = utils.HParams(**json.load(fi))
 
         if getattr(self.hyperparams.data, "cmudict_path", None) is not None:
-            cmudict_path: Optional[str] = self.hyperparams.data.cmudict_path
+            self.cmudict_path: Optional[str] = self.hyperparams.data.cmudict_path
         else:
-            cmudict_path = None
+            self.cmudict_path = None
 
         self.text_processor = GlowTTSTextProcessor(
             language_code=self.hyperparams.data.language,
-            cmudict_path=cmudict_path,
+            cmudict_path=self.cmudict_path,
             cleaners=self.cleaners,
             add_blank=getattr(self.hyperparams.data, "add_blank", False)
         )

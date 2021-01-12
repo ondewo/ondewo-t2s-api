@@ -29,26 +29,26 @@ class OperationSynthesize(OperationNode):
         assert not isinstance(self.result, text_to_speech_pb2.SynthesizeResponse)
 
 
-class OperationListAllPipelines(OperationNode):
-    def __init__(self, expected_to_fail: bool = False):
+class OperationListPipelines(OperationNode):
+    def __init__(self, request: text_to_speech_pb2.ListT2sPipelinesRequest, expected_to_fail: bool = False):
         super().__init__(expected_to_fail)
         self.stub = text_to_speech_pb2_grpc.Text2SpeechStub(channel=self.channel)
-        self.request: empty_pb2.Empty = empty_pb2.Empty()
+        self.request = request
 
-    def execute_grpc(self) -> Optional[text_to_speech_pb2.ListActiveT2sPipelineIdsResponse]:
-        f: Callable[[], Any] = lambda: self.stub.ListActiveT2sPipelineIds(
+    def execute_grpc(self) -> Optional[text_to_speech_pb2.ListT2sPipelinesResponse]:
+        f: Callable[[], Any] = lambda: self.stub.ListT2sPipelines(
             self.request,
         )
         self._execute_grpc_with_exception_handling(f)
         return self.result
 
     def _basic_positive_validate(self) -> None:
-        super(OperationListAllPipelines, self)._basic_positive_validate()
-        assert isinstance(self.result, text_to_speech_pb2.ListActiveT2sPipelineIdsResponse)
+        super(OperationListPipelines, self)._basic_positive_validate()
+        assert isinstance(self.result, text_to_speech_pb2.ListT2sPipelinesResponse)
 
     def _basic_negative_validate(self) -> None:
-        super(OperationListAllPipelines, self)._basic_negative_validate()
-        assert not isinstance(self.result, text_to_speech_pb2.ListActiveT2sPipelineIdsResponse)
+        super(OperationListPipelines, self)._basic_negative_validate()
+        assert not isinstance(self.result, text_to_speech_pb2.ListT2sPipelinesResponse)
 
 
 class OperationGetT2sPipeline(OperationNode):
