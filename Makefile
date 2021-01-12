@@ -1,6 +1,7 @@
 IMAGE_TAG_BATCH="dockerregistry.ondewo.com:5000/ondewo-t2s-batch-server:develop"
+IMAGE_TAG_GRPC="dockerregistry.ondewo.com:5000/ondewo-t2s-grpc-server:develop"
 IMAGE_TAG_BATCH_RELEASE="dockerregistry.ondewo.com:5000/ondewo-t2s-batch-server-release:develop"
-IMAGE_TAG_TRAINING="dockerregistry.ondewo.com:5000/ondewo-t2s-training"
+IMAGE_TAG_GRPC_RELEASE="dockerregistry.ondewo.com:5000/ondewo-t2s-grpc-server-release:develop"
 IMAGE_TAG_TESTS="ondewo-t2s-tests-image"
 IMAGE_TAG_TRITON="dockerregistry.ondewo.com:5000/nvidia/tritonserver:20.09-py3"
 BATCH_CONTAINER="ondewo-t2s-batch-server"
@@ -21,6 +22,10 @@ build_batch_server: export SSH_PRIVATE_KEY="$$(cat ~/.ssh/id_rsa)"
 build_batch_server:
 	docker build -t ${IMAGE_TAG_BATCH} --build-arg SSH_PRIVATE_KEY=$(SSH_PRIVATE_KEY) --target uncythonized -f docker/Dockerfile.batchserver .
 
+build_grpc_server: export SSH_PRIVATE_KEY="$$(cat ~/.ssh/id_rsa)"
+build_grpc_server:
+	docker build -t ${IMAGE_TAG_GRPC} --build-arg SSH_PRIVATE_KEY=$(SSH_PRIVATE_KEY) --target uncythonized -f docker/Dockerfile.grpc_server .
+
 build_batch_server_no_cache: export SSH_PRIVATE_KEY="$$(cat ~/.ssh/id_rsa)"
 build_batch_server_no_cache:
 	docker build -t ${IMAGE_TAG_BATCH} --no-cache=true --build-arg SSH_PRIVATE_KEY=$(SSH_PRIVATE_KEY) --target uncythonized -f docker/Dockerfile.batchserver .
@@ -29,8 +34,9 @@ build_batch_server_release: export SSH_PRIVATE_KEY="$$(cat ~/.ssh/id_rsa)"
 build_batch_server_release:
 	docker build -t ${IMAGE_TAG_BATCH_RELEASE} --build-arg SSH_PRIVATE_KEY=$(SSH_PRIVATE_KEY) -f docker/Dockerfile.batchserver .
 
-build_training_image:
-	docker build -t ${IMAGE_TAG_TRAINING} training
+build_grpc_server_release: export SSH_PRIVATE_KEY="$$(cat ~/.ssh/id_rsa)"
+build_grpc_server_release:
+	docker build -t ${IMAGE_TAG_GRPC_RELEASE} --build-arg SSH_PRIVATE_KEY=$(SSH_PRIVATE_KEY) -f docker/Dockerfile.grpc_server .
 
 run_triton:
 	-docker rm -f triton-inference-server
@@ -138,18 +144,18 @@ generate_ondewo_protos:
 	done
 	python utils/fix_imports.py -sp ${PROTO_OUTPUT_FOLDER} # fix imports into subdirectory
 
-build_grpc_server:
-	# ignore dockerignore by moving it before the build, and restore it afterwards
-	mkdir ignoreme
-	mv .dockerignore ignoreme/.dockerignore # move away .dockerignore
-	cp grpc_config_server/grpc_dockerignore .dockerignore
-	docker build -t t2s_grpc_server -f grpc_config_server/Dockerfile .
-	mv .dockerignore grpc_config_server/grpc_dockerignore
-	mv ignoreme/.dockerignore .dockerignore # restore .dockerignore
-	rm -r ignoreme
-
-run_grpc_server:
-	docker-compose -f grpc_config_server/docker-compose.yaml up
-
-remove_grpc_exited_container:
-	docker-compose -f grpc_config_server/docker-compose.yaml rm -f
+#build_grpc_server:
+#	# ignore dockerignore by moving it before the build, and restore it afterwards
+#	mkdir ignoreme
+#	mv .dockerignore ignoreme/.dockerignore # move away .dockerignore
+#	cp grpc_config_server/grpc_dockerignore .dockerignore
+#	docker build -t t2s_grpc_server -f grpc_config_server/Dockerfile .
+#	mv .dockerignore grpc_config_server/grpc_dockerignore
+#	mv ignoreme/.dockerignore .dockerignore # restore .dockerignore
+#	rm -r ignoreme
+#
+#run_grpc_server:
+#	docker-compose -f grpc_config_server/docker-compose.yaml up
+#
+#remove_grpc_exited_container:
+#	docker-compose -f grpc_config_server/docker-compose.yaml rm -f
