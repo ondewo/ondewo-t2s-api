@@ -5,7 +5,9 @@ IMAGE_TAG_GRPC_RELEASE="dockerregistry.ondewo.com:5000/ondewo-t2s-grpc-server-re
 IMAGE_TAG_TESTS="ondewo-t2s-tests-image"
 IMAGE_TAG_TRITON="dockerregistry.ondewo.com:5000/nvidia/tritonserver:20.09-py3"
 BATCH_CONTAINER="ondewo-t2s-batch-server"
+GRPC_CONTAINER="ondewo-t2s-grpc-server"
 BATCH_CONTAINER_RELEASE="ondewo-t2s-batch-server-release"
+GRPC_CONTAINER_RELEASE="ondewo-t2s-grpc-server-release"
 TRAINING_CONTAINER="ondewo-t2s-training"
 CODE_CHECK_IMAGE="code_check_image"
 TESTS_CONTAINER="ondewo-t2s-tests"
@@ -76,6 +78,18 @@ run_batch_server:
 	--name ${BATCH_CONTAINER} \
 	${IMAGE_TAG_BATCH}
 
+run_grpc_server:
+	-docker kill ${GRPC_CONTAINER}
+	-docker rm ${GRPC_CONTAINER}
+	docker run -td --gpus all \
+	--shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
+	--network=host \
+	-v ${shell pwd}/models:/opt/ondewo-t2s/models \
+	-v ${shell pwd}/config:/opt/ondewo-t2s/config \
+	--env CONFIG_DIR="config" \
+	--name ${GRPC_CONTAINER} \
+	${IMAGE_TAG_GRPC}
+
 run_batch_server_release:
 	-docker kill ${BATCH_CONTAINER_RELEASE}
 	-docker rm ${BATCH_CONTAINER_RELEASE}
@@ -87,6 +101,18 @@ run_batch_server_release:
 	--env CONFIG_FILE="config/config.yaml" \
 	--name ${BATCH_CONTAINER_RELEASE} \
 	${IMAGE_TAG_BATCH_RELEASE}
+
+run_grpc_server_release:
+	-docker kill ${GRPC_CONTAINER_RELEASE}
+	-docker rm ${GRPC_CONTAINER_RELEASE}
+	docker run -td --gpus all \
+	--shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
+	--network=host \
+	-v ${shell pwd}/models:/opt/ondewo-t2s/models \
+	-v ${shell pwd}/config:/opt/ondewo-t2s/config \
+	--env CONFIG_DIR="config" \
+	--name ${GRPC_CONTAINER_RELEASE} \
+	${IMAGE_TAG_GRPC_RELEASE}
 
 run_tests:  export SSH_PRIVATE_KEY="$$(cat ~/.ssh/id_rsa)"
 run_tests: build_batch_server

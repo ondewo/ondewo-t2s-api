@@ -1,11 +1,14 @@
 cachetools
 fluent-logger
+dataclasses-json
 google-api-core==1.13.0
 googleapis-common-protos==1.5.10
 grpcio==1.31.0
 grpcio-reflection==1.31.0
 grpcio-tools==1.31.0
 msgpack==1.0.0
+mypy-protobuf
+num2words
 ruamel.yaml
 tritonclient[all]==2.3.0
 git+https://github.com/wilsonchingg/logmmse.git
