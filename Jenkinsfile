@@ -25,17 +25,32 @@ pipeline {
         stage('Normal image') { agent { label 'cpu' }
             stages{
                 stage('Build') {
-                    environment {
-                        ssh_key_file = credentials('devops_ondewo_idrsa')
-                    }
-                    steps {
-                        sh(script: """set +x
-                            docker build -t ${PUSH_NAME_STREAM} --build-arg SSH_PRIVATE_KEY=\"\$(cat ${ssh_key_file})\" --target uncythonized -f docker/Dockerfile.batchserver .
-                            set -x"""
-                            , label: "build image"
-                        )
-
-                    }
+                    parallel{
+                        stage('Build batch server'){
+                            environment {
+                                ssh_key_file = credentials('devops_ondewo_idrsa')
+                            }
+                            steps {
+                                sh(script: """set +x
+                                    docker build -t ${PUSH_NAME_STREAM} --build-arg SSH_PRIVATE_KEY=\"\$(cat ${ssh_key_file})\" --target uncythonized -f docker/Dockerfile.batchserver .
+                                    set -x"""
+                                    , label: "build image"
+                                )
+                                }
+                            }
+                        stage('Build grpc server'){
+                            environment {
+                                ssh_key_file = credentials('devops_ondewo_idrsa')
+                            }
+                            steps {
+                                sh(script: """set +x
+                                    docker build -t ${PUSH_NAME_STREAM} --build-arg SSH_PRIVATE_KEY=\"\$(cat ${ssh_key_file})\" --target uncythonized -f docker/Dockerfile.grpcserver .
+                                    set -x"""
+                                    , label: "build image"
+                                )
+                                }
+                            }
+                        }
                 }
                 stage('Tests') {
                      environment {
