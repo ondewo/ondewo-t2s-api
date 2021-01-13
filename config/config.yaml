@@ -18,7 +18,7 @@ inference:
       glow_tts:
         batch_size: 5
         cleaners: []
-        length_scale: 0.5
+        length_scale: 1.0
         noise_scale: 0.6669999957084656
         param_config_path: models/glow-tts/de/config_blank.json
         path: models/glow-tts/de/thorsten_blank.pth
