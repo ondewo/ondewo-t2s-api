@@ -6,8 +6,14 @@ COPY docker/demo_server_requirements.txt .
 RUN pip install -r demo_server_requirements.txt --ignore-installed
 
 WORKDIR /opt/ondewo-t2s
-COPY ./demo_server ./demo_server
+COPY ./demo_server_grpc ./demo_server_grpc
 COPY ./utils ./utils
+COPY ./ondewo-t2s-api ./ondewo-t2s-api
+
+COPY ./Makefile .
+
+RUN mkdir ondewo_grpc
+RUN make generate_ondewo_protos
 
 ENV PYTHONPATH /opt/ondewo-t2s
 ENV FLASK_APP demo_server
