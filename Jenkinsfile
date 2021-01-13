@@ -65,7 +65,7 @@ pipeline {
                      }
                      steps {
                         sh(script: "mkdir ${testresults_folder}")
-                        sh(script: "docker build -t ${TESTS_IMAGE_NAME} --build-arg PUSH_NAME_STREAM=\"${PUSH_NAME_STREAM}\" -f docker/Dockerfile.tests .", label: "build image")
+                        sh(script: "docker build -t ${TESTS_IMAGE_NAME} --build-arg PUSH_NAME_STREAM=\"${PUSH_NAME_STREAM_GRPC}\" -f docker/Dockerfile.tests .", label: "build image")
                         sh(script: "docker run --rm -e TESTFILE=${testresults_filename} -v ${testresults_folder}:/opt/ondewo-t2s/log  ${TESTS_IMAGE_NAME} --ignore=tests/tests_grpc", label: "run_tests")
                      }
                      post { always {
@@ -74,8 +74,10 @@ pipeline {
                      } }
                 }
                 stage('Push') { steps{
-                        sh(script: "docker push ${PUSH_NAME_STREAM}", label: "push the image to the registry")
-                        sh(script: "echo ${PUSH_NAME_STREAM} pushed to registry")
+                        sh(script: "docker push ${PUSH_NAME_STREAM_GRPC}", label: "push the image to the registry")
+                        sh(script: "echo ${PUSH_NAME_STREAM_GRPC} pushed to registry")
+                        sh(script: "docker push ${PUSH_NAME_STREAM_BATCH}", label: "push the image to the registry")
+                        sh(script: "echo ${PUSH_NAME_STREAM_BATCH} pushed to registry")
                 } }
         } }
 } }

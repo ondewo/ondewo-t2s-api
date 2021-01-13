@@ -2,14 +2,10 @@ ARG PUSH_NAME_STREAM
 FROM ${PUSH_NAME_STREAM} AS test
 
 COPY ./docker/test_requirements.txt .
-COPY grpc_config_server/requirements.txt grpc_config_server/requirements.txt
 
 RUN pip install nvidia-pyindex
 RUN pip install -r test_requirements.txt --ignore-installed
-RUN pip install -r grpc_config_server/requirements.txt
 
-# install docker.io
-RUN apt update && apt install -y docker.io
 
 WORKDIR /opt/ondewo-t2s
 COPY ./normalization ./normalization
@@ -18,8 +14,6 @@ COPY ./batch_server ./batch_server
 COPY ./utils ./utils
 COPY ./tests ./tests
 COPY ./config ./config
-COPY ./grpc_config_server ./grpc_config_server
-COPY ./tests/tests_grpc/offline/models ./models
 
 ENV PYTHONPATH /opt/ondewo-t2s
 ENTRYPOINT [ "python", "-m", "pytest", "-vv", "--capture=no", "--junit-xml=log/${TESTFILE}", "--ignore=tests/e2e", "--ignore=tests/integration", "--ignore=tests/tests_grpc_unit"]
