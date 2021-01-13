@@ -5,10 +5,14 @@ pipeline {
         SANITIZED_BRANCH_NAME = "${env.BRANCH_NAME}".replace("/", "_")
         IMAGE_TAG = "${SANITIZED_BRANCH_NAME}"
 
-        IMAGE_NAME = "ondewo-t2s-batch-server"
+        IMAGE_NAME = "ondewo-t2s"
+        IMAGE_NAME_BATCH = "ondewo-t2s-batch-server"
+        IMAGE_NAME_GRPC = "ondewo-t2s-grpc-server"
         TESTS_IMAGE_NAME = "ondewo-t2s-tests"
-        TTS_NAME = "${IMAGE_NAME}:${IMAGE_TAG}"
-        PUSH_NAME_STREAM = "dockerregistry.ondewo.com:5000/${TTS_NAME}"
+        TTS_NAME_BATCH = "${IMAGE_NAME_BATCH}:${IMAGE_TAG}"
+        TTS_NAME_GRPC = "${IMAGE_NAME_GRPC}:${IMAGE_TAG}"
+        PUSH_NAME_STREAM_BATCH = "dockerregistry.ondewo.com:5000/${TTS_NAME_BATCH}"
+        PUSH_NAME_STREAM_GRPC = "dockerregistry.ondewo.com:5000/${TTS_NAME_GRPC}"
         test_IMAGE_NAME = "test_image_${IMAGE_NAME}"
 
         code_check_image_name = "code_check_image_${IMAGE_NAME}"
@@ -32,7 +36,7 @@ pipeline {
                             }
                             steps {
                                 sh(script: """set +x
-                                    docker build -t ${PUSH_NAME_STREAM} --build-arg SSH_PRIVATE_KEY=\"\$(cat ${ssh_key_file})\" --target uncythonized -f docker/Dockerfile.batchserver .
+                                    docker build -t ${PUSH_NAME_STREAM_BATCH} --build-arg SSH_PRIVATE_KEY=\"\$(cat ${ssh_key_file})\" --target uncythonized -f docker/Dockerfile.batchserver .
                                     set -x"""
                                     , label: "build image"
                                 )
@@ -44,7 +48,7 @@ pipeline {
                             }
                             steps {
                                 sh(script: """set +x
-                                    docker build -t ${PUSH_NAME_STREAM} --build-arg SSH_PRIVATE_KEY=\"\$(cat ${ssh_key_file})\" --target uncythonized -f docker/Dockerfile.grpcserver .
+                                    docker build -t ${PUSH_NAME_STREAM_GRPC} --build-arg SSH_PRIVATE_KEY=\"\$(cat ${ssh_key_file})\" --target uncythonized -f docker/Dockerfile.grpc_server .
                                     set -x"""
                                     , label: "build image"
                                 )
