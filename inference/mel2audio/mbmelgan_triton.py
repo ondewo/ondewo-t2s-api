@@ -1,15 +1,14 @@
-import time
-from typing import List, Dict, Any
+from typing import List
 
 import numpy as np
+from ondewologging.decorators import Timer
+from ondewologging.logger import logger_console as logger
 from tritonclient.grpc import InferenceServerClient, InferInput, InferRequestedOutput, InferResult
 
-from inference.mel2audio.mbmelgan_core import MBMelGANCore
 from inference import triton_utils
+from inference.mel2audio.mbmelgan_core import MBMelGANCore
 from utils.data_classes.config_dataclass import MbMelganTritonDataclass
 from utils.helpers import check_paths_exist
-from ondewologging.logger import logger_console as logger
-from ondewologging.decorators import Timer
 
 
 class MBMelGANTriton(MBMelGANCore):

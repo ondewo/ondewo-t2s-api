@@ -104,35 +104,6 @@ class Text2MelDataclass:
 
 @dataclass_json
 @dataclass
-class WaveglowTritonDataclass:
-    param_config_path: str
-    sigma: float
-    max_spect_size: int
-    triton_model_name: str
-    triton_url: str
-
-    def to_proto(self) -> text_to_speech_pb2.WaveglowTriton:
-        return text_to_speech_pb2.WaveglowTriton(
-            param_config_path=self.param_config_path,
-            sigma=self.sigma,
-            max_spect_size=self.max_spect_size,
-            triton_model_name=self.triton_model_name,
-            triton_url=self.triton_url,
-        )
-
-    @classmethod
-    def from_proto(cls, proto: text_to_speech_pb2.WaveglowTriton) -> 'WaveglowTritonDataclass':
-        return cls(
-            param_config_path=proto.param_config_path,
-            sigma=proto.sigma,
-            max_spect_size=proto.max_spect_size,
-            triton_model_name=proto.triton_model_name,
-            triton_url=proto.triton_url,
-        )
-
-
-@dataclass_json
-@dataclass
 class MbMelganTritonDataclass:
     config_path: str
     stats_path: str
@@ -187,14 +158,12 @@ class HiFiGanDataclass:
 @dataclass
 class Mel2AudioDataclass:
     type: str
-    waveglow_triton: WaveglowTritonDataclass
     mb_melgan_triton: MbMelganTritonDataclass
     hifi_gan: HiFiGanDataclass
 
     def to_proto(self) -> text_to_speech_pb2.Mel2Audio:
         return text_to_speech_pb2.Mel2Audio(
             type=self.type,
-            waveglow_triton=self.waveglow_triton.to_proto(),
             mb_melgan_triton=self.mb_melgan_triton.to_proto(),
             hifi_gan=self.hifi_gan.to_proto()
         )
@@ -203,7 +172,6 @@ class Mel2AudioDataclass:
     def from_proto(cls, proto: text_to_speech_pb2.Mel2Audio) -> 'Mel2AudioDataclass':
         return cls(
             type=proto.type,
-            waveglow_triton=WaveglowTritonDataclass.from_proto(proto=proto.waveglow_triton),
             mb_melgan_triton=MbMelganTritonDataclass.from_proto(proto=proto.mb_melgan_triton),
             hifi_gan=HiFiGanDataclass.from_proto(proto=proto.hifi_gan)
         )

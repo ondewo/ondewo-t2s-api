@@ -4,20 +4,24 @@ import numpy as np
 import pytest
 
 from inference.mel2audio.hifigan_core import HiFiGANCore
+from utils.data_classes.config_dataclass import HiFiGanDataclass
 
 
 @pytest.fixture(scope='function')
 def mocked_hifi() -> HiFiGANCore:
     config_dict: Dict[str, Any] = {
+        'use_gpu': False,
         'batch_size': 4,
-        'config_path': 'tests/resources/config_hifi.json'
+        'config_path': 'tests/resources/config_hifi.json',
+        'model_path': ''
     }
-    return MockedHiFi(config=config_dict)
+    config = HiFiGanDataclass.from_dict(config_dict)  # type: ignore
+    return MockedHiFi(config=config)
 
 
 class MockedHiFi(HiFiGANCore):
 
-    def __init__(self, config: Dict[str, Any]):
+    def __init__(self, config: HiFiGanDataclass):
         super(MockedHiFi, self).__init__(config=config)
 
     def _generate(self, mel: np.ndarray) -> np.ndarray:
