@@ -26,7 +26,7 @@ LANGUAGE_DICT: Dict[str, List[str]] = {
 }
 
 
-def get_id_dict() -> Dict[str, str]:
+def get_pipeline_ids_dict() -> Dict[str, str]:
     pipelines = stab.ListT2sPipelines(request=text_to_speech_pb2.ListT2sPipelinesRequest()).pipelines
     id_dict = {}
     for pipeline in pipelines:
@@ -39,7 +39,7 @@ def get_id_dict() -> Dict[str, str]:
     return id_dict
 
 
-ID_DICT: Dict[str, str] = get_id_dict()
+PIPELINE_IDS_DICT: Dict[str, str] = get_pipeline_ids_dict()
 
 
 def get_pipeline_id(language_string: str) -> str:
@@ -47,10 +47,10 @@ def get_pipeline_id(language_string: str) -> str:
     for key, value in LANGUAGE_DICT.items():
         if language_string in value:
             language = key
-    if not language or not ID_DICT.get(language):
+    if not language or not PIPELINE_IDS_DICT.get(language):
         raise ValueError("Please select a valid language.")
 
-    return ID_DICT[language]
+    return PIPELINE_IDS_DICT[language]
 
 
 def synthesize_with_pipeline(text: str, pipeline_id: str) -> bytes:

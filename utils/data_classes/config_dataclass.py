@@ -373,13 +373,17 @@ class DescriptionDataclass(object):
     speaker_sex: str
     pipeline_owner: str
     comments: str
+    speaker_name: str
+    domain: str
 
     def to_proto(self) -> text_to_speech_pb2.Description:
         return text_to_speech_pb2.Description(
             language=self.language,
             speaker_sex=self.speaker_sex,
             pipeline_owner=self.pipeline_owner,
-            comments=self.comments
+            comments=self.comments,
+            speaker_name=self.speaker_name,
+            domain=self.domain
         )
 
     @classmethod
@@ -388,7 +392,9 @@ class DescriptionDataclass(object):
             language=proto.language,
             speaker_sex=proto.speaker_sex,
             pipeline_owner=proto.pipeline_owner,
-            comments=proto.comments
+            comments=proto.comments,
+            speaker_name=proto.speaker_name,
+            domain=proto.domain,
         )
 
 

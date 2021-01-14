@@ -8,6 +8,7 @@ import google.protobuf.empty_pb2 as empty_pb2
 import grpc
 import numpy as np
 import soundfile as sf
+from ondewologging.decorators import Timer
 from ondewologging.logger import logger_console as logger
 from ruamel import yaml
 
@@ -49,8 +50,8 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
                           context: grpc.ServicerContext) -> empty_pb2.Empty:
         return self.handle_update_t2s_pipeline_request(request)
 
-    @staticmethod
-    def handle_synthesize_request(request: text_to_speech_pb2.SynthesizeRequest
+    @Timer(log_arguments=True)
+    def handle_synthesize_request(self, request: text_to_speech_pb2.SynthesizeRequest
                                   ) -> text_to_speech_pb2.SynthesizeResponse:
         start_time = time.perf_counter()
         # get model set for

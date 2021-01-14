@@ -16,7 +16,7 @@ from ondewologging.logger import logger_console as logger
 
 def get_list_of_config_files(config_dir: str) -> List[str]:
     list_of_objects: List[str] = os.listdir(config_dir)
-    return list(filter(lambda path: path.endswith('.yaml'), list_of_objects))
+    return list(filter(lambda path: path.endswith(('.yaml', 'yml')), list_of_objects))
 
 
 def get_all_config_paths() -> List[str]:
@@ -102,6 +102,16 @@ def filter_on_pipeline_owners(pipeline_owners: List[str],
     return list(filter(lambda config: config.description.pipeline_owner in pipeline_owners, pipelines))
 
 
+def filter_on_speaker_names(speaker_names: List[str],
+                            pipelines: List[T2SConfigDataclass]) -> List[T2SConfigDataclass]:
+    return list(filter(lambda config: config.description.speaker_name in speaker_names, pipelines))
+
+
+def filter_on_domains(domaines: List[str],
+                      pipelines: List[T2SConfigDataclass]) -> List[T2SConfigDataclass]:
+    return list(filter(lambda config: config.description.domain in domaines, pipelines))
+
+
 def filter_pipelines(
         pipelines: List[T2SConfigDataclass],
         request: text_to_speech_pb2.ListT2sPipelinesRequest
@@ -111,5 +121,10 @@ def filter_pipelines(
     if request.speaker_sexes:
         pipelines = filter_on_speaker_sexes(speaker_sexes=list(request.speaker_sexes), pipelines=pipelines)
     if request.pipeline_owners:
-        pipelines = filter_on_pipeline_owners(pipeline_owners=list(request.languages), pipelines=pipelines)
+        pipelines = filter_on_pipeline_owners(
+            pipeline_owners=list(request.pipeline_owners), pipelines=pipelines)
+    if request.speaker_names:
+        pipelines = filter_on_speaker_names(speaker_names=list(request.speaker_names), pipelines=pipelines)
+    if request.domains:
+        pipelines = filter_on_domains(domaines=list(request.domains), pipelines=pipelines)
     return pipelines
