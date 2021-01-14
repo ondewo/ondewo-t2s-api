@@ -33,33 +33,33 @@ RUN pip install -e ondewo-logging
 COPY --from=private_installer /root/install/ondewo-t2s-hifigan ./ondewo-t2s-hifigan
 RUN pip install -e ondewo-t2s-hifigan
 
-COPY ./docker/batch_server_requirements.txt .
+COPY ./docker/rest_server_requirements.txt .
 RUN pip install nvidia-pyindex
-RUN pip install -r batch_server_requirements.txt --ignore-installed
+RUN pip install -r rest_server_requirements.txt --ignore-installed
 
 WORKDIR /opt/ondewo-t2s
 COPY ./utils ./utils
 COPY ./inference ./inference
 COPY ./normalization ./normalization
-COPY ./batch_server ./batch_server
+COPY ./rest_server ./rest_server
 
 
 ENV PYTHONPATH /opt/ondewo-t2s
-ENV FLASK_APP batch_server
+ENV FLASK_APP rest_server
 CMD flask run --host=0.0.0.0 --port=40015
 
 
 # ========Cythonization Image=======
 FROM dockerregistry.ondewo.com:5000/ondewo-cythonize-tools-3.8 AS cython_builder
 
-COPY --from=uncythonized /opt/ondewo-t2s/batch_server /tmp/transfer/to_cythonize/batch_server
+COPY --from=uncythonized /opt/ondewo-t2s/rest_server /tmp/transfer/to_cythonize/rest_server
 COPY --from=uncythonized /opt/ondewo-t2s/inference /tmp/transfer/to_cythonize/inference
 COPY --from=uncythonized /opt/ondewo-t2s/normalization /tmp/transfer/to_cythonize/normalization
 COPY --from=uncythonized /opt/ondewo-t2s/utils /tmp/transfer/to_cythonize/utils
 
 RUN ./cythonize.py \
 		--modules_to_cythonize ./to_cythonize \
-		--files_to_skip ./to_cythonize/batch_server/__init__.py \
+		--files_to_skip ./to_cythonize/rest_server/__init__.py \
         --directories_to_skip "./to_cythonize/inference/mel2audio/nemo_modules, ./to_cythonize/inference/text2mel/nemo_modules" \
         --delete_pycache True \
 		--py_files_mode delete

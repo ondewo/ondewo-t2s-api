@@ -1,18 +1,16 @@
-IMAGE_TAG_BATCH="dockerregistry.ondewo.com:5000/ondewo-t2s-batch-server:develop"
+IMAGE_TAG_REST="dockerregistry.ondewo.com:5000/ondewo-t2s-rest-server:develop"
 IMAGE_TAG_GRPC="dockerregistry.ondewo.com:5000/ondewo-t2s-grpc-server:develop"
-IMAGE_TAG_BATCH_RELEASE="dockerregistry.ondewo.com:5000/ondewo-t2s-batch-server-release:develop"
+IMAGE_TAG_REST_RELEASE="dockerregistry.ondewo.com:5000/ondewo-t2s-rest-server-release:develop"
 IMAGE_TAG_GRPC_RELEASE="dockerregistry.ondewo.com:5000/ondewo-t2s-grpc-server-release:develop"
 IMAGE_TAG_TESTS="ondewo-t2s-tests-image"
 IMAGE_TAG_TRITON="dockerregistry.ondewo.com:5000/nvidia/tritonserver:20.09-py3"
-BATCH_CONTAINER="ondewo-t2s-batch-server"
+REST_CONTAINER="ondewo-t2s-rest-server"
 GRPC_CONTAINER="ondewo-t2s-grpc-server"
-BATCH_CONTAINER_RELEASE="ondewo-t2s-batch-server-release"
+REST_CONTAINER_RELEASE="ondewo-t2s-rest-server-release"
 GRPC_CONTAINER_RELEASE="ondewo-t2s-grpc-server-release"
-TRAINING_CONTAINER="ondewo-t2s-training"
 CODE_CHECK_IMAGE="code_check_image"
 TESTS_CONTAINER="ondewo-t2s-tests"
 SERVER_PORT = 40015
-TRAINING_PORT = 40011
 
 
 run_code_checks: ## Start the code checks image and run the checks
@@ -20,21 +18,17 @@ run_code_checks: ## Start the code checks image and run the checks
 	docker run --rm ${CODE_CHECK_IMAGE} make flake8
 	docker run --rm ${CODE_CHECK_IMAGE} make mypy
 
-build_batch_server: export SSH_PRIVATE_KEY="$$(cat ~/.ssh/id_rsa)"
-build_batch_server:
-	docker build -t ${IMAGE_TAG_BATCH} --build-arg SSH_PRIVATE_KEY=$(SSH_PRIVATE_KEY) --target uncythonized -f docker/Dockerfile.batchserver .
+build_rest_server: export SSH_PRIVATE_KEY="$$(cat ~/.ssh/id_rsa)"
+build_rest_server:
+	docker build -t ${IMAGE_TAG_REST} --build-arg SSH_PRIVATE_KEY=$(SSH_PRIVATE_KEY) --target uncythonized -f docker/Dockerfile.rest_server .
 
 build_grpc_server: export SSH_PRIVATE_KEY="$$(cat ~/.ssh/id_rsa)"
 build_grpc_server:
 	docker build -t ${IMAGE_TAG_GRPC} --build-arg SSH_PRIVATE_KEY=$(SSH_PRIVATE_KEY) --target uncythonized -f docker/Dockerfile.grpc_server .
 
-build_batch_server_no_cache: export SSH_PRIVATE_KEY="$$(cat ~/.ssh/id_rsa)"
-build_batch_server_no_cache:
-	docker build -t ${IMAGE_TAG_BATCH} --no-cache=true --build-arg SSH_PRIVATE_KEY=$(SSH_PRIVATE_KEY) --target uncythonized -f docker/Dockerfile.batchserver .
-
-build_batch_server_release: export SSH_PRIVATE_KEY="$$(cat ~/.ssh/id_rsa)"
-build_batch_server_release:
-	docker build -t ${IMAGE_TAG_BATCH_RELEASE} --build-arg SSH_PRIVATE_KEY=$(SSH_PRIVATE_KEY) -f docker/Dockerfile.batchserver .
+build_rest_server_release: export SSH_PRIVATE_KEY="$$(cat ~/.ssh/id_rsa)"
+build_rest_server_release:
+	docker build -t ${IMAGE_TAG_REST_RELEASE} --build-arg SSH_PRIVATE_KEY=$(SSH_PRIVATE_KEY) -f docker/Dockerfile.rest_server .
 
 build_grpc_server_release: export SSH_PRIVATE_KEY="$$(cat ~/.ssh/id_rsa)"
 build_grpc_server_release:
@@ -56,27 +50,17 @@ run_triton_on_dgx:
 stop_ssh_tunel:
 	-kill -9 $(ps aux | grep "ssh -N -f -L localhost:8001:dgx:8001 voice_user@dgx"| grep -v grep| awk '{print $2}')
 
-run_training_container:
-	-docker kill ${TRAINING_CONTAINER}
-	-docker rm ${TRAINING_CONTAINER}
-	docker run -t -d --gpus all --rm \
-	--shm-size=10g --ulimit memlock=-1 --ulimit stack=67108864 \
-	-v ${shell pwd}/models:/opt/models \
-	-v ${shell pwd}/training:/opt/ondewo-t2s \
-	-p ${TRAINING_PORT}:5000 \
-	--name ${TRAINING_CONTAINER} ${IMAGE_TAG_TRAINING}
-
-run_batch_server:
-	-docker kill ${BATCH_CONTAINER}
-	-docker rm ${BATCH_CONTAINER}
+run_rest_server:
+	-docker kill ${REST_CONTAINER}
+	-docker rm ${REST_CONTAINER}
 	docker run -td --gpus all \
 	--shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
 	--network=host \
 	-v ${shell pwd}/models:/opt/ondewo-t2s/models \
 	-v ${shell pwd}/config:/opt/ondewo-t2s/config \
 	--env CONFIG_FILE="config/config.yaml" \
-	--name ${BATCH_CONTAINER} \
-	${IMAGE_TAG_BATCH}
+	--name ${REST_CONTAINER} \
+	${IMAGE_TAG_REST}
 
 run_grpc_server:
 	-docker kill ${GRPC_CONTAINER}
@@ -90,17 +74,17 @@ run_grpc_server:
 	--name ${GRPC_CONTAINER} \
 	${IMAGE_TAG_GRPC}
 
-run_batch_server_release:
-	-docker kill ${BATCH_CONTAINER_RELEASE}
-	-docker rm ${BATCH_CONTAINER_RELEASE}
+run_rest_server_release:
+	-docker kill ${REST_CONTAINER_RELEASE}
+	-docker rm ${REST_CONTAINER_RELEASE}
 	docker run -td --gpus all \
 	--shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
 	--network=host \
 	-v ${shell pwd}/models:/opt/ondewo-t2s/models \
 	-v ${shell pwd}/config:/opt/ondewo-t2s/config \
 	--env CONFIG_FILE="config/config.yaml" \
-	--name ${BATCH_CONTAINER_RELEASE} \
-	${IMAGE_TAG_BATCH_RELEASE}
+	--name ${REST_CONTAINER_RELEASE} \
+	${IMAGE_TAG_REST_RELEASE}
 
 run_grpc_server_release:
 	-docker kill ${GRPC_CONTAINER_RELEASE}
@@ -115,8 +99,8 @@ run_grpc_server_release:
 	${IMAGE_TAG_GRPC_RELEASE}
 
 run_tests:  export SSH_PRIVATE_KEY="$$(cat ~/.ssh/id_rsa)"
-run_tests: build_batch_server
-	docker build -t ${IMAGE_TAG_TESTS} --build-arg PUSH_NAME_STREAM=${IMAGE_TAG_BATCH} -f docker/Dockerfile.tests .
+run_tests: build_rest_server
+	docker build -t ${IMAGE_TAG_TESTS} --build-arg PUSH_NAME_STREAM=${IMAGE_TAG_REST} -f docker/Dockerfile.tests .
 	-docker rm -f ${TESTS_CONTAINER}
 	docker run --rm -e TESTFILE=pytest.xml -v ${PWD}/test_results:/opt/ondewo-t2s/log \
 	--name ${TESTS_CONTAINER} ${IMAGE_TAG_TESTS}
@@ -135,7 +119,7 @@ make package_release: package_git_revision_and_version
 
 	# tar and zip images
 	docker pull ${PUSH_NAME_RELEASE}
-	docker save ${PUSH_NAME_RELEASE} | gzip > ${RELEASE_FOLDER}/ondewo-t2s-batch-server-release-${SANITIZED_DOCKER_TAG_NAME}.tar.gz
+	docker save ${PUSH_NAME_RELEASE} | gzip > ${RELEASE_FOLDER}/ondewo-t2s-rest-server-release-${SANITIZED_DOCKER_TAG_NAME}.tar.gz
 
 	# add configs
 	rsync -av config package --exclude demo
@@ -170,18 +154,3 @@ generate_ondewo_protos:
 	done
 	python utils/fix_imports.py -sp ${PROTO_OUTPUT_FOLDER} # fix imports into subdirectory
 
-#build_grpc_server:
-#	# ignore dockerignore by moving it before the build, and restore it afterwards
-#	mkdir ignoreme
-#	mv .dockerignore ignoreme/.dockerignore # move away .dockerignore
-#	cp grpc_config_server/grpc_dockerignore .dockerignore
-#	docker build -t t2s_grpc_server -f grpc_config_server/Dockerfile .
-#	mv .dockerignore grpc_config_server/grpc_dockerignore
-#	mv ignoreme/.dockerignore .dockerignore # restore .dockerignore
-#	rm -r ignoreme
-#
-#run_grpc_server:
-#	docker-compose -f grpc_config_server/docker-compose.yaml up
-#
-#remove_grpc_exited_container:
-#	docker-compose -f grpc_config_server/docker-compose.yaml rm -f

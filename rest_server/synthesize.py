@@ -2,7 +2,7 @@ import re
 from typing import List
 import numpy as np
 
-from batch_server import preprocess_pipeline, inference, postprocessor
+from rest_server import preprocess_pipeline, inference, postprocessor
 from ondewologging.logger import logger_console as logger
 
 

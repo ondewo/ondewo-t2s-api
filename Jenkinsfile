@@ -6,12 +6,12 @@ pipeline {
         IMAGE_TAG = "${SANITIZED_BRANCH_NAME}"
 
         IMAGE_NAME = "ondewo-t2s"
-        IMAGE_NAME_BATCH = "ondewo-t2s-batch-server"
+        IMAGE_NAME_REST = "ondewo-t2s-rest-server"
         IMAGE_NAME_GRPC = "ondewo-t2s-grpc-server"
         TESTS_IMAGE_NAME = "ondewo-t2s-tests"
-        TTS_NAME_BATCH = "${IMAGE_NAME_BATCH}:${IMAGE_TAG}"
+        TTS_NAME_REST = "${IMAGE_NAME_REST}:${IMAGE_TAG}"
         TTS_NAME_GRPC = "${IMAGE_NAME_GRPC}:${IMAGE_TAG}"
-        PUSH_NAME_STREAM_BATCH = "dockerregistry.ondewo.com:5000/${TTS_NAME_BATCH}"
+        PUSH_NAME_STREAM_REST = "dockerregistry.ondewo.com:5000/${TTS_NAME_REST}"
         PUSH_NAME_STREAM_GRPC = "dockerregistry.ondewo.com:5000/${TTS_NAME_GRPC}"
         test_IMAGE_NAME = "test_image_${IMAGE_NAME}"
 
@@ -30,13 +30,13 @@ pipeline {
             stages{
                 stage('Build') {
                     parallel{
-                        stage('Build batch server'){
+                        stage('Build rest server'){
                             environment {
                                 ssh_key_file = credentials('devops_ondewo_idrsa')
                             }
                             steps {
                                 sh(script: """set +x
-                                    docker build -t ${PUSH_NAME_STREAM_BATCH} --build-arg SSH_PRIVATE_KEY=\"\$(cat ${ssh_key_file})\" --target uncythonized -f docker/Dockerfile.batchserver .
+                                    docker build -t ${PUSH_NAME_STREAM_REST} --build-arg SSH_PRIVATE_KEY=\"\$(cat ${ssh_key_file})\" --target uncythonized -f docker/Dockerfile.rest_server .
                                     set -x"""
                                     , label: "build image"
                                 )
@@ -76,8 +76,8 @@ pipeline {
                 stage('Push') { steps{
                         sh(script: "docker push ${PUSH_NAME_STREAM_GRPC}", label: "push the image to the registry")
                         sh(script: "echo ${PUSH_NAME_STREAM_GRPC} pushed to registry")
-                        sh(script: "docker push ${PUSH_NAME_STREAM_BATCH}", label: "push the image to the registry")
-                        sh(script: "echo ${PUSH_NAME_STREAM_BATCH} pushed to registry")
+                        sh(script: "docker push ${PUSH_NAME_STREAM_REST}", label: "push the image to the registry")
+                        sh(script: "echo ${PUSH_NAME_STREAM_REST} pushed to registry")
                 } }
         } }
 } }

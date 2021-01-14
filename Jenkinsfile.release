@@ -8,11 +8,14 @@ pipeline {
         TESTS_IMAGE_NAME = "ondewo-t2s-tests"
         RELEASE_FOLDER = "releases/${SANITIZED_DOCKER_TAG_NAME}"
 
-        IMAGE_NAME_RELASE = "ondewo-t2s-batch-server-release"
-        TTS_NAME = "${IMAGE_NAME_RELASE}:${IMAGE_TAG}"
-        PUSH_NAME_RELEASE = "dockerregistry.ondewo.com:5000/${TTS_NAME}"
-        test_image_name_stream = "test_image_${IMAGE_NAME_RELASE}"
-        code_check_image_name = "code_check_image_${IMAGE_NAME_RELASE}"
+        IMAGE_NAME_RELASE_REST = "ondewo-t2s-rest-server-release"
+        TTS_NAME_REST = "${IMAGE_NAME_RELASE_REST}:${IMAGE_TAG}"
+        PUSH_NAME_RELEASE_REST = "dockerregistry.ondewo.com:5000/${TTS_NAME_REST}"
+        IMAGE_NAME_RELASE_GRPC = "ondewo-t2s-grpc-server-release"
+        TTS_NAME_GRPC = "${IMAGE_NAME_RELASE_REST}:${IMAGE_TAG}"
+        PUSH_NAME_RELEASE_GRPC = "dockerregistry.ondewo.com:5000/${TTS_NAME_GRPC}"
+        test_image_name_stream = "test_image_${IMAGE_NAME_RELASE_REST}"
+        code_check_image_name = "code_check_image_${IMAGE_NAME_RELASE_REST}"
     }
 
     stages {
@@ -48,14 +51,30 @@ pipeline {
                     stage('Normal image') { agent { label 'cpu' }
                         stages{
                             stage('Build') {
-                            environment {
-                                ssh_key_file = credentials('devops_ondewo_idrsa')
+                                parallel{
+                                    stage('Build rest server'){
+                                            environment {
+                                                ssh_key_file = credentials('devops_ondewo_idrsa')
+                                            }
+                                            steps {
+                                                 sh(script: """set +x
+                                                        docker build -t ${PUSH_NAME_RELEASE_REST} --build-arg SSH_PRIVATE_KEY=\"\$(cat ${ssh_key_file})\" -f docker/Dockerfile.rest_server .
+                                                    set -x""", label: "build image")
+                                            }
+                                        }
+                                     stage('Build grpc server'){
+                                             environment {
+                                                        ssh_key_file = credentials('devops_ondewo_idrsa')
+                                                    }
+                                                    steps {
+                                                         sh(script: """set +x
+                                                                docker build -t ${PUSH_NAME_RELEASE_GRPC} --build-arg SSH_PRIVATE_KEY=\"\$(cat ${ssh_key_file})\" -f docker/Dockerfile.grpc_server .
+                                                            set -x""", label: "build image")
+                                                    }
+                                        }
+                                     }
+                                 }
                             }
-                            steps {
-                                 sh(script: """set +x
-                                        docker build -t ${PUSH_NAME_RELEASE} --build-arg SSH_PRIVATE_KEY=\"\$(cat ${ssh_key_file})\" -f docker/Dockerfile.batchserver .
-                                    set -x""", label: "build image")
-                            } }
                             stage('Tests (develop)') {
                                  when {
                                     branch 'develop'
@@ -68,7 +87,7 @@ pipeline {
                                  }
                                  steps {
                                     sh(script: "mkdir ${testresults_folder}")
-                                    sh(script: "docker build -t ${TESTS_IMAGE_NAME} --build-arg PUSH_NAME_STREAM=\"${PUSH_NAME_RELEASE}\"  -f docker/Dockerfile.tests . ", label: "build image")
+                                    sh(script: "docker build -t ${TESTS_IMAGE_NAME} --build-arg PUSH_NAME_STREAM=\"${PUSH_NAME_RELEASE_GRPC}\"  -f docker/Dockerfile.tests . ", label: "build image")
                                     sh(script: "docker run --rm -e TESTFILE=${testresults_filename} -v ${testresults_folder}:/opt/ondewo-t2s/log  ${TESTS_IMAGE_NAME}  --ignore=tests/tests_grpc", label: "run_tests")
                                  }
                                  post { always {
@@ -91,7 +110,7 @@ pipeline {
                                  }
                                  steps {
                                     sh(script: "mkdir ${testresults_folder}")
-                                    sh(script: "docker build -t ${TESTS_IMAGE_NAME} --build-arg PUSH_NAME_STREAM=\"${PUSH_NAME_RELEASE}\" -f docker/Dockerfile.tests . ", label: "build image")
+                                    sh(script: "docker build -t ${TESTS_IMAGE_NAME} --build-arg PUSH_NAME_STREAM=\"${PUSH_NAME_RELEASE_GRPC}\" -f docker/Dockerfile.tests . ", label: "build image")
                                     sh(script: "docker run --rm -e TESTFILE=${testresults_filename} -v ${testresults_folder}:/opt/ondewo-t2s/log  ${TESTS_IMAGE_NAME}", label: "run_tests")
                                  }
                                  post { always {
@@ -100,8 +119,10 @@ pipeline {
                                  } }
                             }
                             stage('Push') { steps{
-                                sh(script: "docker push ${PUSH_NAME_RELEASE}", label: "push the image to the registry")
-                                sh(script: "echo ${PUSH_NAME_RELEASE} pushed to registry")
+                                sh(script: "docker push ${PUSH_NAME_RELEASE_REST}", label: "push the image to the registry")
+                                sh(script: "echo ${PUSH_NAME_RELEASE_REST} pushed to registry")
+                                sh(script: "docker push ${PUSH_NAME_RELEASE_GRPC}", label: "push the image to the registry")
+                                sh(script: "echo ${PUSH_NAME_RELEASE_GRPC} pushed to registry")
                             } }
                             // Only releases get packaged
                             stage('Package the release') {

@@ -1,3 +1,4 @@
+from rest_server import routes
 import os
 from typing import Optional, Dict, Any
 
@@ -27,4 +28,3 @@ preprocess_pipeline: NormalizerPipeline = NormalizerPipeline(config=config.norma
 postprocessor = Postprocessor(config.postprocessing)
 
 # needed for Flask
-from batch_server import routes
