@@ -19,8 +19,7 @@ RUN git clone git@bitbucket.org:ondewo/ondewo-t2s-hifigan.git && cd ondewo-t2s-h
 FROM dockerregistry.ondewo.com:5000/base-cuda-pytorch:1.0.0 AS uncythonized
 
 RUN apt-get update && apt-get -y upgrade && \
-	apt-get install -y git sox && apt-get install -y ffmpeg libavcodec-extra && \
-	apt-get install -y libsndfile1-dev
+	apt-get install -y git sox ffmpeg libavcodec-extra libsndfile1-dev
 
 RUN pip install cython
 COPY --from=private_installer /root/install/ondewo-t2s-glow ./ondewo-t2s-glow
