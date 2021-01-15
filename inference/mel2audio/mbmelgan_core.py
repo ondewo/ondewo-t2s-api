@@ -5,6 +5,7 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 
 from inference.mel2audio.mel2audio import Mel2Audio
+from utils.data_classes.config_dataclass import MbMelganTritonDataclass
 
 
 class MBMelGANCore(Mel2Audio):
@@ -13,16 +14,16 @@ class MBMelGANCore(Mel2Audio):
     INPUT_FORMAT: str = "timesteps_first"
     INPUT_SCALING: str = "standard"
 
-    def __init__(self, config: Dict[str, Any]):
+    def __init__(self, config: MbMelganTritonDataclass):
         self.config = config
 
         self.scaler = StandardScaler()
         self.scaler.mean_, self.scaler.scale_ = np.load(
-            self.config["stats_path"])
+            self.config.stats_path)
         self.scaler.n_features_in_ = self.N_MEL_FEATURES
 
         yaml = YAML(typ="safe")
-        with open(self.config["config_path"]) as file:
+        with open(self.config.config_path) as file:
             self.hop_size = yaml.load(file)["hop_size"]
 
         self.batch_size = 1

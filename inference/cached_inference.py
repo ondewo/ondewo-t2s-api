@@ -10,16 +10,18 @@ from scipy.io.wavfile import read as read_wav
 from scipy.io.wavfile import write
 
 from inference.inference_interface import Inference
-from pylog.logger import logger_console as logger
+from ondewologging.logger import logger_console as logger
+
+from utils.data_classes.config_dataclass import CachingDataclass
 
 
 class CachedInference(Inference):
 
-    def __init__(self, inference: Inference, config: Dict[str, Any]):
-        self.save_cache: bool = config['save_cache']
-        self.memory_cache_max_size: int = config['memory_cache_max_size']
-        self.cache_save_dir: str = config['cache_save_dir']
-        self.sr: int = config['sampling_rate']
+    def __init__(self, inference: Inference, config: CachingDataclass):
+        self.save_cache: bool = config.save_cache
+        self.memory_cache_max_size: int = config.memory_cache_max_size
+        self.cache_save_dir: str = config.cache_save_dir
+        self.sr: int = config.sampling_rate
 
         self.inference: Inference = inference
 
@@ -30,7 +32,7 @@ class CachedInference(Inference):
         # Key: text, value: audio filename
         self.file_cache: Dict[str, str] = {}
 
-        if config['load_cache']:
+        if config.load_cache:
             logger.info('Started loading the cache from filesystem.')
             self.load_cache()
             logger.info(f'Loading of the memory cache is done. '
@@ -104,7 +106,12 @@ class CachedInference(Inference):
         if self.save_cache:
             self.saving_queue.put((text, np.copy(audio)))
 
-    def synthesize(self, texts: List[str]) -> List[np.ndarray]:
+    def synthesize(self, texts: List[str], length_scale: float, noise_scale: float) -> List[np.ndarray]:
+
+        logger.warning(f'You are using cached inference with length scale and noise scale '
+                       f'{length_scale, noise_scale}. Note that changing these values '
+                       f'will not be available for cached audio. You can only set it up once before caching.')
+
         # Firstly, update the file cache
         try:
             while not self.saved_file_queue.empty():
@@ -129,7 +136,11 @@ class CachedInference(Inference):
 
         if len(texts_not_in_cache) > 0:
             logger.info(f'Start synthesizing audio for texts {texts_not_in_cache}')
-            audio_list: List[np.ndarray] = self.inference.synthesize(texts=texts_not_in_cache)
+            audio_list: List[np.ndarray] = self.inference.synthesize(
+                texts=texts_not_in_cache,
+                length_scale=length_scale,
+                noise_scale=noise_scale
+            )
             logger.info('Synthesizing is finished.')
             for text, audio in zip(texts_not_in_cache, audio_list):
                 audio_result[text] = audio

@@ -1,4 +1,3 @@
-batch_size: 20
 config_path: "tests/resources/mb_melgan/config.yml"
 model_path: "models/mb_melgan/en/generator-1820000.h5"
 stats_path: "tests/resources/mb_melgan/stats.npy"

@@ -1,24 +1,25 @@
-from typing import Any, Dict, List, Optional
+from typing import List
 
-from pylog.logger import logger_console as logger
+from ondewologging.logger import logger_console as logger
 
 from normalization.normalizer_interface import NormalizerInterface
+from utils.data_classes.config_dataclass import NormalizationDataclass
 
 
 class NormalizerPipeline:
 
-    def __init__(self, config: Dict[str, Any]) -> None:
+    def __init__(self, config: NormalizationDataclass) -> None:
         self.normalizer: NormalizerInterface = self._get_normalizer(config=config)
         self.pipeline_definition: List[str] = self.get_pipeline_definition(config)
 
     @classmethod
-    def _get_normalizer(cls, config: Dict[str, Any]) -> NormalizerInterface:
-        if config['language'] == 'de':
+    def _get_normalizer(cls, config: NormalizationDataclass) -> NormalizerInterface:
+        if config.language == 'de':
             from normalization.text_preprocessing_de import TextNormalizerDe as Normalizer
-        elif config['language'] == 'en':
+        elif config.language == 'en':
             from normalization.text_preprocessing_en import TextNormalizerEn as Normalizer
         else:
-            raise ValueError(f"Language {config['language']} is not supported.")
+            raise ValueError(f"Language {config.language} is not supported.")
         return Normalizer()
 
     def apply(self, texts: List[str]) -> List[str]:
@@ -29,8 +30,8 @@ class NormalizerPipeline:
             texts = step(texts)
         return texts
 
-    def get_pipeline_definition(self, config: Dict[str, Any]) -> List[str]:
-        pipeline_definition: Optional[List[str]] = config.get('pipeline')
+    def get_pipeline_definition(self, config: NormalizationDataclass) -> List[str]:
+        pipeline_definition: List[str] = config.pipeline
         if not pipeline_definition:
             logger.warning('Preprocessing pipeline is not defined or empty. No preprocessing will be applied')
             return []

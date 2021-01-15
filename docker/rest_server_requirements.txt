@@ -1,0 +1,12 @@
+cachetools
+flask
+fluent-logger
+msgpack==1.0.0
+ruamel.yaml
+tritonclient[all]==2.3.0
+git+https://github.com/wilsonchingg/logmmse.git
+pyroomacoustics
+python_speech_features
+pysndfx
+transformers==3.5.0
+dataclasses-json

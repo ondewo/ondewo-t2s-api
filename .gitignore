@@ -16,3 +16,4 @@ samples/
 models/
 evaluation/configs/
 data/
+/tmp

@@ -1,25 +1,26 @@
-import time
-from typing import List, Dict, Any
+from typing import List
 
 import numpy as np
+from ondewologging.decorators import Timer
+from ondewologging.logger import logger_console as logger
 from tritonclient.grpc import InferenceServerClient, InferInput, InferRequestedOutput, InferResult
 
-from inference.mel2audio.mbmelgan_core import MBMelGANCore
 from inference import triton_utils
+from inference.mel2audio.mbmelgan_core import MBMelGANCore
+from utils.data_classes.config_dataclass import MbMelganTritonDataclass
 from utils.helpers import check_paths_exist
-from pylog.logger import logger_console as logger
-from pylog.decorators import Timer
 
 
 class MBMelGANTriton(MBMelGANCore):
+    NAME: str = 'mbmelgan_triton'
 
-    def __init__(self, config: Dict[str, Any]):
-        check_paths_exist([config["stats_path"], config["config_path"]])
+    def __init__(self, config: MbMelganTritonDataclass):
+        check_paths_exist([config.stats_path, config.config_path])
         super().__init__(config)
 
         # triton config
-        self.triton_client = InferenceServerClient(url=self.config['triton_url'])
-        self.triton_model_name: str = self.config['triton_model_name']
+        self.triton_client = InferenceServerClient(url=self.config.triton_url)
+        self.triton_model_name: str = self.config.triton_model_name
         triton_utils.check_triton_online(self.triton_client, self.triton_model_name)
         self.batch_size = self.triton_client.get_model_config(self.triton_model_name, as_json=True)[
             "config"]["max_batch_size"]
@@ -49,3 +50,7 @@ class MBMelGANTriton(MBMelGANCore):
         result: List[np.ndarray] = self._inference_batches_and_postprocess(
             batched_input_mels, mel_spectrograms, self._inference_on_triton)
         return result
+
+
+if __name__ == '__main__':
+    print('ok!')
