@@ -133,13 +133,18 @@ make package_release: package_git_revision_and_version
 install_dependencies_locally:
 	pip install nvidia-pyindex
 	pip install -r requirements.txt
-	pip install -r grpc_config_server/requirements.txt
-	pip install git+https://github.com/TensorSpeech/TensorflowTTS.git
-	git clone git@bitbucket.org:ondewo/ondewo-t2s-glow.git
-	cd ondewo-t2s-glow && git checkout d47b1421cc6d10070a80ebaeea74b6792d275fc0
+
+	-git clone git@bitbucket.org:ondewo/ondewo-t2s-glow.git
+	cd ondewo-t2s-glow && git pull && git checkout 588cb9946743f6eec85d0fe35b1e3395ea651a87
 	cd monotonic_align; python setup.py build_ext --inplace; cd ../..
 	pip install -e ondewo-t2s-glow
 
+	-git clone git@bitbucket.org:ondewo/ondewo-logging-python.git
+	pip install -e ondewo-logging-python
+
+	-git clone git@bitbucket.org:ondewo/ondewo-t2s-hifigan.git
+	cd ondewo-t2s-hifigan && git pull && git checkout 1d691b8abc13275649be72809b681333bc47f1e6
+	pip install -e ondewo-t2s-hifigan
 
 # GENERATE PYTHON FILES FROM PROTOS
 # copy from nlu-client, changed output directory to ./grpc_config_server/ and only exporting /audio/ directory of ondewoapis

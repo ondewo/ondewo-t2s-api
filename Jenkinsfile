@@ -66,7 +66,7 @@ pipeline {
                      steps {
                         sh(script: "mkdir ${testresults_folder}")
                         sh(script: "docker build -t ${TESTS_IMAGE_NAME} --build-arg PUSH_NAME_STREAM=\"${PUSH_NAME_STREAM_GRPC}\" -f docker/Dockerfile.tests .", label: "build image")
-                        sh(script: "docker run --rm -e TESTFILE=${testresults_filename} -v ${testresults_folder}:/opt/ondewo-t2s/log  ${TESTS_IMAGE_NAME} --ignore=tests/tests_grpc", label: "run_tests")
+                        sh(script: "docker run --rm -e TESTFILE=${testresults_filename} -v ${testresults_folder}:/opt/ondewo-t2s/log  ${TESTS_IMAGE_NAME} --ignore=tests/tests_grpc_unit", label: "run_tests")
                      }
                      post { always {
                         sh(script: "cd ${testresults_folder} && cp *.xml ${PWD}")
