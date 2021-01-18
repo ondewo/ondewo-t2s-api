@@ -21,5 +21,5 @@ RUN mkdir code_to_test
 WORKDIR code_to_test
 
 ENV FOLDER_NAME=testcode
-COPY rest_server $FOLDER_NAME/rest_server
+COPY grpc_server $FOLDER_NAME/grpc_server
 COPY code_checks .
