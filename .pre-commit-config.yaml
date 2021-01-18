@@ -36,7 +36,7 @@ repos:
     hooks:
     - id: flake8
       args: ['--config=code_checks/.flake8']
-      exclude: (^training/|^utils/triton_client_lib|^grpc_config_server/ondewo)
+      exclude: ()
 
   - repo: https://github.com/pre-commit/mirrors-autopep8
     rev: v1.5.4
@@ -47,6 +47,6 @@ repos:
           (?x) (
           ^training/ |
           ^utils/triton_client_lib |
-          ^batch_server/__init__.py |
+          ^rest_server/__init__.py |
           ^demo_server/__init__.py
           )
