@@ -22,6 +22,7 @@ WORKDIR code_to_test
 
 ENV FOLDER_NAME=testcode
 COPY grpc_server $FOLDER_NAME/grpc_server
+COPY rest_server $FOLDER_NAME/rest_server
 COPY inference $FOLDER_NAME/inference
 COPY normalization $FOLDER_NAME/normalization
 
