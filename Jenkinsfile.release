@@ -18,7 +18,7 @@ pipeline {
         code_check_image_name = "code_check_image_${IMAGE_NAME_RELASE_REST}"
     }
     stages{
-        stage('Build, test and push the image'){ 
+        stage('Build, test and push the image'){
             parallel {
                 stage('Label Unstable') {
                     agent { label 'cpu' }
@@ -28,23 +28,23 @@ pipeline {
                         expression {
                             env.BRANCH_NAME.startsWith("release/")
                             }
-                        } } 
+                        } }
                     }
                     steps {
                         catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
                                     sh(script: "exit 1", label: "error code so i can label unstable")
-                        } 
-                    } 
+                        }
+                    }
                 }
                 stage('Cythonized image') {
-                    when { 
+                    when {
                         anyOf {
                             branch 'master'
                             branch 'develop'
                             expression {
                                 env.BRANCH_NAME.startsWith("release/")
                             }
-                        } 
+                        }
                     }
                     stages {
                         stage('Code quality') { agent { label 'cpu' }
@@ -52,7 +52,7 @@ pipeline {
                                 sh(script: "docker build -t ${code_check_image_name} -f code_checks/Dockerfile .", label: "build code quality image")
                                 sh(script: "docker run --rm ${code_check_image_name} make flake8", label: "run flake8")
                                 sh(script: "docker run --rm ${code_check_image_name} make mypy", label: "run mypy")
-                            } 
+                            }
                         }
 
                         stage('Normal image') { agent { label 'cpu' }
@@ -77,7 +77,7 @@ pipeline {
                                                     sh(script: """set +x
                                                         docker build -t ${PUSH_NAME_RELEASE_GRPC} --build-arg SSH_PRIVATE_KEY=\"\$(cat ${ssh_key_file})\" -f docker/Dockerfile.grpc_server .
                                                     set -x""", label: "build image")
-                                            }        
+                                            }
                                         }
                                     }
                                 }
@@ -102,13 +102,14 @@ pipeline {
                                     } }
                                 }
                                 stage('Tests (release)') {
-                                    when { 
+                                    when {
                                         anyOf {
                                             branch 'master'
+                                            branch 'develop'
                                             expression {
                                                 env.BRANCH_NAME.startsWith("release/")
                                             }
-                                        } 
+                                        }
                                     }
                                     environment {
                                         PWD = pwd()
@@ -121,20 +122,20 @@ pipeline {
                                         sh(script: "docker build -t ${TESTS_IMAGE_NAME} --build-arg PUSH_NAME_STREAM=\"${PUSH_NAME_RELEASE_GRPC}\" -f docker/Dockerfile.tests . ", label: "build image")
                                         sh(script: "docker run --rm -e TESTFILE=${testresults_filename} -v ${testresults_folder}:/opt/ondewo-t2s/log  ${TESTS_IMAGE_NAME}", label: "run_tests")
                                     }
-                                    post { 
+                                    post {
                                         always {
                                             sh(script: "cd ${testresults_folder} && cp *.xml ${PWD}")
                                             junit "${testresults_filename}"
                                         }
                                     }
                                 }
-                                stage('Push') { 
+                                stage('Push') {
                                     steps{
                                         sh(script: "docker push ${PUSH_NAME_RELEASE_REST}", label: "push the image to the registry")
                                         sh(script: "echo ${PUSH_NAME_RELEASE_REST} pushed to registry")
                                         sh(script: "docker push ${PUSH_NAME_RELEASE_GRPC}", label: "push the image to the registry")
                                         sh(script: "echo ${PUSH_NAME_RELEASE_GRPC} pushed to registry")
-                                    } 
+                                    }
                                 }
                                 // Only releases get packaged
                                 stage('Package the release') {
@@ -144,14 +145,14 @@ pipeline {
                                         sh "echo \"Releasing ONDEWO T2S - ${env.BRANCH_NAME}\""
                                         sh 'printenv'
                                         sh "make package_release"
-                                    } 
-                                }  
-                            }                  
-                        } 
+                                    }
+                                }
+                            }
+                        }
                     }
-                } 
+                }
             }
-        } 
+        }
     }
 }
 
