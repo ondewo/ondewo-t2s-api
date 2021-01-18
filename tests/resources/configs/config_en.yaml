@@ -1,6 +1,6 @@
 active: true
-description: {comments: trained on public domain dataset Lj_speech, domain: null,
-  language: en, pipeline_owner: ondewo, speaker_name: null, speaker_sex: female}
+description: {comments: trained on public domain dataset Lj_speech, domain: '', language: en,
+  pipeline_owner: ondewo, speaker_name: '', speaker_sex: female}
 id: glow_tts&hifi_gan-0118e07a-8447-4c87-9f6b-4802a7dd7a07
 inference:
   caching: {active: false, cache_save_dir: models/cache, load_cache: true, memory_cache_max_size: 20,

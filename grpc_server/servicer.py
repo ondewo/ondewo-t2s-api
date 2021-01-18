@@ -104,8 +104,8 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
             sample_rate=sample_rate,
         )
 
-    @staticmethod
     def handle_list_t2s_pipeline_ids_request(
+            self,
             request: text_to_speech_pb2.ListT2sPipelinesRequest
     ) -> text_to_speech_pb2.ListT2sPipelinesResponse:
         pipelines_registered: List[T2SConfigDataclass] = \
@@ -117,18 +117,16 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
             pipelines=[pipeline.to_proto() for pipeline in pipelines]
         )
 
-    @staticmethod
-    def handle_get_t2s_pipeline_request(
-            request: text_to_speech_pb2.T2sPipelineId
-    ) -> text_to_speech_pb2.Text2SpeechConfig:
+    def handle_get_t2s_pipeline_request(self, request: text_to_speech_pb2.T2sPipelineId
+                                        ) -> text_to_speech_pb2.Text2SpeechConfig:
         t2s_pipeline_id: str = request.id
         config: Optional[T2SConfigDataclass] = get_config_by_id(config_id=t2s_pipeline_id)
         if config is None:
             raise ModuleNotFoundError(f'Pipeline with id {t2s_pipeline_id} is not found.')
         return config.to_proto()
 
-    @staticmethod
     def handle_create_t2s_pipeline_request(
+            self,
             request: text_to_speech_pb2.Text2SpeechConfig) -> text_to_speech_pb2.T2sPipelineId:
         config: T2SConfigDataclass = T2SConfigDataclass.from_proto(proto=request)
         preprocess_pipeline, inference, postprocessor, config = create_t2s_pipeline_from_config(config)
@@ -146,8 +144,8 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
 
         return text_to_speech_pb2.T2sPipelineId(id=t2s_pipeline_id)
 
-    @staticmethod
-    def handle_delete_t2s_pipeline_request(request: text_to_speech_pb2.T2sPipelineId) -> empty_pb2.Empty:
+    def handle_delete_t2s_pipeline_request(self, request: text_to_speech_pb2.T2sPipelineId
+                                           ) -> empty_pb2.Empty:
         if request.id not in T2SPipelineManager.get_all_t2s_pipeline_ids():
             raise ModuleNotFoundError(f'Pipeline with id {request.id} '
                                       f'is not registered in T2SPipelineManager.')
@@ -160,9 +158,8 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
             os.remove(config_file_path)
         return empty_pb2.Empty()
 
-    @staticmethod
     def handle_update_t2s_pipeline_request(
-            request: text_to_speech_pb2.Text2SpeechConfig) -> empty_pb2.Empty:
+            self, request: text_to_speech_pb2.Text2SpeechConfig) -> empty_pb2.Empty:
 
         config: T2SConfigDataclass = T2SConfigDataclass.from_proto(proto=request)
         if config.id not in T2SPipelineManager.get_all_t2s_pipeline_ids():

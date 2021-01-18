@@ -1,5 +1,5 @@
 active: true
-description: {comments: trained on public domain dataset, domain: null, language: de,
+description: {comments: trained on public domain dataset, domain: '', language: de,
   pipeline_owner: ondewo, speaker_name: Thorsten, speaker_sex: male}
 id: glow_tts&hifi_gan-e976dd6c-2f41-484b-aec2-3e6868d37280
 inference:
