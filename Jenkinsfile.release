@@ -17,7 +17,7 @@ pipeline {
         test_image_name_stream = "test_image_${IMAGE_NAME_RELASE_REST}"
         code_check_image_name = "code_check_image_${IMAGE_NAME_RELASE_REST}"
     }
-    stages('Build, test and push the image'){ 
+    stage('Build, test and push the image'){ 
         parallel {
             stage('Label Unstable') {
                  agent { label 'cpu' }
