@@ -81,7 +81,7 @@ pipeline {
                                         }
                                     }
                                 }
-                                stage('Tests (develop)') {
+                                stage('Tests') {
                                     when {
                                         branch 'develop'
                                     }
@@ -100,34 +100,6 @@ pipeline {
                                         sh(script: "cd ${testresults_folder} && cp *.xml ${PWD}")
                                         junit "${testresults_filename}"
                                     } }
-                                }
-                                stage('Tests (release)') {
-                                    when {
-                                        anyOf {
-                                            branch 'master'
-                                            branch 'develop'
-                                            expression {
-                                                env.BRANCH_NAME.startsWith("release/")
-                                            }
-                                        }
-                                    }
-                                    environment {
-                                        PWD = pwd()
-                                        testresults_folder = "${PWD}/test_results"
-                                        testresults_filename = "pytest.xml"
-                                        ssh_key_file = credentials('devops_ondewo_idrsa')
-                                    }
-                                    steps {
-                                        sh(script: "mkdir ${testresults_folder}")
-                                        sh(script: "docker build -t ${TESTS_IMAGE_NAME} --build-arg PUSH_NAME_STREAM=\"${PUSH_NAME_RELEASE_GRPC}\" -f docker/Dockerfile.tests . ", label: "build image")
-                                        sh(script: "docker run --rm -e TESTFILE=${testresults_filename} -v ${testresults_folder}:/opt/ondewo-t2s/log  ${TESTS_IMAGE_NAME}", label: "run_tests")
-                                    }
-                                    post {
-                                        always {
-                                            sh(script: "cd ${testresults_folder} && cp *.xml ${PWD}")
-                                            junit "${testresults_filename}"
-                                        }
-                                    }
                                 }
                                 stage('Push') {
                                     steps{
