@@ -8,7 +8,6 @@ exclude =
     playground,
     ondewo-nlpaug,
     google,
-    ondewo_cdls/services/google,
     # generated files (protoc)
     ondewo_apis,
     # what used to be the ondewo-conv repository
@@ -16,4 +15,5 @@ exclude =
     data,
     cai_setup_data,
     src,
-    conda
+    conda,
+    rest_server/__init__.py
