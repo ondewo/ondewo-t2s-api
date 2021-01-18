@@ -17,3 +17,4 @@ exclude =
     src,
     conda,
     rest_server/__init__.py
+
