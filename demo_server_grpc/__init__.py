@@ -1,5 +1,3 @@
-from demo_server_grpc.demo_utils import FileRemovalThread
-from demo_server_grpc import routes
 import os
 from flask import Flask
 from ondewologging.logger import logger_console as logger
@@ -30,6 +28,8 @@ if not GRPC_PORT:
                            "For local development, port is usually set to 50002")
 
 # ===============================
+from demo_server_grpc import routes
+from demo_server_grpc.demo_utils import FileRemovalThread
 
 file_removal_thread = FileRemovalThread()
 file_removal_thread.start()

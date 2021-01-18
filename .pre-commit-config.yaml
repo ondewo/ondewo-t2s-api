@@ -48,5 +48,5 @@ repos:
           ^training/ |
           ^utils/triton_client_lib |
           ^rest_server/__init__.py |
-          ^demo_server/__init__.py
+          ^demo_server_grpc/__init__.py
           )
