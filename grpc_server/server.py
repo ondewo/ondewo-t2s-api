@@ -4,7 +4,7 @@ from typing import Optional, List, Dict, Any
 
 import grpc
 from ondewologging.logger import logger_console as logger
-from ruamel import yaml
+from ruamel.yaml import YAML
 
 from grpc_server.constants import CONFIG_DIR_ENV
 from grpc_server.servicer import Text2SpeechServicer
@@ -12,6 +12,10 @@ from grpc_server.t2s_pipeline_manager import T2SPipelineManager
 from grpc_server.utils import get_list_of_config_files, create_t2s_pipeline_from_config, get_config_dir
 from ondewo_grpc.ondewo.t2s import text_to_speech_pb2_grpc
 from utils.data_classes.config_dataclass import T2SConfigDataclass
+
+
+yaml = YAML()
+yaml.default_flow_style = False
 
 
 class Server:
@@ -41,7 +45,7 @@ class Server:
         config_files: List[str] = get_list_of_config_files(config_dir)
         for config_file in config_files:
             with open(os.path.join(config_dir, config_file), 'r') as f:
-                config_dict: Dict[str, Any] = yaml.load(f, Loader=yaml.Loader)
+                config_dict: Dict[str, Any] = yaml.load(f)
                 config = T2SConfigDataclass.from_dict(config_dict)  # type: ignore
             if not config.active:
                 continue
@@ -50,7 +54,7 @@ class Server:
             # persist t2s_pipeline_id
             with open(os.path.join(config_dir, config_file), 'w') as f:
                 config_dict = config.to_dict()
-                yaml.safe_dump(config_dict, f)
+                yaml.dump(config_dict, f)
             T2SPipelineManager.register_t2s_pipeline(
                 t2s_pipeline_id=config.id,
                 t2s_pipeline=(preprocess_pipeline, inference, postprocessor, config))
