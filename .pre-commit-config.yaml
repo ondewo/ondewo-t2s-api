@@ -29,14 +29,12 @@ repos:
     hooks:
     - id: mypy
       args: ['--config-file=code_checks/mypy.ini']
-      exclude: (^tests/e2e/grpc_server_tests/test_grpc_server.py)
 
   - repo: https://gitlab.com/pycqa/flake8
     rev: 3.8.4
     hooks:
     - id: flake8
       args: ['--config=code_checks/.flake8']
-      exclude: (^rest_server/__init__.py)
 
   - repo: https://github.com/pre-commit/mirrors-autopep8
     rev: v1.5.4
@@ -46,5 +44,5 @@ repos:
         exclude: |
           (?x) (
           ^rest_server/__init__.py |
-          ^demo_server/__init__.py
+          ^demo_server_grpc/__init__.py
           )

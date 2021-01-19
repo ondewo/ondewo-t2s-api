@@ -5,8 +5,8 @@ from os.path import join
 from flask import request, send_file
 from scipy.io.wavfile import write
 
-from . import server
-from .synthesize import synthesize
+from rest_server import server
+from rest_server.synthesize import synthesize
 
 RESULT_FILENAME: str = "result.wav"
 
