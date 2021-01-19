@@ -4,7 +4,7 @@ fail_fast: false
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v3.3.0
+    rev: v3.4.0
     hooks:
     - id: no-commit-to-branch
       args: [--branch, master, --branch, develop]
@@ -28,15 +28,14 @@ repos:
     rev: 'v0.790'
     hooks:
     - id: mypy
+      entry: mypy
       args: ['--config-file=code_checks/mypy.ini']
-      exclude: (^training/|^utils/triton_client_lib|^grpc_config_server/ondewo)
 
   - repo: https://gitlab.com/pycqa/flake8
     rev: 3.8.4
     hooks:
     - id: flake8
       args: ['--config=code_checks/.flake8']
-      exclude: ()
 
   - repo: https://github.com/pre-commit/mirrors-autopep8
     rev: v1.5.4

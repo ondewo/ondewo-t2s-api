@@ -15,7 +15,6 @@ config_empty = OmegaConf.load(Path("tests", "resources", "postprocessor_config_e
 def postprocessor() -> Callable[[Dict], Postprocessor]:
     def _postprocessor(config: Dict) -> Postprocessor:
         return Postprocessor(config=config)
-
     return _postprocessor
 
 
