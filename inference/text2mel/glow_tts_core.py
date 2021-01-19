@@ -15,7 +15,7 @@ from utils.data_classes.config_dataclass import GlowTTSDataclass, GlowTTSTritonD
 
 class GlowTTSCore(Text2Mel):
     NAME: str = ''
-    text_preprpcessor_cache: Dict[str, GlowTTSTextProcessor] = {}
+    text_preprocessor_cache: Dict[str, GlowTTSTextProcessor] = {}
 
     def __init__(self, config: Union[GlowTTSDataclass, GlowTTSTritonDataclass]):
         self.config = config
