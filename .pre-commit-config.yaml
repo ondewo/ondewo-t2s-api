@@ -28,6 +28,7 @@ repos:
     rev: 'v0.790'
     hooks:
     - id: mypy
+      entry: mypy
       args: ['--config-file=code_checks/mypy.ini']
 
   - repo: https://gitlab.com/pycqa/flake8

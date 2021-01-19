@@ -45,7 +45,7 @@ class HiFiGan(HiFiGANCore):
 
         """
         with torch.no_grad():
-            torch_audio: torch.tensor = self.generator(torch.tensor(mel, device=self.device))
+            torch_audio: torch.Tensor = self.generator(torch.tensor(mel, device=self.device))
         numpy_audio: np.ndarray = torch_audio.cpu().numpy()
         numpy_audio = numpy_audio[:, 0, :]
         return numpy_audio
