@@ -9,7 +9,7 @@ data/ramona_deininger
 pytest.xml
 ondewo-t2s-glow/
 ondewo-t2s-hifigan/
-ondewo-logging/
+ondewo-logging-python/
 plots/
 **/model.savedmodel/**
 samples/
