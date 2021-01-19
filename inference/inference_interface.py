@@ -20,8 +20,8 @@ class Inference(ABC):
         """
 
         Args:
-            noise_scale:
-            length_scale:
+            noise_scale: if None default value is taken from config
+            length_scale: if None default value is taken from config
             texts: list of texts
 
         Returns: list of audio files one for each text in the same order
