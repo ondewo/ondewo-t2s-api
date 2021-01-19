@@ -76,7 +76,9 @@ class TestGRPC:
             pipeline_config.id = ''
             operation_create_pipeline: OperationCreateT2sPipeline = OperationCreateT2sPipeline(
                 request=pipeline_config)
-            id_created: str = operation_create_pipeline.execute_grpc().id
+            created_config = operation_create_pipeline.execute_grpc()
+            assert isinstance(created_config, text_to_speech_pb2.Text2SpeechConfig)
+            id_created: str = created_config.id
             operation_list_ids = OperationListPipelines(
                 request=list_pipelines_request, expected_to_fail=False)
             response_list: text_to_speech_pb2.ListT2sPipelinesResponse = \
@@ -132,6 +134,7 @@ class TestGRPC:
             request = text_to_speech_pb2.T2sPipelineId(id=pipeline.id)
             operation_get_pipeline = OperationGetT2sPipeline(request=request)
             pipeline_config_updated = operation_get_pipeline.execute_grpc()
+            assert isinstance(pipeline_config_updated, text_to_speech_pb2.Text2SpeechConfig)
             assert not pipeline_config_updated.active
             pipeline_config.active = True
             operation_update_pipeline = OperationUpdateT2sPipeline(request=pipeline_config)
@@ -139,4 +142,5 @@ class TestGRPC:
             request = text_to_speech_pb2.T2sPipelineId(id=pipeline.id)
             operation_get_pipeline = OperationGetT2sPipeline(request=request)
             pipeline_config_updated_back = operation_get_pipeline.execute_grpc()
+            assert isinstance(pipeline_config_updated_back, text_to_speech_pb2.Text2SpeechConfig)
             assert pipeline_config_updated_back.active

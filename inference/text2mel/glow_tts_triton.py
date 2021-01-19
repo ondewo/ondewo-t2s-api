@@ -15,6 +15,7 @@ class GlowTTSTriton(GlowTTSCore):
     def __init__(self, config: Union[GlowTTSDataclass, GlowTTSTritonDataclass]):
         super(GlowTTSTriton, self).__init__(config=config)
         # triton config
+        assert isinstance(self.config, GlowTTSTritonDataclass)
         self.triton_client = InferenceServerClient(url=self.config.triton_url)
         self.triton_model_name: str = self.config.triton_model_name
         triton_utils.check_triton_online(self.triton_client, self.triton_model_name)

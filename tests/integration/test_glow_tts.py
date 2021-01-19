@@ -1,4 +1,4 @@
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Union
 
 import numpy as np
 import pytest
@@ -8,6 +8,7 @@ from inference.text2mel.constants_text2mel import BATCH_SIZE, CLEANERS
 from inference.text2mel.glow_tts_core import GlowTTSCore
 from inference.text2mel.glow_tts_generator import GlowTTS
 from inference.text2mel.glow_tts_triton import GlowTTSTriton
+from utils.data_classes.config_dataclass import T2SConfigDataclass, GlowTTSDataclass, GlowTTSTritonDataclass
 
 yaml = YAML(typ="safe")
 
@@ -29,13 +30,20 @@ class TestGlowTts:
     def test_glow_tts_text_mel_no_batch(test_config_path: str, texts_list: List[str],
                                         batch_size: int, use_cleaners: bool) -> None:
         with open(test_config_path, 'r') as f:
-            test_config: Dict[str, Any] = yaml.load(f)
-        test_config[BATCH_SIZE] = batch_size
+            test_config_dict: Dict[str, Any] = yaml.load(f)
+            if 'triton' in test_config_path:
+                test_config: Union[GlowTTSDataclass, GlowTTSTritonDataclass] = \
+                    GlowTTSTritonDataclass.from_dict(test_config_dict)  # type: ignore
+            else:
+                test_config = GlowTTSDataclass.from_dict(test_config_dict)  # type: ignore
+        test_config.batch_size = batch_size
         if not use_cleaners:
-            test_config[CLEANERS] = None
+            test_config.cleaners = []
         if 'triton' in test_config_path:
+            assert isinstance(test_config, GlowTTSTritonDataclass)
             generator: GlowTTSCore = GlowTTSTriton(config=test_config)
         else:
+            assert isinstance(test_config, GlowTTSDataclass)
             generator = GlowTTS(config=test_config)
         mels: List[np.ndarray] = generator.text2mel(texts_list)
         assert len(mels) == 3
@@ -71,13 +79,20 @@ class TestGlowTts:
             batch_size: int, use_cleaners: bool
     ) -> None:
         with open(test_config_path, 'r') as f:
-            test_config: Dict[str, Any] = yaml.load(f)
-        test_config[BATCH_SIZE] = batch_size
+            test_config_dict: Dict[str, Any] = yaml.load(f)
+            if 'triton' in test_config_path:
+                test_config: Union[GlowTTSDataclass, GlowTTSTritonDataclass] = \
+                    GlowTTSTritonDataclass.from_dict(test_config_dict)  # type: ignore
+            else:
+                test_config = GlowTTSDataclass.from_dict(test_config_dict)  # type: ignore
+        test_config.batch_size = batch_size
         if not use_cleaners:
-            test_config[CLEANERS] = None
+            test_config.cleaners = []
         if 'triton' in test_config_path:
+            assert isinstance(test_config, GlowTTSTritonDataclass)
             generator: GlowTTSCore = GlowTTSTriton(config=test_config)
         else:
+            assert isinstance(test_config, GlowTTSDataclass)
             generator = GlowTTS(config=test_config)
         mels: List[np.ndarray] = generator.text2mel(texts_list)
         assert len(mels) == len(texts_list)
