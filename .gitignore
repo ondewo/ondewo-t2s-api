@@ -17,3 +17,4 @@ models/
 evaluation/configs/
 data/
 /tmp
+ondewo_grpc/

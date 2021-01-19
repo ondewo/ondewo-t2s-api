@@ -12,7 +12,7 @@ RUN apt-get update && apt-get -y upgrade && \
 
 RUN git clone git@bitbucket.org:ondewo/ondewo-t2s-glow.git && cd ondewo-t2s-glow && git checkout 588cb9946743f6eec85d0fe35b1e3395ea651a87
 
-RUN git clone git@bitbucket.org:ondewo/ondewo-logging.git
+RUN git clone git@bitbucket.org:ondewo/ondewo-logging-python.git
 
 RUN git clone git@bitbucket.org:ondewo/ondewo-t2s-hifigan.git && cd ondewo-t2s-hifigan && git checkout 1d691b8abc13275649be72809b681333bc47f1e6
 
@@ -26,15 +26,17 @@ COPY --from=private_installer /root/install/ondewo-t2s-glow ./ondewo-t2s-glow
 RUN cd ondewo-t2s-glow/monotonic_align; python setup.py build_ext --inplace; cd ../..
 RUN pip install -e ondewo-t2s-glow
 
-COPY --from=private_installer /root/install/ondewo-logging ./ondewo-logging
-RUN pip install -e ondewo-logging
+COPY --from=private_installer /root/install/ondewo-logging-python ./ondewo-logging-python
+RUN pip install -e ondewo-logging-python
 
 COPY --from=private_installer /root/install/ondewo-t2s-hifigan ./ondewo-t2s-hifigan
 RUN pip install -e ondewo-t2s-hifigan
 
 COPY ./docker/rest_server_requirements.txt .
+COPY ./docker/grpc_server_requirements.txt .
 RUN pip install nvidia-pyindex
 RUN pip install -r rest_server_requirements.txt --ignore-installed
+RUN pip install -r grpc_server_requirements.txt --ignore-installed
 
 WORKDIR /opt/ondewo-t2s
 COPY ./utils ./utils
@@ -42,6 +44,12 @@ COPY ./inference ./inference
 COPY ./normalization ./normalization
 COPY ./rest_server ./rest_server
 
+COPY ./grpc_server ./grpc_server
+COPY ./ondewo-t2s-api ./ondewo-t2s-api
+COPY ./Makefile .
+
+RUN mkdir ondewo_grpc
+RUN make generate_ondewo_protos
 
 ENV PYTHONPATH /opt/ondewo-t2s
 ENV FLASK_APP rest_server
@@ -59,10 +67,10 @@ COPY --from=uncythonized /opt/ondewo-t2s/utils /tmp/transfer/to_cythonize/utils
 RUN ./cythonize.py \
 		--modules_to_cythonize ./to_cythonize \
 		--files_to_skip ./to_cythonize/rest_server/__init__.py \
-        --directories_to_skip "./to_cythonize/inference/mel2audio/nemo_modules, ./to_cythonize/inference/text2mel/nemo_modules" \
         --delete_pycache True \
 		--py_files_mode delete
 
+COPY --from=uncythonized /opt/ondewo-t2s/ondewo_grpc /tmp/transfer/to_cythonize/ondewo_grpc
 
 # ========Cythonized================
 FROM uncythonized AS cythonized
