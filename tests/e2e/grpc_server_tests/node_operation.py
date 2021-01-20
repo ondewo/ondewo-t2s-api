@@ -3,7 +3,7 @@ from typing import Any, Optional, Callable, List, Tuple
 
 import grpc
 
-from tests.e2e.grpc_server_tests.e2e_test_constants import CHANNEL
+from .e2e_test_constants import CHANNEL
 
 
 class OperationNode(ABC):

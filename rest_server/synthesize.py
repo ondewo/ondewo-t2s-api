@@ -12,7 +12,7 @@ def synthesize(text: str) -> np.ndarray:
         texts: List[str] = preprocess_pipeline.apply([text])
         logger.info(f'After normalization texts are: {texts}')
 
-        audio_list: List[np.ndarray] = inference.synthesize(texts=texts)
+        audio_list: List[np.ndarray] = inference.synthesize(texts=texts, length_scale=None, noise_scale=None)
         audio = postprocessor.postprocess(audio_list)
         return audio
     else:

@@ -1,4 +1,4 @@
-from typing import List, Dict, Any, Tuple
+from typing import List, Union, Tuple
 
 import numpy as np
 from tritonclient.grpc import InferenceServerClient, InferInput, InferRequestedOutput, InferResult
@@ -6,16 +6,18 @@ from tritonclient.grpc import InferenceServerClient, InferInput, InferRequestedO
 from inference import triton_utils
 from inference.text2mel.glow_tts_core import GlowTTSCore
 from ondewologging.logger import logger_console as logger
+from utils.data_classes.config_dataclass import GlowTTSDataclass, GlowTTSTritonDataclass
 
 
 class GlowTTSTriton(GlowTTSCore):
     NAME: str = "glow_tts_triton"
 
-    def __init__(self, config: Dict[str, Any]):
+    def __init__(self, config: Union[GlowTTSDataclass, GlowTTSTritonDataclass]):
         super(GlowTTSTriton, self).__init__(config=config)
         # triton config
-        self.triton_client = InferenceServerClient(url=self.config['triton_url'])
-        self.triton_model_name: str = self.config['triton_model_name']
+        assert isinstance(self.config, GlowTTSTritonDataclass)
+        self.triton_client = InferenceServerClient(url=self.config.triton_url)
+        self.triton_model_name: str = self.config.triton_model_name
         triton_utils.check_triton_online(self.triton_client, self.triton_model_name)
         self.batch_size = self.triton_client.get_model_config(self.triton_model_name, as_json=True)[
             "config"].get("max_batch_size", 1)

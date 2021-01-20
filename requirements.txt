@@ -22,3 +22,5 @@ soundfile
 torch
 tritonclient[all]==2.3.0
 webdataset
+dataclasses-json
+

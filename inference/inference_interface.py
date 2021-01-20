@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Optional
 
 import numpy
 
@@ -16,12 +16,12 @@ class Inference(ABC):
         raise NotImplementedError('Not available in parent class. Should be defined in child.')
 
     @abstractmethod
-    def synthesize(self, texts: List[str], length_scale: float, noise_scale: float) -> List[numpy.ndarray]:
+    def synthesize(self, texts: List[str], length_scale: Optional[float], noise_scale: Optional[float]) -> List[numpy.ndarray]:
         """
 
         Args:
-            noise_scale:
-            length_scale:
+            noise_scale: if None default value is taken from config
+            length_scale: if None default value is taken from config
             texts: list of texts
 
         Returns: list of audio files one for each text in the same order

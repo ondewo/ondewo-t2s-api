@@ -44,8 +44,6 @@ repos:
         args: [--max-line-length=110, --in-place]
         exclude: |
           (?x) (
-          ^training/ |
-          ^utils/triton_client_lib |
           ^rest_server/__init__.py |
           ^demo_server_grpc/__init__.py
           )

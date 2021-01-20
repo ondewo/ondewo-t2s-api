@@ -2,7 +2,7 @@ import os
 import uuid
 from queue import Queue, Empty
 from threading import Thread
-from typing import Dict, Any, List, Tuple
+from typing import Dict, Optional, List, Tuple
 
 import numpy as np
 from cachetools import LFUCache
@@ -106,7 +106,11 @@ class CachedInference(Inference):
         if self.save_cache:
             self.saving_queue.put((text, np.copy(audio)))
 
-    def synthesize(self, texts: List[str], length_scale: float, noise_scale: float) -> List[np.ndarray]:
+    def synthesize(
+            self,
+            texts: List[str],
+            length_scale: Optional[float],
+            noise_scale: Optional[float]) -> List[np.ndarray]:
 
         logger.warning(f'You are using cached inference with length scale and noise scale '
                        f'{length_scale, noise_scale}. Note that changing these values '

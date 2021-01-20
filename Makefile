@@ -130,20 +130,21 @@ make package_release: package_git_revision_and_version
 
 	rsync -Phaz ${RELEASE_FOLDER} ondewo@releases.ondewo.com:releases/ondewo-t2s
 
-install_dependencies_locally:
+install_dependencies_locally: generate_ondewo_protos
 	pip install nvidia-pyindex
 	pip install -r requirements.txt
 
 	-git clone git@bitbucket.org:ondewo/ondewo-t2s-glow.git
-	cd ondewo-t2s-glow && git pull && git checkout 588cb9946743f6eec85d0fe35b1e3395ea651a87
-	cd monotonic_align; python setup.py build_ext --inplace; cd ../..
+	cd ondewo-t2s-glow && git fetch && git checkout 588cb9946743f6eec85d0fe35b1e3395ea651a87 && \
+	cd monotonic_align && python setup.py build_ext --inplace
 	pip install -e ondewo-t2s-glow
 
 	-git clone git@bitbucket.org:ondewo/ondewo-logging-python.git
+	cd ondewo-logging-python && git pull
 	pip install -e ondewo-logging-python
 
 	-git clone git@bitbucket.org:ondewo/ondewo-t2s-hifigan.git
-	cd ondewo-t2s-hifigan && git pull && git checkout 1d691b8abc13275649be72809b681333bc47f1e6
+	cd ondewo-t2s-hifigan && git fetch && git checkout 1d691b8abc13275649be72809b681333bc47f1e6
 	pip install -e ondewo-t2s-hifigan
 
 # GENERATE PYTHON FILES FROM PROTOS
@@ -154,6 +155,7 @@ ONDEWO_APIS_DIR=ondewo-t2s-api
 PROTO_OUTPUT_FOLDER=ondewo_grpc
 
 generate_ondewo_protos:
+	mkdir -p ondewo_grpc
 	for f in $$(find ${ONDEWO_PROTOS_DIR} -name '*.proto'); do \
 		python -m grpc_tools.protoc -I ${ONDEWO_APIS_DIR} --python_out=${PROTO_OUTPUT_FOLDER} --mypy_out=${PROTO_OUTPUT_FOLDER} --grpc_python_out=${PROTO_OUTPUT_FOLDER} $$f; \
 	done
