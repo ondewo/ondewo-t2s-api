@@ -73,7 +73,7 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
 
         if re.search(r'[A-Za-z0-9]+', text):
             logger.info(f'Text to transcribe: "{text}"')
-            texts: List[str] = preprocess_pipeline.apply([text])
+            texts: List[str] = preprocess_pipeline.apply(text)
             logger.info(f'After normalization texts are: {texts}')
 
             audio_list: List[np.ndarray] = inference.synthesize(

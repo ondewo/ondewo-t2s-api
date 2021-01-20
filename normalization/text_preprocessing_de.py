@@ -258,7 +258,6 @@ class TextNormalizerDe(NormalizerInterface):
         for index in range(len(texts)):
             if index == 0:
                 texts[index] = self.normalize_single_date(text=texts[index])
-                continue
             else:
                 if texts[index - 1].endswith('m'):
                     texts[index] = self.normalize_single_date(text=texts[index], ending='ten')
