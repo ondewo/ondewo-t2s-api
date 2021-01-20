@@ -1,5 +1,8 @@
 import copy
 import io
+from pathlib import Path
+import pytest
+from typing import Iterator
 
 import soundfile as sf
 
@@ -7,6 +10,14 @@ from ondewo_grpc.ondewo.t2s import text_to_speech_pb2
 from .operations import OperationSynthesize, OperationListPipelines, \
     OperationGetT2sPipeline, OperationCreateT2sPipeline, OperationDeleteT2sPipeline, \
     OperationUpdateT2sPipeline
+
+
+@pytest.fixture
+def clean_configs_dir() -> Iterator[None]:
+    yield
+    for pth in Path("tests", "resources", "configs").iterdir():
+        if pth.name not in ("config.yaml", "config_en.yaml"):
+            pth.unlink()
 
 
 class TestGRPC:
@@ -65,7 +76,7 @@ class TestGRPC:
             assert pipeline_config.id == pipeline.id
 
     @staticmethod
-    def test_create_delete_t2s_pipeline() -> None:
+    def test_create_delete_t2s_pipeline(clean_configs_dir: Iterator[None]) -> None:
         list_pipelines_request = text_to_speech_pb2.ListT2sPipelinesRequest()
         operation_list_ids: OperationListPipelines = OperationListPipelines(
             request=list_pipelines_request, expected_to_fail=False)
@@ -77,7 +88,7 @@ class TestGRPC:
             operation_create_pipeline: OperationCreateT2sPipeline = OperationCreateT2sPipeline(
                 request=pipeline_config)
             created_config = operation_create_pipeline.execute_grpc()
-            assert isinstance(created_config, text_to_speech_pb2.Text2SpeechConfig)
+            assert isinstance(created_config, text_to_speech_pb2.T2sPipelineId)
             id_created: str = created_config.id
             operation_list_ids = OperationListPipelines(
                 request=list_pipelines_request, expected_to_fail=False)

@@ -44,12 +44,11 @@ COPY ./grpc_server ./grpc_server
 COPY ./ondewo-t2s-api ./ondewo-t2s-api
 COPY ./Makefile .
 
-RUN mkdir ondewo_grpc
 RUN make generate_ondewo_protos
 
 ENV PYTHONPATH /opt/ondewo-t2s
 ENV CONFIG_DIR config
-CMD python -m grpc_server --host=0.0.0.0 --port=50002
+CMD python -m grpc_server --host=0.0.0.0 --port=50555
 
 
 # ========Cythonization Image=======

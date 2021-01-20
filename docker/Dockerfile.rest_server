@@ -48,12 +48,11 @@ COPY ./grpc_server ./grpc_server
 COPY ./ondewo-t2s-api ./ondewo-t2s-api
 COPY ./Makefile .
 
-RUN mkdir ondewo_grpc
 RUN make generate_ondewo_protos
 
 ENV PYTHONPATH /opt/ondewo-t2s
 ENV FLASK_APP rest_server
-CMD flask run --host=0.0.0.0 --port=40015
+CMD flask run --host=0.0.0.0 --port=50550
 
 
 # ========Cythonization Image=======

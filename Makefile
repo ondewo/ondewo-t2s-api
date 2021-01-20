@@ -10,7 +10,7 @@ REST_CONTAINER_RELEASE="ondewo-t2s-rest-server-release"
 GRPC_CONTAINER_RELEASE="ondewo-t2s-grpc-server-release"
 CODE_CHECK_IMAGE="code_check_image"
 TESTS_CONTAINER="ondewo-t2s-tests"
-SERVER_PORT = 40015
+GRPC_CONFIG_DIR ?= "config"
 
 
 run_code_checks: ## Start the code checks image and run the checks
@@ -41,14 +41,15 @@ run_triton:
 		-v${shell pwd}/models/triton_repo:/models \
 		--name triton-inference-server ${IMAGE_TAG_TRITON} \
 	tritonserver --model-repository=/models --strict-model-config=false \
-		--log-verbose=1 --backend-config=tensorflow,version=2
+		--log-verbose=1 --backend-config=tensorflow,version=2 \
+		--grpc-port=50511 --http-port=50510
 
 run_triton_on_dgx:
-	-kill -9 $(ps aux | grep "ssh -N -f -L localhost:8001:dgx:8001 voice_user@dgx"| grep -v grep| awk '{print $2}')
-	ssh -N -f -L localhost:8001:dgx:8001 voice_user@dgx
+	-kill -9 $(ps aux | grep "ssh -N -f -L localhost:50511:dgx:50511 voice_user@dgx"| grep -v grep| awk '{print $2}')
+	ssh -N -f -L localhost:50511:dgx:50511 voice_user@dgx
 
 stop_ssh_tunel:
-	-kill -9 $(ps aux | grep "ssh -N -f -L localhost:8001:dgx:8001 voice_user@dgx"| grep -v grep| awk '{print $2}')
+	-kill -9 $(ps aux | grep "ssh -N -f -L localhost:50511:dgx:50511 voice_user@dgx"| grep -v grep| awk '{print $2}')
 
 run_rest_server:
 	-docker kill ${REST_CONTAINER}
@@ -70,7 +71,7 @@ run_grpc_server:
 	--network=host \
 	-v ${shell pwd}/models:/opt/ondewo-t2s/models \
 	-v ${shell pwd}/config:/opt/ondewo-t2s/config \
-	--env CONFIG_DIR="config" \
+	--env CONFIG_DIR=${GRPC_CONFIG_DIR} \
 	--name ${GRPC_CONTAINER} \
 	${IMAGE_TAG_GRPC}
 
