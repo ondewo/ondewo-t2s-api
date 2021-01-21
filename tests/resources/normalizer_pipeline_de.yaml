@@ -6,6 +6,5 @@ pipeline:
   - normalize_year
   - normalize_time
   - normalize_numbers
-  - fix_punctuation
   - remove_unaudible_texts
   - lower_case

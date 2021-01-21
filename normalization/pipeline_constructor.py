@@ -4,15 +4,18 @@ from typing import List, Tuple
 from ondewologging.logger import logger_console as logger
 
 from normalization.normalizer_interface import NormalizerInterface
+from normalization.text_splitter import TextSplitter
 from utils.data_classes.config_dataclass import NormalizationDataclass
 
 
 class NormalizerPipeline:
     _curly_re = re.compile(r'(.*?)({.+?})(.*)')
+    pttrn_punkt = re.compile(r'[.?!](\s*)$')
 
     def __init__(self, config: NormalizationDataclass) -> None:
         self.normalizer: NormalizerInterface = self._get_normalizer(config=config)
         self.pipeline_definition: List[str] = self.get_pipeline_definition(config)
+        self.splitter = TextSplitter
 
     @classmethod
     def _get_normalizer(cls, config: NormalizationDataclass) -> NormalizerInterface:
@@ -25,14 +28,21 @@ class NormalizerPipeline:
         return Normalizer()
 
     def apply(self, text: str) -> List[str]:
-        texts_pieces_annotated: List[Tuple[str, bool]] = self.extract_phonemized(text)
+        text_pieces_annotated: List[Tuple[str, bool]] = self.extract_phonemized(text)
+        normalized_text = self._apply_normalize(text_pieces_annotated=text_pieces_annotated)
+        normalized_text = self.fix_punctuation(normalized_text)
+        spit_text: List[str] = self.splitter.split_texts([normalized_text])
+        return spit_text
+
+    def _apply_normalize(self, text_pieces_annotated: List[Tuple[str, bool]]) -> str:
         normalized_texts: List[str] = []
-        for text, is_phonemized in texts_pieces_annotated:
+        for text, is_phonemized in text_pieces_annotated:
             if is_phonemized:
                 normalized_texts.append(text)
             else:
                 normalized_texts.extend(self._apply_all_steps([text]))
-        return normalized_texts
+        text = ' '.join(normalized_texts)
+        return text
 
     def _apply_all_steps(self, texts: List[str]) -> List[str]:
         for name in self.pipeline_definition:
@@ -66,3 +76,9 @@ class NormalizerPipeline:
             text_pieces.append((m.group(2), True))
             text = m.group(3)
         return text_pieces
+
+    def fix_punctuation(self, text: str) -> str:
+        text = text.strip()
+        if not self.pttrn_punkt.search(text):
+            text += '.'
+        return text
