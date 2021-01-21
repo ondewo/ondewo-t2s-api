@@ -27,18 +27,11 @@ class NormalizerPipeline:
     def apply(self, text: str) -> List[str]:
         texts_pieces_annotated: List[Tuple[str, bool]] = self.extract_phonemized(text)
         normalized_texts: List[str] = []
-        not_phonemized_texts: List[str] = []
         for text, is_phonemized in texts_pieces_annotated:
-            if not is_phonemized:
-                not_phonemized_texts.append(text)
-            elif not_phonemized_texts:
-                normalized_texts.extend(self._apply_all_steps(not_phonemized_texts))
+            if is_phonemized:
                 normalized_texts.append(text)
-                not_phonemized_texts = []
             else:
-                normalized_texts.append(text)
-        if not_phonemized_texts:
-            normalized_texts.extend(self._apply_all_steps(not_phonemized_texts))
+                normalized_texts.extend(self._apply_all_steps([text]))
         return normalized_texts
 
     def _apply_all_steps(self, texts: List[str]) -> List[str]:
