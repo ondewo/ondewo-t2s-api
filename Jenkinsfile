@@ -87,7 +87,13 @@ pipeline {
                                     steps {
                                         sh(script: "make run_triton MODEL_DIR=${A100_MODEL_DIR}"
                                         , label: 'run triton server')
-                                        sh(script: "docker run --rm -e TESTFILE=${testresults_filename} -v ${testresults_folder}:/opt/ondewo-t2s/log -v ${A100_MODEL_DIR}:/opt/ondewo-t2s/models ${TESTS_IMAGE_NAME} ./tests/integration"
+                                        sh(script: """docker run --rm --gpus all \
+                                            --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
+                                            --network=host \
+                                            -e TESTFILE=${testresults_filename} \
+                                            -v ${testresults_folder}:/opt/ondewo-t2s/log \
+                                            -v ${A100_MODEL_DIR}:/opt/ondewo-t2s/models \
+                                            ${TESTS_IMAGE_NAME} ./tests/integration"""
                                         , label: 'run integration tests')
                                     }
                                     post {

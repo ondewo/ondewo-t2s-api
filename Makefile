@@ -123,7 +123,9 @@ run_tests:  export SSH_PRIVATE_KEY="$$(cat ~/.ssh/id_rsa)"
 run_tests:
 	docker build -t ${IMAGE_TAG_TESTS} --build-arg PUSH_NAME_STREAM=${IMAGE_TAG_GRPC} -f docker/Dockerfile.tests .
 	-docker rm -f ${TESTS_CONTAINER} \
-	docker run --rm \
+	docker run --rm --gpus all \
+	--shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
+	--network=host \
 	-e TESTFILE=pytest.xml \
 	-v ${PWD}/test_results:/opt/ondewo-t2s/log \
 	--name ${TESTS_CONTAINER} ${IMAGE_TAG_TESTS}
