@@ -40,17 +40,17 @@ class NormalizerPipeline:
             if is_phonemized:
                 normalized_texts.append(text)
             else:
-                normalized_texts.extend(self._apply_all_steps([text]))
+                normalized_texts.append(self._apply_all_steps(text))
         text = ' '.join(normalized_texts)
         return text
 
-    def _apply_all_steps(self, texts: List[str]) -> List[str]:
+    def _apply_all_steps(self, text: str) -> str:
         for name in self.pipeline_definition:
             if not hasattr(self.normalizer, name):
                 continue
             step = getattr(self.normalizer, name)
-            texts = step(texts)
-        return texts
+            text = step(text)
+        return text
 
     def get_pipeline_definition(self, config: NormalizationDataclass) -> List[str]:
         pipeline_definition: List[str] = config.pipeline

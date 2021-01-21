@@ -322,7 +322,7 @@ class TextNormalizerDe(NormalizerInterface):
         """
 
         Args:
-            texts:
+            text:
 
         Returns:
 
