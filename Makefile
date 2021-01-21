@@ -120,8 +120,8 @@ run_grpc_server_release:
 
 ### --- Run Tests --- ###
 run_tests:  export SSH_PRIVATE_KEY="$$(cat ~/.ssh/id_rsa)"
-run_tests: build_rest_server
-	docker build -t ${IMAGE_TAG_TESTS} --build-arg PUSH_NAME_STREAM=${IMAGE_TAG_REST} -f docker/Dockerfile.tests .
+run_tests:
+	docker build -t ${IMAGE_TAG_TESTS} --build-arg PUSH_NAME_STREAM=${IMAGE_TAG_GRPC} -f docker/Dockerfile.tests .
 	-docker rm -f ${TESTS_CONTAINER} \
 	docker run --rm \
 	-e TESTFILE=pytest.xml \

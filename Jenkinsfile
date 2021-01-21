@@ -79,7 +79,7 @@ pipeline {
                             stages {
                                 stage('Unit Tests') {
                                     steps {
-                                        sh(script: "docker run --rm -e TESTFILE=${testresults_filename} -v ${testresults_folder}:/opt/ondewo-t2s/log  ${TESTS_IMAGE_NAME} ./tests/unit"
+                                        sh(script: "docker run --rm -e TESTFILE=${testresults_filename} -v ${testresults_folder}:/opt/ondewo-t2s/log ${TESTS_IMAGE_NAME} ./tests/unit"
                                         , label: 'run unit_tests')
                                     }
                                 }
@@ -87,10 +87,14 @@ pipeline {
                                     steps {
                                         sh(script: "make run_triton MODEL_DIR=${A100_MODEL_DIR}"
                                         , label: 'run triton server')
-                                        sh(script: "docker run --rm -e TESTFILE=${testresults_filename} -v ${testresults_folder}:/opt/ondewo-t2s/log  ${TESTS_IMAGE_NAME} ./tests/integration"
-                                        , label: 'run integration_tests')
-                                        sh(script: 'make kill_triton'
-                                        , label: 'kill triton server')
+                                        sh(script: "docker run --rm -e TESTFILE=${testresults_filename} -v ${testresults_folder}:/opt/ondewo-t2s/log -v ${MODEL_DIR}:/opt/ondewo-t2s/models ${TESTS_IMAGE_NAME} ./tests/integration"
+                                        , label: 'run integration tests')
+                                    }
+                                    post {
+                                        always {
+                                            sh(script: 'make kill_triton'
+                                            , label: 'kill triton server')
+                                        }
                                     }
                                 }
                             }

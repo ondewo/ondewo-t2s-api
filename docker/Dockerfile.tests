@@ -10,6 +10,7 @@ RUN pip install -r test_requirements.txt --ignore-installed
 WORKDIR /opt/ondewo-t2s
 COPY ./normalization ./normalization
 COPY ./inference ./inference
+COPY ./grpc_server ./grpc_server
 COPY ./rest_server ./rest_server
 COPY ./utils ./utils
 COPY ./tests ./tests
