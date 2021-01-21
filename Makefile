@@ -48,11 +48,15 @@ run_triton:
 	-docker rm ${TRITON_CONTAINER}
 	docker run -d --shm-size=1g --gpus all --ulimit memlock=-1 \
 		--ulimit stack=67108864 --network=host \
-		-v${shell pwd}/models/triton_repo:/models \
+		-v${MODEL_DIR}/triton_repo:/models \
 		--name ${TRITON_CONTAINER} ${IMAGE_TAG_TRITON} \
 	tritonserver --model-repository=/models --strict-model-config=false \
 		--log-verbose=1 --backend-config=tensorflow,version=2 \
 		--grpc-port=50511 --http-port=50510
+
+kill_triton:
+	docker kill ${TRITON_CONTAINER}
+	docker rm ${TRITON_CONTAINER}
 
 run_triton_on_dgx:
 	-kill -9 $(ps aux | grep "ssh -N -f -L localhost:50511:dgx:50511 voice_user@dgx"| grep -v grep| awk '{print $2}')

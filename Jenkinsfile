@@ -16,6 +16,7 @@ pipeline {
         test_IMAGE_NAME = "test_image_${IMAGE_NAME}"
 
         code_check_image_name = "code_check_image_${IMAGE_NAME}"
+        A100_MODEL_DIR = '/home/voice_user/data/jenkins/t2s/models'
     }
 
     stages {
@@ -82,16 +83,16 @@ pipeline {
                                         , label: 'run unit_tests')
                                     }
                                 }
-                                // stage('Integration Tests') {
-                                //     steps {
-                                //         sh(script: 'make run_triton_server'
-                                //         , label: 'run triton server')
-                                //         sh(script: "docker run --rm -e TESTFILE=${testresults_filename} -v ${testresults_folder}:/opt/ondewo-t2s/log  ${TESTS_IMAGE_NAME} ./tests/integration"
-                                //         , label: 'run integration_tests')
-                                //         sh(script: "docker run --rm -e TESTFILE=${testresults_filename} -v ${testresults_folder}:/opt/ondewo-t2s/log  ${TESTS_IMAGE_NAME} ./tests/unit"
-                                //         , label: 'kill triton server')
-                                //     }
-                                // }
+                                stage('Integration Tests') {
+                                    steps {
+                                        sh(script: "make run_triton MODEL_DIR=${A100_MODEL_DIR}"
+                                        , label: 'run triton server')
+                                        sh(script: "docker run --rm -e TESTFILE=${testresults_filename} -v ${testresults_folder}:/opt/ondewo-t2s/log  ${TESTS_IMAGE_NAME} ./tests/integration"
+                                        , label: 'run integration_tests')
+                                        sh(script: 'make kill_triton'
+                                        , label: 'kill triton server')
+                                    }
+                                }
                             }
                         }
                     }
