@@ -3,7 +3,7 @@ import tempfile
 import wave
 from typing import Any
 
-URL: str = 'http://0.0.0.0:40015/text2speech'
+URL: str = 'http://0.0.0.0:50550/text2speech'
 SAMPLING_RATE: int = 22050
 
 

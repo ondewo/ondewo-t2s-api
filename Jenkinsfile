@@ -1,14 +1,14 @@
 pipeline {
     agent none
-    environment{
+    environment {
         BRANCH_NAME = "${env.BRANCH_NAME}"
-        SANITIZED_BRANCH_NAME = "${env.BRANCH_NAME}".replace("/", "_")
+        SANITIZED_BRANCH_NAME = "${env.BRANCH_NAME}".replace('/', '_')
         IMAGE_TAG = "${SANITIZED_BRANCH_NAME}"
 
-        IMAGE_NAME = "ondewo-t2s"
-        IMAGE_NAME_REST = "ondewo-t2s-rest-server"
-        IMAGE_NAME_GRPC = "ondewo-t2s-grpc-server"
-        TESTS_IMAGE_NAME = "ondewo-t2s-tests"
+        IMAGE_NAME = 'ondewo-t2s'
+        IMAGE_NAME_REST = 'ondewo-t2s-rest-server'
+        IMAGE_NAME_GRPC = 'ondewo-t2s-grpc-server'
+        TESTS_IMAGE_NAME = 'ondewo-t2s-tests'
         TTS_NAME_REST = "${IMAGE_NAME_REST}:${IMAGE_TAG}"
         TTS_NAME_GRPC = "${IMAGE_NAME_GRPC}:${IMAGE_TAG}"
         PUSH_NAME_STREAM_REST = "dockerregistry.ondewo.com:5000/${TTS_NAME_REST}"
@@ -19,65 +19,98 @@ pipeline {
     }
 
     stages {
-        stage('Code quality') { agent { label 'cpu' }
+        stage('Code Quality Check') {
+            agent {
+                label 'cpu'
+            }
             steps {
-                sh(script: "docker build -t ${code_check_image_name} -f code_checks/Dockerfile .", label: "build code quality image")
-                sh(script: "docker run --rm ${code_check_image_name} make flake8", label: "run flake8")
-                sh(script: "docker run --rm ${code_check_image_name} make mypy", label: "run mypy")
-        } }
+                sh(script: "docker build -t ${code_check_image_name} -f code_checks/Dockerfile .", label: 'build code quality image')
+                sh(script: "docker run --rm ${code_check_image_name} make flake8", label: 'run flake8')
+                sh(script: "docker run --rm ${code_check_image_name} make mypy", label: 'run mypy')
+            }
+        }
 
-        stage('Normal image') { agent { label 'cpu' }
-            stages{
-                stage('Build') {
-                    parallel{
-                        stage('Build rest server'){
-                            environment {
-                                ssh_key_file = credentials('devops_ondewo_idrsa')
-                            }
+        stage('Build and Test Server Images (uncythonized)') {
+            agent {
+                label 'a100'
+            }
+            environment {
+                ssh_key_file = credentials('devops_ondewo_idrsa')
+            }
+            stages {
+                stage('Build Server Images') {
+                    parallel {
+                        stage('Build rest server') {
                             steps {
                                 sh(script: """set +x
                                     docker build -t ${PUSH_NAME_STREAM_REST} --build-arg SSH_PRIVATE_KEY=\"\$(cat ${ssh_key_file})\" --target uncythonized -f docker/Dockerfile.rest_server .
                                     set -x"""
-                                    , label: "build image"
+                                    , label: 'build image'
                                 )
-                                }
                             }
-                        stage('Build grpc server'){
-                            environment {
-                                ssh_key_file = credentials('devops_ondewo_idrsa')
-                            }
+                        }
+                        stage('Build grpc server') {
                             steps {
                                 sh(script: """set +x
                                     docker build -t ${PUSH_NAME_STREAM_GRPC} --build-arg SSH_PRIVATE_KEY=\"\$(cat ${ssh_key_file})\" --target uncythonized -f docker/Dockerfile.grpc_server .
                                     set -x"""
-                                    , label: "build image"
+                                    , label: 'build image'
                                 )
-                                }
                             }
                         }
+                    }
                 }
-                stage('Tests') {
-                     environment {
+                stage('Build and Run Tests') {
+                    environment {
                         PWD = pwd()
                         testresults_folder = "${PWD}/test_results"
-                        testresults_filename = "pytest.xml"
-                        ssh_key_file = credentials('devops_ondewo_idrsa')
-                     }
-                     steps {
-                        sh(script: "mkdir ${testresults_folder}")
-                        sh(script: "docker build -t ${TESTS_IMAGE_NAME} --build-arg PUSH_NAME_STREAM=\"${PUSH_NAME_STREAM_GRPC}\" -f docker/Dockerfile.tests .", label: "build image")
-                        sh(script: "docker run --rm -e TESTFILE=${testresults_filename} -v ${testresults_folder}:/opt/ondewo-t2s/log  ${TESTS_IMAGE_NAME} --ignore=tests/tests_grpc_unit", label: "run_tests")
-                     }
-                     post { always {
-                        sh(script: "cd ${testresults_folder} && cp *.xml ${PWD}")
-                        junit "${testresults_filename}"
-                     } }
+                        testresults_filename = 'pytest.xml'
+                    }
+                    stages {
+                        stage('Build Test Image') {
+                            steps {
+                                sh(script: "mkdir ${testresults_folder}")
+                                sh(script: "docker build -t ${TESTS_IMAGE_NAME} --build-arg PUSH_NAME_STREAM=\"${PUSH_NAME_STREAM_GRPC}\" -f docker/Dockerfile.tests .", label: 'build image')
+                            }
+                        }
+                        stage('Run Tests') {
+                            // replace "stages" with "parallel" when tests become parallel
+                            stages {
+                                stage('Unit Tests') {
+                                    steps {
+                                        sh(script: "docker run --rm -e TESTFILE=${testresults_filename} -v ${testresults_folder}:/opt/ondewo-t2s/log  ${TESTS_IMAGE_NAME} ./tests/unit"
+                                        , label: 'run unit_tests')
+                                    }
+                                }
+                                // stage('Integration Tests') {
+                                //     steps {
+                                //         sh(script: 'make run_triton_server'
+                                //         , label: 'run triton server')
+                                //         sh(script: "docker run --rm -e TESTFILE=${testresults_filename} -v ${testresults_folder}:/opt/ondewo-t2s/log  ${TESTS_IMAGE_NAME} ./tests/integration"
+                                //         , label: 'run integration_tests')
+                                //         sh(script: "docker run --rm -e TESTFILE=${testresults_filename} -v ${testresults_folder}:/opt/ondewo-t2s/log  ${TESTS_IMAGE_NAME} ./tests/unit"
+                                //         , label: 'kill triton server')
+                                //     }
+                                // }
+                            }
+                        }
+                    }
+                    post {
+                        always {
+                            sh(script: "cd ${testresults_folder} && cp *.xml ${PWD}")
+                            junit "${testresults_filename}"
+                        }
+                    }
                 }
-                stage('Push') { steps{
-                        sh(script: "docker push ${PUSH_NAME_STREAM_GRPC}", label: "push the image to the registry")
+                stage('Push') {
+                    steps {
+                        sh(script: "docker push ${PUSH_NAME_STREAM_GRPC}", label: 'push the image to the registry')
                         sh(script: "echo ${PUSH_NAME_STREAM_GRPC} pushed to registry")
-                        sh(script: "docker push ${PUSH_NAME_STREAM_REST}", label: "push the image to the registry")
+                        sh(script: "docker push ${PUSH_NAME_STREAM_REST}", label: 'push the image to the registry')
                         sh(script: "echo ${PUSH_NAME_STREAM_REST} pushed to registry")
-                } }
-        } }
-} }
+                    }
+                }
+            }
+        }
+    }
+}

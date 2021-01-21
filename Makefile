@@ -4,20 +4,27 @@ IMAGE_TAG_REST_RELEASE="dockerregistry.ondewo.com:5000/ondewo-t2s-rest-server-re
 IMAGE_TAG_GRPC_RELEASE="dockerregistry.ondewo.com:5000/ondewo-t2s-grpc-server-release:develop"
 IMAGE_TAG_TESTS="ondewo-t2s-tests-image"
 IMAGE_TAG_TRITON="dockerregistry.ondewo.com:5000/nvidia/tritonserver:20.09-py3"
+IMAGE_TAG_CODE_CHECK="code_check_image"
+
 REST_CONTAINER="ondewo-t2s-rest-server"
 GRPC_CONTAINER="ondewo-t2s-grpc-server"
 REST_CONTAINER_RELEASE="ondewo-t2s-rest-server-release"
 GRPC_CONTAINER_RELEASE="ondewo-t2s-grpc-server-release"
-CODE_CHECK_IMAGE="code_check_image"
 TESTS_CONTAINER="ondewo-t2s-tests"
+TRITON_CONTAINER="ondewo-t2s-triton-inference-server"
+
 GRPC_CONFIG_DIR ?= "config"
+MODEL_DIR ?= "${shell pwd}/models"
 
 
-run_code_checks: ## Start the code checks image and run the checks
-	docker build -t ${CODE_CHECK_IMAGE} -f code_checks/Dockerfile .
-	docker run --rm ${CODE_CHECK_IMAGE} make flake8
-	docker run --rm ${CODE_CHECK_IMAGE} make mypy
+### --- Build code checks image and run --- ###
+run_code_checks:
+	docker build -t ${IMAGE_TAG_CODE_CHECK} -f code_checks/Dockerfile .
+	docker run --rm ${IMAGE_TAG_CODE_CHECK} make flake8
+	docker run --rm ${IMAGE_TAG_CODE_CHECK} make mypy
 
+
+### --- Image builds --- ###
 build_rest_server: export SSH_PRIVATE_KEY="$$(cat ~/.ssh/id_rsa)"
 build_rest_server:
 	docker build -t ${IMAGE_TAG_REST} --build-arg SSH_PRIVATE_KEY=$(SSH_PRIVATE_KEY) --target uncythonized -f docker/Dockerfile.rest_server .
@@ -34,12 +41,15 @@ build_grpc_server_release: export SSH_PRIVATE_KEY="$$(cat ~/.ssh/id_rsa)"
 build_grpc_server_release:
 	docker build -t ${IMAGE_TAG_GRPC_RELEASE} --build-arg SSH_PRIVATE_KEY=$(SSH_PRIVATE_KEY) -f docker/Dockerfile.grpc_server .
 
+
+### --- Run Triton --- ###
 run_triton:
-	-docker rm -f triton-inference-server
+	-docker kill ${TRITON_CONTAINER}
+	-docker rm ${TRITON_CONTAINER}
 	docker run -d --shm-size=1g --gpus all --ulimit memlock=-1 \
 		--ulimit stack=67108864 --network=host \
 		-v${shell pwd}/models/triton_repo:/models \
-		--name triton-inference-server ${IMAGE_TAG_TRITON} \
+		--name ${TRITON_CONTAINER} ${IMAGE_TAG_TRITON} \
 	tritonserver --model-repository=/models --strict-model-config=false \
 		--log-verbose=1 --backend-config=tensorflow,version=2 \
 		--grpc-port=50511 --http-port=50510
@@ -51,29 +61,19 @@ run_triton_on_dgx:
 stop_ssh_tunel:
 	-kill -9 $(ps aux | grep "ssh -N -f -L localhost:50511:dgx:50511 voice_user@dgx"| grep -v grep| awk '{print $2}')
 
+
+### --- Run Rest Server --- ###
 run_rest_server:
 	-docker kill ${REST_CONTAINER}
 	-docker rm ${REST_CONTAINER}
 	docker run -td --gpus all \
 	--shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
 	--network=host \
-	-v ${shell pwd}/models:/opt/ondewo-t2s/models \
+	-v ${MODEL_DIR}ndewo-t2s/models \
 	-v ${shell pwd}/config:/opt/ondewo-t2s/config \
 	--env CONFIG_FILE="config/config.yaml" \
 	--name ${REST_CONTAINER} \
 	${IMAGE_TAG_REST}
-
-run_grpc_server:
-	-docker kill ${GRPC_CONTAINER}
-	-docker rm ${GRPC_CONTAINER}
-	docker run -td --gpus all \
-	--shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
-	--network=host \
-	-v ${shell pwd}/models:/opt/ondewo-t2s/models \
-	-v ${shell pwd}/config:/opt/ondewo-t2s/config \
-	--env CONFIG_DIR=${GRPC_CONFIG_DIR} \
-	--name ${GRPC_CONTAINER} \
-	${IMAGE_TAG_GRPC}
 
 run_rest_server_release:
 	-docker kill ${REST_CONTAINER_RELEASE}
@@ -81,11 +81,25 @@ run_rest_server_release:
 	docker run -td --gpus all \
 	--shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
 	--network=host \
-	-v ${shell pwd}/models:/opt/ondewo-t2s/models \
+	-v ${MODEL_DIR}:/opt/ondewo-t2s/models \
 	-v ${shell pwd}/config:/opt/ondewo-t2s/config \
 	--env CONFIG_FILE="config/config.yaml" \
 	--name ${REST_CONTAINER_RELEASE} \
 	${IMAGE_TAG_REST_RELEASE}
+
+
+### --- Run gRPC Server --- ###
+run_grpc_server:
+	-docker kill ${GRPC_CONTAINER}
+	-docker rm ${GRPC_CONTAINER}
+	docker run -td --gpus all \
+	--shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
+	--network=host \
+	-v ${MODEL_DIR}:/opt/ondewo-t2s/models \
+	-v ${shell pwd}/config:/opt/ondewo-t2s/config \
+	--env CONFIG_DIR=${GRPC_CONFIG_DIR} \
+	--name ${GRPC_CONTAINER} \
+	${IMAGE_TAG_GRPC}
 
 run_grpc_server_release:
 	-docker kill ${GRPC_CONTAINER_RELEASE}
@@ -93,19 +107,25 @@ run_grpc_server_release:
 	docker run -td --gpus all \
 	--shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
 	--network=host \
-	-v ${shell pwd}/models:/opt/ondewo-t2s/models \
+	-v ${MODEL_DIR}:/opt/ondewo-t2s/models \
 	-v ${shell pwd}/config:/opt/ondewo-t2s/config \
 	--env CONFIG_DIR="config" \
 	--name ${GRPC_CONTAINER_RELEASE} \
 	${IMAGE_TAG_GRPC_RELEASE}
 
+
+### --- Run Tests --- ###
 run_tests:  export SSH_PRIVATE_KEY="$$(cat ~/.ssh/id_rsa)"
 run_tests: build_rest_server
 	docker build -t ${IMAGE_TAG_TESTS} --build-arg PUSH_NAME_STREAM=${IMAGE_TAG_REST} -f docker/Dockerfile.tests .
-	-docker rm -f ${TESTS_CONTAINER}
-	docker run --rm -e TESTFILE=pytest.xml -v ${PWD}/test_results:/opt/ondewo-t2s/log \
+	-docker rm -f ${TESTS_CONTAINER} \
+	docker run --rm \
+	-e TESTFILE=pytest.xml \
+	-v ${PWD}/test_results:/opt/ondewo-t2s/log \
 	--name ${TESTS_CONTAINER} ${IMAGE_TAG_TESTS}
 
+
+### --- Package Release --- ###
 package_git_revision_and_version:
 	echo "version: `cat utils/version.py | grep -oP "(?<=__version__ = ')(.*)(?=')"`" > package/VERSION.md
 	echo "" >> package/VERSION.md
@@ -131,6 +151,8 @@ make package_release: package_git_revision_and_version
 
 	rsync -Phaz ${RELEASE_FOLDER} ondewo@releases.ondewo.com:releases/ondewo-t2s
 
+
+### --- Install dependencies locally --- ###
 install_dependencies_locally: generate_ondewo_protos
 	pip install nvidia-pyindex
 	pip install -r requirements.txt
@@ -147,6 +169,7 @@ install_dependencies_locally: generate_ondewo_protos
 	-git clone git@bitbucket.org:ondewo/ondewo-t2s-hifigan.git
 	cd ondewo-t2s-hifigan && git fetch && git checkout 1d691b8abc13275649be72809b681333bc47f1e6
 	pip install -e ondewo-t2s-hifigan
+
 
 # GENERATE PYTHON FILES FROM PROTOS
 # copy from nlu-client, changed output directory to ./grpc_config_server/ and only exporting /audio/ directory of ondewoapis
