@@ -114,6 +114,7 @@ pipeline {
                                         always {
                                             sh(script: 'make kill_triton'
                                             , label: 'kill triton server')
+                                            sh(script: 'docker logs ondewo-t2s-triton-inference-server')
                                         }
                                     }
                                 }
