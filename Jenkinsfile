@@ -87,6 +87,16 @@ pipeline {
                                     steps {
                                         sh(script: "make run_triton MODEL_DIR=${A100_MODEL_DIR}"
                                         , label: 'run triton server')
+                                        timeout(60) {
+                                            waitUntil {
+                                                def status_num = sh(
+                                                    script: "curl --fail http://0.0.0.0:50510/v2/health/ready",
+                                                    returnStatus: true,
+                                                    label: 'health check triton until online'
+                                                )
+                                                return (status_num == 0)
+                                            }
+                                        }
                                         sh(script: """docker run --rm --gpus all \
                                             --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
                                             --network=host \
