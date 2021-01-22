@@ -99,6 +99,7 @@ pipeline {
                                                 }
                                             }
                                         }
+                                        sh 'docker logs ondewo-t2s-triton-server'
                                         sh(script: """docker run --rm --gpus all \
                                             --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
                                             --network=host \
