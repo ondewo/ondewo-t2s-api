@@ -135,7 +135,7 @@ install_dependencies_locally: generate_ondewo_protos
 	pip install -r requirements.txt
 
 	-git clone git@bitbucket.org:ondewo/ondewo-t2s-glow.git
-	cd ondewo-t2s-glow && git fetch && git checkout 588cb9946743f6eec85d0fe35b1e3395ea651a87 && \
+	cd ondewo-t2s-glow && git fetch && git checkout 176dd93688cfadc84c4996283cec518fec5a7830 && \
 	cd monotonic_align && python setup.py build_ext --inplace
 	pip install -e ondewo-t2s-glow
 

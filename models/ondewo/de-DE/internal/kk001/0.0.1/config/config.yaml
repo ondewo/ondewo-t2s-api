@@ -60,4 +60,4 @@ normalization:
     language: "de"
 
     pipeline:
-        - "normalize_and_split"
+        - "normalize_all"
