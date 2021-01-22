@@ -1,16 +1,21 @@
-from typing import List
+import re
+from typing import List, Tuple
 
 from ondewologging.logger import logger_console as logger
 
 from normalization.normalizer_interface import NormalizerInterface
+from normalization.text_splitter import TextSplitter
 from utils.data_classes.config_dataclass import NormalizationDataclass
 
 
 class NormalizerPipeline:
+    _curly_re = re.compile(r'(.*?)({.+?})(.*)')
+    pttrn_punkt = re.compile(r'[.?!](\s*)$')
 
     def __init__(self, config: NormalizationDataclass) -> None:
         self.normalizer: NormalizerInterface = self._get_normalizer(config=config)
         self.pipeline_definition: List[str] = self.get_pipeline_definition(config)
+        self.splitter = TextSplitter
 
     @classmethod
     def _get_normalizer(cls, config: NormalizationDataclass) -> NormalizerInterface:
@@ -22,13 +27,30 @@ class NormalizerPipeline:
             raise ValueError(f"Language {config.language} is not supported.")
         return Normalizer()
 
-    def apply(self, texts: List[str]) -> List[str]:
+    def apply(self, text: str) -> List[str]:
+        text_pieces_annotated: List[Tuple[str, bool]] = self.extract_phonemized(text)
+        normalized_text = self._apply_normalize(text_pieces_annotated=text_pieces_annotated)
+        normalized_text = self.fix_punctuation(normalized_text)
+        split_text: List[str] = self.splitter.split_texts([normalized_text])
+        return split_text
+
+    def _apply_normalize(self, text_pieces_annotated: List[Tuple[str, bool]]) -> str:
+        normalized_texts: List[str] = []
+        for text, is_phonemized in text_pieces_annotated:
+            if is_phonemized:
+                normalized_texts.append(text)
+            else:
+                normalized_texts.append(self._apply_all_steps(text))
+        text = ' '.join(normalized_texts)
+        return text
+
+    def _apply_all_steps(self, text: str) -> str:
         for name in self.pipeline_definition:
             if not hasattr(self.normalizer, name):
                 continue
             step = getattr(self.normalizer, name)
-            texts = step(texts)
-        return texts
+            text = step(text)
+        return text
 
     def get_pipeline_definition(self, config: NormalizationDataclass) -> List[str]:
         pipeline_definition: List[str] = config.pipeline
@@ -41,3 +63,22 @@ class NormalizerPipeline:
                                f"This normalization step will be skipped")
                 pipeline_definition.remove(name)
         return pipeline_definition
+
+    def extract_phonemized(self, text: str) -> List[Tuple[str, bool]]:
+        text_pieces: List[Tuple[str, bool]] = []
+        while len(text):
+            m = self._curly_re.match(text)
+            if not m:
+                text_pieces.append((text, False))
+                break
+            if m.group(1):
+                text_pieces.append((m.group(1), False))
+            text_pieces.append((m.group(2), True))
+            text = m.group(3)
+        return text_pieces
+
+    def fix_punctuation(self, text: str) -> str:
+        text = text.strip()
+        if not self.pttrn_punkt.search(text):
+            text += '.'
+        return text

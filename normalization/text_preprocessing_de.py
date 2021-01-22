@@ -11,9 +11,7 @@ class TextNormalizerDe(NormalizerInterface):
     pttrn_space = re.compile(r'\s+')
     pttrn_time = re.compile(r'(?:\s|\b|^)(([01][0-9]|[0-9]|2[0-3]):([0-5][0-9])(?:\s|\b|$)'
                             r'(?::[0-5][0-9](?:\s|\b|$))?)')
-    splitting_pttrn_eos = re.compile(r'.*?[.!?]')
-    splitting_pttrn_pos = re.compile(r'.*?[;,:.!?/\\|)(\[\]]')
-    pttrn_punkt = re.compile(r'[.?!](\s*)$')
+
     domain_str: str = r'(?:com|net|org|edu|gov|mil|aero|asia|biz|cat|coop|info|int|jobs|mobi|museum|name|' \
                       r'post|pro|tel|travel|xxx|ac|ad|ae|af|ag|ai|al|am|an|ao|aq|ar|as|at|au|aw|ax|az|ba|' \
                       r'bb|bd|be|bf|bg|bh|bi|bj|bm|bn|bo|br|bs|bt|bv|bw|by|bz|ca|cc|cd|cf|cg|ch|ci|ck|cl|' \
@@ -29,10 +27,6 @@ class TextNormalizerDe(NormalizerInterface):
     pttrn_url = re.compile(
         rf'(?:https?://|\b)((?:[A-Za-z0-9\-]+\.)+{domain_str}(?:/[A-Za-z0-9\-]+)*)(?:$|\s|,|:|;|\?|!|.)'
     )
-
-    pttrn_right_split = re.compile(r'(?<=[^\s])(?<!(?:\d\.))\s+(?=[0-9])')
-    pttrn_left_split = re.compile(r'(?<=[0-9])\s+(?=(?:[^\d]))')
-    pttrn_split_before_year = re.compile(r'(?=(?:19|20)\d\d(?:\s|\b|$))')
 
     pttrn_audible_char = re.compile(r'[a-zA-Z]')
 
@@ -221,24 +215,7 @@ class TextNormalizerDe(NormalizerInterface):
             text = re.sub(self.pttrn_spaces_bw_num, r'\1\2', text)
         return text
 
-    def split_on_pattern(self, texts: List[str], pattern: Any) -> List[str]:
-        texts_splited: List[str] = []
-        for text in texts:
-            if pattern.search(text):
-                texts_splited.extend(pattern.split(text))
-            else:
-                texts_splited.append(text)
-        texts = texts_splited
-        texts = list(filter(lambda x: x, texts))
-        return texts
-
-    def normalize_numbers(self, texts: List[str]) -> List[str]:
-        normalized_texts: List[str] = []
-        for text in texts:
-            normalized_texts.append(self.normalize_numbers_single(text))
-        return normalized_texts
-
-    def normalize_numbers_single(self, text: str) -> str:
+    def normalize_numbers(self, text: str) -> str:
         """
 
         Args:
@@ -254,19 +231,7 @@ class TextNormalizerDe(NormalizerInterface):
         text = text.strip()
         return text
 
-    def normalize_dates(self, texts: List[str]) -> List[str]:
-        for index in range(len(texts)):
-            if index == 0:
-                texts[index] = self.normalize_single_date(text=texts[index])
-                continue
-            else:
-                if texts[index - 1].endswith('m'):
-                    texts[index] = self.normalize_single_date(text=texts[index], ending='ten')
-                else:
-                    texts[index] = self.normalize_single_date(text=texts[index])
-        return texts
-
-    def normalize_single_date(self, text: str, ending: str = 'ter') -> str:
+    def normalize_dates(self, text: str, ending: str = 'ter') -> str:
         """
 
         Args:
@@ -308,13 +273,7 @@ class TextNormalizerDe(NormalizerInterface):
         text = re.sub(self.pttrn_space, ' ', text)
         return text
 
-    def normalize_time(self, texts: List[str]) -> List[str]:
-        normalized_texts: List[str] = []
-        for text in texts:
-            normalized_texts.append(self.normalize_time_single(text))
-        return normalized_texts
-
-    def normalize_time_single(self, text: str) -> str:
+    def normalize_time(self, text: str) -> str:
         """
 
         Args:
@@ -343,163 +302,23 @@ class TextNormalizerDe(NormalizerInterface):
         text = re.sub(self.pttrn_space, ' ', text)
         return text
 
-    def normalize_year(self, texts: List[str]) -> List[str]:
-        normalized_texts: List[str] = []
-        for text in texts:
-            for year_str in self.pttrn_year.findall(text):
-                year_txt = self.texturize_year(year=int(year_str), mode=2)
-                text = text.replace(year_str, year_txt)
-            normalized_texts.append(text)
-        return normalized_texts
+    def normalize_year(self, text: str) -> str:
+        for year_str in self.pttrn_year.findall(text):
+            year_txt = self.texturize_year(year=int(year_str), mode=2)
+            text = text.replace(year_str, year_txt)
+        return text
 
-    def fix_punctuation(self, texts: List[str]) -> List[str]:
-        normalized_texts: List[str] = []
-        for text in texts:
-            text = text.strip()
-            if not self.pttrn_punkt.search(text):
-                text += '.'
-            normalized_texts.append(text)
-        return normalized_texts
+    def fix_plus(self, text: str) -> str:
+        text = text.strip()
+        text = text.replace('+', ' plus ')
+        return text
 
-    def fix_plus(self, texts: List[str]) -> List[str]:
-        texts_normalized: List[str] = []
-        for text in texts:
-            text = text.strip()
-            text = text.replace('+', ' plus ')
-            texts_normalized.append(text)
-        return texts_normalized
+    def remove_unaudible_texts(self, text: str) -> str:
+        if not self.pttrn_audible_char.findall(text):
+            return ''
+        return text
 
-    def remove_unaudible_texts(self, texts: List[str]) -> List[str]:
-        return list(filter(lambda x: self.pttrn_audible_char.findall(x), texts))
-
-    def normalize_and_split(self, texts: List[str]) -> List[str]:
-        """
-
-        Args:
-            texts:
-
-        Returns:
-
-        """
-        texts = self.fix_plus(texts=texts)
-        texts = self.normalize_urls(texts=texts)
-        texts = self.split_on_pattern(texts=texts, pattern=self.pttrn_right_split)
-        texts = self.split_on_pattern(texts=texts, pattern=self.pttrn_left_split)
-        texts = self.split_on_pattern(texts=texts, pattern=self.pttrn_split_before_year)
-        texts = self.normalize_dates(texts=texts)
-        texts = self.normalize_year(texts=texts)
-        texts = self.normalize_time(texts=texts)
-        texts = self.normalize_numbers(texts=texts)
-        texts = self.split_texts(texts=texts)
-        texts = self.fix_punctuation(texts=texts)
-        texts = self.remove_unaudible_texts(texts=texts)
-        texts = self.lower_case(texts=texts)
-        return texts
-
-    def lower_case(self, texts: List[str]) -> List[str]:
-        texts_next: List[str] = []
-        for text in texts:
-            texts_next.append(text.lower())
-        return texts_next
-
-    def split_texts(self, texts: List[str]) -> List[str]:
-        texts_next: List[str] = []
-        for text in texts:
-            texts_next.extend(self._split_text(text=text))
-        return texts_next
-
-    def _split_text(self, text: str, max_len: int = 100) -> List[str]:
-        """
-
-        Args:
-            max_len:
-            text:
-
-        Returns:
-
-        """
-
-        text = self.fix_punctuation(texts=[text])[0]
-        parts: List[str] = list(filter(lambda x: bool(x), self.splitting_pttrn_eos.findall(text)))
-        parts_iter: List[str] = []
-        for part in parts:
-            if len(part) < max_len:
-                parts_iter.append(part)
-            else:
-                part_splitted: List[str] = self.split_sentence(text=part, max_len=max_len)
-                parts_iter.extend(part_splitted)
-        return parts_iter
-
-    def split_sentence(self, text: str, max_len: int = 100) -> List[str]:
-        """
-
-        Args:
-            text:
-            max_len:
-
-        Returns:
-
-        """
-        text = self.fix_punctuation(texts=[text])[0]
-        parts: List[str] = list(filter(lambda x: bool(x), self.splitting_pttrn_pos.findall(text)))
-        parts_iter: List[str] = []
-        for part in parts:
-            if len(part) < max_len:
-                parts_iter.append(part)
-            else:
-                part_splitted: List[str] = self.split_on_words(text=part, max_len=max_len)
-                parts.extend(part_splitted)
-
-        return parts_iter
-
-    def split_on_words(self, text: str, max_len: int = 100) -> List[str]:
-        """
-
-        Args:
-            text:
-            max_len:
-
-        Returns:
-
-        """
-        words: List[str] = text.split()
-        words_normalized: List[str] = []
-        for word in words:
-            if len(word) < max_len:
-                words_normalized.append(word)
-            else:
-                word_splitted: List[str] = self.split_word(word=word, max_len=max_len)
-                words_normalized.extend(word_splitted)
-
-        len_of_part = 0
-        parts: List[str] = []
-        part: str = ''
-        for word in words:
-            word += ' '
-            if len_of_part + len(word) < max_len:
-                len_of_part += len(word)
-                part += word
-            else:
-                if part:
-                    parts.append(part.strip())
-                len_of_part = 0
-                part = word
-        if part:
-            parts.append(part.strip())
-        return parts
-
-    def split_word(self, word: str, max_len: int = 80) -> List[str]:
-        parts: List[str] = []
-        while word:
-            part = word[:max_len]
-            parts.append(part)
-            if len(word) > len(part):
-                word = word[len(part):]
-            else:
-                word = ''
-        return parts
-
-    def normalize_urls(self, texts: List[str]) -> List[str]:
+    def normalize_all(self, text: str) -> str:
         """
 
         Args:
@@ -508,15 +327,34 @@ class TextNormalizerDe(NormalizerInterface):
         Returns:
 
         """
-        texts_normalized: List[str] = []
-        for text in texts:
-            urls: List[str] = self.pttrn_url.findall(text)
-            for url in urls:
-                normalized_url = self.normalize_url(url)
-                text = text.replace(url, normalized_url)
-            texts_normalized.append(text)
+        text = self.fix_plus(text=text)
+        text = self.normalize_urls(text=text)
+        text = self.normalize_dates(text=text)
+        text = self.normalize_year(text=text)
+        text = self.normalize_time(text=text)
+        text = self.normalize_numbers(text=text)
+        text = self.remove_unaudible_texts(text=text)
+        text = self.lower_case(text=text)
+        return text
 
-        return texts_normalized
+    def lower_case(self, text: str) -> str:
+        return text.lower()
+
+    def normalize_urls(self, text: str) -> str:
+        """
+
+        Args:
+            text:
+
+        Returns:
+
+        """
+        urls: List[str] = self.pttrn_url.findall(text)
+        for url in urls:
+            normalized_url = self.normalize_url(url)
+            text = text.replace(url, normalized_url)
+
+        return text
 
     def normalize_url(self, url: str) -> str:
         """

@@ -1,44 +1,76 @@
-active: true
-description: {comments: trained on public domain dataset, domain: '', language: de,
-  pipeline_owner: ondewo, speaker_name: Thorsten, speaker_sex: male}
 id: glow_tts&hifi_gan-e976dd6c-2f41-484b-aec2-3e6868d37280
+description:
+  language: de
+  speaker_sex: male
+  pipeline_owner: ondewo
+  comments: trained on public domain dataset
+  speaker_name: Thorsten
+  domain: ''
+active: true
 inference:
-  caching: {active: false, cache_save_dir: models/cache, load_cache: true, memory_cache_max_size: 20,
-    sampling_rate: 22050, save_cache: true}
+  type: composite
   composite_inference:
-    mel2audio:
-      hifi_gan: {batch_size: 20, config_path: models/HiFiGan/universal/config.json,
-        model_path: models/HiFiGan/universal/g_02500000, use_gpu: true}
-      mb_melgan_triton: {config_path: models/mb_melgan/en/config.yml, stats_path: models/mb_melgan/en/stats.npy,
-        triton_model_name: mb_melgan, triton_url: "localhost:8001"}
-      type: hifi_gan
     text2mel:
+      type: glow_tts
       glow_tts:
         batch_size: 5
-        cleaners: []
+        use_gpu: true
         length_scale: 1.0
         noise_scale: 0.6669999957084656
-        param_config_path: models/glow-tts/de/config_blank.json
         path: models/glow-tts/de/thorsten_blank.pth
-        use_gpu: true
+        param_config_path: models/glow-tts/de/config_blank.json
+        cleaners: []
       glow_tts_triton:
         batch_size: 8
-        cleaners: []
         length_scale: 1.0
-        max_text_length: 100
         noise_scale: 0.6669999957084656
+        cleaners: []
+        max_text_length: 100
         param_config_path: models/glow-tts/de/config.json
-        triton_model_name: glow_tts
         triton_url: localhost:8001
-      type: glow_tts
-  type: composite
+        triton_model_name: glow_tts
+    mel2audio:
+      type: hifi_gan
+      mb_melgan_triton:
+        config_path: models/mb_melgan/en/config.yml
+        stats_path: models/mb_melgan/en/stats.npy
+        triton_model_name: mb_melgan
+        triton_url: localhost:8001
+      hifi_gan:
+        use_gpu: true
+        batch_size: 20
+        config_path: models/HiFiGan/universal/config.json
+        model_path: models/HiFiGan/universal/g_02500000
+  caching:
+    active: false
+    memory_cache_max_size: 20
+    sampling_rate: 22050
+    load_cache: true
+    save_cache: true
+    cache_save_dir: models/cache
 normalization:
   language: de
-  pipeline: [fix_plus, normalize_urls, normalize_dates, normalize_year, normalize_time,
-    normalize_numbers, fix_punctuation, remove_unaudible_texts, lower_case]
+  pipeline:
+  - fix_plus
+  - normalize_urls
+  - normalize_dates
+  - normalize_year
+  - normalize_time
+  - normalize_numbers
+  - remove_unaudible_texts
+  - lower_case
 postprocessing:
-  apodization: {apodization_secs: 0.25}
-  logmmse: {initial_noise: 100, noise_threshold: 0.15000000596046448, window_size: 0}
-  pipeline: []
   silence_secs: 0.25
-  wiener: {alpha: 0.5, frame_len: 1024, iterations: 10, lpc_order: 50, thresh: 0.10000000149011612}
+  pipeline: []
+  logmmse:
+    initial_noise: 100
+    window_size: 0
+    noise_threshold: 0.15000000596046448
+  wiener:
+    frame_len: 1024
+    lpc_order: 50
+    iterations: 10
+    alpha: 0.5
+    thresh: 0.10000000149011612
+  apodization:
+    apodization_secs: 0.25

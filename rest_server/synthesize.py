@@ -9,7 +9,7 @@ from ondewologging.logger import logger_console as logger
 def synthesize(text: str) -> np.ndarray:
     if re.search(r'[A-Za-z0-9]+', text):
         logger.info(f'Text to transcribe: "{text}"')
-        texts: List[str] = preprocess_pipeline.apply([text])
+        texts: List[str] = preprocess_pipeline.apply(text)
         logger.info(f'After normalization texts are: {texts}')
 
         audio_list: List[np.ndarray] = inference.synthesize(texts=texts, length_scale=None, noise_scale=None)
