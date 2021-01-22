@@ -36,12 +36,12 @@ class TextSplitter:
             else:
                 logger.error(f"Sentence {part} is longer than max allowed {max_len}, "
                              f"will be split further on subsentence level.")
-                part_splitted: List[str] = cls.split_sentence(text=part, max_len=max_len)
+                part_splitted: List[str] = cls._split_sentence(text=part, max_len=max_len)
                 parts_iter.extend(part_splitted)
         return parts_iter
 
     @classmethod
-    def split_sentence(cls, text: str, max_len: int = 1000) -> List[str]:
+    def _split_sentence(cls, text: str, max_len: int = 1000) -> List[str]:
         """
 
         Args:
@@ -61,13 +61,13 @@ class TextSplitter:
             else:
                 logger.error(f"Piece of sentence {part} is longer than max allowed {max_len}, "
                              f"will be split further on word level.")
-                part_splitted: List[str] = cls.split_on_words(text=part, max_len=max_len)
+                part_splitted: List[str] = cls._split_on_words(text=part, max_len=max_len)
                 parts.extend(part_splitted)
 
         return parts_iter
 
     @classmethod
-    def split_on_words(cls, text: str, max_len: int = 1000) -> List[str]:
+    def _split_on_words(cls, text: str, max_len: int = 1000) -> List[str]:
         """
 
         Args:
