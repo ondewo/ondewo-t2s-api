@@ -60,11 +60,16 @@ class TestTextPreprocessor:
                              [
                                  ('normalizer_pipeline_en.yaml', 'english text {phonemes 1 2 3 }',
                                   ['english text  {phonemes 1 2 3 }.']),
+                                 ('normalizer_pipeline_en.yaml', '{phonemes 7 89 } english text {phonemes 1 2 3 }',
+                                  ['{phonemes 7 89 }  english text  {phonemes 1 2 3 }.']),
                                  ('normalizer_pipeline_de.yaml', '1 deutscher text {phonemes 1 2 3 }',
                                   ['eins deutscher text {phonemes 1 2 3 }.']),
                                  ('normalizer_pipeline_de.yaml',
                                   '1 deutscher text {phonemes 1 2 3 } text 2 {phonemes 4 5 6} ',
                                   ['eins deutscher text {phonemes 1 2 3 } text zwei {phonemes 4 5 6}.']),
+                                 ('normalizer_pipeline_de.yaml',
+                                  '{phonemes 7 89 } 1 deutscher text {phonemes 1 2 3 } text 2 {phonemes 4 5 6} ',
+                                  ['{phonemes 7 89 } eins deutscher text {phonemes 1 2 3 } text zwei {phonemes 4 5 6}.']),
                              ])
     def test_preprocessing_with_phonemes(config_path: str, text: str, expected: List[str]) -> None:
         normalizer_pipeline = get_normalizer_pipeline(config_path=config_path)
