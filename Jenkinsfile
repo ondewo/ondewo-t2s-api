@@ -87,7 +87,7 @@ pipeline {
                                     steps {
                                         sh(script: "make run_triton MODEL_DIR=${A100_MODEL_DIR}"
                                         , label: 'run triton server')
-                                        timeout(time: 60, unit: SECONDS) {
+                                        timeout(time: 60, unit: 'SECONDS') {
                                             waitUntil {
                                                 script {
                                                     def status_num = sh(
