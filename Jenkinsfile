@@ -87,6 +87,7 @@ pipeline {
                                     steps {
                                         sh(script: "make run_triton MODEL_DIR=${A100_MODEL_DIR}"
                                         , label: 'run triton server')
+                                        sh(script: 'docker logs ondewo-t2s-triton-inference-server')
                                         timeout(time: 60, unit: 'SECONDS') {
                                             waitUntil {
                                                 script {
@@ -99,7 +100,7 @@ pipeline {
                                                 }
                                             }
                                         }
-                                        sh 'docker logs ondewo-t2s-triton-server'
+                                        sh(script: 'docker logs ondewo-t2s-triton-inference-server')
                                         sh(script: """docker run --rm --gpus all \
                                             --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
                                             --network=host \
