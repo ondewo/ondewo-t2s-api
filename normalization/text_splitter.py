@@ -17,6 +17,8 @@ class TextSplitter:
     @classmethod
     def _split_text(cls, text: str, max_len: int = 1000) -> List[str]:
         """
+        this function will split the text into sentences. End of the sentence will be recognized by ".", "!"
+        or "?" and of line "\n" is not considered end of sentence.
 
         Args:
             max_len:
