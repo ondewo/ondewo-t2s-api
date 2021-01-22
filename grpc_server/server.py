@@ -3,6 +3,7 @@ from concurrent import futures
 from typing import Optional, List, Dict, Any
 
 import grpc
+from grpc_reflection.v1alpha import reflection
 from ondewologging.logger import logger_console as logger
 from ruamel.yaml import YAML
 
@@ -10,7 +11,7 @@ from grpc_server.constants import CONFIG_DIR_ENV
 from grpc_server.servicer import Text2SpeechServicer
 from grpc_server.t2s_pipeline_manager import T2SPipelineManager
 from grpc_server.utils import get_list_of_config_files, create_t2s_pipeline_from_config, get_config_dir
-from ondewo_grpc.ondewo.t2s import text_to_speech_pb2_grpc
+from ondewo_grpc.ondewo.t2s import text_to_speech_pb2_grpc, text_to_speech_pb2
 from utils.data_classes.config_dataclass import T2SConfigDataclass
 
 
@@ -26,9 +27,14 @@ class Server:
         self.port = port
 
         self.server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+        text_to_speech_pb2_grpc.add_Text2SpeechServicer_to_server(Text2SpeechServicer(), self.server)
+        SERVICE_NAMES = (
+            text_to_speech_pb2.DESCRIPTOR.services_by_name['Text2Speech'].full_name,
+            reflection.SERVICE_NAME,
+        )
+        reflection.enable_server_reflection(SERVICE_NAMES, self.server)
         logger.info('using INSECURE gRPC channel')
         self.server.add_insecure_port(self.connection_string)
-        text_to_speech_pb2_grpc.add_Text2SpeechServicer_to_server(Text2SpeechServicer(), self.server)
 
     @property
     def connection_string(self) -> str:
