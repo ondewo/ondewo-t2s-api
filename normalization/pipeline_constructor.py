@@ -31,8 +31,8 @@ class NormalizerPipeline:
         text_pieces_annotated: List[Tuple[str, bool]] = self.extract_phonemized(text)
         normalized_text = self._apply_normalize(text_pieces_annotated=text_pieces_annotated)
         normalized_text = self.fix_punctuation(normalized_text)
-        spit_text: List[str] = self.splitter.split_texts([normalized_text])
-        return spit_text
+        split_text: List[str] = self.splitter.split_texts([normalized_text])
+        return split_text
 
     def _apply_normalize(self, text_pieces_annotated: List[Tuple[str, bool]]) -> str:
         normalized_texts: List[str] = []
