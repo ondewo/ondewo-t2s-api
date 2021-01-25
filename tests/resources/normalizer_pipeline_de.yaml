@@ -1,0 +1,10 @@
+language: de
+pipeline:
+  - fix_plus
+  - normalize_urls
+  - normalize_dates
+  - normalize_year
+  - normalize_time
+  - normalize_numbers
+  - remove_unaudible_texts
+  - lower_case

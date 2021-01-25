@@ -1,6 +1,4 @@
-import re
 from datetime import time, date
-from typing import List
 
 import pytest
 
@@ -60,9 +58,9 @@ class TestNormalization:
         ('ggg 1456lkkkk', 'ggg eins vier fünf sechs lkkkk'),
     ])
     def test_normalize_numbers(number: str, expected_result: str) -> None:
-        number_text = normalizer.normalize_numbers([number])
-        assert isinstance(number_text, list)
-        assert number_text == [expected_result]
+        number_text = normalizer.normalize_numbers(number)
+        assert isinstance(number_text, str)
+        assert number_text == expected_result
 
     @staticmethod
     @pytest.mark.parametrize('date, expected_result', [
@@ -71,7 +69,7 @@ class TestNormalization:
          'Was hast du am dritten April neunzehnhundertneunundachtzig gemacht?')
     ])
     def test_normalize_dates(date: str, expected_result: str) -> None:
-        normalized_text_with_dates: str = normalizer.normalize_single_date(date)
+        normalized_text_with_dates: str = normalizer.normalize_dates(date)
         assert isinstance(normalized_text_with_dates, str)
         assert normalized_text_with_dates == expected_result
 
@@ -79,44 +77,38 @@ class TestNormalization:
     @pytest.mark.parametrize('text, expected_result', [
         ('Brauche noch Ihr Geburtsdatum. '
          'Sagen Sie zum Beispiel etwa fnfundzwanzigster Februar neuzehn neunundachzig.',
-         ['Brauche noch Ihr Geburtsdatum.',
-          'Sagen Sie zum Beispiel etwa fnfundzwanzigster Februar neuzehn neunundachzig.']),
-        ('1. Januar 1989. Ist das korrekt?', ['erster Januar.', 'neunzehnhundertneunundachtzig.',
-                                              'Ist das korrekt?']),
-        ('erster Januar 1989. Ist das korrekt?', ['erster Januar.', 'neunzehnhundertneunundachtzig.',
-                                                  'Ist das korrekt?']),
-        ('erster Januar. Ist das korrekt?', ['erster Januar.',
-                                             'Ist das korrekt?']),
-        ("Sie sind am 26. 12. 1944 geboren. Richtig? ", [
-            'Sie sind am.', 'sechsundzwanzigsten Dezember.', 'neunzehnhundertvierundvierzig.', 'geboren.',
-            'Richtig?']),
-        ("Sie sind am 26.12.1944 geboren. Richtig? ", [
-            'Sie sind am.', 'sechsundzwanzigsten Dezember.', 'neunzehnhundertvierundvierzig.', 'geboren.',
-            'Richtig?']),
+         'Brauche noch Ihr Geburtsdatum. '
+         'Sagen Sie zum Beispiel etwa fnfundzwanzigster Februar neuzehn neunundachzig.'),
+        ('1. Januar 1989. Ist das korrekt?', 'erster Januar neunzehnhundertneunundachtzig. '
+                                             'Ist das korrekt?'),
+        ('erster Januar 1989. Ist das korrekt?', 'erster Januar neunzehnhundertneunundachtzig. '
+                                                 'Ist das korrekt?'),
+        ('erster Januar. Ist das korrekt?', 'erster Januar. Ist das korrekt?'),
+        ("Sie sind am 26. 12. 1944 geboren. Richtig? ", 'Sie sind am sechsundzwanzigsten Dezember '
+                                                        'neunzehnhundertvierundvierzig geboren. Richtig?'),
+        ("Sie sind am 26.12.1944 geboren. Richtig? ", 'Sie sind am sechsundzwanzigsten Dezember '
+                                                      'neunzehnhundertvierundvierzig geboren. Richtig?'),
         ('meiner Tochter müssen Großvater Terminumbuchen 5. 10. 1936 anders',
-         ['meiner Tochter müssen Großvater Terminumbuchen.',
-          'fünfter Oktober.', 'neunzehnhundertsechsunddreißig.',
-          'anders.']),
+         'meiner Tochter müssen Großvater Terminumbuchen fünfter Oktober '
+         'neunzehnhundertsechsunddreißig anders'),
         ("meinem Bub müssen für Kind Terminumbuchen 26. 08. 2027 anders",
-         ['meinem Bub müssen für Kind Terminumbuchen.',
-          'sechsundzwanzigster August.', 'zweitausendsiebenundzwanzig.',
-          'anders.']),
+         'meinem Bub müssen für Kind Terminumbuchen sechsundzwanzigster August zweitausendsiebenundzwanzig '
+         'anders'),
         ("ich haben m\u00f6chten meinem Bub Terminumbuchen 9. 03. 1998 anderes",
-         ['ich haben möchten meinem Bub Terminumbuchen.',
-          'neunter März.', 'neunzehnhundertachtundneunzig.', 'anderes.']),
+         'ich haben möchten meinem Bub Terminumbuchen neunter März neunzehnhundertachtundneunzig anderes'),
         ('sie sind am 15. Januar 1998 geboren',
-         ['sie sind am.', 'fünfzehnten Januar.', 'neunzehnhundertachtundneunzig.', 'geboren.']),
-        ("Ihre Sozialversicherungsnummer ist 1234 und sie sind am 15. Jänner 1998 geboren. Richtig?", [
-            'Ihre Sozialversicherungsnummer ist.', 'eins zwei drei vier.', 'und sie sind am.',
-            'fünfzehnten Januar.', 'neunzehnhundertachtundneunzig.', 'geboren.', 'Richtig?'
-        ]),
-        ("Wie geht's dir???", ["Wie geht's dir?"])
+         'sie sind am fünfzehnten Januar neunzehnhundertachtundneunzig geboren'),
+        ("Ihre Sozialversicherungsnummer ist 1234 und sie sind am 15. Jänner 1998 geboren. Richtig?",
+         'Ihre Sozialversicherungsnummer ist eins zwei drei vier und sie sind am fünfzehnten Januar '
+         'neunzehnhundertachtundneunzig geboren. Richtig?'
+         ),
+        ("Wie geht's dir???", "Wie geht's dir???")
     ]
     )
     def test_normalize_and_split(text: str, expected_result: str) -> None:
-        normalized_text: List[str] = normalizer.normalize_and_split([text])
-        assert isinstance(normalized_text, list)
-        assert normalized_text == [text.lower() for text in expected_result]
+        normalized_text: str = normalizer.normalize_all(text)
+        assert isinstance(normalized_text, str)
+        assert normalized_text == expected_result.lower()
 
     @staticmethod
     @pytest.mark.parametrize('time, expected_result', [
@@ -130,71 +122,9 @@ class TestNormalization:
         ('text 1:4 text', 'text 1:4 text'),
     ])
     def test_normalize_times(time: str, expected_result: str) -> None:
-        normalized_text_with_time: List[str] = normalizer.normalize_time([time])
-        assert isinstance(normalized_text_with_time, list)
-        assert normalized_text_with_time == [expected_result]
-
-    @staticmethod
-    def test_split_word() -> None:
-        word: str = 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww' \
-                    'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww'
-        word_parts: List[str] = normalizer.split_word(word=word)
-        assert isinstance(word_parts, list)
-        assert len(word_parts) > 1
-        assert all(map(lambda x: len(x) < 81, word_parts))
-        assert sum(map(len, word_parts)) == len(word)
-
-    @staticmethod
-    def test_split_on_words() -> None:
-        text = 'text1 text2 text3 text4 text5 text6 text7 text8 text9 text10 text11 text12 text13' \
-               ' text14 text15 text16 text17 text18 text19 text20 text21 text22 text23'
-        split_text: List[str] = normalizer.split_on_words(text)
-        assert isinstance(split_text, list)
-        assert len(split_text) > 1
-        assert all(map(lambda x: len(x) < 100, split_text))
-        assert sum(map(lambda x: len(x.split()), split_text)) == len(text.split())
-        assert sum(map(len, split_text)) == len(text) - 1
-
-    @staticmethod
-    @pytest.mark.parametrize('text, expected_result', [
-        ('text1 text2 text3 text4 text5 text6 text7 text8 text9 text10 text11 text12 text: text.',
-         ['text1 text2 text3 text4 text5 text6 text7 text8 text9 text10 text11 text12 text:', ' text.']),
-        ('text1 text2 text3 text4 text5 text6 text7 text8 text9 text10 text11 text12 text; text',
-         ['text1 text2 text3 text4 text5 text6 text7 text8 text9 text10 text11 text12 text;', ' text.']),
-        ('text1 text2 text3 text4 text5 text6 text7 text8 text9 text10 text11 text12 text; text?',
-         ['text1 text2 text3 text4 text5 text6 text7 text8 text9 text10 text11 text12 text;', ' text?']),
-        ('text1 text2 text3 text4 text5 text6 text7 text8 text9 text10 text11 text12 text; text!',
-         ['text1 text2 text3 text4 text5 text6 text7 text8 text9 text10 text11 text12 text;', ' text!']),
-        ('text1 text2 text3 text4 text5 text6 text7 text8 text9 text10 text11 text12 text/text!',
-         ['text1 text2 text3 text4 text5 text6 text7 text8 text9 text10 text11 text12 text/', 'text!']),
-    ])
-    def test_split_sentence(text: str, expected_result: str) -> None:
-        split_sentence: List[str] = normalizer.split_sentence(text)
-        assert isinstance(split_sentence, list)
-        assert all(map(lambda x: len(x) < 100, split_sentence))
-        assert sum(map(lambda x: len(x.split()), split_sentence)) == len(
-            list(filter(None, re.split(r'[:; |/\\]', text))))
-        assert abs(sum(map(len, split_sentence)) - len(text)) <= 1
-        assert split_sentence == expected_result
-
-    @staticmethod
-    @pytest.mark.parametrize('text, expected_result', [
-        ('text1 text2 text3 text4 text5 text6 text7 text8 text9 text10 text11. text12 text: text.',
-         ['text1 text2 text3 text4 text5 text6 text7 text8 text9 text10 text11.', ' text12 text: text.']),
-        ('text1 text2 text3 text4 text5 text6 text7 text8 text9 text10 text11. text12 text text text text '
-         'text text text text text text text text text text text: text text  text  text.',
-         ['text1 text2 text3 text4 text5 text6 text7 text8 text9 text10 text11.',
-          'text12 text text text text text text text text text text text text text text text:',
-          ' text text  text  text.']),
-    ])
-    def test_split_text(text: str, expected_result: str) -> None:
-        split_text: List[str] = normalizer.split_texts([text])
-        assert isinstance(split_text, list)
-        assert all(map(lambda x: len(x) < 100, split_text))
-        assert sum(map(lambda x: len(x.split()), split_text)) == len(
-            list(filter(None, re.split(r'[:; |/\\]', text))))
-        assert abs(sum(map(len, split_text)) - len(text)) <= 1
-        assert split_text == expected_result
+        normalized_text_with_time: str = normalizer.normalize_time(time)
+        assert isinstance(normalized_text_with_time, str)
+        assert normalized_text_with_time == expected_result
 
     @staticmethod
     @pytest.mark.parametrize('text, expected_result', [
@@ -216,6 +146,6 @@ class TestNormalization:
          'schrägstrich index  another text ')
     ])
     def test_normalize_urls(text: str, expected_result: str) -> None:
-        resulting_text: List[str] = normalizer.normalize_urls([text])
-        assert isinstance(resulting_text, list)
-        assert resulting_text == [expected_result]
+        resulting_text: str = normalizer.normalize_urls(text)
+        assert isinstance(resulting_text, str)
+        assert resulting_text == expected_result
