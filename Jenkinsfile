@@ -92,9 +92,9 @@ pipeline {
                                             waitUntil {
                                                 script {
                                                     def status_num = sh(
-                                                        script: "curl --fail http://0.0.0.0:50510/v2/health/ready",
+                                                        script: 'curl --fail http://0.0.0.0:50510/v2/health/ready',
                                                         returnStatus: true,
-                                                        label: 'health check triton until online'
+                                                        label: 'health check triton until ready'
                                                     )
                                                     return (status_num == 0)
                                                 }
@@ -112,9 +112,9 @@ pipeline {
                                     }
                                     post {
                                         always {
+                                            sh(script: 'docker logs ondewo-t2s-triton-inference-server')
                                             sh(script: 'make kill_triton'
                                             , label: 'kill triton server')
-                                            sh(script: 'docker logs ondewo-t2s-triton-inference-server')
                                         }
                                     }
                                 }

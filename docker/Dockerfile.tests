@@ -17,4 +17,4 @@ COPY ./tests ./tests
 COPY ./config ./config
 
 ENV PYTHONPATH /opt/ondewo-t2s
-ENTRYPOINT [ "python", "-m", "pytest", "-vv", "--capture=no", "--junit-xml=log/${TESTFILE}"]
+ENTRYPOINT [ "python", "-m", "pytest", "-vv", "--capture=no", "--junit-xml=log/${TESTFILE}" ]
