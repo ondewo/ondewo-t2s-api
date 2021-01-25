@@ -11,6 +11,11 @@ from rest_server.synthesize import synthesize
 RESULT_FILENAME: str = "result.wav"
 
 
+@server.route('/health/ready', methods=['GET'])
+def health_ready() -> Any:
+    return "rest server is ready"
+
+
 @server.route('/text2speech', methods=['POST'])
 def text_2_speech() -> Any:
     if request.method == 'POST':
