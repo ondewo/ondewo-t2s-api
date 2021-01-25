@@ -46,7 +46,7 @@ build_grpc_server_release:
 run_triton:
 	-docker kill ${TRITON_CONTAINER}
 	-docker rm ${TRITON_CONTAINER}
-	docker run -d --shm-size=1g --gpus all --ulimit memlock=-1 \
+	docker run -d --shm-size=1g --gpus device=0 --ulimit memlock=-1 \
 		--ulimit stack=67108864 --network=host \
 		-v${MODEL_DIR}/triton_repo:/models \
 		--name ${TRITON_CONTAINER} ${IMAGE_TAG_TRITON} \
