@@ -145,7 +145,7 @@ pipeline {
                                                         label: 'health check rest server until ready'
                                                     )
                                                     def status_grpc = sh(
-                                                        script: "docker run --network=${DOCKER_NETWORK} networld/grpcurl grpcurl -plaintext -H "" ${GRPC_CONTAINER}:50555 list",
+                                                        script: "docker run --network=${DOCKER_NETWORK} networld/grpcurl grpcurl -plaintext -H \"\" ${GRPC_CONTAINER}:50555 list",
                                                         returnStatus: true,
                                                         label: 'health check grpc server until ready'
                                                     )
