@@ -6,7 +6,7 @@ from typing import Any
 
 from flask import request, send_file
 
-from demo_server_grpc.html_loading import get_audiofile, get_result
+from demo_server.html_loading import get_audiofile, get_result
 from . import server, WORK_DIR, TMP_DIR_NAME
 from .demo_utils import get_pipeline_id, synthesize_with_pipeline
 
