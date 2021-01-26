@@ -13,8 +13,8 @@ GRPC_CONTAINER_RELEASE="ondewo-t2s-grpc-server-release"
 TESTS_CONTAINER="ondewo-t2s-tests"
 TRITON_CONTAINER="ondewo-t2s-triton-inference-server"
 
-GRPC_CONFIG_DIR ?= "config"
 MODEL_DIR ?= "${shell pwd}/models"
+CONFIG_DIR ?= "${shell pwd}/config"
 TRITON_GPUS ?= "all"
 DOCKER_NETWORK ?= "host"
 
@@ -74,9 +74,9 @@ run_rest_server:
 	-docker rm ${REST_CONTAINER}
 	docker run -td --gpus all \
 	--shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
-	--network=host \
+	--network=${DOCKER_NETWORK} \
 	-v ${MODEL_DIR}:/opt/ondewo-t2s/models \
-	-v ${shell pwd}/config:/opt/ondewo-t2s/config \
+	-v ${CONFIG_DIR}:/opt/ondewo-t2s/config \
 	--env CONFIG_FILE="config/config.yaml" \
 	--name ${REST_CONTAINER} \
 	${IMAGE_TAG_REST}
@@ -86,9 +86,9 @@ run_rest_server_release:
 	-docker rm ${REST_CONTAINER_RELEASE}
 	docker run -td --gpus all \
 	--shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
-	--network=host \
+	--network=${DOCKER_NETWORK} \
 	-v ${MODEL_DIR}:/opt/ondewo-t2s/models \
-	-v ${shell pwd}/config:/opt/ondewo-t2s/config \
+	-v ${CONFIG_DIR}:/opt/ondewo-t2s/config \
 	--env CONFIG_FILE="config/config.yaml" \
 	--name ${REST_CONTAINER_RELEASE} \
 	${IMAGE_TAG_REST_RELEASE}
@@ -100,10 +100,10 @@ run_grpc_server:
 	-docker rm ${GRPC_CONTAINER}
 	docker run -td --gpus all \
 	--shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
-	--network=host \
+	--network=${DOCKER_NETWORK} \
 	-v ${MODEL_DIR}:/opt/ondewo-t2s/models \
-	-v ${shell pwd}/config:/opt/ondewo-t2s/config \
-	--env CONFIG_DIR=${GRPC_CONFIG_DIR} \
+	-v ${CONFIG_DIR}:/opt/ondewo-t2s/config \
+	--env CONFIG_DIR="config" \
 	--name ${GRPC_CONTAINER} \
 	${IMAGE_TAG_GRPC}
 
@@ -112,9 +112,9 @@ run_grpc_server_release:
 	-docker rm ${GRPC_CONTAINER_RELEASE}
 	docker run -td --gpus all \
 	--shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
-	--network=host \
+	--network=${DOCKER_NETWORK} \
 	-v ${MODEL_DIR}:/opt/ondewo-t2s/models \
-	-v ${shell pwd}/config:/opt/ondewo-t2s/config \
+	-v ${CONFIG_DIR}:/opt/ondewo-t2s/config \
 	--env CONFIG_DIR="config" \
 	--name ${GRPC_CONTAINER_RELEASE} \
 	${IMAGE_TAG_GRPC_RELEASE}
