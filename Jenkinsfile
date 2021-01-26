@@ -19,7 +19,6 @@ pipeline {
         REST_CONTAINER = "${IMAGE_NAME_REST}-${env.BUILD_ID}"
         GRPC_CONTAINER = "${IMAGE_NAME_GRPC}-${env.BUILD_ID}"
         A100_MODEL_DIR = '/home/voice_user/data/jenkins/t2s/models'
-        CONFIG_DIR = "${env.WORKSPACE}/tests/resources/configs"
         DOCKER_NETWORK = "${env.BUILD_ID}"
     }
 
@@ -64,6 +63,7 @@ pipeline {
                 stage('Build and Run Tests') {
                     environment {
                         PWD = pwd()
+                        CONFIG_DIR = "${PWD}/tests/resources/configs"
                         testresults_folder = "${PWD}/test_results"
                         testresults_filename = 'pytest.xml'
                     }
