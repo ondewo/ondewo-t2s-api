@@ -78,44 +78,44 @@ pipeline {
                         stage('Run Tests') {
                             // replace "stages" with "parallel" when tests become parallel
                             stages {
-                                // stage('Unit Tests') {
-                                //     steps {
-                                //         sh(script: "docker run --rm -e TESTFILE=${testresults_filename} -v ${testresults_folder}:/opt/ondewo-t2s/log ${TESTS_IMAGE_NAME} ./tests/unit"
-                                //         , label: 'run unit_tests')
-                                //     }
-                                // }
-                                // stage('Integration Tests') {
-                                //     steps {
-                                //         sh(script: "make run_triton MODEL_DIR=${A100_MODEL_DIR} TRITON_GPUS=\"device=0\" DOCKER_NETWORK=${DOCKER_NETWORK}"
-                                //         , label: 'run triton server')
-                                //         timeout(time: 60, unit: 'SECONDS') {
-                                //             waitUntil {
-                                //                 script {
-                                //                     def status_triton = sh(
-                                //                         script: "docker run --network=${DOCKER_NETWORK} curlimages/curl curl --fail http://ondewo-t2s-triton-inference-server:50510/v2/health/ready",
-                                //                         returnStatus: true,
-                                //                         label: 'health check triton until ready'
-                                //                     )
-                                //                     return (status_triton == 0)
-                                //                 }
-                                //             }
-                                //         }
-                                //         sh(script: 'docker logs ondewo-t2s-triton-inference-server', label: 'triton logs when ready')
-                                //         sh(script: """docker run --rm --gpus all \
-                                //             --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
-                                //             --network=${DOCKER_NETWORK} \
-                                //             -e TESTFILE=${testresults_filename} \
-                                //             -v ${testresults_folder}:/opt/ondewo-t2s/log \
-                                //             -v ${A100_MODEL_DIR}:/opt/ondewo-t2s/models \
-                                //             ${TESTS_IMAGE_NAME} ./tests/integration"""
-                                //         , label: 'run integration tests')
-                                //     }
-                                //     post { always {
-                                //         sh(script: 'docker logs ondewo-t2s-triton-inference-server', label: 'triton logs after tests')
-                                //         sh(script: 'make kill_triton'
-                                //         , label: 'kill triton server')
-                                //     } }
-                                // }
+                                stage('Unit Tests') {
+                                    steps {
+                                        sh(script: "docker run --rm -e TESTFILE=${testresults_filename} -v ${testresults_folder}:/opt/ondewo-t2s/log ${TESTS_IMAGE_NAME} ./tests/unit"
+                                        , label: 'run unit_tests')
+                                    }
+                                }
+                                stage('Integration Tests') {
+                                    steps {
+                                        sh(script: "make run_triton MODEL_DIR=${A100_MODEL_DIR} TRITON_GPUS=\"device=0\" DOCKER_NETWORK=${DOCKER_NETWORK}"
+                                        , label: 'run triton server')
+                                        timeout(time: 60, unit: 'SECONDS') {
+                                            waitUntil {
+                                                script {
+                                                    def status_triton = sh(
+                                                        script: "docker run --network=${DOCKER_NETWORK} curlimages/curl curl --fail http://ondewo-t2s-triton-inference-server:50510/v2/health/ready",
+                                                        returnStatus: true,
+                                                        label: 'health check triton until ready'
+                                                    )
+                                                    return (status_triton == 0)
+                                                }
+                                            }
+                                        }
+                                        sh(script: 'docker logs ondewo-t2s-triton-inference-server', label: 'triton logs when ready')
+                                        sh(script: """docker run --rm --gpus all \
+                                            --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
+                                            --network=${DOCKER_NETWORK} \
+                                            -e TESTFILE=${testresults_filename} \
+                                            -v ${testresults_folder}:/opt/ondewo-t2s/log \
+                                            -v ${A100_MODEL_DIR}:/opt/ondewo-t2s/models \
+                                            ${TESTS_IMAGE_NAME} ./tests/integration"""
+                                        , label: 'run integration tests')
+                                    }
+                                    post { always {
+                                        sh(script: 'docker logs ondewo-t2s-triton-inference-server', label: 'triton logs after tests')
+                                        sh(script: 'make kill_triton'
+                                        , label: 'kill triton server')
+                                    } }
+                                }
                                 stage('E2E Tests') {
                                     steps {
                                         sh(script: """docker run -td --gpus device=0 \
@@ -160,6 +160,7 @@ pipeline {
                                             --network=${DOCKER_NETWORK} \
                                             -e TESTFILE=${testresults_filename} \
                                             -e T2S_GRPC_HOST=${GRPC_CONTAINER} \
+                                            -e T2S_REST_HOST=${REST_CONTAINER} \
                                             -v ${testresults_folder}:/opt/ondewo-t2s/log \
                                             -v ${A100_MODEL_DIR}:/opt/ondewo-t2s/models \
                                             ${TESTS_IMAGE_NAME} ./tests/e2e"""
