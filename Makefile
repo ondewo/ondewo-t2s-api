@@ -15,6 +15,8 @@ TRITON_CONTAINER="ondewo-t2s-triton-inference-server"
 
 GRPC_CONFIG_DIR ?= "config"
 MODEL_DIR ?= "${shell pwd}/models"
+TRITON_GPUS ?= "all"
+DOCKER_NETWORK ?= "host"
 
 
 ### --- Build code checks image and run --- ###
@@ -46,8 +48,8 @@ build_grpc_server_release:
 run_triton:
 	-docker kill ${TRITON_CONTAINER}
 	-docker rm ${TRITON_CONTAINER}
-	docker run -d --shm-size=1g --gpus device=0 --ulimit memlock=-1 \
-		--ulimit stack=67108864 --network=host \
+	docker run -d --shm-size=1g --gpus ${TRITON_GPUS} --ulimit memlock=-1 \
+		--ulimit stack=67108864 --network=${DOCKER_NETWORK} \
 		-v${MODEL_DIR}/triton_repo:/models \
 		--name ${TRITON_CONTAINER} ${IMAGE_TAG_TRITON} \
 	tritonserver --model-repository=/models --strict-model-config=false \
@@ -73,7 +75,7 @@ run_rest_server:
 	docker run -td --gpus all \
 	--shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
 	--network=host \
-	-v ${MODEL_DIR}ndewo-t2s/models \
+	-v ${MODEL_DIR}:/opt/ondewo-t2s/models \
 	-v ${shell pwd}/config:/opt/ondewo-t2s/config \
 	--env CONFIG_FILE="config/config.yaml" \
 	--name ${REST_CONTAINER} \

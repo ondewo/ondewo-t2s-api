@@ -2,7 +2,7 @@ pipeline {
     agent none
     environment {
         BRANCH_NAME = "${env.BRANCH_NAME}"
-        SANITIZED_BRANCH_NAME = "${env.BRANCH_NAME}".replace('/', '_')
+        SANITIZED_BRANCH_NAME = "${env.BRANCH_NAME}".replace('/', '_').replace('.', '_')
         IMAGE_TAG = "${SANITIZED_BRANCH_NAME}"
 
         IMAGE_NAME = 'ondewo-t2s'
@@ -17,13 +17,12 @@ pipeline {
 
         code_check_image_name = "code_check_image_${IMAGE_NAME}"
         A100_MODEL_DIR = '/home/voice_user/data/jenkins/t2s/models'
+        DOCKER_NETWORK = "${SANITIZED_BRANCH_NAME}"
     }
 
     stages {
         stage('Code Quality Check') {
-            agent {
-                label 'cpu'
-            }
+            agent { label 'cpu' }
             steps {
                 sh(script: "docker build -t ${code_check_image_name} -f code_checks/Dockerfile .", label: 'build code quality image')
                 sh(script: "docker run --rm ${code_check_image_name} make flake8", label: 'run flake8')
@@ -32,9 +31,7 @@ pipeline {
         }
 
         stage('Build and Test Server Images (uncythonized)') {
-            agent {
-                label 'a100'
-            }
+            agent { label 'a100' }
             environment {
                 ssh_key_file = credentials('devops_ondewo_idrsa')
             }
@@ -72,6 +69,7 @@ pipeline {
                             steps {
                                 sh(script: "mkdir ${testresults_folder}")
                                 sh(script: "docker build -t ${TESTS_IMAGE_NAME} --build-arg PUSH_NAME_STREAM=\"${PUSH_NAME_STREAM_GRPC}\" -f docker/Dockerfile.tests .", label: 'build image')
+                                sh "docker network create ${DOCKER_NETWORK}"
                             }
                         }
                         stage('Run Tests') {
@@ -85,48 +83,76 @@ pipeline {
                                 }
                                 stage('Integration Tests') {
                                     steps {
-                                        sh(script: "make run_triton MODEL_DIR=${A100_MODEL_DIR}"
+                                        sh(script: "make run_triton MODEL_DIR=${A100_MODEL_DIR} TRITON_GPUS=\"device=0\" DOCKER_NETWORK=${DOCKER_NETWORK}"
                                         , label: 'run triton server')
-                                        sh(script: 'docker logs ondewo-t2s-triton-inference-server')
                                         timeout(time: 60, unit: 'SECONDS') {
                                             waitUntil {
                                                 script {
-                                                    def status_num = sh(
-                                                        script: 'curl --fail http://0.0.0.0:50510/v2/health/ready',
+                                                    def status_triton = sh(
+                                                        script: "docker run --network=${DOCKER_NETWORK} curlimages/curl curl --fail http://0.0.0.0:50510/v2/health/ready",
                                                         returnStatus: true,
                                                         label: 'health check triton until ready'
                                                     )
-                                                    return (status_num == 0)
+                                                    return (status_triton == 0)
                                                 }
                                             }
                                         }
-                                        sh(script: 'docker logs ondewo-t2s-triton-inference-server')
+                                        sh(script: 'docker logs ondewo-t2s-triton-inference-server', label: 'triton logs when ready')
                                         sh(script: """docker run --rm --gpus all \
                                             --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
-                                            --network=host \
+                                            --network=${DOCKER_NETWORK} \
                                             -e TESTFILE=${testresults_filename} \
                                             -v ${testresults_folder}:/opt/ondewo-t2s/log \
                                             -v ${A100_MODEL_DIR}:/opt/ondewo-t2s/models \
                                             ${TESTS_IMAGE_NAME} ./tests/integration"""
                                         , label: 'run integration tests')
                                     }
-                                    post {
-                                        always {
-                                            sh(script: 'docker logs ondewo-t2s-triton-inference-server')
-                                            sh(script: 'make kill_triton'
-                                            , label: 'kill triton server')
-                                        }
-                                    }
+                                    post { always {
+                                        sh(script: 'docker logs ondewo-t2s-triton-inference-server', label: 'triton logs after tests')
+                                        sh(script: 'make kill_triton'
+                                        , label: 'kill triton server')
+                                    } }
                                 }
+                                // stage('E2E Tests') {
+                                //     steps {
+                                //         sh(script: "make run_triton MODEL_DIR=${A100_MODEL_DIR} TRITON_GPUS=\"device=0\""
+                                //         , label: 'run grpc server')
+                                //         timeout(time: 60, unit: 'SECONDS') {
+                                //             waitUntil {
+                                //                 script {
+                                //                     def status_triton = sh(
+                                //                         script: 'curl --fail http://0.0.0.0:50510/v2/health/ready',
+                                //                         returnStatus: true,
+                                //                         label: 'health check triton until ready'
+                                //                     )
+                                //                     return (status_triton == 0)
+                                //                 }
+                                //             }
+                                //         }
+                                //         sh(script: 'docker logs ondewo-t2s-triton-inference-server')
+                                //         sh(script: """docker run --rm --gpus all \
+                                //             --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
+                                //             --network=host \
+                                //             -e TESTFILE=${testresults_filename} \
+                                //             -v ${testresults_folder}:/opt/ondewo-t2s/log \
+                                //             -v ${A100_MODEL_DIR}:/opt/ondewo-t2s/models \
+                                //             ${TESTS_IMAGE_NAME} ./tests/e2e"""
+                                //         , label: 'run e2e tests')
+                                //     }
+                                //     post { always {
+                                //         sh(script: 'docker logs ondewo-t2s-triton-inference-server')
+                                //         sh(script: 'make kill_triton'
+                                //         , label: 'kill triton server')
+                                //     } }
+                                // }
                             }
                         }
                     }
-                    post {
-                        always {
-                            sh(script: "cd ${testresults_folder} && cp *.xml ${PWD}")
-                            junit "${testresults_filename}"
-                        }
-                    }
+                    post { always {
+                        sh(script: "cd ${testresults_folder} && cp *.xml ${PWD}")
+                        junit "${testresults_filename}"
+                        sh "docker network rm ${DOCKER_NETWORK}"
+                    } }
                 }
                 stage('Push') {
                     steps {

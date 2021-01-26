@@ -19,122 +19,85 @@ pipeline {
     }
     stages {
         stage('Build, test and push the image') {
-            parallel {
-                stage('Label Unstable') {
-                    agent {
-                        label 'cpu'
+            stage('Cythonized image') {
+                when { anyOf {
+                    branch 'master'
+                    branch 'develop'
+                    expression {
+                        env.BRANCH_NAME.startsWith('release/')
                     }
-                    when {
-                        not {
-                            anyOf {
-                                branch 'master'
-                                branch 'develop'
-                                expression {
-                                    env.BRANCH_NAME.startsWith('release/')
+                } }
+                stages {
+                    stage('Code quality') {
+                        agent { label 'cpu' }
+                        steps {
+                            sh(script: "docker build -t ${code_check_image_name} -f code_checks/Dockerfile .", label: 'build code quality image')
+                            sh(script: "docker run --rm ${code_check_image_name} make flake8", label: 'run flake8')
+                            sh(script: "docker run --rm ${code_check_image_name} make mypy", label: 'run mypy')
+                        }
+                    }
+                    stage('Normal image') {
+                        agent { label 'cpu' }
+                        stages {
+                            stage('Build') {
+                                environment {
+                                    ssh_key_file = credentials('devops_ondewo_idrsa')
                                 }
-                            }
-                        }
-                    }
-                    steps {
-                        catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
-                                    sh(script: 'exit 1', label: 'error code so i can label unstable')
-                        }
-                    }
-                }
-                stage('Cythonized image') {
-                    when {
-                        anyOf {
-                            branch 'master'
-                            branch 'develop'
-                            expression {
-                                env.BRANCH_NAME.startsWith('release/')
-                            }
-                        }
-                    }
-                    stages {
-                        stage('Code quality') {
-                            agent {
-                                label 'cpu'
-                            }
-                            steps {
-                                sh(script: "docker build -t ${code_check_image_name} -f code_checks/Dockerfile .", label: 'build code quality image')
-                                sh(script: "docker run --rm ${code_check_image_name} make flake8", label: 'run flake8')
-                                sh(script: "docker run --rm ${code_check_image_name} make mypy", label: 'run mypy')
-                            }
-                        }
-                        stage('Normal image') {
-                            agent {
-                                label 'cpu'
-                            }
-                            stages {
-                                stage('Build') {
-                                    environment {
-                                                ssh_key_file = credentials('devops_ondewo_idrsa')
-                                    }
-                                    stages {
-                                        stage('Build rest server') {
-                                            steps {
-                                                sh(script: """set +x
-                                                    docker build -t ${PUSH_NAME_RELEASE_REST} --build-arg SSH_PRIVATE_KEY=\"\$(cat ${ssh_key_file})\" -f docker/Dockerfile.rest_server .
-                                                set -x""", label: 'build image')
-                                            }
+                                stages {
+                                    stage('Build rest server') {
+                                        steps {
+                                            sh(script: """set +x
+                                                docker build -t ${PUSH_NAME_RELEASE_REST} --build-arg SSH_PRIVATE_KEY=\"\$(cat ${ssh_key_file})\" -f docker/Dockerfile.rest_server .
+                                            set -x""", label: 'build image')
                                         }
-                                        stage('Build grpc server') {
-                                            steps {
-                                                sh(script: """set +x
-                                                    docker build -t ${PUSH_NAME_RELEASE_GRPC} --build-arg SSH_PRIVATE_KEY=\"\$(cat ${ssh_key_file})\" -f docker/Dockerfile.grpc_server .
-                                                set -x""", label: 'build image')
-                                            }
+                                    }
+                                    stage('Build grpc server') {
+                                        steps {
+                                            sh(script: """set +x
+                                                docker build -t ${PUSH_NAME_RELEASE_GRPC} --build-arg SSH_PRIVATE_KEY=\"\$(cat ${ssh_key_file})\" -f docker/Dockerfile.grpc_server .
+                                            set -x""", label: 'build image')
                                         }
                                     }
                                 }
-                                stage('Tests') {
-                                    when {
-                                        branch 'develop'
-                                    }
-                                    environment {
-                                        PWD = pwd()
-                                        testresults_folder = "${PWD}/test_results"
-                                        testresults_filename = 'pytest.xml'
-                                        ssh_key_file = credentials('devops_ondewo_idrsa')
-                                    }
-                                    steps {
-                                        sh(script: "mkdir ${testresults_folder}")
-                                        sh(script: "docker build -t ${TESTS_IMAGE_NAME} --build-arg PUSH_NAME_STREAM=\"${PUSH_NAME_RELEASE_GRPC}\"  -f docker/Dockerfile.tests . ", label: 'build image')
-                                        sh(script: "docker run --rm -e TESTFILE=${testresults_filename} -v ${testresults_folder}:/opt/ondewo-t2s/log  ${TESTS_IMAGE_NAME}  --ignore=tests/tests_grpc_unit", label: 'run_tests')
-                                    }
-                                    post {
-                                        always {
-                                            sh(script: "cd ${testresults_folder} && cp *.xml ${PWD}")
-                                            junit "${testresults_filename}"
-                                        }
+                            }
+                            stage('Tests') {
+                                when { branch 'develop' }
+                                environment {
+                                    PWD = pwd()
+                                    testresults_folder = "${PWD}/test_results"
+                                    testresults_filename = 'pytest.xml'
+                                    ssh_key_file = credentials('devops_ondewo_idrsa')
+                                }
+                                steps {
+                                    sh(script: "mkdir ${testresults_folder}")
+                                    sh(script: "docker build -t ${TESTS_IMAGE_NAME} --build-arg PUSH_NAME_STREAM=\"${PUSH_NAME_RELEASE_GRPC}\"  -f docker/Dockerfile.tests . ", label: 'build image')
+                                    sh(script: "docker run --rm -e TESTFILE=${testresults_filename} -v ${testresults_folder}:/opt/ondewo-t2s/log  ${TESTS_IMAGE_NAME}  --ignore=tests/tests_grpc_unit", label: 'run_tests')
+                                }
+                                post { always {
+                                    sh(script: "cd ${testresults_folder} && cp *.xml ${PWD}")
+                                    junit "${testresults_filename}"
+                                } }
+                            }
+                            stage('Push') {
+                                steps {
+                                    sh(script: "docker push ${PUSH_NAME_RELEASE_REST}", label: 'push the image to the registry')
+                                    sh(script: "echo ${PUSH_NAME_RELEASE_REST} pushed to registry")
+                                    sh(script: "docker push ${PUSH_NAME_RELEASE_GRPC}", label: 'push the image to the registry')
+                                    sh(script: "echo ${PUSH_NAME_RELEASE_GRPC} pushed to registry")
+                                }
+                            }
+                            // Only releases get packaged
+                            stage('Package the release') {
+                                agent { label 'master' }
+                                when {
+                                    expression {
+                                        env.BRANCH_NAME.startsWith('release/')
                                     }
                                 }
-                                stage('Push') {
-                                    steps {
-                                        sh(script: "docker push ${PUSH_NAME_RELEASE_REST}", label: 'push the image to the registry')
-                                        sh(script: "echo ${PUSH_NAME_RELEASE_REST} pushed to registry")
-                                        sh(script: "docker push ${PUSH_NAME_RELEASE_GRPC}", label: 'push the image to the registry')
-                                        sh(script: "echo ${PUSH_NAME_RELEASE_GRPC} pushed to registry")
-                                    }
-                                }
-                                // Only releases get packaged
-                                stage('Package the release') {
-                                    agent {
-                                        node {
-                                            label 'master'
-                                        }
-                                    }
-                                    when {
-                                        expression {
-                                            env.BRANCH_NAME.startsWith('release/')
-                                        }
-                                    }
-                                    steps {
-                                        sh "echo \"Releasing ONDEWO T2S - ${env.BRANCH_NAME}\""
-                                        sh 'printenv'
-                                        sh 'make package_release'
-                                    }
+                                steps {
+                                    sh "echo \"Releasing ONDEWO T2S - ${env.BRANCH_NAME}\""
+                                    sh 'printenv'
+                                    sh 'make package_release'
                                 }
                             }
                         }
