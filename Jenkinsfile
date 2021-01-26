@@ -89,7 +89,7 @@ pipeline {
                                             waitUntil {
                                                 script {
                                                     def status_triton = sh(
-                                                        script: "docker run --network=${DOCKER_NETWORK} curlimages/curl curl --fail http://0.0.0.0:50510/v2/health/ready",
+                                                        script: "docker run --network=${DOCKER_NETWORK} curlimages/curl curl --fail http://ondewo-t2s-triton-inference-server:50510/v2/health/ready",
                                                         returnStatus: true,
                                                         label: 'health check triton until ready'
                                                     )
