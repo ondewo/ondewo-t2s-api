@@ -19,7 +19,7 @@ pipeline {
         REST_CONTAINER = "${IMAGE_NAME_REST}-${env.BUILD_ID}"
         GRPC_CONTAINER = "${IMAGE_NAME_GRPC}-${env.BUILD_ID}"
         A100_MODEL_DIR = '/home/voice_user/data/jenkins/t2s/models'
-        DOCKER_NETWORK = "${env.BUILD_ID}"
+        DOCKER_NETWORK = "${env.BUILD_TAG}"
     }
 
     stages {
@@ -145,7 +145,7 @@ pipeline {
                                                         label: 'health check rest server until ready'
                                                     )
                                                     def status_grpc = sh(
-                                                        script: "docker run --network=${DOCKER_NETWORK} networld/grpcurl grpcurl -plaintext -H \"\" ${GRPC_CONTAINER}:50555 list",
+                                                        script: "docker run --network=${DOCKER_NETWORK} networld/grpcurl ./grpcurl -plaintext -H \"\" ${GRPC_CONTAINER}:50555 list",
                                                         returnStatus: true,
                                                         label: 'health check grpc server until ready'
                                                     )
