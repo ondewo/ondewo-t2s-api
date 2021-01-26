@@ -19,7 +19,7 @@ RUN git clone git@bitbucket.org:ondewo/ondewo-t2s-hifigan.git && cd ondewo-t2s-h
 FROM dockerregistry.ondewo.com:5000/base-cuda-pytorch:1.0.0 AS uncythonized
 
 RUN apt-get update && apt-get -y upgrade && \
-	apt-get install -y git sox ffmpeg libavcodec-extra libsndfile1-dev
+	apt-get install -y git sox ffmpeg libavcodec-extra libsndfile1-dev curl
 
 RUN pip install cython
 COPY --from=private_installer /root/install/ondewo-t2s-glow ./ondewo-t2s-glow
@@ -49,6 +49,9 @@ COPY ./ondewo-t2s-api ./ondewo-t2s-api
 COPY ./Makefile .
 
 RUN make generate_ondewo_protos
+
+HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=3 \
+	CMD curl --fail http://localhost:40015/health/ready || exit 1
 
 ENV PYTHONPATH /opt/ondewo-t2s
 ENV FLASK_APP rest_server
