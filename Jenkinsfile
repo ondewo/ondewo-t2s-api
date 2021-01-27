@@ -14,7 +14,7 @@ pipeline {
         PUSH_NAME_STREAM_REST = "dockerregistry.ondewo.com:5000/${TTS_NAME_REST}"
         PUSH_NAME_STREAM_GRPC = "dockerregistry.ondewo.com:5000/${TTS_NAME_GRPC}"
 
-        SANITIZED_BUILD_TAG = "${env.BUILD_TAG}".replace('/', '_').replace('.', '_').replace('%', '_')
+        SANITIZED_BUILD_TAG = "${env.BUILD_TAG}".replace('/', '_').replace('.', '_').replace('%', '_').toLowerCase()
         IMAGE_NAME_CODE_CHECK = "${IMAGE_NAME}-code-check-${SANITIZED_BUILD_TAG}"
         REST_CONTAINER = "${IMAGE_NAME_REST}-${SANITIZED_BUILD_TAG}"
         GRPC_CONTAINER = "${IMAGE_NAME_GRPC}-${SANITIZED_BUILD_TAG}"
@@ -77,8 +77,7 @@ pipeline {
                             }
                         }
                         stage('Run Tests') {
-                            // replace "stages" with "parallel" when tests become parallel
-                            stages {
+                            parallel {
                                 stage('Unit Tests') {
                                     steps {
                                         sh(script: "docker run --rm -e TESTFILE=${testresults_filename} -v ${testresults_folder}:/opt/ondewo-t2s/log ${TESTS_IMAGE_NAME} ./tests/unit"
