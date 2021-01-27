@@ -2,7 +2,7 @@ pipeline {
     agent none
     environment {
         BRANCH_NAME = "${env.BRANCH_NAME}"
-        SANITIZED_BRANCH_NAME = "${env.BRANCH_NAME}".replace('/', '_').replace('.', '_')
+        SANITIZED_BRANCH_NAME = "${env.BRANCH_NAME}".replace('/', '-').replace('.', '-')
         IMAGE_TAG = "${SANITIZED_BRANCH_NAME}"
 
         IMAGE_NAME = 'ondewo-t2s'
