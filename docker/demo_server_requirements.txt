@@ -3,3 +3,9 @@ fluent-logger==0.9.6
 msgpack==1.0.0
 ruamel.yaml
 requests
+google-api-core==1.13.0
+googleapis-common-protos==1.5.10
+grpcio==1.31.0
+grpcio-reflection==1.31.0
+grpcio-tools==1.31.0
+mypy-protobuf
