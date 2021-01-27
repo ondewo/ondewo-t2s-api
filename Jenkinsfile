@@ -17,12 +17,11 @@ pipeline {
         PUSH_NAME_STREAM_REST = "dockerregistry.ondewo.com:5000/${TTS_NAME_REST}"
         PUSH_NAME_STREAM_GRPC = "dockerregistry.ondewo.com:5000/${TTS_NAME_GRPC}"
 
-        UNIQUE_BUILD_ID = "${SANITIZED_BRANCH_NAME}-${env.BUILD_NUMBER}"
+        UNIQUE_BUILD_ID = "${SANITIZED_BRANCH_NAME}-${env.BUILD_NUMBER}".toLowerCase()
         REST_CONTAINER = "${IMAGE_NAME_REST}-${UNIQUE_BUILD_ID}"
         GRPC_CONTAINER = "${IMAGE_NAME_GRPC}-${UNIQUE_BUILD_ID}"
         A100_MODEL_DIR = '/home/voice_user/data/jenkins/t2s/models'
-        // DOCKER_NETWORK = "${UNIQUE_BUILD_ID}"
-        DOCKER_NETWORK = 'mynett2s'
+        DOCKER_NETWORK = "${UNIQUE_BUILD_ID}"
     }
 
     stages {
@@ -180,9 +179,9 @@ pipeline {
                         }
                     }
                     post { always {
+                        sh "docker network rm ${DOCKER_NETWORK} || exit 0"
                         sh(script: "cd ${testresults_folder} && cp *.xml ${PWD}")
                         junit "${testresults_filename}"
-                        sh "docker network rm ${DOCKER_NETWORK}"
                     } }
                 }
                 stage('Push') {
