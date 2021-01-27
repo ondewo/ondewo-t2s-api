@@ -14,7 +14,7 @@ pipeline {
         PUSH_NAME_STREAM_REST = "dockerregistry.ondewo.com:5000/${TTS_NAME_REST}"
         PUSH_NAME_STREAM_GRPC = "dockerregistry.ondewo.com:5000/${TTS_NAME_GRPC}"
 
-        SANITIZED_BUILD_TAG = "${env.BUILD_TAG}".replace('/', '_').replace('.', '_')
+        SANITIZED_BUILD_TAG = "${env.BUILD_TAG}".replace('/', '_').replace('.', '_').replace('%', '_')
         IMAGE_NAME_CODE_CHECK = "${IMAGE_NAME}-code-check-${SANITIZED_BUILD_TAG}"
         REST_CONTAINER = "${IMAGE_NAME_REST}-${SANITIZED_BUILD_TAG}"
         GRPC_CONTAINER = "${IMAGE_NAME_GRPC}-${SANITIZED_BUILD_TAG}"
@@ -26,7 +26,7 @@ pipeline {
         stage('Code Quality Check') {
             agent { label 'cpu' }
             steps {
-                sh "echo ${env.BUILD_NUMBER} ${env.BUILD_ID} ${env.BUILD_DISPLAY_NAME} ${env.JOB_NAME} ${env.BUILD_TAG}"
+                // sh "echo ${env.BUILD_NUMBER} ${env.BUILD_ID} ${env.BUILD_DISPLAY_NAME} ${env.JOB_NAME} ${env.BUILD_TAG}"
                 sh(script: "docker build -t ${IMAGE_NAME_CODE_CHECK} -f code_checks/Dockerfile .", label: 'build code quality image')
                 sh(script: "docker run --rm ${IMAGE_NAME_CODE_CHECK} make flake8", label: 'run flake8')
                 sh(script: "docker run --rm ${IMAGE_NAME_CODE_CHECK} make mypy", label: 'run mypy')
