@@ -26,6 +26,7 @@ pipeline {
         stage('Code Quality Check') {
             agent { label 'cpu' }
             steps {
+                sh "echo ${env.BUILD_NUMBER} ${env.BUILD_ID} ${env.BUILD_DISPLAY_NAME} ${env.JOB_NAME} ${env.BUILD_TAG}"
                 sh(script: "docker build -t ${IMAGE_NAME_CODE_CHECK} -f code_checks/Dockerfile .", label: 'build code quality image')
                 sh(script: "docker run --rm ${IMAGE_NAME_CODE_CHECK} make flake8", label: 'run flake8')
                 sh(script: "docker run --rm ${IMAGE_NAME_CODE_CHECK} make mypy", label: 'run mypy')
@@ -73,7 +74,6 @@ pipeline {
                                 sh(script: "mkdir ${testresults_folder}")
                                 sh(script: "docker build -t ${TESTS_IMAGE_NAME} --build-arg PUSH_NAME_STREAM=\"${PUSH_NAME_STREAM_GRPC}\" -f docker/Dockerfile.tests .", label: 'build image')
                                 sh "docker network create ${DOCKER_NETWORK}"
-                                sh "echo ${env.BUILD_NUMBER} ${env.BUILD_ID} ${env.BUILD_DISPLAY_NAME} ${env.JOB_NAME} ${env.BUILD_TAG}"
                             }
                         }
                         stage('Run Tests') {
