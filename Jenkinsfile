@@ -14,12 +14,12 @@ pipeline {
         PUSH_NAME_STREAM_REST = "dockerregistry.ondewo.com:5000/${TTS_NAME_REST}"
         PUSH_NAME_STREAM_GRPC = "dockerregistry.ondewo.com:5000/${TTS_NAME_GRPC}"
 
-        IMAGE_NAME_CODE_CHECK = "${IMAGE_NAME}-code-check-${env.BUILD_ID}"
-
-        REST_CONTAINER = "${IMAGE_NAME_REST}-${env.BUILD_ID}"
-        GRPC_CONTAINER = "${IMAGE_NAME_GRPC}-${env.BUILD_ID}"
+        SANITIZED_BUILD_TAG = "${env.BUILD_TAG}".replace('/', '_').replace('.', '_')
+        IMAGE_NAME_CODE_CHECK = "${IMAGE_NAME}-code-check-${SANITIZED_BUILD_TAG}"
+        REST_CONTAINER = "${IMAGE_NAME_REST}-${SANITIZED_BUILD_TAG}"
+        GRPC_CONTAINER = "${IMAGE_NAME_GRPC}-${SANITIZED_BUILD_TAG}"
         A100_MODEL_DIR = '/home/voice_user/data/jenkins/t2s/models'
-        DOCKER_NETWORK = "${env.BUILD_TAG}"
+        DOCKER_NETWORK = "${SANITIZED_BUILD_TAG}"
     }
 
     stages {
@@ -73,6 +73,7 @@ pipeline {
                                 sh(script: "mkdir ${testresults_folder}")
                                 sh(script: "docker build -t ${TESTS_IMAGE_NAME} --build-arg PUSH_NAME_STREAM=\"${PUSH_NAME_STREAM_GRPC}\" -f docker/Dockerfile.tests .", label: 'build image')
                                 sh "docker network create ${DOCKER_NETWORK}"
+                                sh "echo ${env.BUILD_NUMBER} ${env.BUILD_ID} ${env.BUILD_DISPLAY_NAME} ${env.JOB_NAME} ${env.BUILD_TAG}"
                             }
                         }
                         stage('Run Tests') {
@@ -168,9 +169,9 @@ pipeline {
                                     }
                                     post { always {
                                         sh(script: "docker logs ${REST_CONTAINER}", label: 'rest server logs after tests')
-                                        sh(script: "docker kill -f ${REST_CONTAINER}", label: 'kill rest server')
+                                        sh(script: "docker rm -f ${REST_CONTAINER}", label: 'kill rest server')
                                         sh(script: "docker logs ${GRPC_CONTAINER}", label: 'grpc server logs after tests')
-                                        sh(script: "docker kill -f ${GRPC_CONTAINER}", label: 'kill grpc server')
+                                        sh(script: "docker rm -f ${GRPC_CONTAINER}", label: 'kill grpc server')
                                     } }
                                 }
                             }
