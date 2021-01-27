@@ -17,7 +17,7 @@ pipeline {
         PUSH_NAME_STREAM_REST = "dockerregistry.ondewo.com:5000/${TTS_NAME_REST}"
         PUSH_NAME_STREAM_GRPC = "dockerregistry.ondewo.com:5000/${TTS_NAME_GRPC}"
 
-        UNIQUE_BUILD_ID = "${SANITIZED_BRANCH_NAME}-${env.BUILD_NUMBER}"
+        UNIQUE_BUILD_ID = "${env.GIT_COMMIT}".substring(0, 7)
         REST_CONTAINER = "${IMAGE_NAME_REST}-${UNIQUE_BUILD_ID}"
         GRPC_CONTAINER = "${IMAGE_NAME_GRPC}-${UNIQUE_BUILD_ID}"
         A100_MODEL_DIR = '/home/voice_user/data/jenkins/t2s/models'
@@ -28,7 +28,6 @@ pipeline {
         stage('Code Quality Check') {
             agent { label 'cpu' }
             steps {
-                sh "echo ${env.BRANCH_NAME} ${env.GIT_COMMIT}"
                 sh(script: "docker build -t ${TTS_NAME_CODE_CHECK} -f code_checks/Dockerfile .", label: 'build code quality image')
                 sh(script: "docker run --rm ${TTS_NAME_CODE_CHECK} make flake8", label: 'run flake8')
                 sh(script: "docker run --rm ${TTS_NAME_CODE_CHECK} make mypy", label: 'run mypy')
