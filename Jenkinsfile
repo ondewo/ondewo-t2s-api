@@ -16,12 +16,6 @@ pipeline {
         TTS_NAME_CODE_CHECK = "${IMAGE_NAME_CODE_CHECK}:${IMAGE_TAG}"
         PUSH_NAME_STREAM_REST = "dockerregistry.ondewo.com:5000/${TTS_NAME_REST}"
         PUSH_NAME_STREAM_GRPC = "dockerregistry.ondewo.com:5000/${TTS_NAME_GRPC}"
-
-        UNIQUE_BUILD_ID = "${env.GIT_COMMIT}"
-        REST_CONTAINER = "${IMAGE_NAME_REST}-${UNIQUE_BUILD_ID}"
-        GRPC_CONTAINER = "${IMAGE_NAME_GRPC}-${UNIQUE_BUILD_ID}"
-        A100_MODEL_DIR = '/home/voice_user/data/jenkins/t2s/models'
-        DOCKER_NETWORK = "${UNIQUE_BUILD_ID}"
     }
 
     stages {
@@ -38,6 +32,11 @@ pipeline {
             agent { label 'a100' }
             environment {
                 ssh_key_file = credentials('devops_ondewo_idrsa')
+                UNIQUE_BUILD_ID = "${env.GIT_COMMIT}"
+                REST_CONTAINER = "${IMAGE_NAME_REST}-${UNIQUE_BUILD_ID}"
+                GRPC_CONTAINER = "${IMAGE_NAME_GRPC}-${UNIQUE_BUILD_ID}"
+                A100_MODEL_DIR = '/home/voice_user/data/jenkins/t2s/models'
+                DOCKER_NETWORK = "${UNIQUE_BUILD_ID}"
             }
             stages {
                 stage('Build Server Images') {
