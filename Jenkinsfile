@@ -17,7 +17,7 @@ pipeline {
         PUSH_NAME_STREAM_REST = "dockerregistry.ondewo.com:5000/${TTS_NAME_REST}"
         PUSH_NAME_STREAM_GRPC = "dockerregistry.ondewo.com:5000/${TTS_NAME_GRPC}"
 
-        UNIQUE_BUILD_ID = "${SANITIZED_BRANCH_NAME}".substring(0, 10) + "${env.BUILD_NUMBER}"
+        UNIQUE_BUILD_ID = "${SANITIZED_BRANCH_NAME}-${env.BUILD_NUMBER}"
         REST_CONTAINER = "${IMAGE_NAME_REST}-${UNIQUE_BUILD_ID}"
         GRPC_CONTAINER = "${IMAGE_NAME_GRPC}-${UNIQUE_BUILD_ID}"
         A100_MODEL_DIR = '/home/voice_user/data/jenkins/t2s/models'
