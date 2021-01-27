@@ -33,6 +33,7 @@ pipeline {
             environment {
                 ssh_key_file = credentials('devops_ondewo_idrsa')
                 UNIQUE_BUILD_ID = "${env.GIT_COMMIT}".substring(0, 7)
+                TRITON_CONTAINER = "ondewo-t2s-triton-${UNIQUE_BUILD_ID}"
                 REST_CONTAINER = "${IMAGE_NAME_REST}-${UNIQUE_BUILD_ID}"
                 GRPC_CONTAINER = "${IMAGE_NAME_GRPC}-${UNIQUE_BUILD_ID}"
                 A100_MODEL_DIR = '/home/voice_user/data/jenkins/t2s/models'
@@ -77,7 +78,7 @@ pipeline {
                             }
                         }
                         stage('Run Tests') {
-                            stages { // set to parallel
+                            parallel {
                                 stage('Unit Tests') {
                                     steps {
                                         sh(script: "docker run --rm -e TESTFILE=${testresults_filename} -v ${testresults_folder}:/opt/ondewo-t2s/log ${TTS_NAME_TESTS} ./tests/unit"
@@ -86,13 +87,13 @@ pipeline {
                                 }
                                 stage('Integration Tests') {
                                     steps {
-                                        sh(script: "make run_triton MODEL_DIR=${A100_MODEL_DIR} TRITON_GPUS=\"device=0\" DOCKER_NETWORK=${DOCKER_NETWORK}"
+                                        sh(script: "make run_triton TRITON_CONTAINER=${TRITON_CONTAINER} MODEL_DIR=${A100_MODEL_DIR} TRITON_GPUS=\"device=0\" DOCKER_NETWORK=${DOCKER_NETWORK}"
                                         , label: 'run triton server')
                                         timeout(time: 60, unit: 'SECONDS') {
                                             waitUntil {
                                                 script {
                                                     def status_triton = sh(
-                                                        script: "docker run --network=${DOCKER_NETWORK} curlimages/curl curl --fail http://ondewo-t2s-triton-inference-server:50510/v2/health/ready",
+                                                        script: "docker run --network=${DOCKER_NETWORK} curlimages/curl curl --fail http://${TRITON_CONTAINER}:50510/v2/health/ready",
                                                         returnStatus: true,
                                                         label: 'health check triton until ready'
                                                     )
@@ -100,7 +101,7 @@ pipeline {
                                                 }
                                             }
                                         }
-                                        sh(script: 'docker logs ondewo-t2s-triton-inference-server', label: 'triton logs when ready')
+                                        sh(script: "docker logs ${TRITON_CONTAINER}", label: 'triton logs when ready')
                                         sh(script: """docker run --rm --gpus all \
                                             --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
                                             --network=${DOCKER_NETWORK} \
@@ -111,7 +112,7 @@ pipeline {
                                         , label: 'run integration tests')
                                     }
                                     post { always {
-                                        sh(script: 'docker logs ondewo-t2s-triton-inference-server', label: 'triton logs after tests')
+                                        sh(script: "docker logs ${TRITON_CONTAINER}", label: 'triton logs after tests')
                                         sh(script: 'make kill_triton'
                                         , label: 'kill triton server')
                                     } }

@@ -11,7 +11,7 @@ GRPC_CONTAINER="ondewo-t2s-grpc-server"
 REST_CONTAINER_RELEASE="ondewo-t2s-rest-server-release"
 GRPC_CONTAINER_RELEASE="ondewo-t2s-grpc-server-release"
 TESTS_CONTAINER="ondewo-t2s-tests"
-TRITON_CONTAINER="ondewo-t2s-triton-inference-server"
+TRITON_CONTAINER ?="ondewo-t2s-triton-inference-server"
 
 MODEL_DIR ?= "${shell pwd}/models"
 CONFIG_DIR ?= "${shell pwd}/config"
