@@ -8,18 +8,19 @@ pipeline {
         IMAGE_NAME = 'ondewo-t2s'
         IMAGE_NAME_REST = 'ondewo-t2s-rest-server'
         IMAGE_NAME_GRPC = 'ondewo-t2s-grpc-server'
-        TESTS_IMAGE_NAME = 'ondewo-t2s-tests'
+        IMAGE_NAME_TESTS = 'ondewo-t2s-tests'
         TTS_NAME_REST = "${IMAGE_NAME_REST}:${IMAGE_TAG}"
         TTS_NAME_GRPC = "${IMAGE_NAME_GRPC}:${IMAGE_TAG}"
+        TTS_NAME_TESTS = "${IMAGE_NAME_TESTS}:${IMAGE_TAG}"
         PUSH_NAME_STREAM_REST = "dockerregistry.ondewo.com:5000/${TTS_NAME_REST}"
         PUSH_NAME_STREAM_GRPC = "dockerregistry.ondewo.com:5000/${TTS_NAME_GRPC}"
 
-        SANITIZED_BUILD_TAG = "${env.BUILD_TAG}".replace('/', '_').replace('.', '_').replace('%', '_').toLowerCase()
-        IMAGE_NAME_CODE_CHECK = "${IMAGE_NAME}-code-check-${SANITIZED_BUILD_TAG}"
-        REST_CONTAINER = "${IMAGE_NAME_REST}-${SANITIZED_BUILD_TAG}"
-        GRPC_CONTAINER = "${IMAGE_NAME_GRPC}-${SANITIZED_BUILD_TAG}"
+        UNIQUE_BUILD_ID = "${SANITIZED_BRANCH_NAME}-${env.BUILD_NUMBER}"
+        IMAGE_NAME_CODE_CHECK = "${IMAGE_NAME}-code-check-${UNIQUE_BUILD_ID}"
+        REST_CONTAINER = "${IMAGE_NAME_REST}-${UNIQUE_BUILD_ID}"
+        GRPC_CONTAINER = "${IMAGE_NAME_GRPC}-${UNIQUE_BUILD_ID}"
         A100_MODEL_DIR = '/home/voice_user/data/jenkins/t2s/models'
-        DOCKER_NETWORK = "${SANITIZED_BUILD_TAG}"
+        DOCKER_NETWORK = "${UNIQUE_BUILD_ID}"
     }
 
     stages {
@@ -72,15 +73,15 @@ pipeline {
                         stage('Build Test Image') {
                             steps {
                                 sh(script: "mkdir ${testresults_folder}")
-                                sh(script: "docker build -t ${TESTS_IMAGE_NAME} --build-arg PUSH_NAME_STREAM=\"${PUSH_NAME_STREAM_GRPC}\" -f docker/Dockerfile.tests .", label: 'build image')
+                                sh(script: "docker build -t ${TTS_NAME_TESTS} --build-arg PUSH_NAME_STREAM=\"${PUSH_NAME_STREAM_GRPC}\" -f docker/Dockerfile.tests .", label: 'build image')
                                 sh "docker network create ${DOCKER_NETWORK}"
                             }
                         }
                         stage('Run Tests') {
-                            parallel {
+                            stages { // set to parallel
                                 stage('Unit Tests') {
                                     steps {
-                                        sh(script: "docker run --rm -e TESTFILE=${testresults_filename} -v ${testresults_folder}:/opt/ondewo-t2s/log ${TESTS_IMAGE_NAME} ./tests/unit"
+                                        sh(script: "docker run --rm -e TESTFILE=${testresults_filename} -v ${testresults_folder}:/opt/ondewo-t2s/log ${TTS_NAME_TESTS} ./tests/unit"
                                         , label: 'run unit_tests')
                                     }
                                 }
@@ -107,7 +108,7 @@ pipeline {
                                             -e TESTFILE=${testresults_filename} \
                                             -v ${testresults_folder}:/opt/ondewo-t2s/log \
                                             -v ${A100_MODEL_DIR}:/opt/ondewo-t2s/models \
-                                            ${TESTS_IMAGE_NAME} ./tests/integration"""
+                                            ${TTS_NAME_TESTS} ./tests/integration"""
                                         , label: 'run integration tests')
                                     }
                                     post { always {
@@ -163,7 +164,7 @@ pipeline {
                                             -e T2S_REST_HOST=${REST_CONTAINER} \
                                             -v ${testresults_folder}:/opt/ondewo-t2s/log \
                                             -v ${A100_MODEL_DIR}:/opt/ondewo-t2s/models \
-                                            ${TESTS_IMAGE_NAME} ./tests/e2e"""
+                                            ${TTS_NAME_TESTS} ./tests/e2e"""
                                         , label: 'run e2e tests')
                                     }
                                     post { always {
