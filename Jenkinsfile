@@ -33,7 +33,8 @@ pipeline {
             environment {
                 ssh_key_file = credentials('devops_ondewo_idrsa')
                 UNIQUE_BUILD_ID = "${env.GIT_COMMIT}".substring(0, 7)
-                TRITON_CONTAINER = "ondewo-t2s-triton-${UNIQUE_BUILD_ID}"
+                // TRITON_CONTAINER = "ondewo-t2s-triton-${UNIQUE_BUILD_ID}"
+                TRITON_CONTAINER = 'ondewo-t2s-triton-inference-server' // TODO: change it to above once code is changed
                 REST_CONTAINER = "${IMAGE_NAME_REST}-${UNIQUE_BUILD_ID}"
                 GRPC_CONTAINER = "${IMAGE_NAME_GRPC}-${UNIQUE_BUILD_ID}"
                 A100_MODEL_DIR = '/home/voice_user/data/jenkins/t2s/models'
