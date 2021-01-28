@@ -32,7 +32,7 @@ pipeline {
             agent { label 'a100' }
             environment {
                 ssh_key_file = credentials('devops_ondewo_idrsa')
-                UNIQUE_BUILD_ID = "${env.GIT_COMMIT}".substring(0, 7) + "${env.BUILD_TIMESTAMP}".replace(' ', '-').replace(':', '-')
+                UNIQUE_BUILD_ID = "${env.GIT_COMMIT}".substring(0, 7).concat("-${env.BUILD_TIMESTAMP}".replace(' ', '-').replace(':', '-'))
                 // TRITON_CONTAINER = "ondewo-t2s-triton-${UNIQUE_BUILD_ID}"
                 TRITON_CONTAINER = 'ondewo-t2s-triton-inference-server' // TODO: change it to above once code is changed
                 REST_CONTAINER = "${IMAGE_NAME_REST}-${UNIQUE_BUILD_ID}"
