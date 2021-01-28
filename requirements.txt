@@ -13,6 +13,7 @@ msgpack==1.0.0
 mypy-protobuf
 omegaconf
 protobuf==3.13.0
+pydub==0.24.1
 pyroomacoustics
 pysndfx
 python_speech_features

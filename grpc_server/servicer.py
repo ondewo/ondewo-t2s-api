@@ -19,6 +19,7 @@ from inference.inference_interface import Inference
 from normalization.pipeline_constructor import NormalizerPipeline
 from normalization.postprocessor import Postprocessor
 from ondewo_grpc.ondewo.t2s import text_to_speech_pb2_grpc, text_to_speech_pb2
+from utils.audio_converter import convert_to_format
 from utils.data_classes.config_dataclass import T2SConfigDataclass
 
 
@@ -88,7 +89,14 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
             audio = np.zeros((10000,))
 
         out = io.BytesIO()
-        sf.write(out, audio, samplerate=sample_rate, format=audio_format, subtype=pcm)
+        try:
+            sf.write(out, audio, samplerate=sample_rate, format=audio_format, subtype=pcm)
+        except ValueError as e:
+            if e.args[0] == f"Unknown format: '{audio_format}'":
+                sf.write(out, audio, samplerate=sample_rate, format='wav', subtype=pcm)
+                out = convert_to_format(out, audio_format=audio_format)
+            else:
+                raise e
         out.seek(0)
         audio_bytes: bytes = out.read()
 
