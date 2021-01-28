@@ -1,3 +1,5 @@
+def UNIQUE_BUILD_ID = UUID.randomUUID().toString()
+
 pipeline {
     agent none
     environment {
@@ -32,9 +34,6 @@ pipeline {
             agent { label 'a100' }
             environment {
                 ssh_key_file = credentials('devops_ondewo_idrsa')
-                SHORT_GIT_COMMIT = "${env.GIT_COMMIT}".substring(0, 7)
-                SANITIZED_TS = "${env.BUILD_TIMESTAMP}".replace(' ', '-').replace(':', '-')
-                UNIQUE_BUILD_ID = "${SHORT_GIT_COMMIT}-${SANITIZED_TS}"
                 // TRITON_CONTAINER = "ondewo-t2s-triton-${UNIQUE_BUILD_ID}"
                 TRITON_CONTAINER = 'ondewo-t2s-triton-inference-server' // TODO: change it to above once code is changed
                 REST_CONTAINER = "${IMAGE_NAME_REST}-${UNIQUE_BUILD_ID}"
