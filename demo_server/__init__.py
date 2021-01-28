@@ -5,7 +5,7 @@ from ondewologging.logger import logger_console as logger
 server = Flask(__name__)
 
 TMP_DIR_NAME: str = "tmp"
-WORK_DIR: str = f"demo_server_grpc/{TMP_DIR_NAME}/"
+WORK_DIR: str = f"demo_server/{TMP_DIR_NAME}/"
 if not os.path.isdir(WORK_DIR):
     os.mkdir(WORK_DIR)
 
@@ -28,8 +28,8 @@ if not GRPC_PORT:
                            "For local development, port is usually set to 50555")
 
 # ===============================
-from demo_server_grpc import routes
-from demo_server_grpc.demo_utils import FileRemovalThread
+from demo_server import routes
+from demo_server.demo_utils import FileRemovalThread
 
 file_removal_thread = FileRemovalThread()
 file_removal_thread.start()

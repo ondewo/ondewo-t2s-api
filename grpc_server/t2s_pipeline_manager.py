@@ -2,7 +2,7 @@ from typing import Dict, Tuple, Optional, List
 
 from ondewologging.logger import logger_console as logger
 
-from grpc_server.utils import get_all_pipelines_from_config_files
+from grpc_server.pipeline_utils import get_all_pipelines_from_config_files
 from inference.inference_interface import Inference
 from normalization.pipeline_constructor import NormalizerPipeline
 from normalization.postprocessor import Postprocessor

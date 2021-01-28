@@ -5,7 +5,7 @@ import pytest
 from ruamel import yaml
 
 from grpc_server.t2s_pipeline_manager import T2SPipelineManager
-from grpc_server.utils import get_list_of_config_files, get_config_dir, create_t2s_pipeline_from_config
+from grpc_server.pipeline_utils import get_list_of_config_files, get_config_dir, create_t2s_pipeline_from_config
 from utils.data_classes.config_dataclass import T2SConfigDataclass
 
 

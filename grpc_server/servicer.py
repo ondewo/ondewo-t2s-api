@@ -13,7 +13,7 @@ from ondewologging.logger import logger_console as logger
 from ruamel.yaml import YAML
 
 from grpc_server.t2s_pipeline_manager import T2SPipelineManager
-from grpc_server.utils import create_t2s_pipeline_from_config, generate_config_path, \
+from grpc_server.pipeline_utils import create_t2s_pipeline_from_config, generate_config_path, \
     get_config_path_by_id, get_all_pipelines_from_config_files, get_config_by_id, filter_pipelines
 from inference.inference_interface import Inference
 from normalization.pipeline_constructor import NormalizerPipeline
@@ -54,7 +54,7 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
                           context: grpc.ServicerContext) -> empty_pb2.Empty:
         return self.handle_update_t2s_pipeline_request(request)
 
-    @Timer(log_arguments=True)
+    @Timer(log_arguments=False)
     def handle_synthesize_request(self, request: text_to_speech_pb2.SynthesizeRequest
                                   ) -> text_to_speech_pb2.SynthesizeResponse:
         start_time = time.perf_counter()

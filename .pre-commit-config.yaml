@@ -45,5 +45,5 @@ repos:
         exclude: |
           (?x) (
           ^rest_server/__init__.py |
-          ^demo_server_grpc/__init__.py
+          ^demo_server/__init__.py
           )
