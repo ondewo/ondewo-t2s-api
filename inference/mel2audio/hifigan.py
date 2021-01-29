@@ -1,14 +1,13 @@
-from typing import Dict, Any
+from typing import Dict
 
 import numpy as np
 import torch
 from hifi_gan.env import AttrDict
 from hifi_gan.models import Generator
+from ondewologging.decorators import Timer
+from ondewologging.logger import logger_console as logger
 
 from inference.mel2audio.hifigan_core import HiFiGANCore
-from ondewologging.logger import logger_console as logger
-from ondewologging.decorators import Timer
-
 from utils.data_classes.config_dataclass import HiFiGanDataclass
 
 
