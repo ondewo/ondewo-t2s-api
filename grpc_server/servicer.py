@@ -72,6 +72,10 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
         noise_scale: Optional[float] = request.noise_scale or None
         audio_format: str = text_to_speech_pb2.AUDIO_FORMAT.Name(request.audio_format)
 
+        # handle case of ogg format
+        if audio_format == 'ogg':
+            pcm = 'VORBIS'
+
         if re.search(r'[A-Za-z0-9]+', text):
             logger.info(f'Text to transcribe: "{text}"')
             texts: List[str] = preprocess_pipeline.apply(text)
