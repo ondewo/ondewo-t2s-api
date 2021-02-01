@@ -4,6 +4,7 @@ from pathlib import Path
 import pytest
 from typing import Iterator
 
+import pytest
 import soundfile as sf
 
 from ondewo_grpc.ondewo.t2s import text_to_speech_pb2
@@ -43,7 +44,8 @@ class TestGRPC:
         assert response.pipelines[0].description.speaker_sex == 'male'
 
     @staticmethod
-    def test_syntesize() -> None:
+    @pytest.mark.parametrize('audio_format', text_to_speech_pb2.AUDIO_FORMAT.values())
+    def test_synthesize(audio_format: text_to_speech_pb2.AUDIO_FORMAT) -> None:
         list_pipelines_request = text_to_speech_pb2.ListT2sPipelinesRequest()
         operation_list_ids: OperationListPipelines = OperationListPipelines(
             request=list_pipelines_request, expected_to_fail=False)
@@ -53,14 +55,19 @@ class TestGRPC:
             request: text_to_speech_pb2.SynthesizeRequest = text_to_speech_pb2.SynthesizeRequest(
                 text='some text',
                 t2s_pipeline_id=pipeline.id,
+                audio_format=audio_format
             )
             operation_synthesize: OperationSynthesize = OperationSynthesize(request=request)
             response_synthesize: text_to_speech_pb2.SynthesizeResponse = operation_synthesize.execute_grpc()
             assert response_synthesize.audio
-            bio = io.BytesIO(response_synthesize.audio)
-            audio = sf.read(bio)
-            assert audio[1] == 22050
-            assert 0. < audio[0].max() < 1.
+            if audio_format in [text_to_speech_pb2.AUDIO_FORMAT.wav,
+                                text_to_speech_pb2.AUDIO_FORMAT.flac,
+                                text_to_speech_pb2.AUDIO_FORMAT.caf,
+                                text_to_speech_pb2.AUDIO_FORMAT.ogg]:
+                bio = io.BytesIO(response_synthesize.audio)
+                audio = sf.read(bio)
+                assert audio[1] == 22050
+                assert 0. < audio[0].max() < 1.
 
     @staticmethod
     def test_get_t2s_pipeline() -> None:

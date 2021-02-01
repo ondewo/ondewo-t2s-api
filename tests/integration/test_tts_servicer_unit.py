@@ -1,6 +1,7 @@
 import copy
 import io
 
+import pytest
 import soundfile as sf
 
 from grpc_server.servicer import Text2SpeechServicer
@@ -28,7 +29,8 @@ class TestGrpcServicerUnit:
         assert response.pipelines[0].description.speaker_sex == 'male'
 
     @staticmethod
-    def test_synthesize_unit(create_pipelines: None) -> None:
+    @pytest.mark.parametrize('audio_format', text_to_speech_pb2.AUDIO_FORMAT.values())
+    def test_synthesize_unit(create_pipelines: None, audio_format: text_to_speech_pb2.AUDIO_FORMAT) -> None:
         list_pipelines_request = text_to_speech_pb2.ListT2sPipelinesRequest()
         response: text_to_speech_pb2.ListT2sPipelinesResponse = \
             Text2SpeechServicer().handle_list_t2s_pipeline_ids_request(request=list_pipelines_request)
@@ -37,14 +39,19 @@ class TestGrpcServicerUnit:
             request: text_to_speech_pb2.SynthesizeRequest = text_to_speech_pb2.SynthesizeRequest(
                 text='some text',
                 t2s_pipeline_id=pipeline.id,
+                audio_format=audio_format,
             )
             response_synthesize: text_to_speech_pb2.SynthesizeResponse = \
                 Text2SpeechServicer().handle_synthesize_request(request=request)
             assert response_synthesize.audio
-            bio = io.BytesIO(response_synthesize.audio)
-            audio = sf.read(bio)
-            assert audio[1] == 22050
-            assert 0. < audio[0].max() < 1.
+            if audio_format in [text_to_speech_pb2.AUDIO_FORMAT.wav,
+                                text_to_speech_pb2.AUDIO_FORMAT.flac,
+                                text_to_speech_pb2.AUDIO_FORMAT.caf,
+                                text_to_speech_pb2.AUDIO_FORMAT.ogg]:
+                bio = io.BytesIO(response_synthesize.audio)
+                audio = sf.read(bio)
+                assert audio[1] == 22050
+                assert 0. < audio[0].max() < 1.
 
     @staticmethod
     def test_get_t2s_pipeline_unit(create_pipelines: None) -> None:

@@ -4,8 +4,8 @@ description:
   speaker_sex: female
   pipeline_owner: ondewo
   comments: trained on public domain dataset Lj_speech
-  speaker_name: ''
-  domain: ''
+  speaker_name: Linda
+  domain: general
 active: true
 inference:
   type: composite
@@ -15,7 +15,7 @@ inference:
       glow_tts:
         batch_size: 5
         use_gpu: true
-        length_scale: 0.5
+        length_scale: 1.0
         noise_scale: 0.6669999957084656
         path: models/glow-tts/en/pretrained.pth
         param_config_path: models/glow-tts/en/config.json
@@ -27,7 +27,7 @@ inference:
         cleaners: []
         max_text_length: 100
         param_config_path: models/glow-tts/en/config.json
-        triton_url: localhost:50511
+        triton_url: localhost:8001
         triton_model_name: glow_tts
     mel2audio:
       type: hifi_gan
@@ -35,7 +35,7 @@ inference:
         config_path: models/mb_melgan/en/config.yml
         stats_path: models/mb_melgan/en/stats.npy
         triton_model_name: mb_melgan
-        triton_url: localhost:50511
+        triton_url: localhost:8001
       hifi_gan:
         use_gpu: true
         batch_size: 20
@@ -49,8 +49,9 @@ inference:
     save_cache: true
     cache_save_dir: models/cache
 normalization:
-  language: de
-  pipeline: []
+  language: en
+  pipeline:
+  - normalise_simple
 postprocessing:
   silence_secs: 0.25
   pipeline: []
