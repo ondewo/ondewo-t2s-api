@@ -34,8 +34,7 @@ pipeline {
             agent { label 'a100' }
             environment {
                 ssh_key_file = credentials('devops_ondewo_idrsa')
-                // TRITON_CONTAINER = "ondewo-t2s-triton-${UNIQUE_BUILD_ID}"
-                TRITON_CONTAINER = 'ondewo-t2s-triton-inference-server' // TODO: change it to above once code is changed
+                TRITON_CONTAINER = "ondewo-t2s-triton-${UNIQUE_BUILD_ID}"
                 REST_CONTAINER = "${IMAGE_NAME_REST}-${UNIQUE_BUILD_ID}"
                 GRPC_CONTAINER = "${IMAGE_NAME_GRPC}-${UNIQUE_BUILD_ID}"
                 A100_MODEL_DIR = '/home/voice_user/data/jenkins/t2s/models'
@@ -72,11 +71,17 @@ pipeline {
                         testresults_filename = 'pytest.xml'
                     }
                     stages {
-                        stage('Build Test Image') {
+                        stage('Setup Test Env') {
                             steps {
                                 sh(script: "mkdir ${testresults_folder}")
                                 sh(script: "docker build -t ${TTS_NAME_TESTS} --build-arg PUSH_NAME_STREAM=\"${PUSH_NAME_STREAM_GRPC}\" -f docker/Dockerfile.tests .", label: 'build image')
-                                sh "docker network create ${DOCKER_NETWORK}"
+                                sh(script: "docker network create ${DOCKER_NETWORK}", label: 'create docker network')
+                                sh(script: """for filename in test_mbmelgan_config.yaml glow_tts_config_triton.yaml
+                                            do
+                                                full_fp=${PWD}/tests/resources/${filename}
+                                                sed -i "s/triton_url.*/triton_url: ${TRITON_CONTAINER}/" ${full_fp}
+                                            done
+                                """, label: 'set triton container name in test configs')
                             }
                         }
                         stage('Run Tests') {
