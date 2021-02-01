@@ -19,6 +19,7 @@ from inference.inference_interface import Inference
 from normalization.pipeline_constructor import NormalizerPipeline
 from normalization.postprocessor import Postprocessor
 from ondewo_grpc.ondewo.t2s import text_to_speech_pb2_grpc, text_to_speech_pb2
+from utils.audio_converter import convert_to_format
 from utils.data_classes.config_dataclass import T2SConfigDataclass
 
 
@@ -71,6 +72,10 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
         noise_scale: Optional[float] = request.noise_scale or None
         audio_format: str = text_to_speech_pb2.AUDIO_FORMAT.Name(request.audio_format)
 
+        # handle case of ogg format
+        if audio_format == 'ogg':
+            pcm = 'VORBIS'
+
         if re.search(r'[A-Za-z0-9]+', text):
             logger.info(f'Text to transcribe: "{text}"')
             texts: List[str] = preprocess_pipeline.apply(text)
@@ -88,7 +93,14 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
             audio = np.zeros((10000,))
 
         out = io.BytesIO()
-        sf.write(out, audio, samplerate=sample_rate, format=audio_format, subtype=pcm)
+        if audio_format in ['wav', 'flac', 'caf', 'ogg']:
+            sf.write(out, audio, samplerate=sample_rate, format=audio_format, subtype=pcm)
+        elif audio_format in ['mp3', 'aac', 'wma']:
+            sf.write(out, audio, samplerate=sample_rate, format='wav', subtype=pcm)
+            out = convert_to_format(out, audio_format=audio_format)
+        else:
+            raise ValueError(f"Audio format {audio_format} is not supported. Supported formats are "
+                             f"{['wav', 'flac', 'caf', 'ogg', 'mp3', 'aac', 'wma']}.")
         out.seek(0)
         audio_bytes: bytes = out.read()
 
