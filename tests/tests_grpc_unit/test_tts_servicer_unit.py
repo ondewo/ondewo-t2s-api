@@ -44,7 +44,10 @@ class TestGrpcServicerUnit:
             response_synthesize: text_to_speech_pb2.SynthesizeResponse = \
                 Text2SpeechServicer().handle_synthesize_request(request=request)
             assert response_synthesize.audio
-            if audio_format is text_to_speech_pb2.AUDIO_FORMAT.wav:
+            if audio_format in [text_to_speech_pb2.AUDIO_FORMAT.wav,
+                                text_to_speech_pb2.AUDIO_FORMAT.flac,
+                                text_to_speech_pb2.AUDIO_FORMAT.caf,
+                                text_to_speech_pb2.AUDIO_FORMAT.ogg]:
                 bio = io.BytesIO(response_synthesize.audio)
                 audio = sf.read(bio)
                 assert audio[1] == 22050

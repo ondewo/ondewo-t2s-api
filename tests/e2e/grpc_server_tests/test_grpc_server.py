@@ -49,7 +49,10 @@ class TestGRPC:
             operation_synthesize: OperationSynthesize = OperationSynthesize(request=request)
             response_synthesize: text_to_speech_pb2.SynthesizeResponse = operation_synthesize.execute_grpc()
             assert response_synthesize.audio
-            if audio_format is text_to_speech_pb2.AUDIO_FORMAT.wav:
+            if audio_format in [text_to_speech_pb2.AUDIO_FORMAT.wav,
+                                text_to_speech_pb2.AUDIO_FORMAT.flac,
+                                text_to_speech_pb2.AUDIO_FORMAT.caf,
+                                text_to_speech_pb2.AUDIO_FORMAT.ogg]:
                 bio = io.BytesIO(response_synthesize.audio)
                 audio = sf.read(bio)
                 assert audio[1] == 22050
@@ -81,7 +84,7 @@ class TestGRPC:
             operation_create_pipeline: OperationCreateT2sPipeline = OperationCreateT2sPipeline(
                 request=pipeline_config)
             created_config = operation_create_pipeline.execute_grpc()
-            assert isinstance(created_config, text_to_speech_pb2.Text2SpeechConfig)
+            assert isinstance(created_config, text_to_speech_pb2.T2sPipelineId)
             id_created: str = created_config.id
             operation_list_ids = OperationListPipelines(
                 request=list_pipelines_request, expected_to_fail=False)
