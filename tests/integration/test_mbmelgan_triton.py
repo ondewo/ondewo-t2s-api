@@ -1,8 +1,6 @@
 from typing import List
-from pathlib import Path
 
 import numpy as np
-import pytest
 
 from inference.mel2audio.mbmelgan_triton import MBMelGANTriton
 

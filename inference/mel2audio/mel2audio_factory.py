@@ -1,6 +1,7 @@
 from typing import Dict, Type
 
 from inference.mel2audio.hifigan import HiFiGan
+from inference.mel2audio.hifigan_triton import HiFiGanTriton
 from inference.mel2audio.mbmelgan_triton import MBMelGANTriton
 from inference.mel2audio.mel2audio import Mel2Audio
 from utils.data_classes.config_dataclass import Mel2AudioDataclass
@@ -11,6 +12,7 @@ class Mel2AudioFactory:
     MEL2AUDIO_DICT: Dict[str, Type] = {
         "mb_melgan_triton": MBMelGANTriton,
         "hifi_gan": HiFiGan,
+        "hifi_gan_triton": HiFiGanTriton,
     }
 
     @classmethod
