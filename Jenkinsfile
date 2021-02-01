@@ -78,8 +78,8 @@ pipeline {
                                 sh(script: "docker network create ${DOCKER_NETWORK}", label: 'create docker network')
                                 sh(script: '''for filename in test_mbmelgan_config.yaml glow_tts_config_triton.yaml
                                             do
-                                                full_fp=${PWD}/tests/resources/"$filename"
-                                                sed -i "s/triton_url.*/triton_url: ${TRITON_CONTAINER}/" "$full_fp"
+                                                full_fp=${PWD}/tests/resources/\$filename
+                                                sed -i "s/triton_url.*/triton_url: ${TRITON_CONTAINER}/" \$full_fp
                                             done
                                 ''', label: 'set triton container name in test configs')
                             }
