@@ -38,6 +38,7 @@ pipeline {
                 REST_CONTAINER = "${IMAGE_NAME_REST}-${UNIQUE_BUILD_ID}"
                 GRPC_CONTAINER = "${IMAGE_NAME_GRPC}-${UNIQUE_BUILD_ID}"
                 A100_MODEL_DIR = '/home/voice_user/data/jenkins/t2s/models'
+                A100_GPU = 'device=0'
                 DOCKER_NETWORK = "${UNIQUE_BUILD_ID}"
             }
             stages {
@@ -98,7 +99,7 @@ pipeline {
                                 }
                                 stage('Integration Tests') {
                                     steps {
-                                        sh(script: "make run_triton TRITON_CONTAINER=${TRITON_CONTAINER} MODEL_DIR=${A100_MODEL_DIR} TRITON_GPUS=\"device=0\" DOCKER_NETWORK=${DOCKER_NETWORK}"
+                                        sh(script: "make run_triton TRITON_CONTAINER=${TRITON_CONTAINER} MODEL_DIR=${A100_MODEL_DIR} TRITON_GPUS=\"${A100_GPU}\" DOCKER_NETWORK=${DOCKER_NETWORK}"
                                         , label: 'run triton server')
                                         timeout(time: 60, unit: 'SECONDS') {
                                             waitUntil {
@@ -130,7 +131,7 @@ pipeline {
                                 }
                                 stage('E2E Tests') {
                                     steps {
-                                        sh(script: """docker run -td --gpus device=0 \
+                                        sh(script: """docker run -td --gpus ${A100_GPU} \
                                             --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
                                             --network=${DOCKER_NETWORK} \
                                             -v ${A100_MODEL_DIR}:/opt/ondewo-t2s/models \
@@ -139,7 +140,7 @@ pipeline {
                                             --name ${REST_CONTAINER} \
                                             ${PUSH_NAME_STREAM_REST}"""
                                         , label: 'run rest server')
-                                        sh(script: """docker run -td --gpus device=0 \
+                                        sh(script: """docker run -td --gpus ${A100_GPU} \
                                             --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
                                             --network=${DOCKER_NETWORK} \
                                             -v ${A100_MODEL_DIR}:/opt/ondewo-t2s/models \
