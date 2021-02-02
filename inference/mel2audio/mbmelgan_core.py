@@ -1,7 +1,8 @@
-from typing import Any, Callable, Dict, List
-from ruamel.yaml import YAML
+from abc import ABC
+from typing import Callable, List
 
 import numpy as np
+from ruamel.yaml import YAML
 from sklearn.preprocessing import StandardScaler
 
 from inference.mel2audio.mel2audio import Mel2Audio
@@ -80,3 +81,6 @@ class MBMelGANCore(Mel2Audio):
                 audio_numpy, mel_spectrograms_slice)
             final_result += result
         return final_result
+
+    def mel2audio(self, mel_spectrograms: List[np.ndarray]) -> List[np.ndarray]:
+        raise NotImplementedError('This method should not be called in the parent class.')

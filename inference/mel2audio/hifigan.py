@@ -53,7 +53,7 @@ class HiFiGan(HiFiGANCore):
 
     @Timer(log_arguments=False)
     def _get_model(self) -> Generator:
-        key_word = f'{self.model_path}-{"cuda"*self.use_gpu+"cpu"*(not self.use_gpu)}'
+        key_word = f'{self.model_path}-{"cuda" * self.use_gpu + "cpu" * (not self.use_gpu)}'
         if key_word in self.models_cache:
             logger.info(f"Model is in the cache with a key {key_word}.")
             return self.models_cache[key_word]

@@ -1,9 +1,6 @@
-from typing import Dict
-
 import numpy as np
-from ondewologging.decorators import Timer
-from ondewologging.logger import logger_console as logger
 from tritonclient.grpc import InferenceServerClient, InferInput, InferRequestedOutput, InferResult
+
 from inference.mel2audio.hifigan_core import HiFiGANCore
 from utils.data_classes.config_dataclass import HiFiGanTritonDataclass
 
