@@ -39,6 +39,7 @@ pipeline {
                 GRPC_CONTAINER = "${IMAGE_NAME_GRPC}-${UNIQUE_BUILD_ID}"
                 A100_MODEL_DIR = '/home/voice_user/data/jenkins/t2s/models'
                 A100_GPU = 'device=0'
+                A100_GPU1 = 'device=1'
                 DOCKER_NETWORK = "${UNIQUE_BUILD_ID}"
             }
             stages {
@@ -114,7 +115,7 @@ pipeline {
                                             }
                                         }
                                         sh(script: "docker logs ${TRITON_CONTAINER}", label: 'triton logs when ready')
-                                        sh(script: """docker run --rm --gpus ${A100_GPU} \
+                                        sh(script: """docker run --rm --gpus ${A100_GPU1} \
                                             --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
                                             --network=${DOCKER_NETWORK} \
                                             -e TESTFILE=${testresults_filename} \
