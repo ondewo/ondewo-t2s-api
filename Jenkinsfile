@@ -41,6 +41,16 @@ pipeline {
                 DOCKER_NETWORK = "${UNIQUE_BUILD_ID}"
             }
             stages {
+                stage('Setup Test Env') {
+                    steps {
+                        sh(script: '''for filename in test_mbmelgan_config.yaml glow_tts_config_triton.yaml
+                                    do
+                                        full_fp=${PWD}/tests/resources/\$filename
+                                        sed -i "s/triton_url.*/triton_url: ${TRITON_CONTAINER}:50511/" \$full_fp
+                                    done
+                        ''', label: 'set triton container name in test configs')
+                    }
+                }
                 stage('Build Server Images') {
                     parallel {
                         stage('Build rest server') {
@@ -71,17 +81,11 @@ pipeline {
                         testresults_filename = 'pytest.xml'
                     }
                     stages {
-                        stage('Setup Test Env') {
+                        stage('Build Test Image') {
                             steps {
                                 sh(script: "mkdir ${testresults_folder}")
                                 sh(script: "docker build -t ${TTS_NAME_TESTS} --build-arg PUSH_NAME_STREAM=\"${PUSH_NAME_STREAM_GRPC}\" -f docker/Dockerfile.tests .", label: 'build image')
                                 sh(script: "docker network create ${DOCKER_NETWORK}", label: 'create docker network')
-                                sh(script: '''for filename in test_mbmelgan_config.yaml glow_tts_config_triton.yaml
-                                            do
-                                                full_fp=${PWD}/tests/resources/\$filename
-                                                sed -i "s/triton_url.*/triton_url: ${TRITON_CONTAINER}:50511/" \$full_fp
-                                            done
-                                ''', label: 'set triton container name in test configs')
                             }
                         }
                         stage('Run Tests') {
