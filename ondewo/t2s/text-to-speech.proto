@@ -1,0 +1,218 @@
+// Copyright 2020 ONDEWO GmbH
+// Licensed under the ONDEWO GmbH license, Version 1.0 (the "License");
+// you must not use this file except in compliance with the License.
+// You must obtain a copy of the License at
+// office@ondewo.com
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package ondewo.t2s;
+import "google/protobuf/empty.proto";
+
+// endpoints of t2s generate service
+service Text2Speech {
+    rpc Synthesize (SynthesizeRequest) returns (SynthesizeResponse) {
+    };
+    rpc GetT2sPipeline (T2sPipelineId) returns (Text2SpeechConfig) {
+    };
+    rpc CreateT2sPipeline (Text2SpeechConfig) returns (T2sPipelineId) {
+    };
+    rpc DeleteT2sPipeline (T2sPipelineId) returns (google.protobuf.Empty) {
+    };
+    rpc UpdateT2sPipeline (Text2SpeechConfig) returns (google.protobuf.Empty) {
+    };
+    rpc ListT2sPipelines (ListT2sPipelinesRequest) returns (ListT2sPipelinesResponse) {
+    };
+}
+////////////////
+// SYNTHESIZE //
+////////////////
+message SynthesizeRequest {
+    string t2s_pipeline_id = 1; // id of the model that will generate audio
+    string text = 2; // text for t2s
+    float length_scale = 3; // this parameter defines the speed of the audio. Should not be very much off 1.0
+    float noise_scale = 4; // can be from 0.0 to 1. Defines the noise in the generated audio
+    int32 sample_rate = 5; // by default 22050 sample rate of the generated wav file
+    enum PCM {
+        PCM_16 = 0;
+        PCM_24 = 1;
+        PCM_32 = 2;
+        PCM_S8 = 3;
+        PCM_U8 = 4;
+        FLOAT = 5;
+        DOUBLE = 6;
+    }
+    PCM pcm = 6; // pulse-code modulation of the wav file, by default 16
+    AUDIO_FORMAT audio_format = 7;
+}
+
+enum AUDIO_FORMAT {
+    wav = 0;
+    flac = 1;
+    caf = 2;
+    mp3 = 3;
+    aac = 4;
+    ogg = 5;
+    wma = 6;
+}
+
+message SynthesizeResponse {
+    bytes audio = 1; // generated wav file with the parameters described in request
+    float generation_time = 2;
+    float audio_length = 3;
+    string t2s_pipeline_id = 4;
+    AUDIO_FORMAT audio_format = 5;
+    string text = 6;
+    int32 sample_rate = 7;
+}
+
+////////////////////////
+// LIST T2S PIPELINES //
+////////////////////////
+message ListT2sPipelinesRequest {
+    repeated string languages = 1;
+    repeated string speaker_sexes = 2;
+    repeated string pipeline_owners = 3;
+    repeated string speaker_names = 4;
+    repeated string domains = 5;
+}
+
+message ListT2sPipelinesResponse {
+    repeated Text2SpeechConfig pipelines = 1;
+}
+
+/////////////////////////
+// UPDATE T2S PIPELINE //
+/////////////////////////
+
+message T2sPipelineId {
+    string id = 1; // id of the model that will generate audio
+}
+
+///////////////////////////
+// Text-to-Speech Config //
+///////////////////////////
+
+// configuration of text-to-speech models
+message Text2SpeechConfig {
+    string id = 1;
+    Description description = 2;
+    bool active = 3;
+    Inference inference = 4;
+    Normalization normalization = 5;
+    Postprocessing postprocessing = 6;
+}
+
+message Description {
+    string language = 1;
+    string speaker_sex = 2;
+    string pipeline_owner = 3;
+    string comments = 4;
+    string speaker_name = 5;
+    string domain = 6;
+}
+
+message Inference {
+    string type = 1;
+    CompositeInference composite_inference = 2;
+    Caching caching = 3;
+}
+
+message CompositeInference {
+    Text2Mel text2mel = 1;
+    Mel2Audio mel2audio = 2;
+}
+
+message Text2Mel {
+    string type = 1;
+    GlowTTS glow_tts = 3;
+    GlowTTSTriton glow_tts_triton = 4;
+}
+
+
+message GlowTTS {
+    int64 batch_size = 1;
+    bool use_gpu = 2;
+    float length_scale = 3;
+    float noise_scale = 4;
+    string path = 5;
+    repeated string cleaners = 6;
+    string param_config_path = 7;
+}
+
+message GlowTTSTriton {
+    int64 batch_size = 1;
+    float length_scale = 2;
+    float noise_scale = 3;
+    repeated string cleaners = 4;
+    int64 max_text_length = 5;
+    string param_config_path = 6;
+    string triton_url = 7;
+    string triton_model_name = 8;
+}
+
+message Mel2Audio {
+    string type = 1;
+    MbMelganTriton mb_melgan_triton = 3;
+    HiFiGan hifi_gan = 4;
+}
+
+message HiFiGan {
+    bool use_gpu = 1;
+    int64 batch_size = 2;
+    string config_path = 3;
+    string model_path = 4;
+}
+
+message MbMelganTriton {
+    string config_path = 1;
+    string stats_path = 2;
+    string triton_model_name = 3;
+    string triton_url = 4;
+}
+
+
+message Caching {
+    bool active = 1;
+    int64 memory_cache_max_size = 2;
+    int64 sampling_rate = 3;
+    bool load_cache = 4;
+    bool save_cache = 5;
+    string cache_save_dir = 6;
+}
+
+message Normalization {
+    string language = 1;
+    repeated string pipeline = 2;
+}
+
+message Postprocessing {
+    float silence_secs = 1;
+    repeated string pipeline = 2;
+    Logmnse logmmse = 3;
+    Wiener wiener = 4;
+    Apodization apodization = 5;
+}
+
+message Logmnse {
+    int64 initial_noise = 1;
+    int64 window_size = 2;
+    float noise_threshold = 3;
+}
+
+message Wiener {
+    int64 frame_len = 1;
+    int64 lpc_order = 2;
+    int64 iterations = 3;
+    float alpha = 4;
+    float thresh = 5;
+}
+
+message Apodization {
+    float apodization_secs = 1;
+}
