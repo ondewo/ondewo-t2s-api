@@ -1,4 +1,3 @@
-import json
 from typing import List, Any, Dict
 
 import numpy as np
@@ -7,9 +6,6 @@ from _pytest.fixtures import SubRequest
 from ruamel.yaml import YAML
 
 from inference.mel2audio.hifigan_core import HiFiGANCore
-from inference.mel2audio.hifigan_triton import HiFiGanTriton
-from inference.mel2audio.hifigan import HiFiGan
-from inference.mel2audio.mel2audio import Mel2Audio
 from inference.mel2audio.mel2audio_factory import Mel2AudioFactory
 from utils.data_classes.config_dataclass import Mel2AudioDataclass
 
@@ -29,14 +25,14 @@ def mel2audio(request: SubRequest) -> HiFiGANCore:
 
 
 @pytest.mark.parametrize('mel2audio', [('hifi_triton',), ('hifi_pytorch',)], indirect=True)
-def test_inference(mel2audio: HiFiGANCore) -> None:
+def test_generate(mel2audio: HiFiGANCore) -> None:
     mel_batch: np.ndarray = np.random.randn(
         mel2audio.batch_size, 80, 100).astype(np.float32)
     res = mel2audio._generate(mel_batch)
 
     assert len(res.shape) == 2
     assert len(res) == mel2audio.batch_size
-    assert res.shape[-1] == 25600
+    assert res.shape[-1] == 25600  # hop of the mel (256) * n of time steps (100)
     assert res.shape[0] == mel_batch.shape[0]
 
 
