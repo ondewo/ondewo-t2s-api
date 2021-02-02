@@ -79,7 +79,7 @@ pipeline {
                                 sh(script: '''for filename in test_mbmelgan_config.yaml glow_tts_config_triton.yaml
                                             do
                                                 full_fp=${PWD}/tests/resources/\$filename
-                                                sed -i "s/triton_url.*/triton_url: ${TRITON_CONTAINER}/" \$full_fp
+                                                sed -i "s/triton_url.*/triton_url: ${TRITON_CONTAINER}:50511/" \$full_fp
                                             done
                                 ''', label: 'set triton container name in test configs')
                             }
