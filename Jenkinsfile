@@ -114,7 +114,7 @@ pipeline {
                                             }
                                         }
                                         sh(script: "docker logs ${TRITON_CONTAINER}", label: 'triton logs when ready')
-                                        sh(script: """docker run --rm --gpus all \
+                                        sh(script: """docker run --rm --gpus ${A100_GPU} \
                                             --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
                                             --network=${DOCKER_NETWORK} \
                                             -e TESTFILE=${testresults_filename} \
