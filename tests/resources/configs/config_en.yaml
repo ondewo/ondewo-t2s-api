@@ -4,7 +4,7 @@ description:
   speaker_sex: female
   pipeline_owner: ondewo
   comments: trained on public domain dataset Lj_speech
-  speaker_name: Linda
+  speaker_name: Linda Johnson
   domain: general
 active: true
 inference:
@@ -15,7 +15,7 @@ inference:
       glow_tts:
         batch_size: 5
         use_gpu: true
-        length_scale: 1.0
+        length_scale: 0.5
         noise_scale: 0.6669999957084656
         path: models/glow-tts/en/pretrained.pth
         param_config_path: models/glow-tts/en/config.json
@@ -49,9 +49,8 @@ inference:
     save_cache: true
     cache_save_dir: models/cache
 normalization:
-  language: en
-  pipeline:
-  - normalise_simple
+  language: de
+  pipeline: []
 postprocessing:
   silence_secs: 0.25
   pipeline: []
