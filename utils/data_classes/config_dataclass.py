@@ -1,8 +1,8 @@
-import json
 from dataclasses import dataclass, field
 from typing import List
 
 from dataclasses_json import dataclass_json
+
 from ondewo_grpc.ondewo.t2s import text_to_speech_pb2
 
 
