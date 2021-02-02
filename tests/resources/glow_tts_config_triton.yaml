@@ -1,7 +1,7 @@
 # ONDEWO T2S batch server configuration
 
 batch_size: 8
-use_gpu: false
+use_gpu: true
 length_scale: 1.0
 noise_scale: 0.667
 cleaners: ["german_cleaners"]
