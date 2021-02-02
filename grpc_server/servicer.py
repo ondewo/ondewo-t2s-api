@@ -10,7 +10,7 @@ import numpy as np
 import soundfile as sf
 from ondewologging.decorators import Timer
 from ondewologging.logger import logger_console as logger
-from ruamel import yaml
+from ruamel.yaml import YAML
 
 from grpc_server.t2s_pipeline_manager import T2SPipelineManager
 from grpc_server.pipeline_utils import create_t2s_pipeline_from_config, generate_config_path, \
@@ -21,6 +21,10 @@ from normalization.postprocessor import Postprocessor
 from ondewo_grpc.ondewo.t2s import text_to_speech_pb2_grpc, text_to_speech_pb2
 from utils.audio_converter import convert_to_format
 from utils.data_classes.config_dataclass import T2SConfigDataclass
+
+
+yaml = YAML()
+yaml.default_flow_style = False
 
 
 class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
@@ -152,7 +156,7 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
         config_file_path: str = generate_config_path()
         with open(config_file_path, 'w') as f:
             config_dict = config.to_dict()  # type: ignore
-            yaml.safe_dump(config_dict, f)
+            yaml.dump(config_dict, f)
 
         return text_to_speech_pb2.T2sPipelineId(id=t2s_pipeline_id)
 
@@ -193,5 +197,5 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
         config_file_path = get_config_path_by_id(config.id) or generate_config_path()
         with open(config_file_path, 'w') as f:
             config_dict = config.to_dict()  # type: ignore
-            yaml.safe_dump(config_dict, f)
+            yaml.dump(config_dict, f)
         return empty_pb2.Empty()

@@ -14,7 +14,7 @@ if not DEMO_URL:
     raise EnvironmentError("No DEMO_URL environmental variable found. "
                            "Please set the DEMO_URL variable. "
                            "For local development, the DEMO_URL should be set to "
-                           "http://0.0.0.0:40040")
+                           "http://0.0.0.0:50540")
 GRPC_HOST: str = os.getenv("GRPC_HOST", default="")
 if not GRPC_HOST:
     raise EnvironmentError("No GRPC_HOST environmental variable found. "
@@ -25,7 +25,7 @@ GRPC_PORT: str = os.getenv("GRPC_PORT", default="")
 if not GRPC_PORT:
     raise EnvironmentError("No GRPC_PORT environmental variable found. "
                            "Please set this variable to the port of the T2S server. "
-                           "For local development, port is usually set to 50002")
+                           "For local development, port is usually set to 50555")
 
 # ===============================
 from demo_server import routes

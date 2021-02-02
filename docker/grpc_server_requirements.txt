@@ -16,4 +16,4 @@ pyroomacoustics
 python_speech_features
 pysndfx
 transformers==3.5.0
-
+pydub==0.24.1

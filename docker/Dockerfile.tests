@@ -10,10 +10,11 @@ RUN pip install -r test_requirements.txt --ignore-installed
 WORKDIR /opt/ondewo-t2s
 COPY ./normalization ./normalization
 COPY ./inference ./inference
+COPY ./grpc_server ./grpc_server
 COPY ./rest_server ./rest_server
 COPY ./utils ./utils
 COPY ./tests ./tests
 COPY ./config ./config
 
 ENV PYTHONPATH /opt/ondewo-t2s
-ENTRYPOINT [ "python", "-m", "pytest", "-vv", "--capture=no", "--junit-xml=log/${TESTFILE}", "--ignore=tests/e2e", "--ignore=tests/integration"]
+ENTRYPOINT [ "python", "-m", "pytest", "-vv", "--capture=no", "--junit-xml=log/${TESTFILE}" ]
