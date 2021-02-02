@@ -48,15 +48,14 @@ COPY ./grpc_server ./grpc_server
 COPY ./ondewo-t2s-api ./ondewo-t2s-api
 COPY ./Makefile .
 
-RUN mkdir ondewo_grpc
 RUN make generate_ondewo_protos
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=3 \
-	CMD curl --fail http://localhost:40015/health/ready || exit 1
+	CMD curl --fail http://localhost:50550/health/ready || exit 1
 
 ENV PYTHONPATH /opt/ondewo-t2s
 ENV FLASK_APP rest_server
-CMD flask run --host=0.0.0.0 --port=40015
+CMD flask run --host=0.0.0.0 --port=50550
 
 
 # ========Cythonization Image=======

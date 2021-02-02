@@ -34,4 +34,4 @@ RUN make generate_ondewo_protos
 
 ENV PYTHONPATH /opt/ondewo-t2s
 ENV FLASK_APP demo_server
-CMD flask run --host=0.0.0.0 --port=40040
+CMD flask run --host=0.0.0.0 --port=50540

@@ -2,8 +2,8 @@ IMAGE_TAG_GRPC="dockerregistry.ondewo.com:5000/ondewo-t2s-grpc-server-release:de
 IMAGE_TAG_DEMO="dockerregistry.ondewo.com:5000/ondewo-t2s-demo-server:develop"
 DEMO_CONTAINER="ondewo-t2s-demo-server"
 GRPC_CONTAINER="ondewo-t2s-grpc-server"
-PORT_DEMO=40040
-PORT_GRPC=50002
+PORT_DEMO=50540
+PORT_GRPC=50555
 HOST_GRPC="localhost"
 
 build_demo_server: export SSH_PRIVATE_KEY="$$(cat ~/.ssh/id_rsa)"
