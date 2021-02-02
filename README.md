@@ -74,3 +74,4 @@ Once you are done implementing a feature, follow the procedure below (activate t
 ### Maintenance
 - currently the models directory is on dgxA100
 - the pipeline is set to run on dgxA100
+- GPU device is hardcoded to 0 mostly
