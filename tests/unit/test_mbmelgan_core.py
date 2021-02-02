@@ -33,7 +33,7 @@ class MockMBMelGAN(MBMelGANCore):
 
 @pytest.fixture(scope="function")
 def mbmelgan_mocked() -> MBMelGANCore:
-    model_config = load_model_conf(Path("tests", "resources", "test_mbmelgan_config.yaml"))
+    model_config = load_model_conf(Path("tests", "resources", "mbmelgan_config_triton.yaml"))
 
     return MockMBMelGAN(config=model_config)
 

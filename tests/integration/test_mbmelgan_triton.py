@@ -18,7 +18,7 @@ def load_model_conf(path: Union[Path, str]) -> MbMelganTritonDataclass:
 
 @pytest.fixture(scope="session")
 def mbmelgan_triton() -> MBMelGANTriton:
-    model_config = load_model_conf(Path("tests", "resources", "test_mbmelgan_config.yaml"))
+    model_config = load_model_conf(Path("tests", "resources", "mbmelgan_config_triton.yaml"))
 
     return MBMelGANTriton(config=model_config)
 
