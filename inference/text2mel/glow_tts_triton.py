@@ -16,8 +16,10 @@ class GlowTTSTriton(GlowTTSCore):
         super(GlowTTSTriton, self).__init__(config=config)
         # triton config
         assert isinstance(self.config, GlowTTSTritonDataclass)
-        self.triton_client = InferenceServerClient(url=self.config.triton_url)
         self.triton_model_name: str = self.config.triton_model_name
+        logger.info(f"Trying to connect with triton server with url {self.config.triton_url}, "
+                    f"model name {self.triton_model_name}")
+        self.triton_client = InferenceServerClient(url=self.config.triton_url)
         triton_utils.check_triton_online(self.triton_client, self.triton_model_name)
         self.batch_size = self.triton_client.get_model_config(self.triton_model_name, as_json=True)[
             "config"].get("max_batch_size", 1)

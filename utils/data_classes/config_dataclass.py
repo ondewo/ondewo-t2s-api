@@ -156,16 +156,41 @@ class HiFiGanDataclass:
 
 @dataclass_json
 @dataclass
+class HiFiGanTritonDataclass:
+    config_path: str
+    triton_model_name: str
+    triton_url: str
+
+    def to_proto(self) -> text_to_speech_pb2.HiFiGanTriton:
+        return text_to_speech_pb2.HiFiGanTriton(
+            config_path=self.config_path,
+            triton_url=self.triton_url,
+            triton_model_name=self.triton_model_name,
+        )
+
+    @classmethod
+    def from_proto(cls, proto: text_to_speech_pb2.HiFiGanTriton) -> 'HiFiGanTritonDataclass':
+        return cls(
+            config_path=proto.config_path,
+            triton_url=proto.triton_url,
+            triton_model_name=proto.triton_model_name,
+        )
+
+
+@dataclass_json
+@dataclass
 class Mel2AudioDataclass:
     type: str
     mb_melgan_triton: MbMelganTritonDataclass
     hifi_gan: HiFiGanDataclass
+    hifi_gan_triton: HiFiGanTritonDataclass
 
     def to_proto(self) -> text_to_speech_pb2.Mel2Audio:
         return text_to_speech_pb2.Mel2Audio(
             type=self.type,
             mb_melgan_triton=self.mb_melgan_triton.to_proto(),
-            hifi_gan=self.hifi_gan.to_proto()
+            hifi_gan=self.hifi_gan.to_proto(),
+            hifi_gan_triton=self.hifi_gan_triton.to_proto(),
         )
 
     @classmethod
@@ -173,7 +198,8 @@ class Mel2AudioDataclass:
         return cls(
             type=proto.type,
             mb_melgan_triton=MbMelganTritonDataclass.from_proto(proto=proto.mb_melgan_triton),
-            hifi_gan=HiFiGanDataclass.from_proto(proto=proto.hifi_gan)
+            hifi_gan=HiFiGanDataclass.from_proto(proto=proto.hifi_gan),
+            hifi_gan_triton=HiFiGanTritonDataclass.from_proto(proto=proto.hifi_gan_triton)
         )
 
 

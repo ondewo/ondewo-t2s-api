@@ -1,14 +1,13 @@
-from typing import Dict, Any
+from typing import Dict
 
 import numpy as np
 import torch
 from hifi_gan.env import AttrDict
 from hifi_gan.models import Generator
+from ondewologging.decorators import Timer
+from ondewologging.logger import logger_console as logger
 
 from inference.mel2audio.hifigan_core import HiFiGANCore
-from ondewologging.logger import logger_console as logger
-from ondewologging.decorators import Timer
-
 from utils.data_classes.config_dataclass import HiFiGanDataclass
 
 
@@ -18,7 +17,9 @@ class HiFiGan(HiFiGANCore):
 
     def __init__(self, config: HiFiGanDataclass):
         super(HiFiGan, self).__init__(config=config)
+        assert isinstance(self.config, HiFiGanDataclass)
         self.model_path = self.config.model_path
+        self.use_gpu = self.config.use_gpu
         self.hcf = AttrDict(self.hifi_config)
 
         # define the device cpu or gpu
@@ -52,7 +53,7 @@ class HiFiGan(HiFiGANCore):
 
     @Timer(log_arguments=False)
     def _get_model(self) -> Generator:
-        key_word = f'{self.model_path}-{"cuda"*self.config.use_gpu+"cpu"*(not self.config.use_gpu)}'
+        key_word = f'{self.model_path}-{"cuda" * self.use_gpu + "cpu" * (not self.use_gpu)}'
         if key_word in self.models_cache:
             logger.info(f"Model is in the cache with a key {key_word}.")
             return self.models_cache[key_word]

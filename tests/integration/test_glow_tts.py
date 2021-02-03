@@ -4,11 +4,10 @@ import numpy as np
 import pytest
 from ruamel.yaml import YAML
 
-from inference.text2mel.constants_text2mel import BATCH_SIZE, CLEANERS
 from inference.text2mel.glow_tts_core import GlowTTSCore
 from inference.text2mel.glow_tts_generator import GlowTTS
 from inference.text2mel.glow_tts_triton import GlowTTSTriton
-from utils.data_classes.config_dataclass import T2SConfigDataclass, GlowTTSDataclass, GlowTTSTritonDataclass
+from utils.data_classes.config_dataclass import GlowTTSDataclass, GlowTTSTritonDataclass
 
 yaml = YAML(typ="safe")
 
