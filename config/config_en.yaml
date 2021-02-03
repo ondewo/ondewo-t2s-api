@@ -44,7 +44,7 @@ inference:
       hifi_gan_triton:
         config_path: models/HiFiGan/universal/config.json
         triton_model_name: hifi_tts
-        triton_url: localhost:8001
+        triton_url: localhost:50511
   caching:
     active: false
     memory_cache_max_size: 20

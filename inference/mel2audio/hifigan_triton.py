@@ -1,4 +1,5 @@
 import numpy as np
+from ondewologging.logger import logger_console as logger
 from tritonclient.grpc import InferenceServerClient, InferInput, InferRequestedOutput, InferResult
 
 from inference.mel2audio.hifigan_core import HiFiGANCore
@@ -12,6 +13,8 @@ class HiFiGanTriton(HiFiGANCore):
         super().__init__(config=config)
         assert isinstance(self.config, HiFiGanTritonDataclass)
         self.triton_model_name: str = self.config.triton_model_name
+        logger.info(f"Trying to connect with triton server with url {self.config.triton_url}, "
+                    f"model name {self.triton_model_name}")
         self.triton_client = InferenceServerClient(url=self.config.triton_url)
         self.batch_size = self.triton_client.get_model_config(
             self.triton_model_name, as_json=True)["config"]["max_batch_size"]

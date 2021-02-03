@@ -3,7 +3,7 @@ mb_melgan_triton:
   config_path: models/mb_melgan/en/config.yml
   stats_path: models/mb_melgan/en/stats.npy
   triton_model_name: mb_melgan
-  triton_url: localhost:8001
+  triton_url: localhost:50511
 hifi_gan:
   use_gpu: true
   batch_size: 20
@@ -12,4 +12,4 @@ hifi_gan:
 hifi_gan_triton:
   config_path: models/HiFiGan/universal/config.json
   triton_model_name: hifi_tts
-  triton_url: localhost:8001
+  triton_url: localhost:50511
