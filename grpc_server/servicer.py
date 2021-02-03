@@ -71,10 +71,10 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
         # extract parameters from request
         text = request.text
         sample_rate: int = request.sample_rate or 22050
-        pcm: str = text_to_speech_pb2.SynthesizeRequest.PCM.Name(request.pcm)
+        pcm: str = text_to_speech_pb2.SynthesizeRequest.Pcm.Name(request.pcm)
         length_scale: Optional[float] = request.length_scale or None
         noise_scale: Optional[float] = request.noise_scale or None
-        audio_format: str = text_to_speech_pb2.AUDIO_FORMAT.Name(request.audio_format)
+        audio_format: str = text_to_speech_pb2.AudioFormat.Name(request.audio_format)
 
         # handle case of ogg format
         if audio_format == 'ogg':

@@ -1,19 +1,18 @@
 import os
 from concurrent import futures
-from typing import Optional, List, Dict, Any
+from typing import List, Dict, Any
 
 import grpc
 from grpc_reflection.v1alpha import reflection
 from ondewologging.logger import logger_console as logger
 from ruamel.yaml import YAML
 
-from grpc_server.constants import CONFIG_DIR_ENV
+from grpc_server.pipeline_utils import get_list_of_config_files, create_t2s_pipeline_from_config, \
+    get_config_dir
 from grpc_server.servicer import Text2SpeechServicer
 from grpc_server.t2s_pipeline_manager import T2SPipelineManager
-from grpc_server.pipeline_utils import get_list_of_config_files, create_t2s_pipeline_from_config, get_config_dir
 from ondewo_grpc.ondewo.t2s import text_to_speech_pb2_grpc, text_to_speech_pb2
 from utils.data_classes.config_dataclass import T2SConfigDataclass
-
 
 yaml = YAML()
 yaml.default_flow_style = False
