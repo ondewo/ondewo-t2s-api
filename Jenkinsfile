@@ -53,7 +53,7 @@ pipeline {
                         ''', label: 'set triton container name in test configs')
                         sh(script: '''for filename in $(ls ${PWD}/tests/resources/configs | grep yaml)
                                     do
-                                        full_fp=${PWD}/tests/resources/\$filename
+                                        full_fp=${PWD}/tests/resources/configs/\$filename
                                         sed -i "s/triton_url.*/triton_url: ${TRITON_CONTAINER}:50511/" \$full_fp
                                     done
                         ''', label: 'set triton container name in test configs')
