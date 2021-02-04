@@ -4,7 +4,15 @@
 
 This repository contains the original interface definitions of public ONDEWO APIs that support gRPC protocols. Reading the original interface definitions can provide a better understanding of ONDEWO APIs and help you to utilize them more efficiently. You can also use these definitions with open source tools to generate client libraries, documentation, and other artifacts.
 
-API client libraries can be built directly from files in this repo using [TODO:link to client builder example](pass)
+The core componenets of all the client libraries are built directly from files in this repo using [the proto compiler.](https://github.com/ondewo/ondewo-proto-compiler)
+
+For an end-user, the APIS in this repo function mostly as documentation for the endpoints. For specific implementations, look in the following repos for working implementations:
+* [Python](https://github.com/ondewo/ondewo-t2s-client-python)
+* [Angular](https://github.com/ondewo/ondewo-survey-client-angular)
+* [JavaScript](https://github.com/ondewo/ondewo-survey-client-javascript)
+* [TypeScript](https://github.com/ondewo/ondewo-survey-client-typescript)
+
+Please note that some of these implementations are works-in-progress. The repo will make clear the status of the implementation.
 
 ## Overview
 
@@ -14,7 +22,7 @@ There are several ways of accessing APIs:
 
 1.  Protocol Buffers over gRPC: You can access APIs published in this repository through [GRPC](https://github.com/grpc), which is a high-performance binary RPC protocol over HTTP/2. It offers many useful features, including request/response multiplex and full-duplex streaming.
 
-2.  [ONDEWO Client Libraries](pass):
+2.  ONDEWO Client Libraries:
 You can use these libraries to access ONDEWO Cloud APIs. They are based on gRPC for better performance and provide idiomatic client surface for better developer experience.
 
 ## Discussions
@@ -36,4 +44,4 @@ Please use the issue tracker in this repo for discussions about this API, or the
 
 ## Generate gRPC Source Code
 
-API client libraries can be built directly from files in this repo using [TODO:link to client builder example](pass)
+API client libraries can be built directly from files in this repo using [the proto compiler.](https://github.com/ondewo/ondewo-proto-compiler)
