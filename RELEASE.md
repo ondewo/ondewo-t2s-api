@@ -1,13 +1,19 @@
 # Release History
 *****************
 
-## Release ONDEWO S2T APIS 0.2.1
+## Release ONDEWO APIS 0.2.2
+
+### Improvements
+Updated README.
+
+*****************
+## Release ONDEWO APIS 0.2.1
 
 ### Bug fixes
 Updated licenses.
 
 *****************
-## Release ONDEWO T2S APIS 0.2.0
+## Release ONDEWO APIS 0.2.0
 
 ### New Features
 
@@ -29,7 +35,7 @@ No longer closed source.
 
 *****************
 
-## Release ONDEWO T2S APIS 0.1.0
+## Release ONDEWO APIS 0.1.0
 
 ### New Features
 
