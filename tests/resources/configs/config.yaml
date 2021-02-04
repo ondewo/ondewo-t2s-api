@@ -30,7 +30,7 @@ inference:
         triton_url: localhost:50511
         triton_model_name: glow_tts_thorsten
     mel2audio:
-      type: hifi_gan_triton
+      type: hifi_gan
       mb_melgan_triton:
         config_path: models/mb_melgan/en/config.yml
         stats_path: models/mb_melgan/en/stats.npy
