@@ -1,3 +1,5 @@
+from typing import Dict, Any
+
 import numpy as np
 from ondewologging.logger import logger_console as logger
 from tritonclient.grpc import InferenceServerClient, InferInput, InferRequestedOutput, InferResult
@@ -16,8 +18,13 @@ class HiFiGanTriton(HiFiGANCore):
         logger.info(f"Trying to connect with triton server with url {self.config.triton_url}, "
                     f"model name {self.triton_model_name}")
         self.triton_client = InferenceServerClient(url=self.config.triton_url)
-        self.batch_size = self.triton_client.get_model_config(
-            self.triton_model_name, as_json=True)["config"]["max_batch_size"]
+        self.triton_config: Dict[str, Any] = self.triton_client.get_model_config(
+            self.triton_model_name, as_json=True)
+        self.batch_size = self.triton_config["config"]["max_batch_size"]
+        self.frequency = self.triton_config["config"]["input"][0]["dims"][0]
+        # warm up model
+        self._generate(mel=np.zeros((1, int(self.frequency), 10), dtype=np.float32))
+        logger.info(f"Triton inference server for the model {self.triton_model_name} is ready.")
 
     def _generate(self, mel: np.ndarray) -> np.ndarray:
         """
