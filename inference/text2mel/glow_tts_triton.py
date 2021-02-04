@@ -23,9 +23,9 @@ class GlowTTSTriton(GlowTTSCore):
         triton_utils.check_triton_online(self.triton_client, self.triton_model_name)
         self.batch_size = self.triton_client.get_model_config(self.triton_model_name, as_json=True)[
             "config"].get("max_batch_size", 1)
-        logger.info(f"Triton inference server for the model {self.triton_model_name} is ready.")
         # warm up model
         self._generate(texts=['dummy_text'], length_scale=1.0, noise_scale=0.667)
+        logger.info(f"Triton inference server for the model {self.triton_model_name} is ready.")
 
     def _generate(self,
                   texts: List[str],
