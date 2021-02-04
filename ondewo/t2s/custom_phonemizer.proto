@@ -1,0 +1,51 @@
+// Copyright 2020 ONDEWO GmbH
+// Licensed under the ONDEWO GmbH license, Version 1.0 (the "License");
+// you must not use this file except in compliance with the License.
+// You must obtain a copy of the License at
+// office@ondewo.com
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package ondewo.t2s;
+import "google/protobuf/empty.proto";
+
+// endpoints of custom phonemizer
+service CustomPhonemizer{
+    rpc GetT2sPipeline (PhonemizerId) returns (CustomPhonemizer) {
+    };
+    rpc CreateT2sPipeline (CustomPhonemizer) returns (PhonemizerId) {
+    };
+    rpc DeleteT2sPipeline (PhonemizerId) returns (google.protobuf.Empty) {
+    };
+    rpc UpdateT2sPipeline (CustomPhonemizer) returns (google.protobuf.Empty) {
+    };
+    rpc ListT2sPipelines (ListCustomPhomenizerRequest) returns (ListCustomPhomenizerResponse) {
+    };
+}
+
+message PhonemizerId{
+    string id = 1;
+}
+
+message CustomPhonemizer {
+    string id = 1;
+    repeated Map maps = 2;
+}
+
+message Map{
+    string word = 1;
+    repeated string phoneme_groups = 2;
+}
+
+message ListCustomPhomenizerResponse {
+    repeated CustomPhonemizer phonemizers = 1;
+}
+
+message ListCustomPhomenizerRequest{
+    repeated string pipeline_ids = 1;
+}
