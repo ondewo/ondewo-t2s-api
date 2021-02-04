@@ -1,6 +1,12 @@
 # Release History
 *****************
 
+## Release ONDEWO S2T APIS 0.2.1
+
+### Bug fixes
+Updated licenses.
+
+*****************
 ## Release ONDEWO T2S APIS 0.2.0
 
 ### New Features
