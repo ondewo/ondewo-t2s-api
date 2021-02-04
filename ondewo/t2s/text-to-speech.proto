@@ -29,6 +29,7 @@ service Text2Speech {
     rpc ListT2sPipelines (ListT2sPipelinesRequest) returns (ListT2sPipelinesResponse) {
     };
 }
+
 ////////////////
 // SYNTHESIZE //
 ////////////////
@@ -38,7 +39,7 @@ message SynthesizeRequest {
     float length_scale = 3; // this parameter defines the speed of the audio. Should not be very much off 1.0
     float noise_scale = 4; // can be from 0.0 to 1. Defines the noise in the generated audio
     int32 sample_rate = 5; // by default 22050 sample rate of the generated wav file
-    enum PCM {
+    enum Pcm {
         PCM_16 = 0;
         PCM_24 = 1;
         PCM_32 = 2;
@@ -47,11 +48,11 @@ message SynthesizeRequest {
         FLOAT = 5;
         DOUBLE = 6;
     }
-    PCM pcm = 6; // pulse-code modulation of the wav file, by default 16
-    AUDIO_FORMAT audio_format = 7;
+    Pcm pcm = 6; // pulse-code modulation of the wav file, by default 16
+    AudioFormat audio_format = 7;
 }
 
-enum AUDIO_FORMAT {
+enum AudioFormat {
     wav = 0;
     flac = 1;
     caf = 2;
@@ -66,7 +67,7 @@ message SynthesizeResponse {
     float generation_time = 2;
     float audio_length = 3;
     string t2s_pipeline_id = 4;
-    AUDIO_FORMAT audio_format = 5;
+    AudioFormat audio_format = 5;
     string text = 6;
     int32 sample_rate = 7;
 }
@@ -158,8 +159,9 @@ message GlowTTSTriton {
 
 message Mel2Audio {
     string type = 1;
-    MbMelganTriton mb_melgan_triton = 3;
-    HiFiGan hifi_gan = 4;
+    MbMelganTriton mb_melgan_triton = 2;
+    HiFiGan hifi_gan = 3;
+    HiFiGanTriton hifi_gan_triton = 4;
 }
 
 message HiFiGan {
@@ -167,6 +169,12 @@ message HiFiGan {
     int64 batch_size = 2;
     string config_path = 3;
     string model_path = 4;
+}
+
+message HiFiGanTriton {
+    string config_path = 1;
+    string triton_model_name = 2;
+    string triton_url = 3;
 }
 
 message MbMelganTriton {
