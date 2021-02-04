@@ -26,7 +26,7 @@ inference:
         noise_scale: 0.6669999957084656
         cleaners: []
         max_text_length: 100
-        param_config_path: models/glow-tts/de/config.json
+        param_config_path: models/glow-tts/de/config_blank.json
         triton_url: localhost:50511
         triton_model_name: glow_tts
     mel2audio:
