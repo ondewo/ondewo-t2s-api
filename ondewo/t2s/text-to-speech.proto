@@ -75,6 +75,7 @@ message SynthesizeResponse {
 ////////////////////////
 // LIST T2S PIPELINES //
 ////////////////////////
+
 message ListT2sPipelinesRequest {
     repeated string languages = 1;
     repeated string speaker_sexes = 2;
