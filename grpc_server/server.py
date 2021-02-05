@@ -7,11 +7,13 @@ from grpc_reflection.v1alpha import reflection
 from ondewologging.logger import logger_console as logger
 from ruamel.yaml import YAML
 
+from grpc_server.phonemizer_servicer import CustomPhomenizerServicer
 from grpc_server.pipeline_utils import get_list_of_config_files, create_t2s_pipeline_from_config, \
     get_config_dir
-from grpc_server.servicer import Text2SpeechServicer
+from grpc_server.t2s_servicer import Text2SpeechServicer
 from grpc_server.t2s_pipeline_manager import T2SPipelineManager
-from ondewo_grpc.ondewo.t2s import text_to_speech_pb2_grpc, text_to_speech_pb2
+from ondewo_grpc.ondewo.t2s import text_to_speech_pb2_grpc, text_to_speech_pb2, custom_phonemizer_pb2_grpc, \
+    custom_phonemizer_pb2
 from utils.data_classes.config_dataclass import T2SConfigDataclass
 
 yaml = YAML()
@@ -27,8 +29,11 @@ class Server:
 
         self.server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
         text_to_speech_pb2_grpc.add_Text2SpeechServicer_to_server(Text2SpeechServicer(), self.server)
+        custom_phonemizer_pb2_grpc.add_CustomPhonemizersServicer_to_server(CustomPhomenizerServicer(),
+                                                                           self.server)
         SERVICE_NAMES = (
             text_to_speech_pb2.DESCRIPTOR.services_by_name['Text2Speech'].full_name,
+            custom_phonemizer_pb2.DESCRIPTOR.services_by_name['CustomPhonemizers'].full_name,
             reflection.SERVICE_NAME,
         )
         reflection.enable_server_reflection(SERVICE_NAMES, self.server)
