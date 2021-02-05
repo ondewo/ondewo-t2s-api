@@ -15,16 +15,16 @@ package ondewo.t2s;
 import "google/protobuf/empty.proto";
 
 // endpoints of custom phonemizer
-service CustomPhonemizer{
-    rpc GetT2sPipeline (PhonemizerId) returns (CustomPhonemizer) {
+service CustomPhonemizers{
+    rpc GetCustomPhonemizer (PhonemizerId) returns (CustomPhonemizer) {
     };
-    rpc CreateT2sPipeline (CustomPhonemizer) returns (PhonemizerId) {
+    rpc CreateCustomPhonemizer (CustomPhonemizer) returns (PhonemizerId) {
     };
-    rpc DeleteT2sPipeline (PhonemizerId) returns (google.protobuf.Empty) {
+    rpc DeleteCustomPhonemizer (PhonemizerId) returns (google.protobuf.Empty) {
     };
-    rpc UpdateT2sPipeline (CustomPhonemizer) returns (google.protobuf.Empty) {
+    rpc UpdateCustomPhonemizer (UpdateCustomPhonemizerRequest) returns (CustomPhonemizer) {
     };
-    rpc ListT2sPipelines (ListCustomPhomenizerRequest) returns (ListCustomPhomenizerResponse) {
+    rpc ListCustomPhonemizer (ListCustomPhomenizerRequest) returns (ListCustomPhomenizerResponse) {
     };
 }
 
@@ -48,4 +48,14 @@ message ListCustomPhomenizerResponse {
 
 message ListCustomPhomenizerRequest{
     repeated string pipeline_ids = 1;
+}
+
+message UpdateCustomPhonemizerRequest{
+    enum UpdateMethod{
+        replace = 0;
+        add_hard = 1;
+        add_soft = 2;
+    }
+    UpdateMethod update_method = 1;
+    repeated Map maps = 2;
 }
