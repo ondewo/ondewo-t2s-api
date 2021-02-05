@@ -147,8 +147,10 @@ make package_release: package_git_revision_and_version
 	mkdir -p ${RELEASE_FOLDER}
 
 	# tar and zip images
-	docker pull ${PUSH_NAME_RELEASE}
-	docker save ${PUSH_NAME_RELEASE} | gzip > ${RELEASE_FOLDER}/ondewo-t2s-rest-server-release-${SANITIZED_DOCKER_TAG_NAME}.tar.gz
+	docker pull ${PUSH_NAME_RELEASE_REST}
+	docker pull ${PUSH_NAME_RELEASE_GRPC}
+	docker save ${PUSH_NAME_RELEASE_REST} | gzip > ${RELEASE_FOLDER}/ondewo-t2s-rest-server-release-${SANITIZED_DOCKER_TAG_NAME}.tar.gz
+	docker save ${PUSH_NAME_RELEASE_GRPC} | gzip > ${RELEASE_FOLDER}/ondewo-t2s-grpc-server-release-${SANITIZED_DOCKER_TAG_NAME}.tar.gz
 
 	# add configs
 	rsync -av config package --exclude demo
