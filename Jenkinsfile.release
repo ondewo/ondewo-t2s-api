@@ -14,7 +14,7 @@ pipeline {
         RELEASE_FOLDER = "releases/${SANITIZED_DOCKER_TAG_NAME}"
 
         TTS_NAME_REST = "${IMAGE_NAME_RELASE_REST}:${IMAGE_TAG}"
-        TTS_NAME_GRPC = "${IMAGE_NAME_RELASE_REST}:${IMAGE_TAG}"
+        TTS_NAME_GRPC = "${IMAGE_NAME_RELASE_GRPC}:${IMAGE_TAG}"
         TTS_NAME_TESTS = "${IMAGE_NAME_TESTS}:${IMAGE_TAG}"
         TTS_NAME_CODE_CHECK = "${IMAGE_NAME_CODE_CHECK}:${IMAGE_TAG}"
         PUSH_NAME_RELEASE_REST = "dockerregistry.ondewo.com:5000/${TTS_NAME_REST}"
@@ -35,8 +35,8 @@ pipeline {
             environment {
                 ssh_key_file = credentials('devops_ondewo_idrsa')
                 TRITON_CONTAINER = "ondewo-t2s-triton-${UNIQUE_BUILD_ID}"
-                REST_CONTAINER = "${IMAGE_NAME_REST}-${UNIQUE_BUILD_ID}"
-                GRPC_CONTAINER = "${IMAGE_NAME_GRPC}-${UNIQUE_BUILD_ID}"
+                REST_CONTAINER = "${IMAGE_NAME_RELASE_REST}-${UNIQUE_BUILD_ID}"
+                GRPC_CONTAINER = "${IMAGE_NAME_RELASE_GRPC}-${UNIQUE_BUILD_ID}"
                 A100_MODEL_DIR = '/home/voice_user/data/jenkins/t2s/models'
                 A100_GPU = 'device=0'
                 A100_GPU1 = 'device=1'
