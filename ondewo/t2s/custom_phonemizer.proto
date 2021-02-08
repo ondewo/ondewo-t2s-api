@@ -16,13 +16,13 @@ import "google/protobuf/empty.proto";
 
 // endpoints of custom phonemizer
 service CustomPhonemizers{
-    rpc GetCustomPhonemizer (PhonemizerId) returns (CustomPhonemizer) {
+    rpc GetCustomPhonemizer (PhonemizerId) returns (CustomPhonemizerProto) {
     };
-    rpc CreateCustomPhonemizer (CustomPhonemizer) returns (PhonemizerId) {
+    rpc CreateCustomPhonemizer (CustomPhonemizerProto) returns (PhonemizerId) {
     };
     rpc DeleteCustomPhonemizer (PhonemizerId) returns (google.protobuf.Empty) {
     };
-    rpc UpdateCustomPhonemizer (UpdateCustomPhonemizerRequest) returns (CustomPhonemizer) {
+    rpc UpdateCustomPhonemizer (UpdateCustomPhonemizerRequest) returns (CustomPhonemizerProto) {
     };
     rpc ListCustomPhonemizer (ListCustomPhomenizerRequest) returns (ListCustomPhomenizerResponse) {
     };
@@ -32,18 +32,18 @@ message PhonemizerId{
     string id = 1;
 }
 
-message CustomPhonemizer {
+message CustomPhonemizerProto {
     string id = 1;
     repeated Map maps = 2;
 }
 
 message Map{
     string word = 1;
-    repeated string phoneme_groups = 2;
+    string phoneme_groups = 2;
 }
 
 message ListCustomPhomenizerResponse {
-    repeated CustomPhonemizer phonemizers = 1;
+    repeated CustomPhonemizerProto phonemizers = 1;
 }
 
 message ListCustomPhomenizerRequest{
@@ -51,11 +51,12 @@ message ListCustomPhomenizerRequest{
 }
 
 message UpdateCustomPhonemizerRequest{
+    string id = 1;
     enum UpdateMethod{
-        replace = 0;
-        add_hard = 1;
-        add_soft = 2;
+        extend_soft = 0;
+        extend_hard = 1;
+        replace = 2;
     }
-    UpdateMethod update_method = 1;
-    repeated Map maps = 2;
+    UpdateMethod update_method = 2;
+    repeated Map maps = 3;
 }

@@ -197,6 +197,7 @@ message Caching {
 message Normalization {
     string language = 1;
     repeated string pipeline = 2;
+    string custom_phonemizer_id = 3;
 }
 
 message Postprocessing {
