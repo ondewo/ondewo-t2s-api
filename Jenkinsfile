@@ -7,11 +7,11 @@ pipeline {
         SANITIZED_BRANCH_NAME = "${env.BRANCH_NAME}".replace('/', '-').replace('.', '-')
         IMAGE_TAG = "${SANITIZED_BRANCH_NAME}"
 
-        IMAGE_NAME = 'ondewo-t2s'
         IMAGE_NAME_REST = 'ondewo-t2s-rest-server'
         IMAGE_NAME_GRPC = 'ondewo-t2s-grpc-server'
         IMAGE_NAME_TESTS = 'ondewo-t2s-tests'
         IMAGE_NAME_CODE_CHECK = 'ondewo-t2s-code-check'
+
         TTS_NAME_REST = "${IMAGE_NAME_REST}:${IMAGE_TAG}"
         TTS_NAME_GRPC = "${IMAGE_NAME_GRPC}:${IMAGE_TAG}"
         TTS_NAME_TESTS = "${IMAGE_NAME_TESTS}:${IMAGE_TAG}"

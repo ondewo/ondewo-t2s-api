@@ -139,7 +139,7 @@ package_git_revision_and_version:
 	echo "" >> package/VERSION.md
 	echo "git revision: ` git rev-parse --short HEAD`" >> package/VERSION.md
 
-make package_release: package_git_revision_and_version
+package_release: package_git_revision_and_version
 	echo "Who am I: `whoami`"
 	echo "Where am I: `pwd`"
 	echo "My environment variables: `env`"
