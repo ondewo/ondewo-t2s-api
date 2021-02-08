@@ -1,8 +1,9 @@
 import re
-from typing import List, Tuple
+from typing import List, Tuple, Type, Optional
 
 from ondewologging.logger import logger_console as logger
 
+from normalization.custom_phonemizer import CustomPhonemizer
 from normalization.normalizer_interface import NormalizerInterface
 from normalization.text_splitter import TextSplitter
 from utils.data_classes.config_dataclass import NormalizationDataclass
@@ -16,6 +17,8 @@ class NormalizerPipeline:
         self.normalizer: NormalizerInterface = self._get_normalizer(config=config)
         self.pipeline_definition: List[str] = self.get_pipeline_definition(config)
         self.splitter = TextSplitter
+        self.phonemizer: Optional[Type[CustomPhonemizer]] = \
+            CustomPhonemizer if config.custom_phonemizer_id else None
 
     @classmethod
     def _get_normalizer(cls, config: NormalizationDataclass) -> NormalizerInterface:
@@ -54,6 +57,8 @@ class NormalizerPipeline:
 
     def get_pipeline_definition(self, config: NormalizationDataclass) -> List[str]:
         pipeline_definition: List[str] = config.pipeline
+        if self.phonemizer:
+            pipeline_definition += [self.phonemizer.get_phonemizer_lookup(config.custom_phonemizer_id)]
         if not pipeline_definition:
             logger.warning('Preprocessing pipeline is not defined or empty. No preprocessing will be applied')
             return []

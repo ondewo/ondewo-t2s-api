@@ -283,18 +283,21 @@ class InferenceDataclass:
 class NormalizationDataclass:
     language: str
     pipeline: List[str]
+    custom_phonemizer_id: str
 
     def to_proto(self) -> text_to_speech_pb2.Normalization:
         return text_to_speech_pb2.Normalization(
             language=self.language,
-            pipeline=self.pipeline
+            pipeline=self.pipeline,
+            custom_phonemizer_id=self.custom_phonemizer_id,
         )
 
     @classmethod
     def from_proto(cls, proto: text_to_speech_pb2.Normalization) -> 'NormalizationDataclass':
         return cls(
             language=proto.language,
-            pipeline=list(proto.pipeline)
+            pipeline=list(proto.pipeline),
+            custom_phonemizer_id=proto.custom_phonemizer_id,
         )
 
 
