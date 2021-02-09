@@ -18,7 +18,7 @@ import "google/protobuf/empty.proto";
 service CustomPhonemizers{
     rpc GetCustomPhonemizer (PhonemizerId) returns (CustomPhonemizerProto) {
     };
-    rpc CreateCustomPhonemizer (CustomPhonemizerProto) returns (PhonemizerId) {
+    rpc CreateCustomPhonemizer (CreateCustomPhonemizerRequest) returns (PhonemizerId) {
     };
     rpc DeleteCustomPhonemizer (PhonemizerId) returns (google.protobuf.Empty) {
     };
@@ -53,10 +53,15 @@ message ListCustomPhomenizerRequest{
 message UpdateCustomPhonemizerRequest{
     string id = 1;
     enum UpdateMethod{
-        extend_soft = 0;
-        extend_hard = 1;
+        extend_hard = 0;
+        extend_soft = 1;
         replace = 2;
     }
     UpdateMethod update_method = 2;
     repeated Map maps = 3;
+}
+
+message CreateCustomPhonemizerRequest {
+    string prefix = 1;
+    repeated Map maps = 2;
 }
