@@ -52,6 +52,16 @@ class Server:
 
     @staticmethod
     def load_models_from_configs() -> None:
+        # load custom phonemizers
+        custom_phonemizers_dir: str = get_custom_phonemizers_dir()
+        phonemizers_paths: List[str] = get_list_of_json_files_paths(dir_=custom_phonemizers_dir)
+        for phonemizer_path in phonemizers_paths:
+            CustomPhonemizer.load_phonemizer_from_path(path=phonemizer_path)
+            logger.info(f"Custom phonemizer with id {os.path.basename(phonemizer_path)}"
+                        f" is loaded from the dir {custom_phonemizers_dir}.")
+        CustomPhonemizer.persistence_dir = custom_phonemizers_dir
+
+        # load t2s pipelines
         config_dir: str = get_config_dir()
         config_files: List[str] = get_list_of_yaml_files(config_dir)
         for config_file in config_files:
@@ -70,12 +80,3 @@ class Server:
                 t2s_pipeline_id=config.id,
                 t2s_pipeline=(preprocess_pipeline, inference, postprocessor, config))
             logger.info(f'Model was loaded with id {config.id}')
-
-        # load custom phonemizers
-        custom_phonemizers_dir: str = get_custom_phonemizers_dir()
-        phonemizers_paths: List[str] = get_list_of_json_files_paths(dir_=custom_phonemizers_dir)
-        for phonemizer_path in phonemizers_paths:
-            CustomPhonemizer.load_phonemizer_from_path(path=phonemizer_path)
-            logger.info(f"Custom phonemizer with id {os.path.basename(phonemizer_path)}"
-                        f" is loaded from the dir {custom_phonemizers_dir}.")
-        CustomPhonemizer.persistence_dir = custom_phonemizers_dir

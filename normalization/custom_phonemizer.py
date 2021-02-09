@@ -21,7 +21,11 @@ class CustomPhonemizer:
 
     @classmethod
     def load_phonemizer_from_path(cls, path: str) -> None:
-        phonemizer_id: str = os.path.basename(path)
+        if path.endswith('.json'):
+            phonemizer_id: str = os.path.basename(path)[:-5]
+        else:
+            raise ValueError(f'Phonemizer path expected to point to json file with "json" extension. '
+                             f'Got {path}.')
 
         if not cls.validate_id(phonemizer_id):
             logger.warning(f"The file name {path} does not fit into phonemizer_id pattern of:"

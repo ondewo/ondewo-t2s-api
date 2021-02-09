@@ -1,5 +1,5 @@
 import re
-from typing import List, Tuple, Type, Optional
+from typing import List, Tuple, Type, Optional, Callable
 
 from ondewologging.logger import logger_console as logger
 
@@ -14,8 +14,11 @@ class NormalizerPipeline:
     pttrn_punkt = re.compile(r'[.?!](\s*)$')
 
     def __init__(self, config: NormalizationDataclass) -> None:
-        self.phonemizer: Optional[Type[CustomPhonemizer]] = \
-            CustomPhonemizer if config.custom_phonemizer_id else None
+        if config.custom_phonemizer_id:
+            self.phonemizer_function: Optional[Callable[[str], str]] = \
+                CustomPhonemizer.get_phonemizer_lookup_function(config.custom_phonemizer_id)
+        else:
+            self.phonemizer_function = None
         self.normalizer: NormalizerInterface = self._get_normalizer(config=config)
         self.pipeline_definition: List[str] = self.get_pipeline_definition(config)
         self.splitter = TextSplitter
@@ -53,6 +56,8 @@ class NormalizerPipeline:
                 continue
             step = getattr(self.normalizer, name)
             text = step(text)
+            if self.phonemizer_function:
+                text = self.phonemizer_function(text)
         return text
 
     def get_pipeline_definition(self, config: NormalizationDataclass) -> List[str]:
@@ -62,9 +67,6 @@ class NormalizerPipeline:
                 logger.warning(f"Preprocessing step {name} is not found in normalizer."
                                f"This normalization step will be skipped")
                 pipeline_definition.remove(name)
-        if self.phonemizer:
-            pipeline_definition += [
-                self.phonemizer.get_phonemizer_lookup_function(config.custom_phonemizer_id)]
         if not pipeline_definition:
             logger.warning('Preprocessing pipeline is not defined or empty. No preprocessing will be applied')
         return pipeline_definition
