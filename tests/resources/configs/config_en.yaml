@@ -55,7 +55,7 @@ inference:
 normalization:
   language: de
   pipeline: []
-  custom_phonemizer_id:
+  custom_phonemizer_id: ''
 postprocessing:
   silence_secs: 0.25
   pipeline: []

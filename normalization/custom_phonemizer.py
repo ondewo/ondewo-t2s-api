@@ -24,7 +24,7 @@ class CustomPhonemizer:
         if path.endswith('.json'):
             phonemizer_id: str = os.path.basename(path)[:-5]
         else:
-            raise ValueError(f'Phonemizer path expected to point to json file with "json" extension. '
+            raise ValueError(f'Phonemizer path expected to point to json file with "json" extention. '
                              f'Got {path}.')
 
         if not cls.validate_id(phonemizer_id):
