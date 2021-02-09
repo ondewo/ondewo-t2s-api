@@ -7,8 +7,8 @@ pipeline {
         SANITIZED_DOCKER_TAG_NAME = "${env.BRANCH_NAME}".replace('release/', '')
         IMAGE_TAG = "${SANITIZED_DOCKER_TAG_NAME}"
 
-        IMAGE_NAME_RELASE_REST = 'ondewo-t2s-rest-server-release'
-        IMAGE_NAME_RELASE_GRPC = 'ondewo-t2s-grpc-server-release'
+        IMAGE_NAME_RELASE_REST = 'ondewo-t2s-rest-rel'
+        IMAGE_NAME_RELASE_GRPC = 'ondewo-t2s-grpc-rel'
         IMAGE_NAME_TESTS = 'ondewo-t2s-tests'
         IMAGE_NAME_CODE_CHECK = 'ondewo-t2s-code-check'
         RELEASE_FOLDER = "releases/${SANITIZED_DOCKER_TAG_NAME}"
