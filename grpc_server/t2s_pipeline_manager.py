@@ -1,12 +1,16 @@
 from typing import Dict, Tuple, Optional, List
 
 from ondewologging.logger import logger_console as logger
+from ruamel.yaml import YAML
 
-from grpc_server.pipeline_utils import get_all_pipelines_from_config_files
+from grpc_server.pipeline_utils import get_all_pipelines_from_config_files, get_config_path_by_id
 from inference.inference_interface import Inference
 from normalization.pipeline_constructor import NormalizerPipeline
 from normalization.postprocessor import Postprocessor
 from utils.data_classes.config_dataclass import T2SConfigDataclass
+
+yaml = YAML()
+yaml.default_flow_style = False
 
 
 class T2SPipelineManager:
@@ -58,3 +62,14 @@ class T2SPipelineManager:
         for _, _, _, config in cls._t2s_pipelines.values():
             description_list.append(config)
         return description_list
+
+    @classmethod
+    def delete_custom_phonemizer_from_config(cls, phonemizer_id: str) -> None:
+        for pipeline_id, (_, _, _, config) in cls._t2s_pipelines.items():
+            if config.normalization.custom_phonemizer_id == phonemizer_id:
+                config.normalization.custom_phonemizer_id = ''
+                config_path: Optional[str] = get_config_path_by_id(pipeline_id)
+                if config_path is not None:
+                    with open(config_path, 'w') as f:
+                        config_dict = config.to_dict()  # type: ignore
+                        yaml.dump(config_dict, f)

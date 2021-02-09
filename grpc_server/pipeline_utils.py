@@ -4,7 +4,7 @@ from uuid import uuid4
 
 from ruamel import yaml
 
-from grpc_server.constants import CONFIG_DIR_ENV
+from grpc_server.constants import CONFIG_DIR_ENV, CUSTOM_PHONEMIZER_SUBDIR
 from inference.inference_factory import InferenceFactory
 from inference.inference_interface import Inference
 from normalization.pipeline_constructor import NormalizerPipeline
@@ -14,14 +14,20 @@ from utils.data_classes.config_dataclass import T2SConfigDataclass
 from ondewologging.logger import logger_console as logger
 
 
-def get_list_of_config_files(config_dir: str) -> List[str]:
+def get_list_of_yaml_files(config_dir: str) -> List[str]:
     list_of_objects: List[str] = os.listdir(config_dir)
     return list(filter(lambda path: path.endswith(('.yaml', 'yml')), list_of_objects))
 
 
+def get_list_of_json_files_paths(dir_: str) -> List[str]:
+    list_of_objects: List[str] = os.listdir(dir_)
+    list_of_objects = list(filter(lambda path: path.endswith('.json'), list_of_objects))
+    return [os.path.join(dir_, file_) for file_ in list_of_objects]
+
+
 def get_all_config_paths() -> List[str]:
     config_dir: str = get_config_dir()
-    config_file_list: List[str] = get_list_of_config_files(config_dir=config_dir)
+    config_file_list: List[str] = get_list_of_yaml_files(config_dir=config_dir)
     return [os.path.join(config_dir, config_file) for config_file in config_file_list]
 
 
@@ -65,9 +71,16 @@ def get_config_dir() -> str:
     return config_dir
 
 
+def get_custom_phonemizers_dir() -> str:
+    config_dir = get_config_dir()
+    phonemizer_dir: str = os.path.join(config_dir, CUSTOM_PHONEMIZER_SUBDIR)
+    os.makedirs(phonemizer_dir, exist_ok=True)
+    return phonemizer_dir
+
+
 def get_config_path_by_id(config_id: str) -> Optional[str]:
     config_dir: str = get_config_dir()
-    config_files: List[str] = get_list_of_config_files(config_dir)
+    config_files: List[str] = get_list_of_yaml_files(config_dir)
     for config_file in config_files:
         config_file_path: str = os.path.join(config_dir, config_file)
         with open(config_file_path, 'r') as f:

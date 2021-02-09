@@ -1,15 +1,18 @@
 import json
 import os
-from typing import Optional, Dict, List, Callable
+from typing import Optional, Dict, List, Callable, Any
 from uuid import uuid4
 
+from ondewologging.logger import logger_console as logger
+
+from normalization.constants import CUSTOM_PHONEMIZER_ID_PTTRN, CUSTOM_PHONEMIZER_PREFIX_PTTRN
 from ondewo_grpc.ondewo.t2s.custom_phonemizer_pb2 import UpdateCustomPhonemizerRequest, CustomPhonemizerProto, \
     Map, ListCustomPhomenizerRequest, ListCustomPhomenizerResponse
 
 
 class CustomPhonemizer:
     manager: Dict[str, Dict[str, str]] = {}
-    persistence_dir: str = 'config/custom_phonemizers'
+    persistence_dir: str = ''
 
     @classmethod
     def create_phonemizer(cls, phonemizer_dict: Optional[Dict[str, str]] = None, prefix: str = '') -> str:
@@ -17,13 +20,25 @@ class CustomPhonemizer:
         return cls._register_and_save(cmu_dict, prefix)
 
     @classmethod
-    def _load_phonemizer_from_path(cls, path: str) -> Dict[str, str]:
+    def load_phonemizer_from_path(cls, path: str) -> None:
+        phonemizer_id: str = os.path.basename(path)
+
+        if not cls.validate_id(phonemizer_id):
+            logger.warning(f"The file name {path} does not fit into phonemizer_id pattern of:"
+                           f"alphanumeric prefix + _ + uuid4. This file will not be loaded.")
+            return None
+
         with open(path, 'r') as f:
             dict_from_file: Dict[str, str] = json.load(f)
-        return dict_from_file
+
+        if not cls.validate_dict(dict_from_file):
+            logger.warning(f"The file content of {path} has wrong typing. Expected Dict[str, str]."
+                           f"This file will not be loaded.")
+            return None
+        cls.manager[phonemizer_id] = dict_from_file
 
     @classmethod
-    def get_phonemizer_lookup(cls, phonemizer_id: str) -> Callable[[str], str]:
+    def get_phonemizer_lookup_function(cls, phonemizer_id: str) -> Callable[[str], str]:
         phonemizer: Optional[Dict[str, str]] = cls.manager.get(phonemizer_id)
         if not phonemizer:
             raise ValueError(
@@ -38,11 +53,12 @@ class CustomPhonemizer:
         return look_up
 
     @classmethod
-    def _register_and_save(cls, cmu_dict: Dict[str, str], prefix: str) -> str:
+    def _register_and_save(cls, cmu_dict: Dict[str, str], prefix: str = '') -> str:
         phonemizer_id: str = f'{(prefix + "_") * bool(prefix)}{uuid4()}'
+        persistence_path: str = f'{phonemizer_id}.json'
         cls.manager[phonemizer_id] = cmu_dict
         os.makedirs(cls.persistence_dir, exist_ok=True)
-        with open(os.path.join(cls.persistence_dir, phonemizer_id), 'w') as f:
+        with open(os.path.join(cls.persistence_dir, persistence_path), 'w') as f:
             json.dump(cmu_dict, f)
         return phonemizer_id
 
@@ -52,17 +68,26 @@ class CustomPhonemizer:
         if not dict_to_update:
             raise ValueError(f'Phonemizer with id {request.id} does not exist. '
                              f'Existing ids are {list(cls.manager.keys())}')
-        new_dict: Dict[str, str] = {map_.word: map_.phoneme_group for map_ in request.maps}
+        new_dict: Dict[str, str] = {map_.word: map_.phoneme_groups for map_ in request.maps}
         if request.update_method is UpdateCustomPhonemizerRequest.UpdateMethod.extend_soft:
             for k, v in new_dict.items():
-                dict_to_update[k] = v if k not in dict_to_update else dict_to_update[k]
+                if k not in dict_to_update:
+                    dict_to_update[k] = v
+                else:
+                    logger.warning(f"The word {k} is already in custom phonemizer."
+                                   f"Since update method 'extend_soft' is choosen, "
+                                   f"it will not be overwritten")
         elif request.update_method is UpdateCustomPhonemizerRequest.UpdateMethod.extend_hard:
             for k, v in new_dict.items():
+                if k in dict_to_update:
+                    logger.warning(f"The word {k} is already in custom phonemizer."
+                                   f"Since update method 'extend_hard' is choosen, it will be overwritten")
                 dict_to_update[k] = v
         elif request.update_method is UpdateCustomPhonemizerRequest.UpdateMethod.replace:
             dict_to_update = new_dict
         else:
-            raise ValueError(f'Update method unknown')
+            raise ValueError('Update method unknown.')
+        cls.manager[request.id] = dict_to_update
         return CustomPhonemizerProto(
             id=request.id,
             maps=[
@@ -87,10 +112,57 @@ class CustomPhonemizer:
         else:
             raise ValueError(f'Phonemizer with id {phonemizer_id} does not exist. '
                              f'Existing ids are {list(cls.manager.keys())}')
-        phonemizer_path: str = os.path.join(cls.persistence_dir, phonemizer_id)
+        phonemizer_path: str = os.path.join(cls.persistence_dir, phonemizer_id + '.json')
         if os.path.exists(phonemizer_path):
             os.remove(phonemizer_path)
-    #
-    # @classmethod
-    # def list_phonemizers(cls, request: ListCustomPhomenizerRequest) -> ListCustomPhomenizerResponse:
-        # for id
+
+    @classmethod
+    def _dict_to_proto(cls, phonemizer_dict: Dict[str, str], phonemizer_id: str) -> CustomPhonemizerProto:
+        return CustomPhonemizerProto(
+            id=phonemizer_id,
+            maps=[Map(word=k, phoneme_groups=v) for k, v in phonemizer_dict.items()]
+        )
+
+    @classmethod
+    def list_phonemizers(cls, request: ListCustomPhomenizerRequest) -> ListCustomPhomenizerResponse:
+        phonemizerss_list: List[CustomPhonemizerProto] = []
+        if request.pipeline_ids:
+            for phonemizer_id in request.pipeline_ids:
+                if phonemizer_id in cls.manager.keys():
+                    phonemizerss_list.append(
+                        cls._dict_to_proto(
+                            phonemizer_dict=cls.manager[phonemizer_id], phonemizer_id=phonemizer_id
+                        )
+                    )
+                else:
+                    logger.warning(f'Phonemizer with id {phonemizer_id} does not exist. '
+                                   f'Existing ids are {list(cls.manager.keys())}')
+        else:
+            for phonemizer_id in cls.manager.keys():
+                phonemizerss_list.append(
+                    cls._dict_to_proto(
+                        phonemizer_dict=cls.manager[phonemizer_id], phonemizer_id=phonemizer_id
+                    )
+                )
+        return ListCustomPhomenizerResponse(phonemizers=phonemizerss_list)
+
+    @classmethod
+    def validate_id(cls, phonemizer_id: str) -> bool:
+        if CUSTOM_PHONEMIZER_ID_PTTRN.match(phonemizer_id) is None:
+            return False
+        else:
+            return True
+
+    @classmethod
+    def validate_prefix(cls, prefix: str) -> bool:
+        if CUSTOM_PHONEMIZER_PREFIX_PTTRN.match(prefix) is None:
+            return False
+        else:
+            return True
+
+    @classmethod
+    def validate_dict(cls, dict_: Dict[Any, Any]) -> bool:
+        for k, v in dict_.items():
+            if not isinstance(k, str) or not isinstance(v, str):
+                return False
+        return True

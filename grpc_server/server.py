@@ -8,10 +8,11 @@ from ondewologging.logger import logger_console as logger
 from ruamel.yaml import YAML
 
 from grpc_server.phonemizer_servicer import CustomPhomenizerServicer
-from grpc_server.pipeline_utils import get_list_of_config_files, create_t2s_pipeline_from_config, \
-    get_config_dir
+from grpc_server.pipeline_utils import get_list_of_yaml_files, create_t2s_pipeline_from_config, \
+    get_config_dir, get_custom_phonemizers_dir, get_list_of_json_files_paths
 from grpc_server.t2s_servicer import Text2SpeechServicer
 from grpc_server.t2s_pipeline_manager import T2SPipelineManager
+from normalization.custom_phonemizer import CustomPhonemizer
 from ondewo_grpc.ondewo.t2s import text_to_speech_pb2_grpc, text_to_speech_pb2, custom_phonemizer_pb2_grpc, \
     custom_phonemizer_pb2
 from utils.data_classes.config_dataclass import T2SConfigDataclass
@@ -52,7 +53,7 @@ class Server:
     @staticmethod
     def load_models_from_configs() -> None:
         config_dir: str = get_config_dir()
-        config_files: List[str] = get_list_of_config_files(config_dir)
+        config_files: List[str] = get_list_of_yaml_files(config_dir)
         for config_file in config_files:
             with open(os.path.join(config_dir, config_file), 'r') as f:
                 config_dict: Dict[str, Any] = yaml.load(f)
@@ -69,3 +70,12 @@ class Server:
                 t2s_pipeline_id=config.id,
                 t2s_pipeline=(preprocess_pipeline, inference, postprocessor, config))
             logger.info(f'Model was loaded with id {config.id}')
+
+        # load custom phonemizers
+        custom_phonemizers_dir: str = get_custom_phonemizers_dir()
+        phonemizers_paths: List[str] = get_list_of_json_files_paths(dir_=custom_phonemizers_dir)
+        for phonemizer_path in phonemizers_paths:
+            CustomPhonemizer.load_phonemizer_from_path(path=phonemizer_path)
+            logger.info(f"Custom phonemizer with id {os.path.basename(phonemizer_path)}"
+                        f" is loaded from the dir {custom_phonemizers_dir}.")
+        CustomPhonemizer.persistence_dir = custom_phonemizers_dir

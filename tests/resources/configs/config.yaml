@@ -63,6 +63,7 @@ normalization:
   - normalize_numbers
   - remove_unaudible_texts
   - lower_case
+  custom_phonemizer_id:
 postprocessing:
   silence_secs: 0.25
   pipeline: []

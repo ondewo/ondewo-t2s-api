@@ -4,6 +4,7 @@ import grpc
 from google.protobuf.empty_pb2 import Empty
 from ruamel.yaml import YAML
 
+from grpc_server.t2s_pipeline_manager import T2SPipelineManager
 from normalization.custom_phonemizer import CustomPhonemizer
 from ondewo_grpc.ondewo.t2s import custom_phonemizer_pb2_grpc, custom_phonemizer_pb2
 from ondewo_grpc.ondewo.t2s.custom_phonemizer_pb2 import CustomPhonemizerProto, Map
@@ -18,7 +19,7 @@ class CustomPhomenizerServicer(custom_phonemizer_pb2_grpc.CustomPhonemizersServi
                             context: grpc.ServicerContext) -> custom_phonemizer_pb2.CustomPhonemizerProto:
         return self.handle_get_custom_phonemizer(request)
 
-    def CreateCustomPhonemizer(self, request: custom_phonemizer_pb2.CustomPhonemizerProto,
+    def CreateCustomPhonemizer(self, request: custom_phonemizer_pb2.CreateCustomPhonemizerRequest,
                                context: grpc.ServicerContext) -> custom_phonemizer_pb2.PhonemizerId:
         return self.handle_create_custom_phonemizer(request)
 
@@ -52,13 +53,22 @@ class CustomPhomenizerServicer(custom_phonemizer_pb2_grpc.CustomPhonemizersServi
 
     @classmethod
     def handle_create_custom_phonemizer(
-            cls, request: custom_phonemizer_pb2.CustomPhonemizerProto) -> custom_phonemizer_pb2.PhonemizerId:
+            cls, request: custom_phonemizer_pb2.CreateCustomPhonemizerRequest
+    ) -> custom_phonemizer_pb2.PhonemizerId:
+        prefix: str = request.prefix
         new_dict: Dict[str, str] = {map_.word: map_.phoneme_groups for map_ in request.maps}
-        phonemizer_id: str = CustomPhonemizer.create_phonemizer(phonemizer_dict=new_dict)
+        phonemizer_id: str = CustomPhonemizer.create_phonemizer(phonemizer_dict=new_dict, prefix=prefix)
         return custom_phonemizer_pb2.PhonemizerId(id=phonemizer_id)
 
-    def handle_delete_custom_phonemizer(self, request):
-        pass
+    @classmethod
+    def handle_delete_custom_phonemizer(cls, request: custom_phonemizer_pb2.PhonemizerId) -> Empty:
+        CustomPhonemizer.delete_custom_phonemizer(phonemizer_id=request.id)
+        T2SPipelineManager.delete_custom_phonemizer_from_config(request.id)
+        return Empty()
 
-    def handle_list_custom_phonemizer(self, request):
-        pass
+    @classmethod
+    def handle_list_custom_phonemizer(
+            cls,
+            request: custom_phonemizer_pb2.ListCustomPhomenizerRequest
+    ) -> custom_phonemizer_pb2.ListCustomPhomenizerResponse:
+        return CustomPhonemizer.list_phonemizers(request=request)
