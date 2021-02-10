@@ -7,7 +7,7 @@ from ondewologging.logger import logger_console as logger
 
 from normalization.constants import CUSTOM_PHONEMIZER_ID_PTTRN, CUSTOM_PHONEMIZER_PREFIX_PTTRN
 from ondewo_grpc.ondewo.t2s.custom_phonemizer_pb2 import UpdateCustomPhonemizerRequest, CustomPhonemizerProto, \
-    Map, ListCustomPhomenizerRequest, ListCustomPhomenizerResponse
+    Map, ListCustomPhonemizerRequest, ListCustomPhonemizerResponse
 
 
 class CustomPhonemizer:
@@ -128,7 +128,7 @@ class CustomPhonemizer:
         )
 
     @classmethod
-    def list_phonemizers(cls, request: ListCustomPhomenizerRequest) -> ListCustomPhomenizerResponse:
+    def list_phonemizers(cls, request: ListCustomPhonemizerRequest) -> ListCustomPhonemizerResponse:
         phonemizerss_list: List[CustomPhonemizerProto] = []
         if request.pipeline_ids:
             for phonemizer_id in request.pipeline_ids:
@@ -148,7 +148,7 @@ class CustomPhonemizer:
                         phonemizer_dict=cls.manager[phonemizer_id], phonemizer_id=phonemizer_id
                     )
                 )
-        return ListCustomPhomenizerResponse(phonemizers=phonemizerss_list)
+        return ListCustomPhonemizerResponse(phonemizers=phonemizerss_list)
 
     @classmethod
     def validate_id(cls, phonemizer_id: str) -> bool:

@@ -33,8 +33,8 @@ class CustomPhomenizerServicer(custom_phonemizer_pb2_grpc.CustomPhonemizersServi
 
     def ListCustomPhonemizer(
             self,
-            request: custom_phonemizer_pb2.ListCustomPhomenizerRequest,
-            context: grpc.ServicerContext) -> custom_phonemizer_pb2.ListCustomPhomenizerResponse:
+            request: custom_phonemizer_pb2.ListCustomPhonemizerRequest,
+            context: grpc.ServicerContext) -> custom_phonemizer_pb2.ListCustomPhonemizerResponse:
         return self.handle_list_custom_phonemizer(request)
 
     @classmethod
@@ -69,6 +69,6 @@ class CustomPhomenizerServicer(custom_phonemizer_pb2_grpc.CustomPhonemizersServi
     @classmethod
     def handle_list_custom_phonemizer(
             cls,
-            request: custom_phonemizer_pb2.ListCustomPhomenizerRequest
-    ) -> custom_phonemizer_pb2.ListCustomPhomenizerResponse:
+            request: custom_phonemizer_pb2.ListCustomPhonemizerRequest
+    ) -> custom_phonemizer_pb2.ListCustomPhonemizerResponse:
         return CustomPhonemizer.list_phonemizers(request=request)

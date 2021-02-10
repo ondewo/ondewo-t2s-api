@@ -4,7 +4,7 @@ from grpc_server.phonemizer_servicer import CustomPhomenizerServicer
 from normalization.custom_phonemizer import CustomPhonemizer
 from ondewo_grpc.ondewo.t2s import custom_phonemizer_pb2
 from ondewo_grpc.ondewo.t2s.custom_phonemizer_pb2 import Map, UpdateCustomPhonemizerRequest, \
-    ListCustomPhomenizerResponse, ListCustomPhomenizerRequest, CreateCustomPhonemizerRequest
+    ListCustomPhonemizerResponse, ListCustomPhonemizerRequest, CreateCustomPhonemizerRequest
 
 
 class TestCustomPhonemizerServicer:
@@ -50,13 +50,13 @@ class TestCustomPhonemizerServicer:
         )
         phonemizer_id_proto: custom_phonemizer_pb2.PhonemizerId = \
             CustomPhomenizerServicer.handle_create_custom_phonemizer(request=request)
-        list_response: ListCustomPhomenizerResponse = CustomPhomenizerServicer.handle_list_custom_phonemizer(
-            ListCustomPhomenizerRequest())
+        list_response: ListCustomPhonemizerResponse = CustomPhomenizerServicer.handle_list_custom_phonemizer(
+            ListCustomPhonemizerRequest())
         assert len(list_response.phonemizers) == 1
         list_response = CustomPhomenizerServicer.handle_list_custom_phonemizer(
-            ListCustomPhomenizerRequest(pipeline_ids=['some_non_existing_id']))
+            ListCustomPhonemizerRequest(pipeline_ids=['some_non_existing_id']))
         assert len(list_response.phonemizers) == 0
         list_response = CustomPhomenizerServicer.handle_list_custom_phonemizer(
-            ListCustomPhomenizerRequest(pipeline_ids=[phonemizer_id_proto.id]))
+            ListCustomPhonemizerRequest(pipeline_ids=[phonemizer_id_proto.id]))
         assert len(list_response.phonemizers) == 1
         CustomPhomenizerServicer.handle_delete_custom_phonemizer(request=phonemizer_id_proto)

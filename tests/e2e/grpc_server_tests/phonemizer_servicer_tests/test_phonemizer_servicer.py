@@ -5,7 +5,7 @@ import pytest
 
 from ondewo_grpc.ondewo.t2s import custom_phonemizer_pb2
 from ondewo_grpc.ondewo.t2s.custom_phonemizer_pb2 import Map, UpdateCustomPhonemizerRequest, \
-    ListCustomPhomenizerResponse, ListCustomPhomenizerRequest, CreateCustomPhonemizerRequest
+    ListCustomPhonemizerResponse, ListCustomPhonemizerRequest, CreateCustomPhonemizerRequest
 from tests.e2e.grpc_server_tests.phonemizer_servicer_tests.operations import OperationGetCustomPhonemizer, \
     OperationCreateCustomPhonemizer, OperationUpdateCustomPhonemizer, OperationDeleteCustomPhonemizer, \
     OperationListCustomPhonemizer
@@ -58,13 +58,13 @@ class TestCustomPhonemizerServicer:
         )
         phonemizer_id_proto: custom_phonemizer_pb2.PhonemizerId = \
             OperationCreateCustomPhonemizer(request=request).execute_grpc()
-        list_response: ListCustomPhomenizerResponse = OperationListCustomPhonemizer(
-            ListCustomPhomenizerRequest()).execute_grpc()
+        list_response: ListCustomPhonemizerResponse = OperationListCustomPhonemizer(
+            ListCustomPhonemizerRequest()).execute_grpc()
         assert len(list_response.phonemizers) == 2
         list_response = OperationListCustomPhonemizer(
-            ListCustomPhomenizerRequest(pipeline_ids=['some_non_existing_id'])).execute_grpc()
+            ListCustomPhonemizerRequest(pipeline_ids=['some_non_existing_id'])).execute_grpc()
         assert len(list_response.phonemizers) == 0
         list_response = OperationListCustomPhonemizer(
-            ListCustomPhomenizerRequest(pipeline_ids=[phonemizer_id_proto.id])).execute_grpc()
+            ListCustomPhonemizerRequest(pipeline_ids=[phonemizer_id_proto.id])).execute_grpc()
         assert len(list_response.phonemizers) == 1
         OperationDeleteCustomPhonemizer(request=phonemizer_id_proto).execute_grpc()
