@@ -27,8 +27,14 @@ with open(config_file) as f:
 
 inference: Inference = InferenceFactory.get_inference(config.inference)
 if config.normalization.custom_phonemizer_id:
-    custom_phonemizers_dir: str = os.getenv("CUSTOM_PHOMENIZER_DIR")
+    custom_phonemizers_dir: Optional[str] = os.getenv("CUSTOM_PHOMENIZER_DIR")
+    if not custom_phonemizers_dir:
+        raise EnvironmentError("No CUSTOM_PHOMENIZER_DIR environmental variable found. "
+                               "Please set the CUSTOM_PHOMENIZER_DIR variable.")
     phonemizers_paths: List[str] = get_list_of_json_files_paths(dir_=custom_phonemizers_dir)
+    if not any([config.normalization.custom_phonemizer_id in path for path in phonemizers_paths]):
+        raise ValueError(f'No file found for specified custom phonemizer id:'
+                         f' {config.normalization.custom_phonemizer_id}. Found files are {phonemizers_paths}')
     for phonemizer_path in phonemizers_paths:
         CustomPhonemizer.load_phonemizer_from_path(path=phonemizer_path)
         logger.info(f"Custom phonemizer with id {os.path.basename(phonemizer_path)}"
