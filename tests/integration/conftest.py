@@ -5,13 +5,24 @@ import pytest
 from ruamel import yaml
 
 from grpc_server.t2s_pipeline_manager import T2SPipelineManager
-from grpc_server.pipeline_utils import get_list_of_yaml_files, get_config_dir, create_t2s_pipeline_from_config
+from grpc_server.pipeline_utils import get_list_of_yaml_files, get_config_dir, \
+    create_t2s_pipeline_from_config, get_custom_phonemizers_dir, get_list_of_json_files_paths
+from normalization.custom_phonemizer import CustomPhonemizer
 from utils.data_classes.config_dataclass import T2SConfigDataclass
 
 
 @pytest.fixture(scope='class')
 def create_pipelines() -> Iterator[None]:
     os.environ['CONFIG_DIR'] = 'tests/resources/configs'
+
+    # load custom phonemizers
+    custom_phonemizers_dir: str = get_custom_phonemizers_dir()
+    phonemizers_paths: List[str] = get_list_of_json_files_paths(dir_=custom_phonemizers_dir)
+    for phonemizer_path in phonemizers_paths:
+        CustomPhonemizer.load_phonemizer_from_path(path=phonemizer_path)
+    CustomPhonemizer.persistence_dir = custom_phonemizers_dir
+
+    # load t2s pipelines
     config_dir: str = get_config_dir()
     config_files: List[str] = get_list_of_yaml_files(config_dir)
     ids: List[str] = []
