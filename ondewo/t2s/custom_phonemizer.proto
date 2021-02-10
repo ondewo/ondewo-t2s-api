@@ -42,7 +42,7 @@ message Map{
     string phoneme_groups = 2;
 }
 
-message ListCustomPhomenizerResponse {
+message ListCustomPhonemizerResponse {
     repeated CustomPhonemizerProto phonemizers = 1;
 }
 
