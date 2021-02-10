@@ -138,6 +138,7 @@ pipeline {
                                             -v ${A100_MODEL_DIR}:/opt/ondewo-t2s/models \
                                             -v ${CONFIG_DIR}:/opt/ondewo-t2s/config \
                                             --env CONFIG_FILE="config/config.yaml" \
+                                            --env CUSTOM_PHOMENIZER_DIR="config/custom_phonemizers"
                                             --name ${REST_CONTAINER} \
                                             ${PUSH_NAME_STREAM_REST}"""
                                         , label: 'run rest server')
