@@ -46,7 +46,7 @@ message ListCustomPhonemizerResponse {
     repeated CustomPhonemizerProto phonemizers = 1;
 }
 
-message ListCustomPhomenizerRequest{
+message ListCustomPhonemizerRequest{
     repeated string pipeline_ids = 1;
 }
 
