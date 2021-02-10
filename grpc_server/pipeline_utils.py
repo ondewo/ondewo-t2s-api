@@ -16,7 +16,7 @@ from ondewologging.logger import logger_console as logger
 
 def get_list_of_yaml_files(config_dir: str) -> List[str]:
     list_of_objects: List[str] = os.listdir(config_dir)
-    return list(filter(lambda path: path.endswith(('.yaml', 'yml')), list_of_objects))
+    return list(filter(lambda path: path.endswith(('.yaml', '.yml')), list_of_objects))
 
 
 def get_list_of_json_files_paths(dir_: str) -> List[str]:
@@ -71,7 +71,7 @@ def get_config_dir() -> str:
     return config_dir
 
 
-def get_custom_phonemizers_dir() -> str:
+def get_or_create_custom_phonemizers_dir() -> str:
     config_dir = get_config_dir()
     phonemizer_dir: str = os.path.join(config_dir, CUSTOM_PHONEMIZER_SUBDIR)
     os.makedirs(phonemizer_dir, exist_ok=True)

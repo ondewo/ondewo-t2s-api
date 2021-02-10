@@ -9,7 +9,7 @@ from ruamel.yaml import YAML
 
 from grpc_server.phonemizer_servicer import CustomPhomenizerServicer
 from grpc_server.pipeline_utils import get_list_of_yaml_files, create_t2s_pipeline_from_config, \
-    get_config_dir, get_custom_phonemizers_dir, get_list_of_json_files_paths
+    get_config_dir, get_or_create_custom_phonemizers_dir, get_list_of_json_files_paths
 from grpc_server.t2s_servicer import Text2SpeechServicer
 from grpc_server.t2s_pipeline_manager import T2SPipelineManager
 from normalization.custom_phonemizer import CustomPhonemizer
@@ -53,7 +53,7 @@ class Server:
     @staticmethod
     def load_models_from_configs() -> None:
         # load custom phonemizers
-        custom_phonemizers_dir: str = get_custom_phonemizers_dir()
+        custom_phonemizers_dir: str = get_or_create_custom_phonemizers_dir()
         phonemizers_paths: List[str] = get_list_of_json_files_paths(dir_=custom_phonemizers_dir)
         for phonemizer_path in phonemizers_paths:
             CustomPhonemizer.load_phonemizer_from_path(path=phonemizer_path)
