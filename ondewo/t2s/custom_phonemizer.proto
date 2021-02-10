@@ -24,7 +24,7 @@ service CustomPhonemizers{
     };
     rpc UpdateCustomPhonemizer (UpdateCustomPhonemizerRequest) returns (CustomPhonemizerProto) {
     };
-    rpc ListCustomPhonemizer (ListCustomPhomenizerRequest) returns (ListCustomPhomenizerResponse) {
+    rpc ListCustomPhonemizer (ListCustomPhonemizerRequest) returns (ListCustomPhonemizerResponse) {
     };
 }
 
