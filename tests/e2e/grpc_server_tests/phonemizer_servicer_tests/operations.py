@@ -104,13 +104,13 @@ class OperationUpdateCustomPhonemizer(OperationNode):
 
 
 class OperationListCustomPhonemizer(OperationNode):
-    def __init__(self, request: custom_phonemizer_pb2.ListCustomPhomenizerRequest,
+    def __init__(self, request: custom_phonemizer_pb2.ListCustomPhonemizerRequest,
                  expected_to_fail: bool = False):
         super().__init__(expected_to_fail)
         self.stub = custom_phonemizer_pb2_grpc.CustomPhonemizersStub(channel=self.channel)
-        self.request: custom_phonemizer_pb2.ListCustomPhomenizerRequest = request
+        self.request: custom_phonemizer_pb2.ListCustomPhonemizerRequest = request
 
-    def execute_grpc(self) -> Optional[custom_phonemizer_pb2.ListCustomPhomenizerResponse]:
+    def execute_grpc(self) -> Optional[custom_phonemizer_pb2.ListCustomPhonemizerResponse]:
         f: Callable[[], Any] = lambda: self.stub.ListCustomPhonemizer(
             self.request,
         )
@@ -119,8 +119,8 @@ class OperationListCustomPhonemizer(OperationNode):
 
     def _basic_positive_validate(self) -> None:
         super(OperationListCustomPhonemizer, self)._basic_positive_validate()
-        assert isinstance(self.result, custom_phonemizer_pb2.ListCustomPhomenizerResponse)
+        assert isinstance(self.result, custom_phonemizer_pb2.ListCustomPhonemizerResponse)
 
     def _basic_negative_validate(self) -> None:
         super(OperationListCustomPhonemizer, self)._basic_negative_validate()
-        assert not isinstance(self.result, custom_phonemizer_pb2.ListCustomPhomenizerResponse)
+        assert not isinstance(self.result, custom_phonemizer_pb2.ListCustomPhonemizerResponse)
