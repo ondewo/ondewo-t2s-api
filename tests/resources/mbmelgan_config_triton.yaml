@@ -1,0 +1,6 @@
+config_path: "tests/resources/mb_melgan/config.yml"
+model_path: "models/mb_melgan/en/generator-1820000.h5"
+stats_path: "tests/resources/mb_melgan/stats.npy"
+
+triton_model_name: "mb_melgan"
+triton_url: "localhost:50511"

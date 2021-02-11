@@ -9,3 +9,4 @@ pyroomacoustics
 omegaconf
 python_speech_features
 pysndfx
+pydub==0.24.1

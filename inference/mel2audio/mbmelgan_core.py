@@ -1,10 +1,12 @@
-from typing import Any, Callable, Dict, List
-from ruamel.yaml import YAML
+from abc import ABC
+from typing import Callable, List
 
 import numpy as np
+from ruamel.yaml import YAML
 from sklearn.preprocessing import StandardScaler
 
 from inference.mel2audio.mel2audio import Mel2Audio
+from utils.data_classes.config_dataclass import MbMelganTritonDataclass
 
 
 class MBMelGANCore(Mel2Audio):
@@ -13,16 +15,16 @@ class MBMelGANCore(Mel2Audio):
     INPUT_FORMAT: str = "timesteps_first"
     INPUT_SCALING: str = "standard"
 
-    def __init__(self, config: Dict[str, Any]):
+    def __init__(self, config: MbMelganTritonDataclass):
         self.config = config
 
         self.scaler = StandardScaler()
         self.scaler.mean_, self.scaler.scale_ = np.load(
-            self.config["stats_path"])
+            self.config.stats_path)
         self.scaler.n_features_in_ = self.N_MEL_FEATURES
 
         yaml = YAML(typ="safe")
-        with open(self.config["config_path"]) as file:
+        with open(self.config.config_path) as file:
             self.hop_size = yaml.load(file)["hop_size"]
 
         self.batch_size = 1
@@ -79,3 +81,6 @@ class MBMelGANCore(Mel2Audio):
                 audio_numpy, mel_spectrograms_slice)
             final_result += result
         return final_result
+
+    def mel2audio(self, mel_spectrograms: List[np.ndarray]) -> List[np.ndarray]:
+        raise NotImplementedError('This method should not be called in the parent class.')

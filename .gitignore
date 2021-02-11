@@ -2,6 +2,7 @@
 *.pth
 *.h5
 data/ramona_deininger
+demo_server/tmp
 **/__pycache__/**
 **/.ipynb_checkpoints/**
 .idea/
@@ -9,10 +10,12 @@ data/ramona_deininger
 pytest.xml
 ondewo-t2s-glow/
 ondewo-t2s-hifigan/
-ondewo-logging/
+ondewo-logging-python/
 plots/
 **/model.savedmodel/**
 samples/
 models/
 evaluation/configs/
 data/
+/tmp
+ondewo_grpc/

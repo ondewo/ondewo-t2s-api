@@ -1,5 +1,33 @@
 # Release History
 
+## Release ONDEWO T2S 1.4.0
+
+### New Features
+
+* [[OND232-120]](https://ondewo.atlassian.net/browse/OND232-120) - Created a GRPC server with inference and configuration endpoints.
+  Added an option to use several inference pipelines at the same time.
+* [[OND232-144]](https://ondewo.atlassian.net/browse/OND232-144) - It is possible to send phonemized text to the server.
+* [[OND232-141]](https://ondewo.atlassian.net/browse/OND232-141) - New formats such as ogg, aac, wma and mp3 are supported by the server.
+
+### Improvements
+
+* [[OND232-104]](https://ondewo.atlassian.net/browse/OND232-104) - Automated integration and end-to-end tests are added to the CI pipeline.
+* [[OND232-135]](https://ondewo.atlassian.net/browse/OND232-135) - HiFiGAN inference is available on Triton.
+* [[OND232-145]](https://ondewo.atlassian.net/browse/OND232-135) - Health checks are added to the GRPC and REST server Docker containers.
+
+### Bug fixes
+
+* [[OND232-138]](https://ondewo.atlassian.net/browse/OND232-138) - Ondewo-logging-python is working properly now.
+
+### Removed features
+
+* [[OND232-120]](https://ondewo.atlassian.net/browse/OND232-120) - GRPC configuration server is removed, as its capabilites are integrated into the general GRPC server.
+
+### Migration Guide
+
+* It is suggested to switch from using REST server to the GRPC server, as the REST server will probably be discontinued in a future update.
+* Change the config file to match the new structure.
+
 *****************
 
 ## Release ONDEWO T2S 1.3.1
@@ -15,6 +43,10 @@
 
 * [[OND232-132]](https://ondewo.atlassian.net/browse/OND232-132) - Remove support of non-triton waveglow,
   mb-melgan models, and remove tacatron2.
+
+### Migration Guide
+
+* No extra steps necessary for migrating to this version.
 
 *****************
 

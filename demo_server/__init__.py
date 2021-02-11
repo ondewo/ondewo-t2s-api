@@ -1,6 +1,6 @@
 import os
 from flask import Flask
-from pylog.logger import logger_console as logger
+from ondewologging.logger import logger_console as logger
 
 server = Flask(__name__)
 
@@ -14,17 +14,18 @@ if not DEMO_URL:
     raise EnvironmentError("No DEMO_URL environmental variable found. "
                            "Please set the DEMO_URL variable. "
                            "For local development, the DEMO_URL should be set to "
-                           "http://0.0.0.0:40040")
-BATCH_DE_URL: str = os.getenv("BATCH_DE_URL", default="")
-if not BATCH_DE_URL:
-    raise EnvironmentError("No BATCH_DE_URL environmental variable found. "
-                           "Please set this variable to the url of the T2S German "
-                           "batch server.")
-BATCH_EN_URL: str = os.getenv("BATCH_EN_URL", default="")
-if not BATCH_EN_URL:
-    raise EnvironmentError("No BATCH_EN_URL environmental variable found. "
-                           "Please set this variable to the url of the T2S English "
-                           "batch server.")
+                           "http://0.0.0.0:50540")
+GRPC_HOST: str = os.getenv("GRPC_HOST", default="")
+if not GRPC_HOST:
+    raise EnvironmentError("No GRPC_HOST environmental variable found. "
+                           "Please set this variable to the host of the T2S server. "
+                           "For local development, the GRPC_HOST should be set to "
+                           "http://0.0.0.0 or localhost")
+GRPC_PORT: str = os.getenv("GRPC_PORT", default="")
+if not GRPC_PORT:
+    raise EnvironmentError("No GRPC_PORT environmental variable found. "
+                           "Please set this variable to the port of the T2S server. "
+                           "For local development, port is usually set to 50555")
 
 # ===============================
 from demo_server import routes
@@ -32,4 +33,3 @@ from demo_server.demo_utils import FileRemovalThread
 
 file_removal_thread = FileRemovalThread()
 file_removal_thread.start()
-

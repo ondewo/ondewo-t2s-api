@@ -1,10 +1,27 @@
-from typing import List
+from typing import Any, Dict, List, Union
 from pathlib import Path
+from ruamel.yaml import YAML
+from typing import List
 
 import numpy as np
 import pytest
 
 from inference.mel2audio.mbmelgan_triton import MBMelGANTriton
+from utils.data_classes.config_dataclass import MbMelganTritonDataclass
+
+
+def load_model_conf(path: Union[Path, str]) -> MbMelganTritonDataclass:
+    yaml = YAML(typ="safe")
+    with open(path) as f:
+        model_config: Dict[str, Any] = yaml.load(f)
+    return MbMelganTritonDataclass.from_dict(model_config)  # type: ignore
+
+
+@pytest.fixture(scope="session")
+def mbmelgan_triton() -> MBMelGANTriton:
+    model_config = load_model_conf(Path("tests", "resources", "mbmelgan_config_triton.yaml"))
+
+    return MBMelGANTriton(config=model_config)
 
 
 def test_inference_on_triton(mbmelgan_triton: MBMelGANTriton) -> None:

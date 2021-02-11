@@ -1,32 +1,36 @@
-from typing import List, Dict, Any, Tuple
+from typing import List, Union, Tuple
 
 import numpy as np
 from tritonclient.grpc import InferenceServerClient, InferInput, InferRequestedOutput, InferResult
 
 from inference import triton_utils
 from inference.text2mel.glow_tts_core import GlowTTSCore
-from pylog.logger import logger_console as logger
+from ondewologging.logger import logger_console as logger
+from utils.data_classes.config_dataclass import GlowTTSDataclass, GlowTTSTritonDataclass
 
 
 class GlowTTSTriton(GlowTTSCore):
     NAME: str = "glow_tts_triton"
 
-    def __init__(self, config: Dict[str, Any]):
+    def __init__(self, config: Union[GlowTTSDataclass, GlowTTSTritonDataclass]):
         super(GlowTTSTriton, self).__init__(config=config)
         # triton config
-        self.triton_client = InferenceServerClient(url=self.config['triton_url'])
-        self.triton_model_name: str = self.config['triton_model_name']
+        assert isinstance(self.config, GlowTTSTritonDataclass)
+        self.triton_model_name: str = self.config.triton_model_name
+        logger.info(f"Trying to connect with triton server with url {self.config.triton_url}, "
+                    f"model name {self.triton_model_name}")
+        self.triton_client = InferenceServerClient(url=self.config.triton_url)
         triton_utils.check_triton_online(self.triton_client, self.triton_model_name)
         self.batch_size = self.triton_client.get_model_config(self.triton_model_name, as_json=True)[
             "config"].get("max_batch_size", 1)
-        logger.info(f"Triton inference server for the model {self.triton_model_name} is ready.")
         # warm up model
-        self._generate(texts=['dummy_text'])
+        self._generate(texts=['dummy_text'], length_scale=1.0, noise_scale=0.667)
+        logger.info(f"Triton inference server for the model {self.triton_model_name} is ready.")
 
     def _generate(self,
                   texts: List[str],
-                  noise_scale: float = 0.667,
-                  length_scale: float = 1.0
+                  noise_scale: float,
+                  length_scale: float,
                   ) -> Tuple[np.ndarray, ...]:
         txt_indexes_batch, txt_lengths_batch = \
             self.text_processor.preprocess_text_batch(texts=texts)

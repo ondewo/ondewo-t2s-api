@@ -1,118 +1,224 @@
+def UNIQUE_BUILD_ID = UUID.randomUUID().toString()
+
 pipeline {
     agent none
-    environment{
+    environment {
         BRANCH_NAME = "${env.BRANCH_NAME}"
-        SANITIZED_BRANCH_NAME = "${env.BRANCH_NAME}".replace("/", "_")
-        SANITIZED_DOCKER_TAG_NAME = "${env.BRANCH_NAME}".replace("release/", "")
+        SANITIZED_DOCKER_TAG_NAME = "${env.BRANCH_NAME}".replace('release/', '')
         IMAGE_TAG = "${SANITIZED_DOCKER_TAG_NAME}"
-        TESTS_IMAGE_NAME = "ondewo-t2s-tests"
+
+        IMAGE_NAME_RELASE_REST = 'ondewo-t2s-rest-rel'
+        IMAGE_NAME_RELASE_GRPC = 'ondewo-t2s-grpc-rel'
+        IMAGE_NAME_TESTS = 'ondewo-t2s-tests'
+        IMAGE_NAME_CODE_CHECK = 'ondewo-t2s-code-check'
         RELEASE_FOLDER = "releases/${SANITIZED_DOCKER_TAG_NAME}"
 
-        IMAGE_NAME_RELASE = "ondewo-t2s-batch-server-release"
-        TTS_NAME = "${IMAGE_NAME_RELASE}:${IMAGE_TAG}"
-        PUSH_NAME_RELEASE = "dockerregistry.ondewo.com:5000/${TTS_NAME}"
-        test_image_name_stream = "test_image_${IMAGE_NAME_RELASE}"
-        code_check_image_name = "code_check_image_${IMAGE_NAME_RELASE}"
+        TTS_NAME_REST = "${IMAGE_NAME_RELASE_REST}:${IMAGE_TAG}"
+        TTS_NAME_GRPC = "${IMAGE_NAME_RELASE_GRPC}:${IMAGE_TAG}"
+        TTS_NAME_TESTS = "${IMAGE_NAME_TESTS}:${IMAGE_TAG}"
+        TTS_NAME_CODE_CHECK = "${IMAGE_NAME_CODE_CHECK}:${IMAGE_TAG}"
+        PUSH_NAME_RELEASE_REST = "dockerregistry.ondewo.com:5000/${TTS_NAME_REST}"
+        PUSH_NAME_RELEASE_GRPC = "dockerregistry.ondewo.com:5000/${TTS_NAME_GRPC}"
     }
-
     stages {
-        stage('Build, test and push the image'){ parallel {
-            stage('Label Unstable') { agent { label 'cpu' }
-                when { not { anyOf {
-                      branch 'master'
-                      branch 'develop'
-                      expression {
-                        env.BRANCH_NAME.startsWith("release/")
-                      }
-                } } }
-                steps {
-                    catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
-                                sh(script: "exit 1", label: "error code so i can label unstable")
-            } } }
-            stage('Cythonized image') {
-                when { anyOf {
-                      branch 'master'
-                      branch 'develop'
-                      expression {
-                        env.BRANCH_NAME.startsWith("release/")
-                      }
-                } }
-                stages {
-                    stage('Code quality') { agent { label 'cpu' }
-                        steps {
-                            sh(script: "docker build -t ${code_check_image_name} -f code_checks/Dockerfile .", label: "build code quality image")
-                            sh(script: "docker run --rm ${code_check_image_name} make flake8", label: "run flake8")
-                            sh(script: "docker run --rm ${code_check_image_name} make mypy", label: "run mypy")
-                    } }
+        stage('Code Quality Check') {
+            agent { label 'cpu' }
+            steps {
+                sh(script: "docker build -t ${TTS_NAME_CODE_CHECK} -f code_checks/Dockerfile .", label: 'build code quality image')
+                sh(script: "docker run --rm ${TTS_NAME_CODE_CHECK} make flake8", label: 'run flake8')
+                sh(script: "docker run --rm ${TTS_NAME_CODE_CHECK} make mypy", label: 'run mypy')
+            }
+        }
 
-                    stage('Normal image') { agent { label 'cpu' }
-                        stages{
-                            stage('Build') {
-                            environment {
-                                ssh_key_file = credentials('devops_ondewo_idrsa')
-                            }
+        stage('Build and Test Server Images (cythonized)') {
+            agent { label 'a100' }
+            environment {
+                ssh_key_file = credentials('devops_ondewo_idrsa')
+                TRITON_CONTAINER = "ondewo-t2s-triton-${UNIQUE_BUILD_ID}"
+                REST_CONTAINER = "${IMAGE_NAME_RELASE_REST}-${UNIQUE_BUILD_ID}"
+                GRPC_CONTAINER = "${IMAGE_NAME_RELASE_GRPC}-${UNIQUE_BUILD_ID}"
+                A100_MODEL_DIR = '/home/voice_user/data/jenkins/t2s/models'
+                A100_GPU = 'device=0'
+                A100_GPU1 = 'device=1'
+                DOCKER_NETWORK = "${UNIQUE_BUILD_ID}"
+            }
+            stages {
+                stage('Setup Test Env') {
+                    steps {
+                        sh(script: '''for filename in $(ls ${PWD}/tests/resources | grep yaml)
+                                    do
+                                        full_fp=${PWD}/tests/resources/\$filename
+                                        sed -i "s/triton_url.*/triton_url: ${TRITON_CONTAINER}:50511/" \$full_fp
+                                    done
+                        ''', label: 'set triton container name in test configs')
+                    }
+                }
+                stage('Build Server Images') {
+                    parallel {
+                        stage('Build rest server') {
                             steps {
-                                 sh(script: """set +x
-                                        docker build -t ${PUSH_NAME_RELEASE} --build-arg SSH_PRIVATE_KEY=\"\$(cat ${ssh_key_file})\" -f docker/Dockerfile.batchserver .
-                                    set -x""", label: "build image")
-                            } }
-                            stage('Tests (develop)') {
-                                 when {
-                                    branch 'develop'
-                                 }
-                                 environment {
-                                    PWD = pwd()
-                                    testresults_folder = "${PWD}/test_results"
-                                    testresults_filename = "pytest.xml"
-                                    ssh_key_file = credentials('devops_ondewo_idrsa')
-                                 }
-                                 steps {
-                                    sh(script: "mkdir ${testresults_folder}")
-                                    sh(script: "docker build -t ${TESTS_IMAGE_NAME} --build-arg PUSH_NAME_STREAM=\"${PUSH_NAME_RELEASE}\"  -f docker/Dockerfile.tests . ", label: "build image")
-                                    sh(script: "docker run --rm -e TESTFILE=${testresults_filename} -v ${testresults_folder}:/opt/ondewo-t2s/log  ${TESTS_IMAGE_NAME}  --ignore=tests/tests_grpc", label: "run_tests")
-                                 }
-                                 post { always {
-                                    sh(script: "cd ${testresults_folder} && cp *.xml ${PWD}")
-                                    junit "${testresults_filename}"
-                                 } }
+                                sh(script: """set +x
+                                    docker build -t ${PUSH_NAME_RELEASE_REST} --build-arg SSH_PRIVATE_KEY=\"\$(cat ${ssh_key_file})\" -f docker/Dockerfile.rest_server .
+                                    set -x"""
+                                    , label: 'build image'
+                                )
                             }
-                            stage('Tests (release)') {
-                                 when { anyOf {
-                                    branch 'master'
-                                    expression {
-                                        env.BRANCH_NAME.startsWith("release/")
+                        }
+                        stage('Build grpc server') {
+                            steps {
+                                sh(script: """set +x
+                                    docker build -t ${PUSH_NAME_RELEASE_GRPC} --build-arg SSH_PRIVATE_KEY=\"\$(cat ${ssh_key_file})\" -f docker/Dockerfile.grpc_server .
+                                    set -x"""
+                                    , label: 'build image'
+                                )
+                            }
+                        }
+                    }
+                }
+                stage('Build and Run Tests') {
+                    environment {
+                        PWD = pwd()
+                        CONFIG_DIR = "${PWD}/tests/resources/configs"
+                        testresults_folder = "${PWD}/test_results"
+                        testresults_filename = 'pytest.xml'
+                    }
+                    stages {
+                        stage('Build Test Image') {
+                            steps {
+                                sh(script: "mkdir ${testresults_folder}")
+                                sh(script: "docker build -t ${TTS_NAME_TESTS} --build-arg PUSH_NAME_STREAM=\"${PUSH_NAME_RELEASE_GRPC}\" -f docker/Dockerfile.tests .", label: 'build image')
+                                sh(script: "docker network create ${DOCKER_NETWORK}", label: 'create docker network')
+                            }
+                        }
+                        stage('Run Tests') {
+                            parallel {
+                                stage('Unit Tests') {
+                                    steps {
+                                        sh(script: "docker run --rm -e TESTFILE=${testresults_filename} -v ${testresults_folder}:/opt/ondewo-t2s/log ${TTS_NAME_TESTS} ./tests/unit"
+                                        , label: 'run unit_tests')
                                     }
-                                 } }
-                                 environment {
-                                    PWD = pwd()
-                                    testresults_folder = "${PWD}/test_results"
-                                    testresults_filename = "pytest.xml"
-                                    ssh_key_file = credentials('devops_ondewo_idrsa')
-                                 }
-                                 steps {
-                                    sh(script: "mkdir ${testresults_folder}")
-                                    sh(script: "docker build -t ${TESTS_IMAGE_NAME} --build-arg PUSH_NAME_STREAM=\"${PUSH_NAME_RELEASE}\" -f docker/Dockerfile.tests . ", label: "build image")
-                                    sh(script: "docker run --rm -e TESTFILE=${testresults_filename} -v ${testresults_folder}:/opt/ondewo-t2s/log  ${TESTS_IMAGE_NAME}", label: "run_tests")
-                                 }
-                                 post { always {
-                                    sh(script: "cd ${testresults_folder} && cp *.xml ${PWD}")
-                                    junit "${testresults_filename}"
-                                 } }
+                                }
+                                stage('Integration Tests') {
+                                    steps {
+                                        sh(script: "make run_triton TRITON_CONTAINER=${TRITON_CONTAINER} MODEL_DIR=${A100_MODEL_DIR} TRITON_GPUS=\"${A100_GPU}\" DOCKER_NETWORK=${DOCKER_NETWORK}"
+                                        , label: 'run triton server')
+                                        timeout(time: 60, unit: 'SECONDS') {
+                                            waitUntil {
+                                                script {
+                                                    def status_triton = sh(
+                                                        script: "docker run --network=${DOCKER_NETWORK} dockerregistry.ondewo.com:5000/curlimages/curl curl --fail http://${TRITON_CONTAINER}:50510/v2/health/ready",
+                                                        returnStatus: true,
+                                                        label: 'health check triton until ready'
+                                                    )
+                                                    return (status_triton == 0)
+                                                }
+                                            }
+                                        }
+                                        sh(script: "docker logs ${TRITON_CONTAINER}", label: 'triton logs when ready')
+                                        sh(script: """docker run --rm --gpus ${A100_GPU1} \
+                                            --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
+                                            --network=${DOCKER_NETWORK} \
+                                            -e TESTFILE=${testresults_filename} \
+                                            -v ${testresults_folder}:/opt/ondewo-t2s/log \
+                                            -v ${A100_MODEL_DIR}:/opt/ondewo-t2s/models \
+                                            ${TTS_NAME_TESTS} ./tests/integration"""
+                                        , label: 'run integration tests')
+                                    }
+                                    post { always {
+                                        sh(script: "docker logs ${TRITON_CONTAINER}", label: 'triton logs after tests')
+                                        sh(script: 'make kill_triton'
+                                        , label: 'kill triton server')
+                                    } }
+                                }
+                                stage('E2E Tests') {
+                                    steps {
+                                        sh(script: """docker run -td --gpus ${A100_GPU} \
+                                            --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
+                                            --network=${DOCKER_NETWORK} \
+                                            -v ${A100_MODEL_DIR}:/opt/ondewo-t2s/models \
+                                            -v ${CONFIG_DIR}:/opt/ondewo-t2s/config \
+                                            --env CONFIG_FILE="config/config.yaml" \
+                                            --name ${REST_CONTAINER} \
+                                            ${PUSH_NAME_RELEASE_REST}"""
+                                        , label: 'run rest server')
+                                        sh(script: """docker run -td --gpus ${A100_GPU} \
+                                            --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
+                                            --network=${DOCKER_NETWORK} \
+                                            -v ${A100_MODEL_DIR}:/opt/ondewo-t2s/models \
+                                            -v ${CONFIG_DIR}:/opt/ondewo-t2s/config \
+                                            --env CONFIG_DIR="config" \
+                                            --name ${GRPC_CONTAINER} \
+                                            ${PUSH_NAME_RELEASE_GRPC}"""
+                                        , label: 'run grpc server')
+                                        timeout(time: 60, unit: 'SECONDS') {
+                                            waitUntil {
+                                                script {
+                                                    def status_rest = sh(
+                                                        script: "docker run --network=${DOCKER_NETWORK} dockerregistry.ondewo.com:5000/curlimages/curl curl --fail http://${REST_CONTAINER}:50550/health/ready",
+                                                        returnStatus: true,
+                                                        label: 'health check rest server until ready'
+                                                    )
+                                                    def status_grpc = sh(
+                                                        script: "docker run --network=${DOCKER_NETWORK} dockerregistry.ondewo.com:5000/networld/grpcurl ./grpcurl -plaintext -H \"\" ${GRPC_CONTAINER}:50555 list",
+                                                        returnStatus: true,
+                                                        label: 'health check grpc server until ready'
+                                                    )
+                                                    return (status_rest + status_grpc == 0)
+                                                }
+                                            }
+                                        }
+                                        sh(script: "docker logs ${REST_CONTAINER}", label: 'rest server logs when ready')
+                                        sh(script: "docker logs ${GRPC_CONTAINER}", label: 'grpc server logs when ready')
+                                        sh(script: """docker run --rm --gpus all \
+                                            --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
+                                            --network=${DOCKER_NETWORK} \
+                                            -e TESTFILE=${testresults_filename} \
+                                            -e T2S_GRPC_HOST=${GRPC_CONTAINER} \
+                                            -e T2S_REST_HOST=${REST_CONTAINER} \
+                                            -v ${testresults_folder}:/opt/ondewo-t2s/log \
+                                            -v ${A100_MODEL_DIR}:/opt/ondewo-t2s/models \
+                                            ${TTS_NAME_TESTS} ./tests/e2e"""
+                                        , label: 'run e2e tests')
+                                    }
+                                    post { always {
+                                        sh(script: "docker logs ${REST_CONTAINER}", label: 'rest server logs after tests')
+                                        sh(script: "docker rm -f ${REST_CONTAINER}", label: 'kill rest server')
+                                        sh(script: "docker logs ${GRPC_CONTAINER}", label: 'grpc server logs after tests')
+                                        sh(script: "docker rm -f ${GRPC_CONTAINER}", label: 'kill grpc server')
+                                    } }
+                                }
                             }
-                            stage('Push') { steps{
-                                sh(script: "docker push ${PUSH_NAME_RELEASE}", label: "push the image to the registry")
-                                sh(script: "echo ${PUSH_NAME_RELEASE} pushed to registry")
-                            } }
-                            // Only releases get packaged
-                            stage('Package the release') {
-                                agent { node { label 'master' } }
-                                when { expression { env.BRANCH_NAME.startsWith("release/") } }
-                                steps{
-                                    sh "echo \"Releasing ONDEWO T2S - ${env.BRANCH_NAME}\""
-                                    sh 'printenv'
-                                    sh "make package_release"
-                            } }
+                        }
+                    }
+                    post { always {
+                        sh "docker network rm ${DOCKER_NETWORK} || exit 0"
+                        sh(script: "cd ${testresults_folder} && cp *.xml ${PWD}")
+                        junit "${testresults_filename}"
                     } }
-                } }
-            } }
-} }
+                }
+                stage('Push') {
+                    steps {
+                        sh(script: "docker push ${PUSH_NAME_RELEASE_GRPC}", label: 'push the image to the registry')
+                        sh(script: "echo ${PUSH_NAME_RELEASE_GRPC} pushed to registry")
+                        sh(script: "docker push ${PUSH_NAME_RELEASE_REST}", label: 'push the image to the registry')
+                        sh(script: "echo ${PUSH_NAME_RELEASE_REST} pushed to registry")
+                    }
+                }
+                // Only releases get packaged
+                stage('Package the release') {
+                    agent { label 'cpu' }
+                    when {
+                        expression {
+                            env.BRANCH_NAME.startsWith('release/')
+                        }
+                    }
+                    steps {
+                        sh "echo \"Releasing ONDEWO T2S - ${env.BRANCH_NAME}\""
+                        sh 'printenv'
+                        sh 'make package_release'
+                    }
+                }
+            }
+        }
+    }
+}

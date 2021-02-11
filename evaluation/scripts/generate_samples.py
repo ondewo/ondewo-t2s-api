@@ -7,22 +7,24 @@ from ruamel.yaml import YAML
 import numpy as np
 import soundfile as sf
 
+from utils.data_classes.config_dataclass import T2SConfigDataclass
 
-def gen_samples(config: Dict[str, Any], sentences: List[str], output_dir: Path) -> None:
+
+def gen_samples(config: T2SConfigDataclass, sentences: List[str], output_dir: Path) -> None:
     from inference.inference_interface import Inference
     from inference.inference_factory import InferenceFactory
     from normalization.pipeline_constructor import NormalizerPipeline
     from normalization.postprocessor import Postprocessor
 
-    inference: Inference = InferenceFactory.get_inference(config['inference'])
+    inference: Inference = InferenceFactory.get_inference(config.inference)
 
-    preprocess_pipeline: NormalizerPipeline = NormalizerPipeline(config=config['normalization'])
-    postprocessor = Postprocessor(config['postprocessing'])
+    preprocess_pipeline: NormalizerPipeline = NormalizerPipeline(config=config.normalization)
+    postprocessor = Postprocessor(config.postprocessing)
 
     for i, sentence in enumerate(sentences):
         # infer
         texts: List[str] = preprocess_pipeline.apply([sentence])
-        audio_list: List[np.ndarray] = inference.synthesize(texts=texts)
+        audio_list: List[np.ndarray] = inference.synthesize(texts=texts, length_scale=None, noise_scale=None)
         audio = postprocessor.postprocess(audio_list)
 
         # save audio to file
@@ -57,8 +59,8 @@ def main() -> None:
 
         # load config
         with open(config_path) as f:
-            config: Dict[str, Any] = yaml.load(f)
-            #config["inference"]["composite_inference"]["mel2audio"]["mb_melgan_tf"]["model_path"] = "/home/utanko/train.mb_melgan.germans/checkpoints/generator-300000.h5"
+            config_dict: Dict[str, Any] = yaml.load(f)
+            config: T2SConfigDataclass = T2SConfigDataclass.from_dict(config_dict)  # type: ignore
 
         # using multiprocessing so that GPU memory gets released after each run
         proc = multiprocessing.Process(target=gen_samples, args=(config, sentences, out_dir))

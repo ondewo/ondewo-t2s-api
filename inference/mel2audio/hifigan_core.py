@@ -1,25 +1,27 @@
 import json
-from typing import Any, Callable, Dict, List
+from typing import List, Union
 
 import numpy as np
-from pylog.decorators import Timer
-from pylog.logger import logger_console as logger
+from ondewologging.decorators import Timer
+from ondewologging.logger import logger_console as logger
 
 from inference.mel2audio.mel2audio import Mel2Audio
+from utils.data_classes.config_dataclass import HiFiGanDataclass, HiFiGanTritonDataclass
 
 
 class HiFiGANCore(Mel2Audio):
 
-    def __init__(self, config: Dict[str, Any]):
+    def __init__(self, config: Union[HiFiGanDataclass, HiFiGanTritonDataclass]):
         self.config = config
-        self.batch_size = config['batch_size']
-        self.config_file = config['config_path']
+        self.config_file = config.config_path
         with open(self.config_file) as f:
             data = f.read()
         self.hifi_config = json.loads(data)
         self.hop_size = self.hifi_config['hop_size']
+        self.batch_size = self.hifi_config['batch_size']
 
-    def _preprocess(self, mel_spectrograms: List[np.ndarray]) -> np.ndarray:
+    @classmethod
+    def _preprocess(cls, mel_spectrograms: List[np.ndarray]) -> np.ndarray:
         mel_out: List[np.ndarray] = [mel for mel in mel_spectrograms]
         lengths: List[int] = [mel.shape[1] for mel in mel_out]
         max_len = max(lengths)

@@ -5,6 +5,7 @@ import numpy as np
 
 
 class Mel2Audio(ABC):
+    NAME: str = 'mel2audio'
 
     @abstractmethod
     def mel2audio(self, mel_spectrograms: List[np.ndarray]) -> List[np.ndarray]:

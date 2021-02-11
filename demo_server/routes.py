@@ -3,13 +3,12 @@ import tempfile
 import time
 from os.path import join
 from typing import Any
+
 from flask import request, send_file
-import requests
 
-
-from . import server, WORK_DIR, TMP_DIR_NAME
 from demo_server.html_loading import get_audiofile, get_result
-from demo_server.demo_utils import get_batch_server_url
+from . import server, WORK_DIR, TMP_DIR_NAME
+from .demo_utils import get_pipeline_id, synthesize_with_pipeline
 
 
 @server.route('/text2speech', methods=['POST'])
@@ -18,8 +17,8 @@ def text_2_speech() -> Any:
         text: str = request.form['text']
         language: str = request.form['language']
 
-        url: str = get_batch_server_url(language_string=language) + "/text2speech"
-        audio_bytes: bytes = requests.post(url, data={'text': text}).content
+        pipeline_id: str = get_pipeline_id(language_string=language)
+        audio_bytes: bytes = synthesize_with_pipeline(text=text, pipeline_id=pipeline_id)
 
         with tempfile.NamedTemporaryFile("w+b") as wav_file:
             wav_file.write(audio_bytes)
@@ -33,8 +32,8 @@ def text_2_speech_web() -> Any:
         language: str = request.form['language']
 
         start_t: float = time.time()
-        url: str = get_batch_server_url(language_string=language) + "/text2speech"
-        audio_bytes: bytes = requests.post(url, data={'text': text}).content
+        pipeline_id: str = get_pipeline_id(language_string=language)
+        audio_bytes: bytes = synthesize_with_pipeline(text=text, pipeline_id=pipeline_id)
         total_t: float = time.time() - start_t
 
         # we need to actually store the file on the server

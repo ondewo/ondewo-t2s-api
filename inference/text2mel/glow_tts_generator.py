@@ -1,46 +1,58 @@
-from typing import Tuple, Dict, Any, List
+from typing import Tuple, List, Dict
 
 import numpy as np
 import torch
 from glow_tts_reduced import models
-from pylog.logger import logger_console as logger
+from ondewologging.decorators import Timer
+from ondewologging.logger import logger_console as logger
 
-from inference.text2mel.constants_text2mel import MODEL_PATH, USE_GPU, BATCH_SIZE
 from inference.text2mel.glow_tts_core import GlowTTSCore
+from utils.data_classes.config_dataclass import GlowTTSDataclass
 
 
 class GlowTTS(GlowTTSCore):
     NAME: str = "glow_tts"
+    models_cache: Dict[str, models.FlowGenerator] = {}
 
-    def __init__(self, config: Dict[str, Any]):
+    def __init__(self, config: GlowTTSDataclass):
         super(GlowTTS, self).__init__(config=config)
-        self.checkpoint_path: str = config[MODEL_PATH]
+        self.batch_size: int = config.batch_size
+        self.checkpoint_path = config.path
 
-        logger.info('Create glow-tts model. Start.')
-        self.model: models.FlowGenerator = models.FlowGenerator(
-            n_vocab=len(self.text_processor.symbols)+self.text_processor.add_blank,
+        logger.info('Creating and loading glow-tts model...')
+        self.use_gpu: bool = config.use_gpu
+        self.model: models.FlowGenerator = self._get_model()
+        logger.info('Glow-tts model is ready.')
+
+    @Timer(log_arguments=False)
+    def _get_model(self) -> models.FlowGenerator:
+        key_word: str = f'{self.checkpoint_path}-{"cuda"*self.use_gpu+"cpu"*(not self.use_gpu)}'
+        if key_word in self.models_cache:
+            logger.info(f"Model is in the cache with a key {key_word}.")
+            return self.models_cache[key_word]
+
+        model = models.FlowGenerator(
+            n_vocab=len(self.text_processor.symbols) + self.text_processor.add_blank,
             out_channels=self.hyperparams.data.n_mel_channels,
             **self.hyperparams.model
         )
-        self.batch_size: int = config[BATCH_SIZE]
-        self.use_gpu: bool = config[USE_GPU]
-        if self.use_gpu:
-            self.model = self.model.to("cuda")
+        if self.use_gpu and torch.cuda.is_available():
+            model = model.to("cuda")
+        elif not torch.cuda.is_available():
+            logger.warning('Cuda is not available. CPU inference will be used.')
 
-        # load trained model
-        logger.info('Load glow-tts model. Start.')
         self.state_dict = torch.load(self.checkpoint_path)
         # handle both cases 1- model with optimization info or 2- pure model in the checkpoint
         self.state_dict = self.state_dict.get('model') or self.state_dict
-        self.model.load_state_dict(state_dict=self.state_dict)
+        model.load_state_dict(state_dict=self.state_dict)
 
         # set model to eval mode
-        self.model.decoder.store_inverse()  # do not calcuate jacobians for fast decoding
-        self.model.eval()
-        logger.info('Glow-tts model is ready.')
+        model.decoder.store_inverse()  # do not calcuate jacobians for fast decoding
+        model.eval()
+        self.models_cache[key_word] = model
+        return model
 
-    def _generate(self, texts: List[str], noise_scale: float = 0.667, length_scale: float = 1.0
-                  ) -> Tuple[np.ndarray, ...]:
+    def _generate(self, texts: List[str], noise_scale: float, length_scale: float) -> Tuple[np.ndarray, ...]:
         """
 
         Args:
