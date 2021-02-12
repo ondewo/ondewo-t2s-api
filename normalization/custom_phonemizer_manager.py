@@ -87,7 +87,7 @@ class CustomPhonemizerManager:
             new_dict.update(dict_to_update)
             dict_to_update = new_dict
             if overlapping_words:
-                logger.warning(f"The word {overlapping_words} is already in custom phonemizer."
+                logger.warning(f"The words {overlapping_words} is already in custom phonemizer."
                                f"Since update method 'extend_soft' is choosen, "
                                f"it will not be overwritten")
         else:
@@ -95,7 +95,7 @@ class CustomPhonemizerManager:
             dict_to_update.update(new_dict)
             dict_to_update = dict_to_update
             if overlapping_words:
-                logger.warning(f"The word {overlapping_words} is already in custom phonemizer."
+                logger.warning(f"The words {overlapping_words} is already in custom phonemizer."
                                f"Since update method 'extend_hard' is choosen, it will be overwritten")
         cls.manager[phonemizer_id] = dict_to_update
         return dict_to_update

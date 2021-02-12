@@ -8,7 +8,7 @@ from ruamel.yaml import YAML
 from grpc_server.pipeline_utils import get_list_of_json_files_paths
 from inference.inference_factory import InferenceFactory
 from inference.inference_interface import Inference
-from normalization.custom_phonemizer import CustomPhonemizerManager
+from normalization.custom_phonemizer_manager import CustomPhonemizerManager
 from normalization.pipeline_constructor import NormalizerPipeline
 from normalization.postprocessor import Postprocessor
 from utils.data_classes.config_dataclass import T2SConfigDataclass

@@ -8,7 +8,7 @@ from grpc_server.pipeline_utils import create_t2s_pipeline_from_config, get_or_c
     get_list_of_json_files_paths, \
     get_all_config_paths
 from grpc_server.t2s_pipeline_manager import T2SPipelineManager
-from normalization.custom_phonemizer import CustomPhonemizerManager
+from normalization.custom_phonemizer_manager import CustomPhonemizerManager
 from utils.data_classes.config_dataclass import T2SConfigDataclass
 
 

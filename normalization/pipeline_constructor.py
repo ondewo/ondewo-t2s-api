@@ -3,7 +3,7 @@ from typing import List, Tuple, Type, Optional, Callable
 
 from ondewologging.logger import logger_console as logger
 
-from normalization.custom_phonemizer import CustomPhonemizerManager
+from normalization.custom_phonemizer_manager import CustomPhonemizerManager
 from normalization.normalizer_interface import NormalizerInterface
 from normalization.text_splitter import TextSplitter
 from utils.data_classes.config_dataclass import NormalizationDataclass
