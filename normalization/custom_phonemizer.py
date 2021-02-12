@@ -10,7 +10,7 @@ from ondewo_grpc.ondewo.t2s.custom_phonemizer_pb2 import UpdateCustomPhonemizerR
     Map, ListCustomPhonemizerRequest, ListCustomPhonemizerResponse
 
 
-class CustomPhonemizer:
+class CustomPhonemizerManager:
     manager: Dict[str, Dict[str, str]] = {}
     persistence_dir: str = ''
 
@@ -37,19 +37,19 @@ class CustomPhonemizer:
         cls.manager[phonemizer_id] = dict_from_file
 
     @classmethod
-    def get_phonemizer_lookup_function(cls, phonemizer_id: str) -> Callable[[str], str]:
+    def get_phonemizer_lookup_replace_function(cls, phonemizer_id: str) -> Callable[[str], str]:
         phonemizer: Optional[Dict[str, str]] = cls.manager.get(phonemizer_id)
         if not phonemizer:
             raise ValueError(
                 f'Id {phonemizer_id} does not exist. Existing ids are {list(cls.manager.keys())}')
 
-        def look_up(text: str) -> str:
+        def look_up_replace(text: str) -> str:
             words: List[str] = text.split()
             assert isinstance(phonemizer, dict)
             phonemized_text: str = ' '.join([phonemizer.get(word) or word for word in words])
             return phonemized_text
 
-        return look_up
+        return look_up_replace
 
     @classmethod
     def _register_and_save(cls, cmu_dict: Dict[str, str], prefix: str = '') -> str:
@@ -72,24 +72,27 @@ class CustomPhonemizer:
                              f'Existing ids are {list(cls.manager.keys())}')
         new_dict: Dict[str, str] = {map_.word: map_.phoneme_groups for map_ in request.maps}
         if request.update_method is UpdateCustomPhonemizerRequest.UpdateMethod.extend_soft:
-            for k, v in new_dict.items():
-                if k not in dict_to_update:
-                    dict_to_update[k] = v
-                else:
-                    logger.warning(f"The word {k} is already in custom phonemizer."
-                                   f"Since update method 'extend_soft' is choosen, "
-                                   f"it will not be overwritten")
+            overlapping_words = new_dict.keys() & dict_to_update.keys()
+            dict_to_update = new_dict.update(dict_to_update)
+            if overlapping_words:
+                logger.warning(f"The word {overlapping_words} is already in custom phonemizer."
+                               f"Since update method 'extend_soft' is choosen, "
+                               f"it will not be overwritten")
         elif request.update_method is UpdateCustomPhonemizerRequest.UpdateMethod.extend_hard:
-            for k, v in new_dict.items():
-                if k in dict_to_update:
-                    logger.warning(f"The word {k} is already in custom phonemizer."
-                                   f"Since update method 'extend_hard' is choosen, it will be overwritten")
-                dict_to_update[k] = v
+            overlapping_words = new_dict.keys() & dict_to_update.keys()
+            dict_to_update = dict_to_update.update(new_dict)
+            if overlapping_words:
+                logger.warning(f"The word {overlapping_words} is already in custom phonemizer."
+                               f"Since update method 'extend_hard' is choosen, it will be overwritten")
+
         elif request.update_method is UpdateCustomPhonemizerRequest.UpdateMethod.replace:
             dict_to_update = new_dict
         else:
             raise ValueError('Update method unknown.')
+
+        assert isinstance(dict_to_update, dict)  # only for mypy
         cls.manager[request.id] = dict_to_update
+
         return CustomPhonemizerProto(
             id=request.id,
             maps=[

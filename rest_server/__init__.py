@@ -8,7 +8,7 @@ from ruamel.yaml import YAML
 from grpc_server.pipeline_utils import get_list_of_json_files_paths
 from inference.inference_factory import InferenceFactory
 from inference.inference_interface import Inference
-from normalization.custom_phonemizer import CustomPhonemizer
+from normalization.custom_phonemizer import CustomPhonemizerManager
 from normalization.pipeline_constructor import NormalizerPipeline
 from normalization.postprocessor import Postprocessor
 from utils.data_classes.config_dataclass import T2SConfigDataclass
@@ -36,10 +36,10 @@ if config.normalization.custom_phonemizer_id:
         raise ValueError(f'No file found for specified custom phonemizer id:'
                          f' {config.normalization.custom_phonemizer_id}. Found files are {phonemizers_paths}')
     for phonemizer_path in phonemizers_paths:
-        CustomPhonemizer.load_phonemizer_from_path(path=phonemizer_path)
+        CustomPhonemizerManager.load_phonemizer_from_path(path=phonemizer_path)
         logger.info(f"Custom phonemizer with id {os.path.basename(phonemizer_path)}"
                     f" is loaded from the dir {custom_phonemizers_dir}.")
-    CustomPhonemizer.persistence_dir = custom_phonemizers_dir
+    CustomPhonemizerManager.persistence_dir = custom_phonemizers_dir
 
 preprocess_pipeline: NormalizerPipeline = NormalizerPipeline(config=config.normalization)
 postprocessor = Postprocessor(config.postprocessing)

@@ -3,7 +3,7 @@ from typing import List, Tuple, Type, Optional, Callable
 
 from ondewologging.logger import logger_console as logger
 
-from normalization.custom_phonemizer import CustomPhonemizer
+from normalization.custom_phonemizer import CustomPhonemizerManager
 from normalization.normalizer_interface import NormalizerInterface
 from normalization.text_splitter import TextSplitter
 from utils.data_classes.config_dataclass import NormalizationDataclass
@@ -16,7 +16,7 @@ class NormalizerPipeline:
     def __init__(self, config: NormalizationDataclass) -> None:
         if config.custom_phonemizer_id:
             self.phonemizer_function: Optional[Callable[[str], str]] = \
-                CustomPhonemizer.get_phonemizer_lookup_function(config.custom_phonemizer_id)
+                CustomPhonemizerManager.get_phonemizer_lookup_replace_function(config.custom_phonemizer_id)
         else:
             self.phonemizer_function = None
         self.normalizer: NormalizerInterface = self._get_normalizer(config=config)
