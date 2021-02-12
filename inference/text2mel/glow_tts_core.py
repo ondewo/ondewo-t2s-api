@@ -6,8 +6,6 @@ from glow_tts_reduced import utils
 from ondewologging.decorators import Timer
 from ondewologging.logger import logger_console as logger
 
-from inference.text2mel.constants_text2mel import LENGTH_SCALE, \
-    NOISE_SCALE
 from inference.text2mel.glow_tts_text_processor import GlowTTSTextProcessor
 from inference.text2mel.text2mel import Text2Mel
 from utils.data_classes.config_dataclass import GlowTTSDataclass, GlowTTSTritonDataclass

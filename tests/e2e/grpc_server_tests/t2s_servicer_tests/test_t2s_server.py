@@ -1,14 +1,14 @@
 import copy
 import io
 from pathlib import Path
-import pytest
 from typing import Iterator
 
 import pytest
 import soundfile as sf
 
 from ondewo_grpc.ondewo.t2s import text_to_speech_pb2
-from .operations import OperationSynthesize, OperationListPipelines, \
+from tests.e2e.grpc_server_tests.t2s_servicer_tests.operations import OperationSynthesize, \
+    OperationListPipelines, \
     OperationGetT2sPipeline, OperationCreateT2sPipeline, OperationDeleteT2sPipeline, \
     OperationUpdateT2sPipeline
 
@@ -17,7 +17,7 @@ from .operations import OperationSynthesize, OperationListPipelines, \
 def clean_configs_dir() -> Iterator[None]:
     yield
     for pth in Path("tests", "resources", "configs").iterdir():
-        if pth.name not in ("config.yaml", "config_en.yaml"):
+        if pth.name not in ("config.yaml", "config_en.yaml") and pth.is_file():
             pth.unlink()
 
 

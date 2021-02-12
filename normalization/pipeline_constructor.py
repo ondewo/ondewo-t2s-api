@@ -1,8 +1,9 @@
 import re
-from typing import List, Tuple
+from typing import List, Tuple, Type, Optional, Callable
 
 from ondewologging.logger import logger_console as logger
 
+from normalization.custom_phonemizer_manager import CustomPhonemizerManager
 from normalization.normalizer_interface import NormalizerInterface
 from normalization.text_splitter import TextSplitter
 from utils.data_classes.config_dataclass import NormalizationDataclass
@@ -13,6 +14,11 @@ class NormalizerPipeline:
     pttrn_punkt = re.compile(r'[.?!](\s*)$')
 
     def __init__(self, config: NormalizationDataclass) -> None:
+        if config.custom_phonemizer_id:
+            self.phonemizer_function: Optional[Callable[[str], str]] = \
+                CustomPhonemizerManager.get_phonemizer_lookup_replace_function(config.custom_phonemizer_id)
+        else:
+            self.phonemizer_function = None
         self.normalizer: NormalizerInterface = self._get_normalizer(config=config)
         self.pipeline_definition: List[str] = self.get_pipeline_definition(config)
         self.splitter = TextSplitter
@@ -50,18 +56,19 @@ class NormalizerPipeline:
                 continue
             step = getattr(self.normalizer, name)
             text = step(text)
+            if self.phonemizer_function:
+                text = self.phonemizer_function(text)
         return text
 
     def get_pipeline_definition(self, config: NormalizationDataclass) -> List[str]:
         pipeline_definition: List[str] = config.pipeline
-        if not pipeline_definition:
-            logger.warning('Preprocessing pipeline is not defined or empty. No preprocessing will be applied')
-            return []
         for name in pipeline_definition:
             if not hasattr(self.normalizer, name):
                 logger.warning(f"Preprocessing step {name} is not found in normalizer."
                                f"This normalization step will be skipped")
                 pipeline_definition.remove(name)
+        if not pipeline_definition:
+            logger.warning('Preprocessing pipeline is not defined or empty. No preprocessing will be applied')
         return pipeline_definition
 
     def extract_phonemized(self, text: str) -> List[Tuple[str, bool]]:
