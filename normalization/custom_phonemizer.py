@@ -5,7 +5,7 @@ from uuid import uuid4
 
 from ondewologging.logger import logger_console as logger
 
-from normalization.constants import CUSTOM_PHONEMIZER_ID_PTTRN, CUSTOM_PHONEMIZER_PREFIX_PTTRN
+from normalization.constants import CUSTOM_PHONEMIZER_PREFIX_PTTRN
 from ondewo_grpc.ondewo.t2s.custom_phonemizer_pb2 import UpdateCustomPhonemizerRequest, CustomPhonemizerProto, \
     Map, ListCustomPhonemizerRequest, ListCustomPhonemizerResponse
 
@@ -26,11 +26,6 @@ class CustomPhonemizer:
         else:
             raise ValueError(f'Phonemizer path expected to point to json file with "json" extention. '
                              f'Got {path}.')
-
-        if not cls.validate_id(phonemizer_id):
-            logger.warning(f"The file name {path} does not fit into phonemizer_id pattern of:"
-                           f"alphanumeric prefix + _ + uuid4. This file will not be loaded.")
-            return None
 
         with open(path, 'r') as f:
             dict_from_file: Dict[str, str] = json.load(f)
@@ -58,6 +53,9 @@ class CustomPhonemizer:
 
     @classmethod
     def _register_and_save(cls, cmu_dict: Dict[str, str], prefix: str = '') -> str:
+        if not cls.validate_prefix(prefix=prefix):
+            raise ValueError(f'Prefix of the phonemizer id should have only alphanumeric '
+                             f'and underscore chars. Got {prefix}.')
         phonemizer_id: str = f'{(prefix + "_") * bool(prefix)}{uuid4()}'
         persistence_path: str = f'{phonemizer_id}.json'
         cls.manager[phonemizer_id] = cmu_dict
@@ -149,13 +147,6 @@ class CustomPhonemizer:
                     )
                 )
         return ListCustomPhonemizerResponse(phonemizers=phonemizerss_list)
-
-    @classmethod
-    def validate_id(cls, phonemizer_id: str) -> bool:
-        if CUSTOM_PHONEMIZER_ID_PTTRN.match(phonemizer_id) is None:
-            return False
-        else:
-            return True
 
     @classmethod
     def validate_prefix(cls, prefix: str) -> bool:
