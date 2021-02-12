@@ -8,10 +8,10 @@ from ondewologging.logger import logger_console as logger
 from ruamel.yaml import YAML
 
 from grpc_server.phonemizer_servicer import CustomPhomenizerServicer
-from grpc_server.pipeline_utils import get_list_of_yaml_files, create_t2s_pipeline_from_config, \
-    get_config_dir, get_or_create_custom_phonemizers_dir, get_list_of_json_files_paths
-from grpc_server.t2s_servicer import Text2SpeechServicer
+from grpc_server.pipeline_utils import create_t2s_pipeline_from_config, \
+    get_or_create_custom_phonemizers_dir, get_list_of_json_files_paths, get_all_config_paths
 from grpc_server.t2s_pipeline_manager import T2SPipelineManager
+from grpc_server.t2s_servicer import Text2SpeechServicer
 from normalization.custom_phonemizer import CustomPhonemizer
 from ondewo_grpc.ondewo.t2s import text_to_speech_pb2_grpc, text_to_speech_pb2, custom_phonemizer_pb2_grpc, \
     custom_phonemizer_pb2
@@ -62,10 +62,9 @@ class Server:
         CustomPhonemizer.persistence_dir = custom_phonemizers_dir
 
         # load t2s pipelines
-        config_dir: str = get_config_dir()
-        config_files: List[str] = get_list_of_yaml_files(config_dir)
-        for config_file in config_files:
-            with open(os.path.join(config_dir, config_file), 'r') as f:
+        config_paths: List[str] = get_all_config_paths()
+        for config_path in config_paths:
+            with open(config_path, 'r') as f:
                 config_dict: Dict[str, Any] = yaml.load(f)
                 config = T2SConfigDataclass.from_dict(config_dict)  # type: ignore
             if not config.active:
@@ -73,10 +72,10 @@ class Server:
             preprocess_pipeline, inference, postprocessor, config = create_t2s_pipeline_from_config(config)
 
             # persist t2s_pipeline_id
-            with open(os.path.join(config_dir, config_file), 'w') as f:
+            with open(config_path, 'w') as f:
                 config_dict = config.to_dict()
                 yaml.dump(config_dict, f)
             T2SPipelineManager.register_t2s_pipeline(
                 t2s_pipeline_id=config.id,
                 t2s_pipeline=(preprocess_pipeline, inference, postprocessor, config))
-            logger.info(f'Model was loaded with id {config.id}')
+            logger.info(f'Pipeline was loaded with id {config.id}')
