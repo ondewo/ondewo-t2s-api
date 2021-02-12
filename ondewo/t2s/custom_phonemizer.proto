@@ -52,6 +52,9 @@ message ListCustomPhonemizerRequest{
 
 message UpdateCustomPhonemizerRequest{
     string id = 1;
+    // extend hard will add new words replacing those that are already in phonemizer
+    // extend soft will add new words only if they are not yet in phonemizer
+    // replace will clean all the words in the phonemizer and then add new ones
     enum UpdateMethod{
         extend_hard = 0;
         extend_soft = 1;
