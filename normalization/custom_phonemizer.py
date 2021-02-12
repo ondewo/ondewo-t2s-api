@@ -1,13 +1,11 @@
 import json
 import os
-from typing import Optional, Dict, List, Callable, Any
+from typing import Optional, Dict, List, Callable, Any, Tuple
 from uuid import uuid4
 
 from ondewologging.logger import logger_console as logger
 
 from normalization.constants import CUSTOM_PHONEMIZER_PREFIX_PTTRN
-from ondewo_grpc.ondewo.t2s.custom_phonemizer_pb2 import UpdateCustomPhonemizerRequest, CustomPhonemizerProto, \
-    Map, ListCustomPhonemizerRequest, ListCustomPhonemizerResponse
 
 
 class CustomPhonemizerManager:
@@ -65,42 +63,42 @@ class CustomPhonemizerManager:
         return phonemizer_id
 
     @classmethod
-    def update_phonemizer(cls, request: UpdateCustomPhonemizerRequest) -> CustomPhonemizerProto:
-        dict_to_update: Optional[Dict[str, str]] = cls.manager.get(request.id)
-        if not dict_to_update:
-            raise ValueError(f'Phonemizer with id {request.id} does not exist. '
+    def update_phonemizer(cls, phonemizer_id: str, new_dict: Dict[str, str]) -> Dict[str, str]:
+        if phonemizer_id not in cls.manager:
+            raise ValueError(f'Phonemizer with id {phonemizer_id} does not exist. '
                              f'Existing ids are {list(cls.manager.keys())}')
-        new_dict: Dict[str, str] = {map_.word: map_.phoneme_groups for map_ in request.maps}
-        if request.update_method is UpdateCustomPhonemizerRequest.UpdateMethod.extend_soft:
+        cls.manager[phonemizer_id] = new_dict
+
+        return new_dict
+
+    @classmethod
+    def extend_phonemizer(
+            cls,
+            phonemizer_id: str,
+            new_dict: Dict[str, str],
+            to_overwrite: bool,
+    ) -> Dict[str, str]:
+        dict_to_update: Optional[Dict[str, str]] = cls.manager.get(phonemizer_id)
+        if not dict_to_update:
+            raise ValueError(f'Phonemizer with id {phonemizer_id} does not exist. '
+                             f'Existing ids are {list(cls.manager.keys())}')
+        if not to_overwrite:
             overlapping_words = new_dict.keys() & dict_to_update.keys()
-            dict_to_update = new_dict.update(dict_to_update)
+            new_dict.update(dict_to_update)
+            dict_to_update = new_dict
             if overlapping_words:
                 logger.warning(f"The word {overlapping_words} is already in custom phonemizer."
                                f"Since update method 'extend_soft' is choosen, "
                                f"it will not be overwritten")
-        elif request.update_method is UpdateCustomPhonemizerRequest.UpdateMethod.extend_hard:
+        else:
             overlapping_words = new_dict.keys() & dict_to_update.keys()
-            dict_to_update = dict_to_update.update(new_dict)
+            dict_to_update.update(new_dict)
+            dict_to_update = dict_to_update
             if overlapping_words:
                 logger.warning(f"The word {overlapping_words} is already in custom phonemizer."
                                f"Since update method 'extend_hard' is choosen, it will be overwritten")
-
-        elif request.update_method is UpdateCustomPhonemizerRequest.UpdateMethod.replace:
-            dict_to_update = new_dict
-        else:
-            raise ValueError('Update method unknown.')
-
-        assert isinstance(dict_to_update, dict)  # only for mypy
-        cls.manager[request.id] = dict_to_update
-
-        return CustomPhonemizerProto(
-            id=request.id,
-            maps=[
-                Map(
-                    word=word, phoneme_groups=phoneme_groups
-                ) for word, phoneme_groups in dict_to_update.items()
-            ]
-        )
+        cls.manager[phonemizer_id] = dict_to_update
+        return dict_to_update
 
     @classmethod
     def get_phonemizer(cls, phonemizer_id: str) -> Dict[str, str]:
@@ -122,34 +120,19 @@ class CustomPhonemizerManager:
             os.remove(phonemizer_path)
 
     @classmethod
-    def _dict_to_proto(cls, phonemizer_dict: Dict[str, str], phonemizer_id: str) -> CustomPhonemizerProto:
-        return CustomPhonemizerProto(
-            id=phonemizer_id,
-            maps=[Map(word=k, phoneme_groups=v) for k, v in phonemizer_dict.items()]
-        )
-
-    @classmethod
-    def list_phonemizers(cls, request: ListCustomPhonemizerRequest) -> ListCustomPhonemizerResponse:
-        phonemizerss_list: List[CustomPhonemizerProto] = []
-        if request.pipeline_ids:
-            for phonemizer_id in request.pipeline_ids:
+    def list_phonemizers(cls, id_list: List[str]) -> List[Tuple[str, Dict[str, str]]]:
+        phonemizers_list: List[Tuple[str, Dict[str, str]]] = []
+        if id_list:
+            for phonemizer_id in id_list:
                 if phonemizer_id in cls.manager.keys():
-                    phonemizerss_list.append(
-                        cls._dict_to_proto(
-                            phonemizer_dict=cls.manager[phonemizer_id], phonemizer_id=phonemizer_id
-                        )
-                    )
+                    phonemizers_list.append((phonemizer_id, cls.manager[phonemizer_id]))
                 else:
                     logger.warning(f'Phonemizer with id {phonemizer_id} does not exist. '
                                    f'Existing ids are {list(cls.manager.keys())}')
         else:
             for phonemizer_id in cls.manager.keys():
-                phonemizerss_list.append(
-                    cls._dict_to_proto(
-                        phonemizer_dict=cls.manager[phonemizer_id], phonemizer_id=phonemizer_id
-                    )
-                )
-        return ListCustomPhonemizerResponse(phonemizers=phonemizerss_list)
+                phonemizers_list.append((phonemizer_id, cls.manager[phonemizer_id]))
+        return phonemizers_list
 
     @classmethod
     def validate_prefix(cls, prefix: str) -> bool:
