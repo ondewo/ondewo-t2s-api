@@ -31,20 +31,22 @@ pipeline {
         }
 
         stage('Build and Test Server Images (uncythonized)') {
-            agent { label 'a100' }
+            agent { label 'mars' }
             environment {
                 ssh_key_file = credentials('devops_ondewo_idrsa')
                 TRITON_CONTAINER = "ondewo-t2s-triton-${UNIQUE_BUILD_ID}"
                 REST_CONTAINER = "${IMAGE_NAME_REST}-${UNIQUE_BUILD_ID}"
                 GRPC_CONTAINER = "${IMAGE_NAME_GRPC}-${UNIQUE_BUILD_ID}"
-                A100_MODEL_DIR = '/home/voice_user/data/jenkins/t2s/models'
+                MODEL_REPO = 'models.ondewo.com:/raid/jenkins/data/t2s/models/'
+                MODEL_DIR = '/var/cache/jenkins/data/t2s/models'
                 A100_GPU = 'device=0'
-                A100_GPU1 = 'device=1'
+                // A100_GPU1 = 'device=1'
                 DOCKER_NETWORK = "${UNIQUE_BUILD_ID}"
             }
             stages {
                 stage('Setup Test Env') {
                     steps {
+                        sh(script: "rsync -Pavz ${MODEL_REPO} ${MODEL_DIR}", 'sync model repo to local cache')
                         sh(script: '''for filename in $(ls ${PWD}/tests/resources | grep yaml)
                                     do
                                         full_fp=${PWD}/tests/resources/\$filename
@@ -100,7 +102,7 @@ pipeline {
                                 }
                                 stage('Integration Tests') {
                                     steps {
-                                        sh(script: "make run_triton TRITON_CONTAINER=${TRITON_CONTAINER} MODEL_DIR=${A100_MODEL_DIR} TRITON_GPUS=\"${A100_GPU}\" DOCKER_NETWORK=${DOCKER_NETWORK}"
+                                        sh(script: "make run_triton TRITON_CONTAINER=${TRITON_CONTAINER} MODEL_DIR=${MODEL_DIR} TRITON_GPUS=\"${A100_GPU}\" DOCKER_NETWORK=${DOCKER_NETWORK}"
                                         , label: 'run triton server')
                                         timeout(time: 60, unit: 'SECONDS') {
                                             waitUntil {
@@ -115,12 +117,12 @@ pipeline {
                                             }
                                         }
                                         sh(script: "docker logs ${TRITON_CONTAINER}", label: 'triton logs when ready')
-                                        sh(script: """docker run --rm --gpus ${A100_GPU1} \
+                                        sh(script: """docker run --rm --gpus ${A100_GPU} \
                                             --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
                                             --network=${DOCKER_NETWORK} \
                                             -e TESTFILE=${testresults_filename} \
                                             -v ${testresults_folder}:/opt/ondewo-t2s/log \
-                                            -v ${A100_MODEL_DIR}:/opt/ondewo-t2s/models \
+                                            -v ${MODEL_DIR}:/opt/ondewo-t2s/models \
                                             ${TTS_NAME_TESTS} ./tests/integration"""
                                         , label: 'run integration tests')
                                     }
@@ -135,7 +137,7 @@ pipeline {
                                         sh(script: """docker run -td --gpus ${A100_GPU} \
                                             --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
                                             --network=${DOCKER_NETWORK} \
-                                            -v ${A100_MODEL_DIR}:/opt/ondewo-t2s/models \
+                                            -v ${MODEL_DIR}:/opt/ondewo-t2s/models \
                                             -v ${CONFIG_DIR}:/opt/ondewo-t2s/config \
                                             --env CONFIG_FILE="config/config.yaml" \
                                             --env CUSTOM_PHOMENIZER_DIR="config/custom_phonemizers" \
@@ -145,7 +147,7 @@ pipeline {
                                         sh(script: """docker run -td --gpus ${A100_GPU} \
                                             --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
                                             --network=${DOCKER_NETWORK} \
-                                            -v ${A100_MODEL_DIR}:/opt/ondewo-t2s/models \
+                                            -v ${MODEL_DIR}:/opt/ondewo-t2s/models \
                                             -v ${CONFIG_DIR}:/opt/ondewo-t2s/config \
                                             --env CONFIG_DIR="config" \
                                             --name ${GRPC_CONTAINER} \
@@ -177,7 +179,7 @@ pipeline {
                                             -e T2S_GRPC_HOST=${GRPC_CONTAINER} \
                                             -e T2S_REST_HOST=${REST_CONTAINER} \
                                             -v ${testresults_folder}:/opt/ondewo-t2s/log \
-                                            -v ${A100_MODEL_DIR}:/opt/ondewo-t2s/models \
+                                            -v ${MODEL_DIR}:/opt/ondewo-t2s/models \
                                             ${TTS_NAME_TESTS} ./tests/e2e"""
                                         , label: 'run e2e tests')
                                     }
