@@ -46,7 +46,8 @@ pipeline {
             stages {
                 stage('Setup Test Env') {
                     steps {
-                        sh(script: "rsync -Pavz ${MODEL_REPO} ${MODEL_DIR}", label: 'sync model repo to local cache')
+                        sh(script: "mkdir -p ${MODEL_DIR}", label: 'create local cache dir')
+                        sh(script: "rsync -Pavz ${MODEL_REPO} ${MODEL_DIR}", label: 'sync model repo to local cache dir')
                         sh(script: '''for filename in $(ls ${PWD}/tests/resources | grep yaml)
                                     do
                                         full_fp=${PWD}/tests/resources/\$filename
