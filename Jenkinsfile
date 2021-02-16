@@ -38,7 +38,7 @@ pipeline {
                 REST_CONTAINER = "${IMAGE_NAME_REST}-${UNIQUE_BUILD_ID}"
                 GRPC_CONTAINER = "${IMAGE_NAME_GRPC}-${UNIQUE_BUILD_ID}"
                 MODEL_REPO = 'models.ondewo.com:/raid/jenkins/data/t2s/models/'
-                MODEL_DIR = '/var/cache/jenkins/data/t2s/models'
+                MODEL_DIR = '/mnt/disks/jenkins/data/t2s/models'
                 A100_GPU = 'device=0'
                 // A100_GPU1 = 'device=1'
                 DOCKER_NETWORK = "${UNIQUE_BUILD_ID}"
