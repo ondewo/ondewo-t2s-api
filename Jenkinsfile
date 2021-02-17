@@ -31,7 +31,7 @@ pipeline {
         }
 
         stage('Build and Test Server Images (uncythonized)') {
-            agent { label 'mars' }
+            agent { label 'gpu' }
             environment {
                 ssh_key_file = credentials('devops_ondewo_idrsa')
                 TRITON_CONTAINER = "ondewo-t2s-triton-${UNIQUE_BUILD_ID}"
@@ -39,8 +39,8 @@ pipeline {
                 GRPC_CONTAINER = "${IMAGE_NAME_GRPC}-${UNIQUE_BUILD_ID}"
                 MODEL_REPO = 'models.ondewo.com:/raid/jenkins/data/t2s/models/'
                 MODEL_DIR = '/mnt/disks/jenkins/data/t2s/models'
-                A100_GPU = 'device=0'
-                // A100_GPU1 = 'device=1'
+                GPU = 'all'
+                // GPU1 = 'device=1'
                 DOCKER_NETWORK = "${UNIQUE_BUILD_ID}"
             }
             stages {
@@ -57,7 +57,7 @@ pipeline {
                     }
                 }
                 stage('Build Server Images') {
-                    parallel {
+                    stages { // NOTE: this is sequential (instead of parallel) as to not use too much GPU memory
                         stage('Build rest server') {
                             steps {
                                 sh(script: """set +x
@@ -103,7 +103,7 @@ pipeline {
                                 }
                                 stage('Integration Tests') {
                                     steps {
-                                        sh(script: "make run_triton TRITON_CONTAINER=${TRITON_CONTAINER} MODEL_DIR=${MODEL_DIR} TRITON_GPUS=\"${A100_GPU}\" DOCKER_NETWORK=${DOCKER_NETWORK}"
+                                        sh(script: "make run_triton TRITON_CONTAINER=${TRITON_CONTAINER} MODEL_DIR=${MODEL_DIR} TRITON_GPUS=\"${GPU}\" DOCKER_NETWORK=${DOCKER_NETWORK}"
                                         , label: 'run triton server')
                                         timeout(time: 60, unit: 'SECONDS') {
                                             waitUntil {
@@ -118,7 +118,7 @@ pipeline {
                                             }
                                         }
                                         sh(script: "docker logs ${TRITON_CONTAINER}", label: 'triton logs when ready')
-                                        sh(script: """docker run --rm --gpus ${A100_GPU} \
+                                        sh(script: """docker run --rm --gpus ${GPU} \
                                             --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
                                             --network=${DOCKER_NETWORK} \
                                             -e TESTFILE=${testresults_filename} \
@@ -135,7 +135,7 @@ pipeline {
                                 }
                                 stage('E2E Tests') {
                                     steps {
-                                        sh(script: """docker run -td --gpus ${A100_GPU} \
+                                        sh(script: """docker run -td --gpus ${GPU} \
                                             --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
                                             --network=${DOCKER_NETWORK} \
                                             -v ${MODEL_DIR}:/opt/ondewo-t2s/models \
@@ -145,7 +145,7 @@ pipeline {
                                             --name ${REST_CONTAINER} \
                                             ${PUSH_NAME_STREAM_REST}"""
                                         , label: 'run rest server')
-                                        sh(script: """docker run -td --gpus ${A100_GPU} \
+                                        sh(script: """docker run -td --gpus ${GPU} \
                                             --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
                                             --network=${DOCKER_NETWORK} \
                                             -v ${MODEL_DIR}:/opt/ondewo-t2s/models \
