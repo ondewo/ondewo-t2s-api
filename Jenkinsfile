@@ -56,7 +56,7 @@ pipeline {
                     }
                 }
                 stage('Build Server Images') {
-                    stages { // NOTE: this is sequential (instead of parallel) as to not use too much GPU memory
+                    parallel {
                         stage('Build rest server') {
                             steps {
                                 sh(script: """set +x
@@ -93,7 +93,7 @@ pipeline {
                             }
                         }
                         stage('Run Tests') {
-                            parallel {
+                            stages { // NOTE: this is sequential (instead of parallel) as to not use too much GPU memory
                                 stage('Unit Tests') {
                                     steps {
                                         sh(script: "docker run --rm -e TESTFILE=${testresults_filename} -v ${testresults_folder}:/opt/ondewo-t2s/log ${TTS_NAME_TESTS} ./tests/unit"
