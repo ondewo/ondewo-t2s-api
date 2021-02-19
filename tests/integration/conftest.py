@@ -10,6 +10,7 @@ from grpc_server.pipeline_utils import create_t2s_pipeline_from_config, get_or_c
 from grpc_server.t2s_pipeline_manager import T2SPipelineManager
 from normalization.custom_phonemizer_manager import CustomPhonemizerManager
 from utils.data_classes.config_dataclass import T2SConfigDataclass
+from utils.models_cache import ModelCache
 
 
 @pytest.fixture(scope='class')
@@ -33,6 +34,13 @@ def create_pipelines() -> Iterator[None]:
         if not config.active:
             continue
         preprocess_pipeline, inference, postprocessor, config = create_t2s_pipeline_from_config(config)
+
+        assert ModelCache.create_glow_tts_key(
+            config=config.inference.composite_inference.text2mel.glow_tts
+        ) in ModelCache().__getattribute__('cached_models')
+
+        assert ModelCache.create_hifi_key(config=config.inference.composite_inference.mel2audio.hifi_gan) in \
+            ModelCache().__getattribute__('cached_models')
         T2SPipelineManager.register_t2s_pipeline(
             t2s_pipeline_id=config.id,
             t2s_pipeline=(preprocess_pipeline, inference, postprocessor, config))

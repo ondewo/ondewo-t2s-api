@@ -1,4 +1,4 @@
-from typing import Dict, Tuple, Optional, List
+from typing import Dict, Tuple, Optional, List, Set
 
 from ondewologging.logger import logger_console as logger
 from ruamel.yaml import YAML
@@ -8,6 +8,7 @@ from inference.inference_interface import Inference
 from normalization.pipeline_constructor import NormalizerPipeline
 from normalization.postprocessor import Postprocessor
 from utils.data_classes.config_dataclass import T2SConfigDataclass
+from utils.models_cache import ModelCache
 
 yaml = YAML()
 yaml.default_flow_style = False
@@ -73,3 +74,21 @@ class T2SPipelineManager:
                     with open(config_path, 'w') as f:
                         config_dict = config.to_dict()  # type: ignore
                         yaml.dump(config_dict, f)
+
+    @classmethod
+    def remove_unused_models_from_cache(cls) -> None:
+        active_keys: Set[str] = set()
+        for pipeline_id in cls.get_active_t2s_pipeline_ids():
+            pipeline_tuple: Optional[Tuple[NormalizerPipeline, Inference, Postprocessor, T2SConfigDataclass]]\
+                = cls.get_t2s_pipeline(t2s_pipeline_id=pipeline_id)
+            assert pipeline_tuple is not None
+            _, _, _, pipeline_config = pipeline_tuple
+            assert isinstance(pipeline_config, T2SConfigDataclass)
+            if pipeline_config.inference.composite_inference.text2mel.type == 'glow_tts':
+                active_keys.add(pipeline_config.inference.composite_inference.text2mel.glow_tts.path)
+            if pipeline_config.inference.composite_inference.mel2audio.type == 'hifi_gan':
+                active_keys.add(pipeline_config.inference.composite_inference.mel2audio.hifi_gan.model_path)
+        cached_paths = list(ModelCache.cached_models.keys())
+        for path in cached_paths:
+            if path not in active_keys:
+                del ModelCache.cached_models[path]
