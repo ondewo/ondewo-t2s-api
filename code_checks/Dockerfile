@@ -1,4 +1,4 @@
-FROM registry-ci.ondewo.com:5000/python/python:3.7-slim
+FROM registry-dev.ondewo.com:5000/python/python:3.7-slim
 
 ENV HOST_IP=172.17.0.1
 ENV LOCAL_MIRROR=http://"$HOST_IP":/3141/root/pypi/+simple/

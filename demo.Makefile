@@ -1,5 +1,5 @@
-IMAGE_TAG_GRPC="registry-ci.ondewo.com:5000/ondewo-t2s-grpc-server-release:develop"
-IMAGE_TAG_DEMO="registry-ci.ondewo.com:5000/ondewo-t2s-demo-server:develop"
+IMAGE_TAG_GRPC="registry-dev.ondewo.com:5000/ondewo-t2s-grpc-server-release:develop"
+IMAGE_TAG_DEMO="registry-dev.ondewo.com:5000/ondewo-t2s-demo-server:develop"
 DEMO_CONTAINER="ondewo-t2s-demo-server"
 GRPC_CONTAINER="ondewo-t2s-grpc-server"
 PORT_DEMO=50540

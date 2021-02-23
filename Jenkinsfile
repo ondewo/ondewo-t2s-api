@@ -108,7 +108,7 @@ pipeline {
                                             waitUntil {
                                                 script {
                                                     def status_triton = sh(
-                                                        script: "docker run --network=${DOCKER_NETWORK} registry-ci.ondewo.com:5000/curlimages/curl curl --fail http://${TRITON_CONTAINER}:50510/v2/health/ready",
+                                                        script: "docker run --network=${DOCKER_NETWORK} registry-dev.ondewo.com:5000/curlimages/curl curl --fail http://${TRITON_CONTAINER}:50510/v2/health/ready",
                                                         returnStatus: true,
                                                         label: 'health check triton until ready'
                                                     )
@@ -157,12 +157,12 @@ pipeline {
                                             waitUntil {
                                                 script {
                                                     def status_rest = sh(
-                                                        script: "docker run --network=${DOCKER_NETWORK} registry-ci.ondewo.com:5000/curlimages/curl curl --fail http://${REST_CONTAINER}:50550/health/ready",
+                                                        script: "docker run --network=${DOCKER_NETWORK} registry-dev.ondewo.com:5000/curlimages/curl curl --fail http://${REST_CONTAINER}:50550/health/ready",
                                                         returnStatus: true,
                                                         label: 'health check rest server until ready'
                                                     )
                                                     def status_grpc = sh(
-                                                        script: "docker run --network=${DOCKER_NETWORK} registry-ci.ondewo.com:5000/networld/grpcurl ./grpcurl -plaintext -H \"\" ${GRPC_CONTAINER}:50555 list",
+                                                        script: "docker run --network=${DOCKER_NETWORK} registry-dev.ondewo.com:5000/networld/grpcurl ./grpcurl -plaintext -H \"\" ${GRPC_CONTAINER}:50555 list",
                                                         returnStatus: true,
                                                         label: 'health check grpc server until ready'
                                                     )

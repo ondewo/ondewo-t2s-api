@@ -1,4 +1,4 @@
-FROM registry-ci.ondewo.com:5000/ubuntu:18.04 AS private_installer
+FROM registry-dev.ondewo.com:5000/ubuntu:18.04 AS private_installer
 ARG SSH_PRIVATE_KEY
 RUN mkdir /root/install
 WORKDIR /root/install
