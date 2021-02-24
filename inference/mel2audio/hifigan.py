@@ -9,11 +9,11 @@ from ondewologging.logger import logger_console as logger
 
 from inference.mel2audio.hifigan_core import HiFiGANCore
 from utils.data_classes.config_dataclass import HiFiGanDataclass
+from utils.models_cache import ModelCache
 
 
 class HiFiGan(HiFiGANCore):
     NAME: str = 'hifi_gan'
-    models_cache: Dict[str, Generator] = {}
 
     def __init__(self, config: HiFiGanDataclass):
         super(HiFiGan, self).__init__(config=config)
@@ -54,14 +54,14 @@ class HiFiGan(HiFiGANCore):
     @Timer(log_arguments=False)
     def _get_model(self) -> Generator:
         key_word = f'{self.model_path}-{"cuda" * self.use_gpu + "cpu" * (not self.use_gpu)}'
-        if key_word in self.models_cache:
+        if key_word in ModelCache.cached_models:
             logger.info(f"Model is in the cache with a key {key_word}.")
-            return self.models_cache[key_word]
+            return ModelCache.cached_models[key_word]
 
         generator = Generator(self.hcf).to(self.device)
         state_dict_g = torch.load(self.model_path, map_location=self.device)
         generator.load_state_dict(state_dict_g['generator'])
         generator.eval()
         generator.remove_weight_norm()
-        self.models_cache[key_word] = generator
+        ModelCache.cached_models[key_word] = generator
         return generator

@@ -95,6 +95,7 @@ class TestGRPC:
             operation_create_pipeline: OperationCreateT2sPipeline = OperationCreateT2sPipeline(
                 request=pipeline_config)
             created_config = operation_create_pipeline.execute_grpc()
+
             assert isinstance(created_config, text_to_speech_pb2.T2sPipelineId)
             id_created: str = created_config.id
             operation_list_ids = OperationListPipelines(

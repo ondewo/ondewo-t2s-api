@@ -172,6 +172,7 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
         config_file_path: Optional[str] = get_config_path_by_id(request.id)
         if config_file_path:
             os.remove(config_file_path)
+        T2SPipelineManager.remove_unused_models_from_cache()
         return empty_pb2.Empty()
 
     def handle_update_t2s_pipeline_request(
@@ -198,4 +199,5 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
         with open(config_file_path, 'w') as f:
             config_dict = config.to_dict()  # type: ignore
             yaml.dump(config_dict, f)
+        T2SPipelineManager.remove_unused_models_from_cache()
         return empty_pb2.Empty()
