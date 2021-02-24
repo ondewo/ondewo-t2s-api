@@ -85,9 +85,12 @@ class T2SPipelineManager:
             _, _, _, pipeline_config = pipeline_tuple
             assert isinstance(pipeline_config, T2SConfigDataclass)
             if pipeline_config.inference.composite_inference.text2mel.type == 'glow_tts':
-                active_keys.add(pipeline_config.inference.composite_inference.text2mel.glow_tts.path)
+                active_keys.add(
+                    ModelCache.create_glow_tts_key(
+                        pipeline_config.inference.composite_inference.text2mel.glow_tts))
             if pipeline_config.inference.composite_inference.mel2audio.type == 'hifi_gan':
-                active_keys.add(pipeline_config.inference.composite_inference.mel2audio.hifi_gan.model_path)
+                active_keys.add(ModelCache.create_hifi_key(
+                    pipeline_config.inference.composite_inference.mel2audio.hifi_gan))
         cached_paths = list(ModelCache.cached_models.keys())
         for path in cached_paths:
             if path not in active_keys:

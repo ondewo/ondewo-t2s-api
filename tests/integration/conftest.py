@@ -13,7 +13,7 @@ from utils.data_classes.config_dataclass import T2SConfigDataclass
 from utils.models_cache import ModelCache
 
 
-@pytest.fixture(scope='class')
+@pytest.fixture(scope='function')
 def create_pipelines() -> Iterator[None]:
     os.environ['CONFIG_DIR'] = 'tests/resources/configs'
 
@@ -41,6 +41,7 @@ def create_pipelines() -> Iterator[None]:
 
         assert ModelCache.create_hifi_key(config=config.inference.composite_inference.mel2audio.hifi_gan) in \
             ModelCache().__getattribute__('cached_models')
+
         T2SPipelineManager.register_t2s_pipeline(
             t2s_pipeline_id=config.id,
             t2s_pipeline=(preprocess_pipeline, inference, postprocessor, config))
