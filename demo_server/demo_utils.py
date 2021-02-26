@@ -43,7 +43,7 @@ PIPELINE_IDS_DICT: Dict[str, str] = get_pipeline_ids_dict()
 
 def get_pipeline_id(voice_string: str) -> str:
     if not PIPELINE_IDS_DICT.get(voice_string):
-        raise ValueError("Please select a valid voices.")
+        raise ValueError("Please select a valid voice.")
 
     return PIPELINE_IDS_DICT[voice_string]
 
