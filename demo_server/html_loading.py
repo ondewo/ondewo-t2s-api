@@ -41,16 +41,24 @@ AUDIOFILE: str = """
     <div class="options">
     <div class="language-container inline-block">
         <div class="language-container-header inline-block">
-            <p>Language:</p>
+            <p>Voice:</p>
         </div>
         <div class="language-options ">
             <div class="inline-block">
-                <input id="radio-2" class="radio-custom inline-block" name="language"  value="de" type="radio" checked id="de">
-                <label for="radio-2" class="radio-custom-label inline-block de">German</label>
+                <input id="radio-1" class="radio-custom inline-block" name="voice"  value="Kerstin" type="radio" checked id="kerstin">
+                <label for="radio-1" class="radio-custom-label inline-block de">Kerstin (de)</label>
             </div>
             <div class="inline-block">
-                <input id="radio-1" class="radio-custom inline-block" name="language" value="en" type="radio" id="en">
-                <label for="radio-1" class="radio-custom-label inline-block en">English</label>
+                <input id="radio-2" class="radio-custom inline-block" name="voice"  value="Thorsten" type="radio" id="thorsten">
+                <label for="radio-2" class="radio-custom-label inline-block de">Thorsten (de)</label>
+            </div>
+            <div class="inline-block">
+                <input id="radio-3" class="radio-custom inline-block" name="voice"  value="Sandra" type="radio" id="sandra">
+                <label for="radio-3" class="radio-custom-label inline-block de">Sandra (de)</label>
+            </div>
+            <div class="inline-block">
+                <input id="radio-4" class="radio-custom inline-block" name="voice" value="Linda" type="radio" id="linda">
+                <label for="radio-4" class="radio-custom-label inline-block en">Linda (en)</label>
             </div>
         </div>
 

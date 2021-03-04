@@ -159,7 +159,7 @@ package_release: package_git_revision_and_version
 	rsync -av package/. ${RELEASE_FOLDER} --exclude '.gitignore'
 	rm -rf package
 
-	rsync -Phaz ${RELEASE_FOLDER} ondewo@releases.ondewo.com:releases/ondewo-t2s
+	rsync -Pha ${RELEASE_FOLDER} ondewo@releases.ondewo.com:releases/ondewo-t2s
 
 
 ### --- Install dependencies locally --- ###
