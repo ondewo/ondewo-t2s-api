@@ -62,6 +62,7 @@ CMD flask run --host=0.0.0.0 --port=50550
 FROM registry-dev.ondewo.com:5000/ondewo-cythonize-tools-3.8 AS cython_builder
 
 COPY --from=uncythonized /opt/ondewo-t2s/rest_server /tmp/transfer/to_cythonize/rest_server
+COPY --from=uncythonized /opt/ondewo-t2s/grpc_server /tmp/transfer/to_cythonize/grpc_server
 COPY --from=uncythonized /opt/ondewo-t2s/inference /tmp/transfer/to_cythonize/inference
 COPY --from=uncythonized /opt/ondewo-t2s/normalization /tmp/transfer/to_cythonize/normalization
 COPY --from=uncythonized /opt/ondewo-t2s/utils /tmp/transfer/to_cythonize/utils
