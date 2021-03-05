@@ -35,8 +35,8 @@ pipeline {
             environment {
                 ssh_key_file = credentials('devops_ondewo_idrsa')
                 TRITON_CONTAINER = "ondewo-t2s-triton-${UNIQUE_BUILD_ID}"
-                REST_CONTAINER = "${IMAGE_NAME_RELASE_REST}-${UNIQUE_BUILD_ID}"
-                GRPC_CONTAINER = "${IMAGE_NAME_RELASE_GRPC}-${UNIQUE_BUILD_ID}"
+                REST_CONTAINER = "ondewo-t2s-rest-${UNIQUE_BUILD_ID}"
+                GRPC_CONTAINER = "ondewo-t2s-grpc-${UNIQUE_BUILD_ID}"
                 MODEL_REPO = 'models.ondewo.com:/raid/jenkins/data/t2s/models/'
                 MODEL_DIR = '/mnt/disks/jenkins/data/t2s/models'
                 TRITON_GPU = 'device=0'
