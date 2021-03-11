@@ -2,7 +2,7 @@ import os
 from typing import Optional, Dict, Any, List
 
 from flask import Flask
-from ondewologging.logger import logger_console as logger
+from ondewo.logging.logger import logger_console as logger
 from ruamel.yaml import YAML
 
 from grpc_server.pipeline_utils import get_list_of_json_files_paths

@@ -8,8 +8,8 @@ import google.protobuf.empty_pb2 as empty_pb2
 import grpc
 import numpy as np
 import soundfile as sf
-from ondewologging.decorators import Timer
-from ondewologging.logger import logger_console as logger
+from ondewo.logging.decorators import Timer
+from ondewo.logging.logger import logger_console as logger
 from ruamel.yaml import YAML
 
 from grpc_server.t2s_pipeline_manager import T2SPipelineManager

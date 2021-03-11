@@ -2,7 +2,7 @@ import os
 from typing import List, Tuple, Optional, Union
 from uuid import uuid4
 
-from ondewologging.logger import logger_console as logger
+from ondewo.logging.logger import logger_console as logger
 from ruamel import yaml
 
 from grpc_server.constants import CONFIG_DIR_ENV, CUSTOM_PHONEMIZER_SUBDIR

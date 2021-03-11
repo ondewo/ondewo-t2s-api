@@ -4,7 +4,7 @@ from typing import List, Dict, Any
 
 import grpc
 from grpc_reflection.v1alpha import reflection
-from ondewologging.logger import logger_console as logger
+from ondewo.logging.logger import logger_console as logger
 from ruamel.yaml import YAML
 
 from grpc_server.phonemizer_servicer import CustomPhonemizerServicer

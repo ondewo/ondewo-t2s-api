@@ -1,7 +1,7 @@
 import re
 from typing import List, Tuple, Type, Optional, Callable
 
-from ondewologging.logger import logger_console as logger
+from ondewo.logging.logger import logger_console as logger
 
 from normalization.custom_phonemizer_manager import CustomPhonemizerManager
 from normalization.normalizer_interface import NormalizerInterface

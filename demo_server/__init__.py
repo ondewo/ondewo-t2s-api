@@ -1,6 +1,6 @@
 import os
 from flask import Flask
-from ondewologging.logger import logger_console as logger
+from ondewo.logging.logger import logger_console as logger
 
 server = Flask(__name__)
 

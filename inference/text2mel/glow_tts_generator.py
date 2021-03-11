@@ -3,8 +3,8 @@ from typing import Tuple, List, Dict
 import numpy as np
 import torch
 from glow_tts_reduced import models
-from ondewologging.decorators import Timer
-from ondewologging.logger import logger_console as logger
+from ondewo.logging.decorators import Timer
+from ondewo.logging.logger import logger_console as logger
 
 from inference.text2mel.glow_tts_core import GlowTTSCore
 from utils.data_classes.config_dataclass import GlowTTSDataclass

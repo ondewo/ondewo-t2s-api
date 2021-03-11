@@ -3,7 +3,7 @@ from time import sleep, time
 import os
 
 import grpc
-from ondewologging.logger import logger_console as logger
+from ondewo.logging.logger import logger_console as logger
 
 from ondewo_grpc.ondewo.t2s import text_to_speech_pb2_grpc, text_to_speech_pb2
 from . import GRPC_HOST, GRPC_PORT, WORK_DIR

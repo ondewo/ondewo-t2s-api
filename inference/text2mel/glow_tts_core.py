@@ -3,8 +3,8 @@ from typing import Tuple, Optional, List, Union, Dict
 
 import numpy as np
 from glow_tts_reduced import utils
-from ondewologging.decorators import Timer
-from ondewologging.logger import logger_console as logger
+from ondewo.logging.decorators import Timer
+from ondewo.logging.logger import logger_console as logger
 
 from inference.text2mel.glow_tts_text_processor import GlowTTSTextProcessor
 from inference.text2mel.text2mel import Text2Mel

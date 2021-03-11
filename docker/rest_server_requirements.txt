@@ -5,6 +5,7 @@ msgpack==1.0.0
 ruamel.yaml
 tritonclient[all]==2.3.0
 git+https://github.com/wilsonchingg/logmmse.git
+ondewo-logging==1.6.1
 pyroomacoustics
 python_speech_features
 pysndfx

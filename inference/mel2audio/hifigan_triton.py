@@ -1,7 +1,7 @@
 from typing import Dict, Any
 
 import numpy as np
-from ondewologging.logger import logger_console as logger
+from ondewo.logging.logger import logger_console as logger
 from tritonclient.grpc import InferenceServerClient, InferInput, InferRequestedOutput, InferResult
 
 from inference.mel2audio.hifigan_core import HiFiGANCore
