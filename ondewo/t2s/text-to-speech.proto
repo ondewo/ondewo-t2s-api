@@ -31,6 +31,10 @@ service Text2Speech {
     };
     rpc ListT2sPipelines (ListT2sPipelinesRequest) returns (ListT2sPipelinesResponse) {
     };
+    rpc ListT2sLanguages (ListT2sLanguagesRequest) returns (ListT2sLanguagesResponse) {
+    };
+    rpc ListT2sDomains (ListT2sDomainsRequest) returns (ListT2sDomainsResponse) {
+    };
 }
 
 ////////////////
@@ -89,6 +93,36 @@ message ListT2sPipelinesRequest {
 
 message ListT2sPipelinesResponse {
     repeated Text2SpeechConfig pipelines = 1;
+}
+
+////////////////////////
+// LIST T2S LANGUAGES //
+////////////////////////
+
+message ListT2sLanguagesRequest {
+    repeated string speaker_sexes = 1;
+    repeated string pipeline_owners = 2;
+    repeated string speaker_names = 3;
+    repeated string domains = 4;
+}
+
+message ListT2sLanguagesResponse {
+    repeated string languages = 1;
+}
+
+//////////////////////
+// LIST T2S DOMAINS //
+//////////////////////
+
+message ListT2sDomainsRequest {
+    repeated string speaker_sexes = 1;
+    repeated string pipeline_owners = 2;
+    repeated string speaker_names = 3;
+    repeated string languages = 4;
+}
+
+message ListT2sDomainsResponse {
+    repeated string domains = 1;
 }
 
 /////////////////////////
