@@ -19,6 +19,7 @@ FROM registry-dev.ondewo.com:5000/base-cuda-pytorch:1.0.0 AS uncythonized
 RUN apt-get update && apt-get -y upgrade && \
 	apt-get install -y git sox ffmpeg libavcodec-extra libsndfile1-dev curl
 
+RUN pip install pip==20.0.2
 RUN pip install cython
 COPY --from=private_installer /root/install/ondewo-t2s-glow ./ondewo-t2s-glow
 RUN cd ondewo-t2s-glow/monotonic_align; python setup.py build_ext --inplace; cd ../..

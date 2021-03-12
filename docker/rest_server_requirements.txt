@@ -1,6 +1,5 @@
 cachetools
-flask
-fluent-logger
+flask==1.1.2
 msgpack==1.0.0
 ruamel.yaml
 tritonclient[all]==2.3.0

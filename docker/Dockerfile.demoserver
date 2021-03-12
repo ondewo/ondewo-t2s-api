@@ -14,6 +14,7 @@ FROM python:3.7
 
 RUN apt-get -y update && apt-get -y upgrade
 
+RUN pip install pip==20.0.2
 COPY docker/demo_server_requirements.txt .
 RUN pip install -r demo_server_requirements.txt --ignore-installed
 
