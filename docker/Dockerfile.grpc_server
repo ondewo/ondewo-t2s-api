@@ -16,17 +16,10 @@ RUN git clone git@bitbucket.org:ondewo/ondewo-logging-python.git
 
 RUN git clone git@bitbucket.org:ondewo/ondewo-t2s-hifigan.git && cd ondewo-t2s-hifigan && git checkout 1d691b8abc13275649be72809b681333bc47f1e6
 
-# Install Go from tarball
-RUN wget https://golang.org/dl/go1.13.15.linux-amd64.tar.gz && \
-    tar -C /root -xzf go1.13.15.linux-amd64.tar.gz && \
-    rm go1.13.15.linux-amd64.tar.gz
-ENV GOPATH=$HOME/go
-ENV PATH=$PATH:/root/go/bin:$GOPATH/bin
-
-# Install gRPCurl
-ENV GO111MODULE=on
-RUN go get github.com/fullstorydev/grpcurl
-RUN go install github.com/fullstorydev/grpcurl/cmd/grpcurl
+# install gRPCurl
+RUN apt update && apt install -y wget
+RUN wget https://github.com/fullstorydev/grpcurl/releases/download/v1.8.0/grpcurl_1.8.0_linux_x86_64.tar.gz && \
+    tar -C /root -xzf grpcurl_1.8.0_linux_x86_64.tar.gz
 
 FROM registry-dev.ondewo.com:5000/base-cuda-pytorch:1.0.0 AS uncythonized
 
@@ -44,7 +37,7 @@ RUN pip install -e ondewo-logging-python
 COPY --from=private_installer /root/install/ondewo-t2s-hifigan ./ondewo-t2s-hifigan
 RUN pip install -e ondewo-t2s-hifigan
 
-COPY --from=private_installer /go/bin/grpcurl /usr/bin/grpcurl
+COPY --from=private_installer /root/grpcurl /usr/local/bin/
 
 COPY ./docker/grpc_server_requirements.txt .
 RUN pip install nvidia-pyindex
