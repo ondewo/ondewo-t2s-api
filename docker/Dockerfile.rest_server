@@ -12,8 +12,6 @@ RUN apt-get update && apt-get -y upgrade && \
 
 RUN git clone git@bitbucket.org:ondewo/ondewo-t2s-glow.git && cd ondewo-t2s-glow && git checkout f0047649665e59823ff88b88ba179aea99537158
 
-RUN git clone git@bitbucket.org:ondewo/ondewo-logging-python.git
-
 RUN git clone git@bitbucket.org:ondewo/ondewo-t2s-hifigan.git && cd ondewo-t2s-hifigan && git checkout 1d691b8abc13275649be72809b681333bc47f1e6
 
 FROM registry-dev.ondewo.com:5000/base-cuda-pytorch:1.0.0 AS uncythonized
@@ -25,9 +23,6 @@ RUN pip install cython
 COPY --from=private_installer /root/install/ondewo-t2s-glow ./ondewo-t2s-glow
 RUN cd ondewo-t2s-glow/monotonic_align; python setup.py build_ext --inplace; cd ../..
 RUN pip install -e ondewo-t2s-glow
-
-COPY --from=private_installer /root/install/ondewo-logging-python ./ondewo-logging-python
-RUN pip install -e ondewo-logging-python
 
 COPY --from=private_installer /root/install/ondewo-t2s-hifigan ./ondewo-t2s-hifigan
 RUN pip install -e ondewo-t2s-hifigan
