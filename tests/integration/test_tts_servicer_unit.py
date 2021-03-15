@@ -42,7 +42,7 @@ class TestGrpcServicerUnit:
         list_domains_request = text_to_speech_pb2.ListT2sDomainsRequest()
         response: text_to_speech_pb2.ListT2sDomainsResponse = \
             Text2SpeechServicer().handle_list_domains_request(request=list_domains_request)
-        assert len(response.domains) == 2
+        assert len(response.domains) == 1
 
     @staticmethod
     @pytest.mark.parametrize('audio_format', text_to_speech_pb2.AudioFormat.values())
