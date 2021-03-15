@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 from typing import List, Union
 
-from ondewologging.logger import logger_console as logger
+from ondewo.logging.logger import logger_console as logger
 
 
 def check_paths_exist(paths: List[Union[str, Path]]) -> None:

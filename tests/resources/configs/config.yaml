@@ -5,7 +5,7 @@ description:
   pipeline_owner: ondewo
   comments: trained on public domain dataset
   speaker_name: Thorsten
-  domain: ''
+  domain: general
 active: true
 inference:
   type: composite

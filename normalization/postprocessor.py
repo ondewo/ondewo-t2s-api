@@ -6,7 +6,7 @@ from pyroomacoustics.denoise.iterative_wiener import apply_iterative_wiener
 import python_speech_features
 from pysndfx import AudioEffectsChain
 
-from ondewologging.logger import logger_console as logger
+from ondewo.logging.logger import logger_console as logger
 
 from utils.data_classes.config_dataclass import PostprocessingDataclass
 

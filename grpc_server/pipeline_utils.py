@@ -2,7 +2,7 @@ import os
 from typing import List, Tuple, Optional, Union
 from uuid import uuid4
 
-from ondewologging.logger import logger_console as logger
+from ondewo.logging.logger import logger_console as logger
 from ruamel import yaml
 
 from grpc_server.constants import CONFIG_DIR_ENV, CUSTOM_PHONEMIZER_SUBDIR
@@ -125,17 +125,21 @@ def filter_on_domains(domaines: List[str],
 
 def filter_pipelines(
         pipelines: List[T2SConfigDataclass],
-        request: text_to_speech_pb2.ListT2sPipelinesRequest
+        languages: List[str],
+        pipeline_owners: List[str],
+        domains: List[str],
+        speaker_names: List[str],
+        speaker_sexes: List[str]
 ) -> List[T2SConfigDataclass]:
-    if request.languages:
-        pipelines = filter_on_languages(languages=list(request.languages), pipelines=pipelines)
-    if request.speaker_sexes:
-        pipelines = filter_on_speaker_sexes(speaker_sexes=list(request.speaker_sexes), pipelines=pipelines)
-    if request.pipeline_owners:
+    if languages:
+        pipelines = filter_on_languages(languages=list(languages), pipelines=pipelines)
+    if speaker_sexes:
+        pipelines = filter_on_speaker_sexes(speaker_sexes=list(speaker_sexes), pipelines=pipelines)
+    if pipeline_owners:
         pipelines = filter_on_pipeline_owners(
-            pipeline_owners=list(request.pipeline_owners), pipelines=pipelines)
-    if request.speaker_names:
-        pipelines = filter_on_speaker_names(speaker_names=list(request.speaker_names), pipelines=pipelines)
-    if request.domains:
-        pipelines = filter_on_domains(domaines=list(request.domains), pipelines=pipelines)
+            pipeline_owners=list(pipeline_owners), pipelines=pipelines)
+    if speaker_names:
+        pipelines = filter_on_speaker_names(speaker_names=list(speaker_names), pipelines=pipelines)
+    if domains:
+        pipelines = filter_on_domains(domaines=list(domains), pipelines=pipelines)
     return pipelines

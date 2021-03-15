@@ -31,6 +31,20 @@ class TestGrpcServicerUnit:
         assert response.pipelines[0].description.speaker_sex == 'male'
 
     @staticmethod
+    def test_list_languages_unit(create_pipelines: None) -> None:
+        list_languages_request = text_to_speech_pb2.ListT2sLanguagesRequest()
+        response: text_to_speech_pb2.ListT2sLanguagesResponse = \
+            Text2SpeechServicer().handle_list_languages_request(request=list_languages_request)
+        assert len(response.languages) == 2
+
+    @staticmethod
+    def test_list_domains_unit(create_pipelines: None) -> None:
+        list_domains_request = text_to_speech_pb2.ListT2sDomainsRequest()
+        response: text_to_speech_pb2.ListT2sDomainsResponse = \
+            Text2SpeechServicer().handle_list_domains_request(request=list_domains_request)
+        assert len(response.domains) == 1
+
+    @staticmethod
     @pytest.mark.parametrize('audio_format', text_to_speech_pb2.AudioFormat.values())
     def test_synthesize_unit(create_pipelines: None, audio_format: text_to_speech_pb2.AudioFormat) -> None:
         list_pipelines_request = text_to_speech_pb2.ListT2sPipelinesRequest()

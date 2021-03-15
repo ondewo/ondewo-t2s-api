@@ -3,7 +3,7 @@ import os
 from typing import Optional, Dict, List, Callable, Any, Tuple
 from uuid import uuid4
 
-from ondewologging.logger import logger_console as logger
+from ondewo.logging.logger import logger_console as logger
 
 from normalization.constants import CUSTOM_PHONEMIZER_PREFIX_PTTRN
 

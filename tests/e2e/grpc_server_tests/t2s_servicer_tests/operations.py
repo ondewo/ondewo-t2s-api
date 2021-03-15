@@ -51,6 +51,50 @@ class OperationListPipelines(OperationNode):
         assert not isinstance(self.result, text_to_speech_pb2.ListT2sPipelinesResponse)
 
 
+class OperationListLanguages(OperationNode):
+    def __init__(self, request: text_to_speech_pb2.ListT2sLanguagesRequest, expected_to_fail: bool = False):
+        super().__init__(expected_to_fail)
+        self.stub = text_to_speech_pb2_grpc.Text2SpeechStub(channel=self.channel)
+        self.request = request
+
+    def execute_grpc(self) -> Optional[text_to_speech_pb2.ListT2sLanguagesResponse]:
+        f: Callable[[], Any] = lambda: self.stub.ListT2sLanguages(
+            self.request,
+        )
+        self._execute_grpc_with_exception_handling(f)
+        return self.result
+
+    def _basic_positive_validate(self) -> None:
+        super(OperationListLanguages, self)._basic_positive_validate()
+        assert isinstance(self.result, text_to_speech_pb2.ListT2sLanguagesResponse)
+
+    def _basic_negative_validate(self) -> None:
+        super(OperationListLanguages, self)._basic_negative_validate()
+        assert not isinstance(self.result, text_to_speech_pb2.ListT2sLanguagesResponse)
+
+
+class OperationListDomains(OperationNode):
+    def __init__(self, request: text_to_speech_pb2.ListT2sDomainsRequest, expected_to_fail: bool = False):
+        super().__init__(expected_to_fail)
+        self.stub = text_to_speech_pb2_grpc.Text2SpeechStub(channel=self.channel)
+        self.request = request
+
+    def execute_grpc(self) -> Optional[text_to_speech_pb2.ListT2sDomainsResponse]:
+        f: Callable[[], Any] = lambda: self.stub.ListT2sDomains(
+            self.request,
+        )
+        self._execute_grpc_with_exception_handling(f)
+        return self.result
+
+    def _basic_positive_validate(self) -> None:
+        super(OperationListDomains, self)._basic_positive_validate()
+        assert isinstance(self.result, text_to_speech_pb2.ListT2sDomainsResponse)
+
+    def _basic_negative_validate(self) -> None:
+        super(OperationListDomains, self)._basic_negative_validate()
+        assert not isinstance(self.result, text_to_speech_pb2.ListT2sDomainsResponse)
+
+
 class OperationGetT2sPipeline(OperationNode):
     def __init__(self, request: text_to_speech_pb2.T2sPipelineId, expected_to_fail: bool = False):
         super().__init__(expected_to_fail)

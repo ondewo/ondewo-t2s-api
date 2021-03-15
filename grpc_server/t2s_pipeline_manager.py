@@ -1,6 +1,6 @@
 from typing import Dict, Tuple, Optional, List, Set
 
-from ondewologging.logger import logger_console as logger
+from ondewo.logging.logger import logger_console as logger
 from ruamel.yaml import YAML
 
 from grpc_server.pipeline_utils import get_all_pipelines_from_config_files, get_config_path_by_id

@@ -5,7 +5,7 @@ from tritonclient.grpc import InferenceServerClient, InferInput, InferRequestedO
 
 from inference import triton_utils
 from inference.text2mel.glow_tts_core import GlowTTSCore
-from ondewologging.logger import logger_console as logger
+from ondewo.logging.logger import logger_console as logger
 from utils.data_classes.config_dataclass import GlowTTSDataclass, GlowTTSTritonDataclass
 
 
