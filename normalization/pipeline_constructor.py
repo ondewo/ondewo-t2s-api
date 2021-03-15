@@ -56,8 +56,8 @@ class NormalizerPipeline:
                 continue
             step = getattr(self.normalizer, name)
             text = step(text)
-            if self.phonemizer_function:
-                text = self.phonemizer_function(text)
+        if self.phonemizer_function:
+            text = self.phonemizer_function(text)
         return text
 
     def get_pipeline_definition(self, config: NormalizationDataclass) -> List[str]:
