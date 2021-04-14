@@ -172,10 +172,6 @@ install_dependencies_locally: generate_ondewo_protos
 	cd monotonic_align && python setup.py build_ext --inplace
 	pip install -e ondewo-t2s-glow
 
-	-git clone git@bitbucket.org:ondewo/ondewo-logging-python.git
-	cd ondewo-logging-python && git pull
-	pip install -e ondewo-logging-python
-
 	-git clone git@bitbucket.org:ondewo/ondewo-t2s-hifigan.git
 	cd ondewo-t2s-hifigan && git fetch && git checkout 1d691b8abc13275649be72809b681333bc47f1e6
 	pip install -e ondewo-t2s-hifigan
