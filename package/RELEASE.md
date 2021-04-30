@@ -1,5 +1,25 @@
 # Release History
 
+## Release ONDEWO T2S 1.5.0
+
+### New Features
+
+* [[OND232-149]](https://ondewo.atlassian.net/browse/OND232-149) - Added custom phonemizer which can be configured via endpoint
+* [[OND232-166]](https://ondewo.atlassian.net/browse/OND232-166) - Added utility endpoints for AIM integration
+
+### Improvements
+
+* [[OND232-161]](https://ondewo.atlassian.net/browse/OND232-161) - Added model cache cleaning when pipelines are deleted / deactivated
+* [[OND232-157]](https://ondewo.atlassian.net/browse/OND232-157) - Improved CI/CD pipeline to properly rsync and poll GPUs
+
+### Bug fixes
+
+* [[OND232-178]](https://ondewo.atlassian.net/browse/OND232-178) - Fixed bug with ondewo-logging-python.
+
+### Migration Guide
+
+* Change the config file to match the new structure.
+
 ## Release ONDEWO T2S 1.4.0
 
 ### New Features
