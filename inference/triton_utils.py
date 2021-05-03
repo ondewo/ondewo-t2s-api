@@ -1,6 +1,6 @@
 from tritonclient.grpc import InferenceServerClient
 
-from ondewologging.logger import logger_console as logger
+from ondewo.logging.logger import logger_console as logger
 
 
 def check_triton_online(triton_client: InferenceServerClient, triton_model_name: str) -> None:

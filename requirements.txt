@@ -12,6 +12,7 @@ grpcio-tools==1.31.0
 msgpack==1.0.0
 mypy-protobuf
 omegaconf
+ondewo-logging>=2.0.1
 protobuf==3.13.0
 pydub==0.24.1
 pyroomacoustics

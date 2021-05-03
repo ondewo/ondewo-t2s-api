@@ -1,9 +1,9 @@
-IMAGE_TAG_REST="dockerregistry.ondewo.com:5000/ondewo-t2s-rest-server:develop"
-IMAGE_TAG_GRPC="dockerregistry.ondewo.com:5000/ondewo-t2s-grpc-server:develop"
-IMAGE_TAG_REST_RELEASE="dockerregistry.ondewo.com:5000/ondewo-t2s-rest-server-release:develop"
-IMAGE_TAG_GRPC_RELEASE="dockerregistry.ondewo.com:5000/ondewo-t2s-grpc-server-release:develop"
+IMAGE_TAG_REST="registry-dev.ondewo.com:5000/ondewo-t2s-rest-server:develop"
+IMAGE_TAG_GRPC="registry-dev.ondewo.com:5000/ondewo-t2s-grpc-server:develop"
+IMAGE_TAG_REST_RELEASE="registry-dev.ondewo.com:5000/ondewo-t2s-rest-server-release:develop"
+IMAGE_TAG_GRPC_RELEASE="registry-dev.ondewo.com:5000/ondewo-t2s-grpc-server-release:develop"
 IMAGE_TAG_TESTS="ondewo-t2s-tests-image"
-IMAGE_TAG_TRITON="dockerregistry.ondewo.com:5000/nvidia/tritonserver:20.09-py3"
+IMAGE_TAG_TRITON="registry-dev.ondewo.com:5000/nvidia/tritonserver:20.09-py3"
 IMAGE_TAG_CODE_CHECK="code_check_image"
 
 REST_CONTAINER="ondewo-t2s-rest-server"
@@ -159,7 +159,7 @@ package_release: package_git_revision_and_version
 	rsync -av package/. ${RELEASE_FOLDER} --exclude '.gitignore'
 	rm -rf package
 
-	rsync -Phaz ${RELEASE_FOLDER} ondewo@releases.ondewo.com:releases/ondewo-t2s
+	rsync -Pha ${RELEASE_FOLDER} ondewo@releases.ondewo.com:/mnt/disks/releases/ondewo-t2s
 
 
 ### --- Install dependencies locally --- ###
@@ -171,10 +171,6 @@ install_dependencies_locally: generate_ondewo_protos
 	cd ondewo-t2s-glow && git fetch && git checkout 176dd93688cfadc84c4996283cec518fec5a7830 && \
 	cd monotonic_align && python setup.py build_ext --inplace
 	pip install -e ondewo-t2s-glow
-
-	-git clone git@bitbucket.org:ondewo/ondewo-logging-python.git
-	cd ondewo-logging-python && git pull
-	pip install -e ondewo-logging-python
 
 	-git clone git@bitbucket.org:ondewo/ondewo-t2s-hifigan.git
 	cd ondewo-t2s-hifigan && git fetch && git checkout 1d691b8abc13275649be72809b681333bc47f1e6

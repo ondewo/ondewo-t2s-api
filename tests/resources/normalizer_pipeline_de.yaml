@@ -1,4 +1,5 @@
 language: de
+custom_phonemizer_id:
 pipeline:
   - fix_plus
   - normalize_urls

@@ -1,4 +1,4 @@
-FROM dockerregistry.ondewo.com:5000/ubuntu:18.04 AS private_installer
+FROM registry-dev.ondewo.com:5000/ubuntu:18.04 AS private_installer
 ARG SSH_PRIVATE_KEY
 RUN mkdir /root/install
 WORKDIR /root/install
@@ -10,17 +10,13 @@ RUN echo "StrictHostKeyChecking no" >> /root/.ssh/config
 RUN apt-get update && apt-get -y upgrade && \
 	apt-get install -y git
 
-RUN git clone git@bitbucket.org:ondewo/ondewo-logging-python.git
-
 FROM python:3.7
 
 RUN apt-get -y update && apt-get -y upgrade
 
+RUN pip install pip==20.0.2
 COPY docker/demo_server_requirements.txt .
 RUN pip install -r demo_server_requirements.txt --ignore-installed
-
-COPY --from=private_installer /root/install/ondewo-logging-python ./ondewo-logging-python
-RUN pip install -e ondewo-logging-python
 
 WORKDIR /opt/ondewo-t2s
 COPY ./demo_server ./demo_server

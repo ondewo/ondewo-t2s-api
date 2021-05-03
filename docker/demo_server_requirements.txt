@@ -9,3 +9,4 @@ grpcio==1.31.0
 grpcio-reflection==1.31.0
 grpcio-tools==1.31.0
 mypy-protobuf
+ondewo-logging>=2.0.1

@@ -1,6 +1,6 @@
 import re
 from typing import List
-from ondewologging.logger import logger_console as logger
+from ondewo.logging.logger import logger_console as logger
 
 
 class TextSplitter:

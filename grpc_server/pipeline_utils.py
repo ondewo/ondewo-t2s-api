@@ -1,27 +1,33 @@
 import os
-from typing import List, Tuple, Optional
+from typing import List, Tuple, Optional, Union
 from uuid import uuid4
 
+from ondewo.logging.logger import logger_console as logger
 from ruamel import yaml
 
-from grpc_server.constants import CONFIG_DIR_ENV
+from grpc_server.constants import CONFIG_DIR_ENV, CUSTOM_PHONEMIZER_SUBDIR
 from inference.inference_factory import InferenceFactory
 from inference.inference_interface import Inference
 from normalization.pipeline_constructor import NormalizerPipeline
 from normalization.postprocessor import Postprocessor
 from ondewo_grpc.ondewo.t2s import text_to_speech_pb2
 from utils.data_classes.config_dataclass import T2SConfigDataclass
-from ondewologging.logger import logger_console as logger
 
 
-def get_list_of_config_files(config_dir: str) -> List[str]:
-    list_of_objects: List[str] = os.listdir(config_dir)
-    return list(filter(lambda path: path.endswith(('.yaml', 'yml')), list_of_objects))
+def _get_list_of_extension_files(dir_: str, extention: Union[str, Tuple[str, ...]]) -> List[str]:
+    list_of_objects: List[str] = os.listdir(dir_)
+    return list(filter(lambda path: path.endswith(extention), list_of_objects))
+
+
+def get_list_of_json_files_paths(dir_: str) -> List[str]:
+    list_of_files = _get_list_of_extension_files(dir_=dir_, extention='.json')
+    return [os.path.join(dir_, file_) for file_ in list_of_files]
 
 
 def get_all_config_paths() -> List[str]:
     config_dir: str = get_config_dir()
-    config_file_list: List[str] = get_list_of_config_files(config_dir=config_dir)
+    config_file_list: List[str] = _get_list_of_extension_files(dir_=config_dir,
+                                                               extention=('.yaml', '.yml'))
     return [os.path.join(config_dir, config_file) for config_file in config_file_list]
 
 
@@ -65,11 +71,16 @@ def get_config_dir() -> str:
     return config_dir
 
 
+def get_or_create_custom_phonemizers_dir() -> str:
+    config_dir = get_config_dir()
+    phonemizer_dir: str = os.path.join(config_dir, CUSTOM_PHONEMIZER_SUBDIR)
+    os.makedirs(phonemizer_dir, exist_ok=True)
+    return phonemizer_dir
+
+
 def get_config_path_by_id(config_id: str) -> Optional[str]:
-    config_dir: str = get_config_dir()
-    config_files: List[str] = get_list_of_config_files(config_dir)
-    for config_file in config_files:
-        config_file_path: str = os.path.join(config_dir, config_file)
+    config_paths: List[str] = get_all_config_paths()
+    for config_file_path in config_paths:
         with open(config_file_path, 'r') as f:
             pipeline_id: str = yaml.load(f, Loader=yaml.Loader)['id']
         if pipeline_id == config_id:
@@ -114,17 +125,21 @@ def filter_on_domains(domaines: List[str],
 
 def filter_pipelines(
         pipelines: List[T2SConfigDataclass],
-        request: text_to_speech_pb2.ListT2sPipelinesRequest
+        languages: List[str],
+        pipeline_owners: List[str],
+        domains: List[str],
+        speaker_names: List[str],
+        speaker_sexes: List[str]
 ) -> List[T2SConfigDataclass]:
-    if request.languages:
-        pipelines = filter_on_languages(languages=list(request.languages), pipelines=pipelines)
-    if request.speaker_sexes:
-        pipelines = filter_on_speaker_sexes(speaker_sexes=list(request.speaker_sexes), pipelines=pipelines)
-    if request.pipeline_owners:
+    if languages:
+        pipelines = filter_on_languages(languages=list(languages), pipelines=pipelines)
+    if speaker_sexes:
+        pipelines = filter_on_speaker_sexes(speaker_sexes=list(speaker_sexes), pipelines=pipelines)
+    if pipeline_owners:
         pipelines = filter_on_pipeline_owners(
-            pipeline_owners=list(request.pipeline_owners), pipelines=pipelines)
-    if request.speaker_names:
-        pipelines = filter_on_speaker_names(speaker_names=list(request.speaker_names), pipelines=pipelines)
-    if request.domains:
-        pipelines = filter_on_domains(domaines=list(request.domains), pipelines=pipelines)
+            pipeline_owners=list(pipeline_owners), pipelines=pipelines)
+    if speaker_names:
+        pipelines = filter_on_speaker_names(speaker_names=list(speaker_names), pipelines=pipelines)
+    if domains:
+        pipelines = filter_on_domains(domaines=list(domains), pipelines=pipelines)
     return pipelines

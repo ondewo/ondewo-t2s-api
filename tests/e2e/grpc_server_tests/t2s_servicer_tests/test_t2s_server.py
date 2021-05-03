@@ -1,30 +1,30 @@
 import copy
 import io
 from pathlib import Path
-import pytest
 from typing import Iterator
 
 import pytest
 import soundfile as sf
 
 from ondewo_grpc.ondewo.t2s import text_to_speech_pb2
-from .operations import OperationSynthesize, OperationListPipelines, \
+from tests.e2e.grpc_server_tests.t2s_servicer_tests.operations import OperationSynthesize, \
+    OperationListPipelines, \
     OperationGetT2sPipeline, OperationCreateT2sPipeline, OperationDeleteT2sPipeline, \
-    OperationUpdateT2sPipeline
+    OperationUpdateT2sPipeline, OperationListLanguages, OperationListDomains
 
 
 @pytest.fixture
 def clean_configs_dir() -> Iterator[None]:
     yield
     for pth in Path("tests", "resources", "configs").iterdir():
-        if pth.name not in ("config.yaml", "config_en.yaml"):
+        if pth.name not in ("config.yaml", "config_en.yaml") and pth.is_file():
             pth.unlink()
 
 
 class TestGRPC:
 
     @staticmethod
-    def test_list_pipeliness() -> None:
+    def test_list_pipelines() -> None:
         list_pipelines_request = text_to_speech_pb2.ListT2sPipelinesRequest()
         operation_list_ids: OperationListPipelines = OperationListPipelines(
             request=list_pipelines_request, expected_to_fail=False)
@@ -42,6 +42,22 @@ class TestGRPC:
         response = operation_list_ids.execute_grpc()
         assert len(response.pipelines) == 1
         assert response.pipelines[0].description.speaker_sex == 'male'
+
+    @staticmethod
+    def test_list_languages() -> None:
+        list_languages_request = text_to_speech_pb2.ListT2sLanguagesRequest()
+        operation_list_languages: OperationListLanguages = OperationListLanguages(
+            request=list_languages_request, expected_to_fail=False)
+        response: text_to_speech_pb2.ListT2sLanguagesResponse = operation_list_languages.execute_grpc()
+        assert len(response.languages) == 2
+
+    @staticmethod
+    def test_list_domains() -> None:
+        list_domains_request = text_to_speech_pb2.ListT2sDomainsRequest()
+        operation_list_domains: OperationListDomains = OperationListDomains(
+            request=list_domains_request, expected_to_fail=False)
+        response: text_to_speech_pb2.ListT2sDomainsResponse = operation_list_domains.execute_grpc()
+        assert len(response.domains) == 1
 
     @staticmethod
     @pytest.mark.parametrize('audio_format', text_to_speech_pb2.AudioFormat.values())
@@ -95,6 +111,7 @@ class TestGRPC:
             operation_create_pipeline: OperationCreateT2sPipeline = OperationCreateT2sPipeline(
                 request=pipeline_config)
             created_config = operation_create_pipeline.execute_grpc()
+
             assert isinstance(created_config, text_to_speech_pb2.T2sPipelineId)
             id_created: str = created_config.id
             operation_list_ids = OperationListPipelines(

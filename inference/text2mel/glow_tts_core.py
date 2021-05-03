@@ -3,19 +3,17 @@ from typing import Tuple, Optional, List, Union, Dict
 
 import numpy as np
 from glow_tts_reduced import utils
-from ondewologging.decorators import Timer
-from ondewologging.logger import logger_console as logger
+from ondewo.logging.decorators import Timer
+from ondewo.logging.logger import logger_console as logger
 
-from inference.text2mel.constants_text2mel import LENGTH_SCALE, \
-    NOISE_SCALE
 from inference.text2mel.glow_tts_text_processor import GlowTTSTextProcessor
 from inference.text2mel.text2mel import Text2Mel
 from utils.data_classes.config_dataclass import GlowTTSDataclass, GlowTTSTritonDataclass
+from utils.models_cache import ModelCache
 
 
 class GlowTTSCore(Text2Mel):
     NAME: str = ''
-    text_preprocessor_cache: Dict[str, GlowTTSTextProcessor] = {}
 
     def __init__(self, config: Union[GlowTTSDataclass, GlowTTSTritonDataclass]):
         self.config = config
@@ -30,13 +28,27 @@ class GlowTTSCore(Text2Mel):
         else:
             self.cmudict_path = None
 
-        self.text_processor = GlowTTSTextProcessor(
-            language_code=self.hyperparams.data.language,
-            cmudict_path=self.cmudict_path,
-            cleaners=self.cleaners,
-            add_blank=getattr(self.hyperparams.data, "add_blank", False)
-        )
+        self.text_processor, self.cache_key = self._get_and_cache_text_processor()
         self.batch_size: int = 1
+
+    @Timer(log_arguments=True)
+    def _get_and_cache_text_processor(self) -> Tuple[GlowTTSTextProcessor, str]:
+
+        cache_key = ModelCache.create_text_processor_key(
+            path=self.cmudict_path,
+            blank=getattr(self.hyperparams.data, "add_blank", False),
+            lang=self.hyperparams.data.language,
+            list_param=self.cleaners)
+
+        if cache_key not in ModelCache.cached_models:
+            text_processor = GlowTTSTextProcessor(
+                language_code=self.hyperparams.data.language,
+                cmudict_path=self.cmudict_path,
+                cleaners=self.cleaners,
+                add_blank=getattr(self.hyperparams.data, "add_blank", False)
+            )
+            ModelCache.cached_models[cache_key] = text_processor
+        return ModelCache.cached_models[cache_key], cache_key
 
     @Timer(log_arguments=False)
     def text2mel(self, texts: List[str], length_scale: Optional[float] = None,

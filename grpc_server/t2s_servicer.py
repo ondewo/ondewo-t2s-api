@@ -8,8 +8,8 @@ import google.protobuf.empty_pb2 as empty_pb2
 import grpc
 import numpy as np
 import soundfile as sf
-from ondewologging.decorators import Timer
-from ondewologging.logger import logger_console as logger
+from ondewo.logging.decorators import Timer
+from ondewo.logging.logger import logger_console as logger
 from ruamel.yaml import YAML
 
 from grpc_server.t2s_pipeline_manager import T2SPipelineManager
@@ -38,6 +38,16 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
             context: grpc.ServicerContext,
     ) -> text_to_speech_pb2.ListT2sPipelinesResponse:
         return self.handle_list_t2s_pipeline_ids_request(request=request)
+
+    def ListT2sLanguages(self, request: text_to_speech_pb2.ListT2sLanguagesRequest,
+                         context: grpc.ServicerContext,
+                         ) -> text_to_speech_pb2.ListT2sLanguagesResponse:
+        return self.handle_list_languages_request(request=request)
+
+    def ListT2sDomains(self, request: text_to_speech_pb2.ListT2sDomainsRequest,
+                       context: grpc.ServicerContext,
+                       ) -> text_to_speech_pb2.ListT2sDomainsResponse:
+        return self.handle_list_domains_request(request=request)
 
     def GetT2sPipeline(self, request: text_to_speech_pb2.T2sPipelineId,
                        context: grpc.ServicerContext) -> text_to_speech_pb2.Text2SpeechConfig:
@@ -128,9 +138,42 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
             T2SPipelineManager.get_all_t2s_pipeline_descriptions()
         pipelines_persisted: List[T2SConfigDataclass] = get_all_pipelines_from_config_files()
         pipelines = list(set(pipelines_persisted + pipelines_registered))
-        pipelines = filter_pipelines(pipelines, request)
+        pipelines = filter_pipelines(pipelines, languages=list(request.languages), domains=list(request.domains),
+                                     speaker_sexes=list(request.speaker_sexes),
+                                     speaker_names=list(request.speaker_names),
+                                     pipeline_owners=list(request.pipeline_owners))
         return text_to_speech_pb2.ListT2sPipelinesResponse(
             pipelines=[pipeline.to_proto() for pipeline in pipelines]
+        )
+
+    @staticmethod
+    def handle_list_languages_request(
+            request: text_to_speech_pb2.ListT2sLanguagesRequest
+    ) -> text_to_speech_pb2.ListT2sLanguagesResponse:
+        logger.info(f"List languages request {request} received.")
+        pipelines: List[T2SConfigDataclass] = \
+            T2SPipelineManager.get_all_t2s_pipeline_descriptions()
+        pipelines = filter_pipelines(pipelines, domains=list(request.domains),
+                                     pipeline_owners=list(request.pipeline_owners),
+                                     languages=[], speaker_names=list(request.speaker_names),
+                                     speaker_sexes=list(request.speaker_sexes))
+        return text_to_speech_pb2.ListT2sLanguagesResponse(
+            languages=list(set([pipeline.description.language for pipeline in pipelines]))
+        )
+
+    @staticmethod
+    def handle_list_domains_request(
+            request: text_to_speech_pb2.ListT2sDomainsRequest
+    ) -> text_to_speech_pb2.ListT2sDomainsResponse:
+        logger.info(f"List domains request {request} received.")
+        pipelines: List[T2SConfigDataclass] = \
+            T2SPipelineManager.get_all_t2s_pipeline_descriptions()
+        pipelines = filter_pipelines(pipelines, languages=list(request.languages),
+                                     pipeline_owners=list(request.pipeline_owners),
+                                     domains=[], speaker_sexes=list(request.speaker_sexes),
+                                     speaker_names=list(request.speaker_names))
+        return text_to_speech_pb2.ListT2sDomainsResponse(
+            domains=list(set([pipeline.description.domain for pipeline in pipelines]))
         )
 
     def handle_get_t2s_pipeline_request(self, request: text_to_speech_pb2.T2sPipelineId
@@ -172,6 +215,7 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
         config_file_path: Optional[str] = get_config_path_by_id(request.id)
         if config_file_path:
             os.remove(config_file_path)
+        T2SPipelineManager.remove_unused_models_from_cache()
         return empty_pb2.Empty()
 
     def handle_update_t2s_pipeline_request(
@@ -198,4 +242,5 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
         with open(config_file_path, 'w') as f:
             config_dict = config.to_dict()  # type: ignore
             yaml.dump(config_dict, f)
+        T2SPipelineManager.remove_unused_models_from_cache()
         return empty_pb2.Empty()

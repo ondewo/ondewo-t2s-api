@@ -2,8 +2,8 @@ import json
 from typing import List, Union
 
 import numpy as np
-from ondewologging.decorators import Timer
-from ondewologging.logger import logger_console as logger
+from ondewo.logging.decorators import Timer
+from ondewo.logging.logger import logger_console as logger
 
 from inference.mel2audio.mel2audio import Mel2Audio
 from utils.data_classes.config_dataclass import HiFiGanDataclass, HiFiGanTritonDataclass

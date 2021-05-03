@@ -5,7 +5,7 @@ description:
   pipeline_owner: ondewo
   comments: trained on public domain dataset Lj_speech
   speaker_name: ''
-  domain: ''
+  domain: general
 active: true
 inference:
   type: composite
@@ -55,6 +55,7 @@ inference:
 normalization:
   language: de
   pipeline: []
+  custom_phonemizer_id: ''
 postprocessing:
   silence_secs: 0.25
   pipeline: []

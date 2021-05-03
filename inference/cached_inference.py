@@ -10,7 +10,7 @@ from scipy.io.wavfile import read as read_wav
 from scipy.io.wavfile import write
 
 from inference.inference_interface import Inference
-from ondewologging.logger import logger_console as logger
+from ondewo.logging.logger import logger_console as logger
 
 from utils.data_classes.config_dataclass import CachingDataclass
 

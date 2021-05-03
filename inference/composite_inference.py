@@ -6,7 +6,7 @@ from inference.mel2audio.mel2audio import Mel2Audio
 from inference.mel2audio.mel2audio_factory import Mel2AudioFactory
 from inference.text2mel.text2mel import Text2Mel
 from inference.text2mel.text2mel_factory import Text2MelFactory
-from ondewologging.logger import logger_console as logger
+from ondewo.logging.logger import logger_console as logger
 
 from utils.data_classes.config_dataclass import CompositeInferenceDataclass
 

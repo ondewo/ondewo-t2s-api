@@ -1,8 +1,8 @@
 from typing import List
 
 import numpy as np
-from ondewologging.decorators import Timer
-from ondewologging.logger import logger_console as logger
+from ondewo.logging.decorators import Timer
+from ondewo.logging.logger import logger_console as logger
 from tritonclient.grpc import InferenceServerClient, InferInput, InferRequestedOutput, InferResult
 
 from inference import triton_utils

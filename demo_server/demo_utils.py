@@ -3,7 +3,7 @@ from time import sleep, time
 import os
 
 import grpc
-from ondewologging.logger import logger_console as logger
+from ondewo.logging.logger import logger_console as logger
 
 from ondewo_grpc.ondewo.t2s import text_to_speech_pb2_grpc, text_to_speech_pb2
 from . import GRPC_HOST, GRPC_PORT, WORK_DIR
@@ -30,27 +30,22 @@ def get_pipeline_ids_dict() -> Dict[str, str]:
     pipelines = stab.ListT2sPipelines(request=text_to_speech_pb2.ListT2sPipelinesRequest()).pipelines
     id_dict = {}
     for pipeline in pipelines:
-        if pipeline.description.language == 'de':
-            id_dict["german"] = pipeline.id
-        elif pipeline.description.language == 'en':
-            id_dict["english"] = pipeline.id
-    assert 'english' in id_dict, "English pipeline is not available on grpc server."
-    assert 'german' in id_dict, "German pipeline is not available on grpc server."
+        id_dict[pipeline.description.speaker_name] = pipeline.id
+    assert 'Kerstin' in id_dict, "Kerstin pipeline is not available on grpc server."
+    assert 'Thorsten' in id_dict, "Thorsten pipeline is not available on grpc server."
+    assert 'Sandra' in id_dict, "Sandra pipeline is not available on grpc server."
+    assert 'Linda' in id_dict, "Linda pipeline is not available on grpc server."
     return id_dict
 
 
 PIPELINE_IDS_DICT: Dict[str, str] = get_pipeline_ids_dict()
 
 
-def get_pipeline_id(language_string: str) -> str:
-    language: str = ""
-    for key, value in LANGUAGE_DICT.items():
-        if language_string in value:
-            language = key
-    if not language or not PIPELINE_IDS_DICT.get(language):
-        raise ValueError("Please select a valid language.")
+def get_pipeline_id(voice_string: str) -> str:
+    if not PIPELINE_IDS_DICT.get(voice_string):
+        raise ValueError("Please select a valid voice.")
 
-    return PIPELINE_IDS_DICT[language]
+    return PIPELINE_IDS_DICT[voice_string]
 
 
 def synthesize_with_pipeline(text: str, pipeline_id: str) -> bytes:

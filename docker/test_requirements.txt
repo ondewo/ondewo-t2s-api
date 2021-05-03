@@ -7,6 +7,7 @@ tritonclient[all]==2.3.0
 git+https://github.com/wilsonchingg/logmmse.git
 pyroomacoustics
 omegaconf
+ondewo-logging==1.6.1
 python_speech_features
 pysndfx
 pydub==0.24.1

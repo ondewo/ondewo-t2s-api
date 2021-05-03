@@ -9,6 +9,7 @@ grpcio-tools==1.31.0
 msgpack==1.0.0
 mypy-protobuf
 num2words
+ondewo-logging>=2.0.1
 ruamel.yaml
 tritonclient[all]==2.3.0
 git+https://github.com/wilsonchingg/logmmse.git

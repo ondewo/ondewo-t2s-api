@@ -15,9 +15,9 @@ from .demo_utils import get_pipeline_id, synthesize_with_pipeline
 def text_2_speech() -> Any:
     if request.method == 'POST':
         text: str = request.form['text']
-        language: str = request.form['language']
+        voice: str = request.form['voice']
 
-        pipeline_id: str = get_pipeline_id(language_string=language)
+        pipeline_id: str = get_pipeline_id(voice_string=voice)
         audio_bytes: bytes = synthesize_with_pipeline(text=text, pipeline_id=pipeline_id)
 
         with tempfile.NamedTemporaryFile("w+b") as wav_file:
@@ -29,10 +29,10 @@ def text_2_speech() -> Any:
 def text_2_speech_web() -> Any:
     if request.method == 'POST':
         text: str = request.form['text']
-        language: str = request.form['language']
+        voice: str = request.form['voice']
 
         start_t: float = time.time()
-        pipeline_id: str = get_pipeline_id(language_string=language)
+        pipeline_id: str = get_pipeline_id(voice_string=voice)
         audio_bytes: bytes = synthesize_with_pipeline(text=text, pipeline_id=pipeline_id)
         total_t: float = time.time() - start_t
 
