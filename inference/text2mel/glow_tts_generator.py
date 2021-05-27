@@ -44,6 +44,7 @@ class GlowTTS(GlowTTSCore):
         elif not torch.cuda.is_available():
             logger.warning('Cuda is not available. CPU inference will be used.')
             self.device = torch.device('cpu')
+            self.use_gpu = False
         else:
             self.device = torch.device('cpu')
 
