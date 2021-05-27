@@ -40,10 +40,14 @@ class GlowTTS(GlowTTSCore):
         )
         if self.use_gpu and torch.cuda.is_available():
             model = model.to("cuda")
+            self.device = torch.device('cuda')
         elif not torch.cuda.is_available():
             logger.warning('Cuda is not available. CPU inference will be used.')
+            self.device = torch.device('cpu')
+        else:
+            self.device = torch.device('cpu')
 
-        self.state_dict = torch.load(self.checkpoint_path)
+        self.state_dict = torch.load(self.checkpoint_path, map_location=self.device)
         # handle both cases 1- model with optimization info or 2- pure model in the checkpoint
         self.state_dict = self.state_dict.get('model') or self.state_dict
         model.load_state_dict(state_dict=self.state_dict)
