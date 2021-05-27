@@ -4,7 +4,7 @@
 
 ### Bug fixes
 
-* fixed bug that did not allow load glow-tts model without gpu.
+* [[OND232-187]](https://ondewo.atlassian.net/browse/OND232-187) Fixed bug that did not allow load glow-tts model without gpu.
 
 ## Release ONDEWO T2S 1.5.0
 
@@ -20,7 +20,6 @@
 
 ### Bug fixes
 
-* - fixed bug with
 * [[OND232-178]](https://ondewo.atlassian.net/browse/OND232-178) - Fixed bug with ondewo-logging-python.
 
 ### Migration Guide
