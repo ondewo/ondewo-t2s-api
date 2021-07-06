@@ -130,6 +130,7 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
             sample_rate=sample_rate,
         )
 
+    @Timer()
     def handle_list_t2s_pipeline_ids_request(
             self,
             request: text_to_speech_pb2.ListT2sPipelinesRequest
@@ -146,8 +147,8 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
             pipelines=[pipeline.to_proto() for pipeline in pipelines]
         )
 
-    @staticmethod
-    def handle_list_languages_request(
+    @Timer()
+    def handle_list_languages_request(self,
             request: text_to_speech_pb2.ListT2sLanguagesRequest
     ) -> text_to_speech_pb2.ListT2sLanguagesResponse:
         logger.info(f"List languages request {request} received.")
@@ -161,8 +162,8 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
             languages=list(set([pipeline.description.language for pipeline in pipelines]))
         )
 
-    @staticmethod
-    def handle_list_domains_request(
+    @Timer()
+    def handle_list_domains_request(self,
             request: text_to_speech_pb2.ListT2sDomainsRequest
     ) -> text_to_speech_pb2.ListT2sDomainsResponse:
         logger.info(f"List domains request {request} received.")
@@ -176,6 +177,7 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
             domains=list(set([pipeline.description.domain for pipeline in pipelines]))
         )
 
+    @Timer()
     def handle_get_t2s_pipeline_request(self, request: text_to_speech_pb2.T2sPipelineId
                                         ) -> text_to_speech_pb2.Text2SpeechConfig:
         t2s_pipeline_id: str = request.id
@@ -184,6 +186,7 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
             raise ModuleNotFoundError(f'Pipeline with id {t2s_pipeline_id} is not found.')
         return config.to_proto()
 
+    @Timer()
     def handle_create_t2s_pipeline_request(
             self,
             request: text_to_speech_pb2.Text2SpeechConfig) -> text_to_speech_pb2.T2sPipelineId:
@@ -203,6 +206,7 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
 
         return text_to_speech_pb2.T2sPipelineId(id=t2s_pipeline_id)
 
+    @Timer()
     def handle_delete_t2s_pipeline_request(self, request: text_to_speech_pb2.T2sPipelineId
                                            ) -> empty_pb2.Empty:
         if request.id not in T2SPipelineManager.get_all_t2s_pipeline_ids():
@@ -218,6 +222,7 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
         T2SPipelineManager.remove_unused_models_from_cache()
         return empty_pb2.Empty()
 
+    @Timer()
     def handle_update_t2s_pipeline_request(
             self, request: text_to_speech_pb2.Text2SpeechConfig) -> empty_pb2.Empty:
 

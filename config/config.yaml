@@ -54,7 +54,6 @@ inference:
     cache_save_dir: models/cache
 normalization:
   language: de
-  custom_phonemizer_id:
   pipeline:
   - fix_plus
   - normalize_urls
@@ -64,6 +63,7 @@ normalization:
   - normalize_numbers
   - remove_unaudible_texts
   - lower_case
+  custom_phonemizer_id:
 postprocessing:
   silence_secs: 0.25
   pipeline: []
