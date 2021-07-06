@@ -19,8 +19,8 @@ pipeline {
 
         NAMESPACE = "ondewo"
         DOCKERREGISTRY = "registry-dev.ondewo.com:5000"
-        PUSH_NAME_REST = "${DOCKERREGISTRY}/${NAMESPACE}/${TTS_NAME_REST}"
-        PUSH_NAME_GRPC = "${DOCKERREGISTRY}/${NAMESPACE}/${TTS_NAME_GRPC}"
+        PUSH_NAME_STREAM_REST = "${DOCKERREGISTRY}/${NAMESPACE}/${TTS_NAME_REST}"
+        PUSH_NAME_STREAM_GRPC = "${DOCKERREGISTRY}/${NAMESPACE}/${TTS_NAME_GRPC}"
     }
 
     stages {
@@ -50,6 +50,7 @@ pipeline {
             stages {
                 stage('Setup Test Env') {
                     steps {
+                        sh(script: "docker login -u ${REGISTRYUSER} -p${REGISTRYPASSWORD} ${DOCKERREGISTRY}")
                         sh(script: "mkdir -p ${MODEL_DIR}", label: 'create local cache dir')
                         sh(script: "rsync -Pavz ${MODEL_REPO} ${MODEL_DIR}", label: 'sync model repo to local cache dir')
                         sh(script: '''for filename in $(ls ${PWD}/tests/resources | grep yaml)
@@ -64,7 +65,6 @@ pipeline {
                     parallel {
                         stage('Build rest server') {
                             steps {
-                                sh(script: "docker login -u ${REGISTRYUSER} -p${REGISTRYPASSWORD} ${DOCKERREGISTRY}")
                                 sh(script: """set +x
                                     docker build -t ${PUSH_NAME_STREAM_REST} --build-arg SSH_PRIVATE_KEY=\"\$(cat ${ssh_key_file})\" --target uncythonized -f docker/Dockerfile.rest_server .
                                     set -x"""
@@ -74,7 +74,6 @@ pipeline {
                         }
                         stage('Build grpc server') {
                             steps {
-                                sh(script: "docker login -u ${REGISTRYUSER} -p${REGISTRYPASSWORD} ${DOCKERREGISTRY}")
                                 sh(script: """set +x
                                     docker build -t ${PUSH_NAME_STREAM_GRPC} --build-arg SSH_PRIVATE_KEY=\"\$(cat ${ssh_key_file})\" --target uncythonized -f docker/Dockerfile.grpc_server .
                                     set -x"""
