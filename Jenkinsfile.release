@@ -17,8 +17,11 @@ pipeline {
         TTS_NAME_GRPC = "${IMAGE_NAME_RELASE_GRPC}:${IMAGE_TAG}"
         TTS_NAME_TESTS = "${IMAGE_NAME_TESTS}:${IMAGE_TAG}"
         TTS_NAME_CODE_CHECK = "${IMAGE_NAME_CODE_CHECK}:${IMAGE_TAG}"
-        PUSH_NAME_RELEASE_REST = "registry-dev.ondewo.com:5000/${TTS_NAME_REST}"
-        PUSH_NAME_RELEASE_GRPC = "registry-dev.ondewo.com:5000/${TTS_NAME_GRPC}"
+
+        NAMESPACE = "ondewo"
+        DOCKERREGISTRY = "registry-dev.ondewo.com:5000"
+        PUSH_NAME_STREAM_REST = "${DOCKERREGISTRY}/${NAMESPACE}/${TTS_NAME_REST}"
+        PUSH_NAME_STREAM_GRPC = "${DOCKERREGISTRY}/${NAMESPACE}/${TTS_NAME_GRPC}"
     }
     stages {
         stage('Code Quality Check') {
@@ -41,10 +44,13 @@ pipeline {
                 MODEL_DIR = '/mnt/disks/jenkins/data/t2s/models'
                 TRITON_GPU = 'device=0'
                 DOCKER_NETWORK = "${UNIQUE_BUILD_ID}"
+                REGISTRYUSER = credentials('REGISTRYUSER')
+                REGISTRYPASSWORD = credentials('REGISTRYPASSWORD')
             }
             stages {
                 stage('Setup Test Env') {
                     steps {
+                        sh(script: "docker login -u ${REGISTRYUSER} -p${REGISTRYPASSWORD} ${DOCKERREGISTRY}")
                         sh(script: "mkdir -p ${MODEL_DIR}", label: 'create local cache dir')
                         sh(script: "rsync -Pavz ${MODEL_REPO} ${MODEL_DIR}", label: 'sync model repo to local cache dir')
                         sh(script: '''for filename in $(ls ${PWD}/tests/resources | grep yaml)
