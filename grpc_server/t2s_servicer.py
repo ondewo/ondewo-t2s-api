@@ -22,7 +22,6 @@ from ondewo_grpc.ondewo.t2s import text_to_speech_pb2_grpc, text_to_speech_pb2
 from utils.audio_converter import convert_to_format
 from utils.data_classes.config_dataclass import T2SConfigDataclass
 
-
 yaml = YAML()
 yaml.default_flow_style = False
 
@@ -59,11 +58,13 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
 
     def DeleteT2sPipeline(self, request: text_to_speech_pb2.T2sPipelineId,
                           context: grpc.ServicerContext) -> empty_pb2.Empty:
-        return self.handle_delete_t2s_pipeline_request(request)
+        self.handle_delete_t2s_pipeline_request(request)
+        return empty_pb2.Empty()
 
     def UpdateT2sPipeline(self, request: text_to_speech_pb2.Text2SpeechConfig,
                           context: grpc.ServicerContext) -> empty_pb2.Empty:
-        return self.handle_update_t2s_pipeline_request(request)
+        self.handle_update_t2s_pipeline_request(request)
+        return empty_pb2.Empty()
 
     @Timer(log_arguments=False)
     def handle_synthesize_request(self, request: text_to_speech_pb2.SynthesizeRequest
@@ -149,8 +150,8 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
 
     @Timer()
     def handle_list_languages_request(self,
-            request: text_to_speech_pb2.ListT2sLanguagesRequest
-    ) -> text_to_speech_pb2.ListT2sLanguagesResponse:
+                                      request: text_to_speech_pb2.ListT2sLanguagesRequest
+                                      ) -> text_to_speech_pb2.ListT2sLanguagesResponse:
         logger.info(f"List languages request {request} received.")
         pipelines: List[T2SConfigDataclass] = \
             T2SPipelineManager.get_all_t2s_pipeline_descriptions()
@@ -164,8 +165,8 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
 
     @Timer()
     def handle_list_domains_request(self,
-            request: text_to_speech_pb2.ListT2sDomainsRequest
-    ) -> text_to_speech_pb2.ListT2sDomainsResponse:
+                                    request: text_to_speech_pb2.ListT2sDomainsRequest
+                                    ) -> text_to_speech_pb2.ListT2sDomainsResponse:
         logger.info(f"List domains request {request} received.")
         pipelines: List[T2SConfigDataclass] = \
             T2SPipelineManager.get_all_t2s_pipeline_descriptions()
@@ -208,7 +209,7 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
 
     @Timer()
     def handle_delete_t2s_pipeline_request(self, request: text_to_speech_pb2.T2sPipelineId
-                                           ) -> empty_pb2.Empty:
+                                           ) -> None:
         if request.id not in T2SPipelineManager.get_all_t2s_pipeline_ids():
             raise ModuleNotFoundError(f'Pipeline with id {request.id} '
                                       f'is not registered in T2SPipelineManager.')
@@ -220,11 +221,10 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
         if config_file_path:
             os.remove(config_file_path)
         T2SPipelineManager.remove_unused_models_from_cache()
-        return empty_pb2.Empty()
 
     @Timer()
     def handle_update_t2s_pipeline_request(
-            self, request: text_to_speech_pb2.Text2SpeechConfig) -> empty_pb2.Empty:
+            self, request: text_to_speech_pb2.Text2SpeechConfig) -> None:
 
         config: T2SConfigDataclass = T2SConfigDataclass.from_proto(proto=request)
         if config.id not in T2SPipelineManager.get_all_t2s_pipeline_ids():
@@ -248,4 +248,3 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
             config_dict = config.to_dict()  # type: ignore
             yaml.dump(config_dict, f)
         T2SPipelineManager.remove_unused_models_from_cache()
-        return empty_pb2.Empty()
