@@ -54,9 +54,8 @@ inference:
     cache_save_dir: models/cache
 normalization:
   language: en
+  pipeline: []
   custom_phonemizer_id:
-  pipeline:
-  - normalise_simple
 postprocessing:
   silence_secs: 0.25
   pipeline: []
