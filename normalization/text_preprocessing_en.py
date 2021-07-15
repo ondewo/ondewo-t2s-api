@@ -53,7 +53,7 @@ class TextNormalizerEn(NormalizerInterface):
             if int(s[0]) > 24 or int(s[1]) >= 60:
                 st: str = " {}:{}{} ".format(s[0], s[1], s[2] if s[2] else "")
             else:
-                st: str = " {} {} ".format(
+                st = " {} {} ".format(
                     n2w(s[0], ordinal=False).replace("-", " ").replace(" and ", " "),
                     n2w(s[1], ordinal=False).replace("-", " ").replace(" and ", " ").replace("zero", ""))
             return st

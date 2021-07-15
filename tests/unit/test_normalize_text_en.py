@@ -80,32 +80,31 @@ class TestNormalization:
         assert isinstance(normalized_text_with_dates, str)
         assert normalized_text_with_dates == expected_result
 
-
     @staticmethod
     @pytest.mark.parametrize('time, expected_result', [
-       ('text 01:20 text', ' text one twenty text '),
-       ('text 01:20:00 text', ' text one twenty text '),
-       ('text 30:50 text', ' text 30:50 text '),
-       ('text 30:50:00 text', ' text 30:50:00 text '),
-       ('text 25:40 text', ' text 25:40 text '),
-       ('text 23:40 text', ' text twenty three forty text '),
-       ('text 1:40 text', ' text one forty text '),
-       ('text 1:4 text', ' text 1:4 text '),
+        ('text 01:20 text', ' text one twenty text '),
+        ('text 01:20:00 text', ' text one twenty text '),
+        ('text 30:50 text', ' text 30:50 text '),
+        ('text 30:50:00 text', ' text 30:50:00 text '),
+        ('text 25:40 text', ' text 25:40 text '),
+        ('text 23:40 text', ' text twenty three forty text '),
+        ('text 1:40 text', ' text one forty text '),
+        ('text 1:4 text', ' text 1:4 text '),
     ])
     def test_normalize_times(time: str, expected_result: str) -> None:
-       normalized_text_with_time: str = normalizer.normalize_simple(time)
-       assert isinstance(normalized_text_with_time, str)
-       assert normalized_text_with_time == expected_result
+        normalized_text_with_time: str = normalizer.normalize_simple(time)
+        assert isinstance(normalized_text_with_time, str)
+        assert normalized_text_with_time == expected_result
 
     @staticmethod
     @pytest.mark.parametrize('text, expected_result', [
-       ('www.google.de', ' W W W dot google dot D E '),
-       ('www.google.com', ' W W W dot google dot com '),
-       ("https://www.google.de", ' H T T P S : / / W W W dot google dot D E '),
-       ('www.fundamt.gv.at.sw.nw', ' W W W dot fundamt dot G V dot A T dot S W dot N W '),
+        ('www.google.de', ' W W W dot google dot D E '),
+        ('www.google.com', ' W W W dot google dot com '),
+        ("https://www.google.de", ' H T T P S : / / W W W dot google dot D E '),
+        ('www.fundamt.gv.at.sw.nw', ' W W W dot fundamt dot G V dot A T dot S W dot N W '),
 
     ])
     def test_normalize_url(text: str, expected_result: str) -> None:
-       resulting_text: str = normalizer.normalize_simple(text)
-       assert isinstance(resulting_text, str)
-       assert resulting_text == expected_result
+        resulting_text: str = normalizer.normalize_simple(text)
+        assert isinstance(resulting_text, str)
+        assert resulting_text == expected_result
