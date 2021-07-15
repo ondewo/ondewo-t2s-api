@@ -88,7 +88,7 @@ class TestNormalization:
        ('text 30:50 text', ' text 30:50 text '),
        ('text 30:50:00 text', ' text 30:50:00 text '),
        ('text 25:40 text', ' text 25:40 text '),
-       ('text 23:40 text', ' text twenty three forty five text '),
+       ('text 23:40 text', ' text twenty three forty text '),
        ('text 1:40 text', ' text one forty text '),
        ('text 1:4 text', ' text 1:4 text '),
     ])

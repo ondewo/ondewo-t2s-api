@@ -16,14 +16,16 @@ class TextNormalizerEn(NormalizerInterface):
         text = re.sub(r"(\d)([a-zA-Z])", r"\1 \2", text, flags=re.I)
         text = re.sub(r"([a-zA-Z])(\d)", r"\1 \2", text, flags=re.I)
         text = re.sub(r"\d{4}-\d{2}-\d{2}", self._get_date, text, flags=re.I)
-        text = re.sub(r"(\d{1,2}):(\d{2}):(\d*)", self._get_time, text, flags=re.I)
+        text = re.sub(r"\b(\d{1,2}):(\d{2})(:\d*)?\b", self._get_time, text, flags=re.I)
         text = re.sub(r"([^ ]*w{3}).([^.]+).(.*)", self._get_url, text, flags=re.I)
         text = re.sub(r'((?:1[5-9]|20|21)\d\d)(\D)', self._get_year, text, flags=re.I)
         text = re.sub(r"([0-9]*)\.", self.__get_ordinal, text)
-        text = re.sub(r'(\D(\d{1,5})\D)', self._get_num_short, text, flags=re.I)
-        text = re.sub(r'(\D(\d{6,})\D)', self._get_num_long, text, flags=re.I)
+        text = re.sub(r'\b(?<!:)(\d{1,5})(?=[^:])\b', self._get_num_short, text, flags=re.I)
+        text = re.sub(r'(\b(\d{6,})\b)', self._get_num_long, text, flags=re.I)
+        text = re.sub('Mr.', 'Mister ', text)
+        text = re.sub('Mrs.', 'Misses ', text)
+        text = re.sub('Ms.', 'Miss ', text)
 
-        text = re.sub(r'Mr.', 'Mister ', text)
         text = re.sub(r'(\n+|\s+)', ' ', text)
         return text
 
@@ -41,6 +43,20 @@ class TextNormalizerEn(NormalizerInterface):
         if match:
             ans: str = n2w(match.group(1), ordinal=True, lang="en") + " of "
             return ans
+        else:
+            return ""
+
+    @staticmethod
+    def _get_time(match: re.Match) -> str:
+        if match:
+            s = match.groups()
+            if int(s[0]) > 24 or int(s[1]) >= 60:
+                st: str = " {}:{}{} ".format(s[0], s[1], s[2] if s[2] else "")
+            else:
+                st: str = " {} {} ".format(
+                    n2w(s[0], ordinal=False).replace("-", " ").replace(" and ", " "),
+                    n2w(s[1], ordinal=False).replace("-", " ").replace(" and ", " ").replace("zero", ""))
+            return st
         else:
             return ""
 
@@ -62,21 +78,12 @@ class TextNormalizerEn(NormalizerInterface):
             pre: str = " ".join([i for i in match.group(1).upper()])
             name: str = match.group(2)
             suf: str = match.group(3)
-
             if suf.lower().strip() not in ["org", "com", "net"]:
                 suf = " ".join([i for i in match.group(3).upper()]) + " "
 
             return " " + pre + " dot " + name + " dot " + suf.replace(" . ", " dot ")
         else:
             return ""
-
-    @staticmethod
-    def _get_time(match: re.Match) -> str:
-        s = match.group().split(":")
-        st: str = " {} {} ".format(
-            n2w(s[0], ordinal=False).replace("-", " ").replace(" and ", " "),
-            n2w(s[1], ordinal=False).replace("-", " ").replace(" and ", " ").replace("zero", ""))
-        return st
 
     @staticmethod
     def _get_num_short(match: re.Match) -> str:
@@ -88,7 +95,6 @@ class TextNormalizerEn(NormalizerInterface):
 
     @staticmethod
     def _get_num_long(match: re.Match) -> str:
-
         if match:
             return " " + " ".join([n2w(i, lang="en") for i in match.group(2)]) + " "
         else:
@@ -97,4 +103,4 @@ class TextNormalizerEn(NormalizerInterface):
 
 if __name__ == '__main__':
     norm = TextNormalizerEn()
-    print(norm.normalize_simple("2. December 2051"))
+    print(norm.normalize_simple("text 30:50:00 text"))
