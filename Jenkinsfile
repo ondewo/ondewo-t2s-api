@@ -36,7 +36,7 @@ pipeline {
         stage('Build and Test Server Images (uncythonized)') {
             agent { label 'gpu' }
             environment {
-                ssh_key_file = credentials('devops_ondewo_idrsa')
+                ssh_key_file = credentials('devops_ondewo')
                 TRITON_CONTAINER = "ondewo-t2s-triton-${UNIQUE_BUILD_ID}"
                 REST_CONTAINER = "${IMAGE_NAME_REST}-${UNIQUE_BUILD_ID}"
                 GRPC_CONTAINER = "${IMAGE_NAME_GRPC}-${UNIQUE_BUILD_ID}"
