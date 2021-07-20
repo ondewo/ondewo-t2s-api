@@ -1,32 +1,40 @@
 import re
-from datetime import date, time
 from num2words import num2words as n2w
-from typing import List, Dict
-
+from typing import Dict
 from normalization.normalizer_interface import NormalizerInterface
 
 
 class TextNormalizerEn(NormalizerInterface):
-    month_dict: Dict[int, str] = {1: 'Janauary', 2: 'February', 3: 'March', 4: 'April',
+    month_dict: Dict[int, str] = {1: 'January', 2: 'February', 3: 'March', 4: 'April',
                                   5: 'May', 6: 'June', 7: 'July', 8: 'August',
                                   9: 'September', 10: 'October', 11: 'November', 12: 'December'}
 
-    def normalize_simple(self, text: str) -> str:
+    digit_space_letter_rgx = re.compile(r"(\d)([a-zA-Z])", flags=re.I)
+    letter_space_digit_rxg = re.compile(r"([a-zA-Z])(\d)", flags=re.I)
+    date_rgx = re.compile(r"\d{4}-\d{2}-\d{2}", flags=re.I)
+    time_rgx = re.compile(r"\b(\d{1,2}):(\d{2})(:\d*)?\b", flags=re.I)
+    url_rgx = re.compile(r"([^ ]*w{3}).([^.]+).(.*)", flags=re.I)
+    year_rgx = re.compile(r'((?:1[5-9]|20|21)\d\d)(\D)', flags=re.I)
+    ord_num_rgx = re.compile(r"([0-9]*)\.", flags=re.I)
+    short_num_rgx = re.compile(r'\b(?<!:)(\d{1,5})(?=[^:])\b', flags=re.I)
+    long_num_rgx = re.compile(r'(\b(\d{6,})\b)', flags=re.I)
+    multi_space_rgx = re.compile(r'(\n+|\s+)', flags=re.I)
+
+    def t2s_pre_process_normalizer(self, text: str) -> str:
         text = " " + text + " "
-        text = re.sub(r"(\d)([a-zA-Z])", r"\1 \2", text, flags=re.I)
-        text = re.sub(r"([a-zA-Z])(\d)", r"\1 \2", text, flags=re.I)
-        text = re.sub(r"\d{4}-\d{2}-\d{2}", self._get_date, text, flags=re.I)
-        text = re.sub(r"\b(\d{1,2}):(\d{2})(:\d*)?\b", self._get_time, text, flags=re.I)
-        text = re.sub(r"([^ ]*w{3}).([^.]+).(.*)", self._get_url, text, flags=re.I)
-        text = re.sub(r'((?:1[5-9]|20|21)\d\d)(\D)', self._get_year, text, flags=re.I)
-        text = re.sub(r"([0-9]*)\.", self.__get_ordinal, text)
-        text = re.sub(r'\b(?<!:)(\d{1,5})(?=[^:])\b', self._get_num_short, text, flags=re.I)
-        text = re.sub(r'(\b(\d{6,})\b)', self._get_num_long, text, flags=re.I)
+        text = re.sub(self.digit_space_letter_rgx, r"\1 \2", text)
+        text = re.sub(self.letter_space_digit_rxg, r"\1 \2", text)
+        text = re.sub(self.date_rgx, self._get_date, text)
+        text = re.sub(self.time_rgx, self._get_time, text)
+        text = re.sub(self.url_rgx, self._get_url, text)
+        text = re.sub(self.year_rgx, self._get_year, text)
+        text = re.sub(self.ord_num_rgx, self.__get_ordinal, text)
+        text = re.sub(self.short_num_rgx, self._get_num_short, text)
+        text = re.sub(self.long_num_rgx, self._get_num_long, text)
         text = re.sub('Mr.', 'Mister ', text)
         text = re.sub('Mrs.', 'Misses ', text)
         text = re.sub('Ms.', 'Miss ', text)
-
-        text = re.sub(r'(\n+|\s+)', ' ', text)
+        text = re.sub(self.multi_space_rgx, ' ', text)
         return text
 
     @staticmethod
@@ -103,4 +111,4 @@ class TextNormalizerEn(NormalizerInterface):
 
 if __name__ == '__main__':
     norm = TextNormalizerEn()
-    print(norm.normalize_simple("text 30:50:00 text"))
+    print(norm.t2s_pre_process_normalizer("text 30:50:00 text"))

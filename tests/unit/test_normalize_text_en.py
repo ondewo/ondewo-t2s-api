@@ -1,13 +1,10 @@
 from datetime import time, date
-
 import pytest
-
 from normalization.text_preprocessing_en import TextNormalizerEn
-
 normalizer = TextNormalizerEn()
 
 
-class TestNormalization:
+class TestNormalizationEn:
 
     @staticmethod
     @pytest.mark.parametrize('time_to_normalize, expected_result', [
@@ -15,7 +12,7 @@ class TestNormalization:
         (str(time(15, 35, 45)), ' fifteen thirty five '),
         (str(time(15, 45)), ' fifteen forty five ')])
     def test_normalize_time(time_to_normalize: str, expected_result: str) -> None:
-        time_text = normalizer.normalize_simple(time_to_normalize)
+        time_text = normalizer.t2s_pre_process_normalizer(time_to_normalize)
         assert isinstance(time_text, str)
         assert time_text == expected_result
 
@@ -28,7 +25,7 @@ class TestNormalization:
         (str(date(day=10, month=12, year=2003)), ' tenth of December two thousand three ')
     ])
     def test_normalize_date(date_to_normalize: str, expected_result: str) -> None:
-        date_text = normalizer.normalize_simple(date_to_normalize)
+        date_text = normalizer.t2s_pre_process_normalizer(date_to_normalize)
         assert isinstance(date_text, str)
         assert date_text == expected_result
 
@@ -50,7 +47,7 @@ class TestNormalization:
         ('065789', ' zero six five seven eight nine ')
     ])
     def test_texturize_numbers(number: str, expected_result: str) -> None:
-        number_text = normalizer.normalize_simple(number)
+        number_text = normalizer.t2s_pre_process_normalizer(number)
         assert isinstance(number_text, str)
         assert number_text == expected_result
 
@@ -65,7 +62,7 @@ class TestNormalization:
         ('ggg 1456lkkkk', ' ggg one thousand four hundred fifty six lkkkk '),
     ])
     def test_normalize_numbers(number: str, expected_result: str) -> None:
-        number_text = normalizer.normalize_simple(number)
+        number_text = normalizer.t2s_pre_process_normalizer(number)
         assert isinstance(number_text, str)
         assert number_text == expected_result
 
@@ -76,7 +73,7 @@ class TestNormalization:
          ' What did you do on third of April nineteen eighty nine? ')
     ])
     def test_normalize_dates(date: str, expected_result: str) -> None:
-        normalized_text_with_dates: str = normalizer.normalize_simple(date)
+        normalized_text_with_dates: str = normalizer.t2s_pre_process_normalizer(date)
         assert isinstance(normalized_text_with_dates, str)
         assert normalized_text_with_dates == expected_result
 
@@ -92,7 +89,7 @@ class TestNormalization:
         ('text 1:4 text', ' text 1:4 text '),
     ])
     def test_normalize_times(time: str, expected_result: str) -> None:
-        normalized_text_with_time: str = normalizer.normalize_simple(time)
+        normalized_text_with_time: str = normalizer.t2s_pre_process_normalizer(time)
         assert isinstance(normalized_text_with_time, str)
         assert normalized_text_with_time == expected_result
 
@@ -105,6 +102,6 @@ class TestNormalization:
 
     ])
     def test_normalize_url(text: str, expected_result: str) -> None:
-        resulting_text: str = normalizer.normalize_simple(text)
+        resulting_text: str = normalizer.t2s_pre_process_normalizer(text)
         assert isinstance(resulting_text, str)
         assert resulting_text == expected_result
