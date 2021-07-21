@@ -102,7 +102,9 @@ class TestNormalization:
          'Ihre Sozialversicherungsnummer ist eins zwei drei vier und sie sind am fünfzehnten Januar '
          'neunzehnhundertachtundneunzig geboren. Richtig?'
          ),
-        ("Wie geht's dir???", "Wie geht's dir???")
+        ("Wie geht's dir???", "Wie geht's dir???"),
+        ('text 30:50:00 text', 'text dreißig : fünfzig : null text')
+
     ]
     )
     def test_normalize_and_split(text: str, expected_result: str) -> None:
