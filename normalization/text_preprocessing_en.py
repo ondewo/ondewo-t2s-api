@@ -13,10 +13,10 @@ class TextNormalizerEn(NormalizerInterface):
     letter_space_digit_rxg = re.compile(r"([a-zA-Z])(\d)", flags=re.I)
     date_rgx = re.compile(r"\d{4}-\d{2}-\d{2}", flags=re.I)
     time_rgx = re.compile(r"\b(\d{1,2}):(\d{2})(:\d*)?\b", flags=re.I)
-    url_rgx = re.compile(r"([^ ]*w{3}).([^.]+).(.*)", flags=re.I)
+    url_rgx = re.compile(r"\b([^ ]*w{3}).([^.]+).([^\s]*)", flags=re.I)
     year_rgx = re.compile(r'((?:1[5-9]|20|21)\d\d)(\D)', flags=re.I)
     ord_num_rgx = re.compile(r"([0-9]*)\.", flags=re.I)
-    short_num_rgx = re.compile(r'\b(?<!:)(\d{1,5})(?=[^:])\b', flags=re.I)
+    short_num_rgx = re.compile(r'\b(\d{1,5})\b', flags=re.I)
     long_num_rgx = re.compile(r'(\b(\d{6,})\b)', flags=re.I)
     multi_space_rgx = re.compile(r'(\n+|\s+)', flags=re.I)
 
@@ -111,4 +111,5 @@ class TextNormalizerEn(NormalizerInterface):
 
 if __name__ == '__main__':
     norm = TextNormalizerEn()
-    print(norm.t2s_pre_process_normalizer("text 30:50:00 text"))
+    print(norm.t2s_pre_process_normalizer(" bla blue 1. october 1999 bla blue"
+                                          " www.whatever.gov blii laboo 22:30 blaaa"))
