@@ -7,7 +7,7 @@ IMAGE_TAG_GRPC="${DOCKERREGISTRY}/${NAMESPACE}/ondewo-t2s-grpc-server:${RELEASE_
 IMAGE_TAG_REST_RELEASE="${DOCKERREGISTRY}/${NAMESPACE}/ondewo-t2s-rest-server-release:${RELEASE_VERSION}"
 IMAGE_TAG_GRPC_RELEASE="${DOCKERREGISTRY}/${NAMESPACE}/ondewo-t2s-grpc-server-release:${RELEASE_VERSION}"
 IMAGE_TAG_TESTS="ondewo-t2s-tests-image"
-IMAGE_TAG_TRITON="${DOCKERREGISTRY}/${NAMESPACE}/nvidia/tritonserver:20.09-py3"
+IMAGE_TAG_TRITON="${DOCKERREGISTRY}/nvidia/tritonserver:20.09-py3"
 IMAGE_TAG_CODE_CHECK="code_check_image"
 
 REST_CONTAINER="ondewo-t2s-rest-server"
