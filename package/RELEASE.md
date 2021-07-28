@@ -3,7 +3,7 @@
 ## Release ONDEWO T2S 1.5.1
 
 ### Bug fixes
-
+* [[OND232-189]](https://ondewo.atlassian.net/browse/OND232-189) Added preprocessing english normalizer.
 * [[OND232-187]](https://ondewo.atlassian.net/browse/OND232-187) Fixed bug that did not allow load glow-tts model without gpu.
 
 ## Release ONDEWO T2S 1.5.0
