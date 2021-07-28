@@ -9,15 +9,18 @@ class TextNormalizerEn(NormalizerInterface):
                                   5: 'May', 6: 'June', 7: 'July', 8: 'August',
                                   9: 'September', 10: 'October', 11: 'November', 12: 'December'}
 
+    char_mapping: Dict[str, str] = {r'\-': ' dash ', r'\/': ' slash ', r'\.': ' dot ',
+                                    r'\\': ' backslash ', r"\+": " plus "}
+
     digit_space_letter_rgx = re.compile(r"(\d)([a-zA-Z])", flags=re.I)
     letter_space_digit_rxg = re.compile(r"([a-zA-Z])(\d)", flags=re.I)
     date_rgx = re.compile(r"\d{4}-\d{2}-\d{2}", flags=re.I)
     time_rgx = re.compile(r"\b(\d{1,2}):(\d{2})(:\d*)?\b", flags=re.I)
-    url_rgx = re.compile(r"\b([^ ]*w{3}).([^.]+).([^\s]*)", flags=re.I)
+    url_rgx = re.compile(r"\b([^ ]*w{3}).([^.]+).([^\s/]*)", flags=re.I)
     year_rgx = re.compile(r'((?:1[5-9]|20|21)\d\d)(\D)', flags=re.I)
     ord_num_rgx = re.compile(r"([0-9]*)\.", flags=re.I)
     short_num_rgx = re.compile(r'\b(\d{1,5})\b', flags=re.I)
-    long_num_rgx = re.compile(r'(\b(\d{6,})\b)', flags=re.I)
+    long_num_rgx = re.compile(r'(\b(\d{2,})\b)', flags=re.I)
     multi_space_rgx = re.compile(r'(\n+|\s+)', flags=re.I)
 
     def t2s_pre_process_normalizer(self, text: str) -> str:
@@ -34,6 +37,8 @@ class TextNormalizerEn(NormalizerInterface):
         text = re.sub('Mr.', 'Mister ', text)
         text = re.sub('Mrs.', 'Misses ', text)
         text = re.sub('Ms.', 'Miss ', text)
+        for i in self.char_mapping:
+            text = re.sub(i, self.char_mapping[i], text)
         text = re.sub(self.multi_space_rgx, ' ', text)
         return text
 
@@ -83,21 +88,24 @@ class TextNormalizerEn(NormalizerInterface):
     @staticmethod
     def _get_url(match: re.Match) -> str:
         if match:
-            pre: str = " ".join([i for i in match.group(1).upper()])
+            prefix: str = " ".join([i for i in match.group(1)])
+            prefix = re.sub("h t t p s : / /", "", prefix)
             name: str = match.group(2)
-            suf: str = match.group(3)
-            if suf.lower().strip() not in ["org", "com", "net"]:
-                suf = " ".join([i for i in match.group(3).upper()]) + " "
+            suffix: str = match.group(3)
+            if suffix.lower().strip() not in ["org", "com", "net"]:
+                suffix = " ".join([i for i in match.group(3)]) + " "
 
-            return " " + pre + " dot " + name + " dot " + suf.replace(" . ", " dot ")
+            return " " + prefix + " dot " + name + " dot " + suffix.replace(" . ", " dot ")
         else:
             return ""
 
-    @staticmethod
-    def _get_num_short(match: re.Match) -> str:
+    def _get_num_short(self, match: re.Match) -> str:
         if match:
-            return " " + str(n2w(match.group(1), lang='en')).replace(" and ",
-                                                                     " ").replace(", ", " ").replace("-", " ") + " "
+            if match.groups()[0][0] != "0":
+                return " " + str(n2w(match.group(1), lang='en')).replace(
+                    " and ", " ").replace(", ", " ").replace("-", " ") + " "
+            else:
+                return str(match.group())
         else:
             return ''
 
@@ -111,5 +119,4 @@ class TextNormalizerEn(NormalizerInterface):
 
 if __name__ == '__main__':
     norm = TextNormalizerEn()
-    print(norm.t2s_pre_process_normalizer(" bla blue 1. october 1999 bla blue"
-                                          " www.whatever.gov blii laboo 22:30 blaaa"))
+    print(norm.t2s_pre_process_normalizer("text 123125600 text"))

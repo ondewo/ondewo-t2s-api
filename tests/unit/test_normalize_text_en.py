@@ -15,7 +15,8 @@ normalizer = TextNormalizerEn()
                              (str(date(day=3, month=7, year=1905)), ' third of July nineteen oh five '),
                              (str(date(day=28, month=2, year=1865)),
                               ' twenty eighth of February eighteen sixty five '),
-                             (str(date(day=10, month=12, year=2003)), ' tenth of December two thousand three '),
+                             (str(date(day=10, month=12, year=2003)),
+                              ' tenth of December two thousand three '),
                              ('1234', ' one thousand two hundred thirty four '),
                              ('12', ' twelve '),
                              ('13', ' thirteen '),
@@ -44,19 +45,31 @@ normalizer = TextNormalizerEn()
                              ('text 01:20 text', ' text one twenty text '),
                              ('text 01:20:00 text', ' text one twenty text '),
                              ('text 30:50 text', ' text thirty : fifty text '),
-                             ('text 30:50:00 text', ' text thirty : fifty : zero text '),
+                             ('text 30:50:00 text', ' text thirty : fifty : zero zero text '),
                              ('text 25:40 text', ' text twenty five : forty text '),
                              ('text 23:40 text', ' text twenty three forty text '),
                              ('text 1:40 text', ' text one forty text '),
                              ('text 1:4 text', ' text one : four text '),
-                             ('www.google.de', ' W W W dot google dot D E '),
-                             ('www.google.com', ' W W W dot google dot com '),
-                             ("https://www.google.de", ' H T T P S : / / W W W dot google dot D E '),
+                             ('text 00 text', ' text zero zero text '),
+                             ("my number is 0056789", " my number is zero zero five six seven eight nine "),
+                             ("my number is +3456789", " my number is plus three four five six "
+                                                       "seven eight nine "),
+                             ('my telephone is 677700113 text', ' my telephone is six seven seven '
+                                                                'seven zero zero one one three text '),
+                             ("text 001 002 003 302 text", " text zero zero one zero zero two zero zero "
+                                                           "three three hundred two text "),
+                             ('www.google.de', ' w w w dot google dot d e '),
+                             ('www.google.com', ' w w w dot google dot com '),
+                             ("https://www.google.de", ' w w w dot google dot d e '),
                              ('www.fundamt.gv.at.sw.nw',
-                              ' W W W dot fundamt dot G V dot A T dot S W dot N W '),
+                              ' w w w dot fundamt dot g v dot a t dot s w dot n w '),
+                             ("https://www.google.de/blaa-blue/text/whatever",
+                              ' w w w dot google dot d e slash blaa dash blue slash text slash whatever '),
+
                              (" bla blue 1. october 1999 bla blue www.whatever.gov blii laboo 22:30 blaaa ",
-                              " bla blue first of october nineteen ninety nine bla blue W W W dot whatever dot "
-                              "G O V blii laboo twenty two thirty blaaa ")
+                              " bla blue first of october nineteen ninety nine bla blue w w w dot whatever dot "
+                              "g o v blii laboo twenty two thirty blaaa ")
+
                          ])
 def test_t2s_normalizer(not_normalized_text: str, expected_result: str) -> None:
     resulting_text: str = normalizer.t2s_pre_process_normalizer(not_normalized_text)

@@ -39,6 +39,8 @@ class TestNormalization:
         ('100', ' hundert '),
         ('101', ' hunderteins '),
         ('111', ' hundertelf '),
+        ("001", " null null eins "),
+        ("021", " null zwei eins "),
         ('121', ' hunderteinundzwanzig '),
         ('065789', ' null sechs fünf sieben acht neun '),
     ])
@@ -55,6 +57,8 @@ class TestNormalization:
         ('ggg 167lkkkk', 'ggg hundertsiebenundsechzig lkkkk'),
         ('ggg 267lkkkk', 'ggg zweihundertsiebenundsechzig lkkkk'),
         ('ggg 999lkkkk', 'ggg neunhundertneunundneunzig lkkkk'),
+        ('ggg 00123654lkkkk', 'ggg null null eins zwei drei sechs fünf vier lkkkk'),
+
         ('ggg 1456lkkkk', 'ggg eins vier fünf sechs lkkkk'),
     ])
     def test_normalize_numbers(number: str, expected_result: str) -> None:
@@ -103,7 +107,7 @@ class TestNormalization:
          'neunzehnhundertachtundneunzig geboren. Richtig?'
          ),
         ("Wie geht's dir???", "Wie geht's dir???"),
-        ('text 30:50:00 text', 'text dreißig : fünfzig : null text')
+        ('text 30:50:00 text', 'text dreißig : fünfzig : null null text')
 
     ]
     )

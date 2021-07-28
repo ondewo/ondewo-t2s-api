@@ -12,6 +12,21 @@ class TextNormalizerDe(NormalizerInterface):
     pttrn_time = re.compile(r'(?:\s|\b|^)(([01][0-9]|[0-9]|2[0-3]):([0-5][0-9])(?:\s|\b|$)'
                             r'(?::[0-5][0-9](?:\s|\b|$))?)')
 
+    num_dict: Dict[int, str] = {0: 'null', 1: 'eins', 2: 'zwei', 3: 'drei', 4: 'vier', 5: 'fünf',
+                                6: 'sechs', 7: 'sieben',
+                                8: 'acht', 9: 'neun', 10: 'zehn', 11: 'elf', 12: 'zwölf', 20: 'zwanzig',
+                                30: 'dreißig',
+                                40: 'vierzig', 50: 'fünfzig', 60: 'sechzig', 70: 'siebzig', 80: 'achtzig',
+                                90: 'neunzig'}
+
+    char_mapping: Dict[str, str] = {'a': 'ah', 'b': 'beh', 'c': 'tsehe', 'd': 'deh', 'e': 'eh',
+                                    'f': 'eff', 'g': 'geh', 'h': 'ha', 'i': 'ii', 'j': 'yot', 'k': 'kah',
+                                    'l': 'ell', 'm': 'emm', 'n': 'enn', 'o': 'oh', 'p': 'peh', 'q': 'kuh',
+                                    'r': 'err', 's': 'ess', 't': 'teh', 'u': 'uh', 'v': 'fau', 'w': 'weh',
+                                    'x': 'iks', 'y': 'upsilon', 'z': 'tsett', 'ä': 'ah umlaut',
+                                    'ö': 'oh umlaut', 'ü': 'uh umlaut', 'ß': 'esstsett', '-': 'strich',
+                                    '/': 'schrägstrich', '.': 'punkt', }
+
     domain_str: str = r'(?:com|net|org|edu|gov|mil|aero|asia|biz|cat|coop|info|int|jobs|mobi|museum|name|' \
                       r'post|pro|tel|travel|xxx|ac|ad|ae|af|ag|ai|al|am|an|ao|aq|ar|as|at|au|aw|ax|az|ba|' \
                       r'bb|bd|be|bf|bg|bh|bi|bj|bm|bn|bo|br|bs|bt|bv|bw|by|bz|ca|cc|cd|cf|cg|ch|ci|ck|cl|' \
@@ -124,28 +139,23 @@ class TextNormalizerDe(NormalizerInterface):
     def textulize_tens(self, number: int) -> str:
         if number > 99 or number < 0:
             raise ValueError(f'Expected number between 0 and 99 got {number}')
-        num_dict: Dict[int, str] = {0: 'null', 1: 'eins', 2: 'zwei', 3: 'drei', 4: 'vier', 5: 'fünf',
-                                    6: 'sechs', 7: 'sieben',
-                                    8: 'acht', 9: 'neun', 10: 'zehn', 11: 'elf', 12: 'zwölf', 20: 'zwanzig',
-                                    30: 'dreißig',
-                                    40: 'vierzig', 50: 'fünfzig', 60: 'sechzig', 70: 'siebzig', 80: 'achtzig',
-                                    90: 'neunzig'}
 
-        num_text = num_dict.get(number)
+        num_text = self.num_dict.get(number)
+
         if num_text:
             return num_text
         num2: int = number % 10
         num1: int = number - num2
         if num1 == 10:
             if num2 == 7:
-                num_text = num_dict[num2][:-2] + 'zehn'
+                num_text = self.num_dict[num2][:-2] + 'zehn'
             else:
-                num_text = num_dict[num2] + 'zehn'
+                num_text = self.num_dict[num2] + 'zehn'
         else:
             if num2 != 1:
-                num_text = num_dict[num2] + 'und' + num_dict[num1]
+                num_text = self.num_dict[num2] + 'und' + self.num_dict[num1]
             else:
-                num_text = num_dict[num2][:-1] + 'und' + num_dict[num1]
+                num_text = self.num_dict[num2][:-1] + 'und' + self.num_dict[num1]
         return num_text
 
     def texturize_hundert(self, number: int) -> str:
@@ -194,15 +204,22 @@ class TextNormalizerDe(NormalizerInterface):
         Returns:
 
         """
+        texturized_number: str
+        if number[0] == "0":
+            texturized_number = number
+            for n in number:
+                texturized_number = texturized_number.replace(n, " " + self.num_dict[int(n)] + " ")
+            texturized_number = re.sub(r"\s+", " ", texturized_number)
 
-        if len(number) <= 2:
-            texturized_number: str = ' ' + self.textulize_tens(number=int(number)) + ' '
-        elif len(number) > 3:
-            texturized_number = ' '
-            for digit in number:
-                texturized_number += self.textulize_tens(number=int(digit)) + ' '
         else:
-            texturized_number = ' ' + self.texturize_hundert(int(number)) + ' '
+            if len(number) <= 2:
+                texturized_number = ' ' + self.textulize_tens(number=int(number)) + ' '
+            elif len(number) > 3:
+                texturized_number = ' '
+                for digit in number:
+                    texturized_number += self.textulize_tens(number=int(digit)) + ' '
+            else:
+                texturized_number = ' ' + self.texturize_hundert(int(number)) + ' '
 
         return texturized_number
 
@@ -236,7 +253,7 @@ class TextNormalizerDe(NormalizerInterface):
 
         Args:
             text:
-
+            ending:
         Returns:
 
         """
@@ -308,7 +325,8 @@ class TextNormalizerDe(NormalizerInterface):
             text = text.replace(year_str, year_txt)
         return text
 
-    def fix_plus(self, text: str) -> str:
+    @staticmethod
+    def fix_plus(text: str) -> str:
         text = text.strip()
         text = text.replace('+', ' plus ')
         return text
@@ -337,7 +355,8 @@ class TextNormalizerDe(NormalizerInterface):
         text = self.lower_case(text=text)
         return text
 
-    def lower_case(self, text: str) -> str:
+    @staticmethod
+    def lower_case(text: str) -> str:
         return text.lower()
 
     def normalize_urls(self, text: str) -> str:
@@ -365,13 +384,6 @@ class TextNormalizerDe(NormalizerInterface):
         Returns:
 
         """
-        char_mapping: Dict[str, str] = {'a': 'ah', 'b': 'beh', 'c': 'tsehe', 'd': 'deh', 'e': 'eh',
-                                        'f': 'eff', 'g': 'geh', 'h': 'ha', 'i': 'ii', 'j': 'yot', 'k': 'kah',
-                                        'l': 'ell', 'm': 'emm', 'n': 'enn', 'o': 'oh', 'p': 'peh', 'q': 'kuh',
-                                        'r': 'err', 's': 'ess', 't': 'teh', 'u': 'uh', 'v': 'fau', 'w': 'weh',
-                                        'x': 'iks', 'y': 'upsilon', 'z': 'tsett', 'ä': 'ah umlaut',
-                                        'ö': 'oh umlaut', 'ü': 'uh umlaut', 'ß': 'esstsett', '-': 'strich',
-                                        '/': 'schrägstrich', '.': 'punkt', }
 
         list_of_words: List[str] = ['com', 'net', 'org', 'gov', 'pro', 'edu', ]
 
@@ -382,7 +394,7 @@ class TextNormalizerDe(NormalizerInterface):
                 url_piece = url_pieces[ind]
             else:
                 url_piece = ' '.join(
-                    [(char_mapping.get(char.lower()) or char.lower()) for char in url_pieces[ind]])
+                    [(self.char_mapping.get(char.lower()) or char.lower()) for char in url_pieces[ind]])
             url_normalized += url_piece + ' '
 
         return url_normalized
