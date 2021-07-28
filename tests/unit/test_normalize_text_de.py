@@ -156,6 +156,12 @@ class TestNormalization:
          'punkt fundamt punkt geh fau punkt ah teh '),
         ('text www.google-test.de/index another text ',
          'text weh weh weh punkt google strich test punkt deh eh '
+         'schrägstrich index  another text '),
+        ('text https://www.google-test.de/index another text ',
+         'text weh weh weh punkt google strich test punkt deh eh '
+         'schrägstrich index  another text '),
+        ('text http://www.google-test.de/index another text ',
+         'text weh weh weh punkt google strich test punkt deh eh '
          'schrägstrich index  another text ')
     ])
     def test_normalize_urls(text: str, expected_result: str) -> None:

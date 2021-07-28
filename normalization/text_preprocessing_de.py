@@ -368,6 +368,8 @@ class TextNormalizerDe(NormalizerInterface):
         Returns:
 
         """
+        text = text.replace("https://", "")
+        text = text.replace("http://", "")
         urls: List[str] = self.pttrn_url.findall(text)
         for url in urls:
             normalized_url = self.normalize_url(url)
