@@ -106,6 +106,13 @@ class TestNormalization:
          'Ihre Sozialversicherungsnummer ist eins zwei drei vier und sie sind am fünfzehnten Januar '
          'neunzehnhundertachtundneunzig geboren. Richtig?'
          ),
+        ('text 001 text', 'text null null eins text'),
+        ('text 0001 text', 'text null null null eins text'),
+        ('text 00001 text', 'text null null null null eins text'),
+        ('text 02001 text', 'text null zwei null null eins text'),
+        ('text 00201 text', 'text null null zwei null eins text'),
+        ('meine telephonnummer ist 0677700113 text',
+         'meine telephonnummer ist null sechs sieben sieben sieben null null eins eins drei text'),
         ("Wie geht's dir???", "Wie geht's dir???"),
         ('text 30:50:00 text', 'text dreißig : fünfzig : null null text')
 
