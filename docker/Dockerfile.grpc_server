@@ -1,4 +1,6 @@
-FROM registry-dev.ondewo.com:5000/ubuntu:18.04 AS private_installer
+ARG DOCKERREGISTRY="registry-dev.ondewo.com:5000"
+ARG NAMESPACE="ondewo"
+FROM ${DOCKERREGISTRY}/${NAMESPACE}/ubuntu:18.04 AS private_installer
 ARG SSH_PRIVATE_KEY
 RUN mkdir /root/install
 WORKDIR /root/install
@@ -19,7 +21,7 @@ RUN apt update && apt install -y wget
 RUN wget https://github.com/fullstorydev/grpcurl/releases/download/v1.8.0/grpcurl_1.8.0_linux_x86_64.tar.gz && \
     tar -C /root -xzf grpcurl_1.8.0_linux_x86_64.tar.gz
 
-FROM registry-dev.ondewo.com:5000/base-cuda-pytorch:1.0.0 AS uncythonized
+FROM ${DOCKERREGISTRY}/${NAMESPACE}/base-cuda-pytorch:1.0.0 AS uncythonized
 
 RUN apt-get update && apt-get -y upgrade && \
 	apt-get install -y git sox ffmpeg libavcodec-extra libsndfile1-dev
@@ -58,7 +60,7 @@ CMD python -m grpc_server --host=0.0.0.0 --port=50555
 
 
 # ========Cythonization Image=======
-FROM registry-dev.ondewo.com:5000/ondewo-cythonize-tools-3.8 AS cython_builder
+FROM ${DOCKERREGISTRY}/${NAMESPACE}/ondewo-cythonize-tools-3.8 AS cython_builder
 
 COPY --from=uncythonized /opt/ondewo-t2s/grpc_server /tmp/transfer/to_cythonize/grpc_server
 COPY --from=uncythonized /opt/ondewo-t2s/inference /tmp/transfer/to_cythonize/inference

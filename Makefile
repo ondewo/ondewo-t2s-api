@@ -1,9 +1,13 @@
-IMAGE_TAG_REST="registry-dev.ondewo.com:5000/ondewo-t2s-rest-server:develop"
-IMAGE_TAG_GRPC="registry-dev.ondewo.com:5000/ondewo-t2s-grpc-server:develop"
-IMAGE_TAG_REST_RELEASE="registry-dev.ondewo.com:5000/ondewo-t2s-rest-server-release:develop"
-IMAGE_TAG_GRPC_RELEASE="registry-dev.ondewo.com:5000/ondewo-t2s-grpc-server-release:develop"
+DOCKERREGISTRY = "registry-dev.ondewo.com:5000"
+NAMESPACE = "ondewo"
+RELEASE_VERSION = "1.5.3"
+
+IMAGE_TAG_REST="${DOCKERREGISTRY}/${NAMESPACE}/ondewo-t2s-rest-server:${RELEASE_VERSION}"
+IMAGE_TAG_GRPC="${DOCKERREGISTRY}/${NAMESPACE}/ondewo-t2s-grpc-server:${RELEASE_VERSION}"
+IMAGE_TAG_REST_RELEASE="${DOCKERREGISTRY}/${NAMESPACE}/ondewo-t2s-rest-server-release:${RELEASE_VERSION}"
+IMAGE_TAG_GRPC_RELEASE="${DOCKERREGISTRY}/${NAMESPACE}/ondewo-t2s-grpc-server-release:${RELEASE_VERSION}"
 IMAGE_TAG_TESTS="ondewo-t2s-tests-image"
-IMAGE_TAG_TRITON="registry-dev.ondewo.com:5000/nvidia/tritonserver:20.09-py3"
+IMAGE_TAG_TRITON="${DOCKERREGISTRY}/nvidia/tritonserver:20.09-py3"
 IMAGE_TAG_CODE_CHECK="code_check_image"
 
 REST_CONTAINER="ondewo-t2s-rest-server"
@@ -191,3 +195,18 @@ generate_ondewo_protos:
 	done
 	python utils/fix_imports.py -sp ${PROTO_OUTPUT_FOLDER} # fix imports into subdirectory
 
+
+# to generate image of the server with models inside you need to specify arguments of the models and config paths
+# do not forget to check .dockerignore file most likely the model dir is there you need to comment it out or delete
+# the models dir should contain all the models (glow-tts and hifi) in separate dirs
+# make sure that config has correct paths of trained model pth file and json file of glow-tts config
+# same with hifi model
+# Example of the generation command:
+# make create_model_server_from_package RELEASE_VERSION=1.5.3 COMPANY=ondewo IMAGE_NAME=ondewo-t2s-model-german-kerstin\
+ MODEL_DIR=models/atos/models CONFIG_PATH=models/atos/config/config.yaml
+create_model_server_from_package:
+	docker build -t ${DOCKERREGISTRY}/${COMPANY}/${IMAGE_NAME}:${RELEASE_VERSION} \
+	--build-arg ONDEWO_T2S_SERVER=${IMAGE_TAG_GRPC_RELEASE} \
+	--build-arg MODEL_DIR=${MODEL_DIR} \
+   	--build-arg CONFIG_PATH=${CONFIG_PATH} \
+    -f docker/models_with_server_package.Dockerfile .

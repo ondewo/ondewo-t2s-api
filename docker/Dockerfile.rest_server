@@ -1,4 +1,6 @@
-FROM registry-dev.ondewo.com:5000/ubuntu:18.04 AS private_installer
+ARG DOCKERREGISTRY="registry-dev.ondewo.com:5000"
+ARG NAMESPACE="ondewo"
+FROM ${DOCKERREGISTRY}/${NAMESPACE}/ubuntu:18.04 AS private_installer
 ARG SSH_PRIVATE_KEY
 RUN mkdir /root/install
 WORKDIR /root/install
@@ -55,7 +57,7 @@ CMD flask run --host=0.0.0.0 --port=50550
 
 
 # ========Cythonization Image=======
-FROM registry-dev.ondewo.com:5000/ondewo-cythonize-tools-3.8 AS cython_builder
+FROM ${DOCKERREGISTRY}/${NAMESPACE}/ondewo-cythonize-tools-3.8 AS cython_builder
 
 COPY --from=uncythonized /opt/ondewo-t2s/rest_server /tmp/transfer/to_cythonize/rest_server
 COPY --from=uncythonized /opt/ondewo-t2s/grpc_server /tmp/transfer/to_cythonize/grpc_server
