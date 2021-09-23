@@ -2,15 +2,13 @@ import os
 from typing import List, Tuple, Optional, Union
 from uuid import uuid4
 
-from ondewo.logging.logger import logger_console as logger
 from ruamel import yaml
 
-from grpc_server.constants import CONFIG_DIR_ENV, CUSTOM_PHONEMIZER_SUBDIR
+from grpc_server.persistance_utils import get_config_dir
 from inference.inference_factory import InferenceFactory
 from inference.inference_interface import Inference
 from normalization.pipeline_constructor import NormalizerPipeline
 from normalization.postprocessor import Postprocessor
-from ondewo_grpc.ondewo.t2s import text_to_speech_pb2
 from utils.data_classes.config_dataclass import T2SConfigDataclass
 
 
@@ -58,24 +56,6 @@ def generate_config_path() -> str:
     config_dir = get_config_dir()
     config_file_name: str = f'config-{uuid4()}.yaml'
     return os.path.join(config_dir, config_file_name)
-
-
-def get_config_dir() -> str:
-    config_dir: Optional[str] = os.getenv(CONFIG_DIR_ENV)
-    if not config_dir:
-        error_message: str = "No CONFIG_DIR environmental variable found. " \
-                             "Please set the CONFIG_DIR variable."
-        logger.error(error_message)
-        raise EnvironmentError(error_message)
-    assert isinstance(config_dir, str)
-    return config_dir
-
-
-def get_or_create_custom_phonemizers_dir() -> str:
-    config_dir = get_config_dir()
-    phonemizer_dir: str = os.path.join(config_dir, CUSTOM_PHONEMIZER_SUBDIR)
-    os.makedirs(phonemizer_dir, exist_ok=True)
-    return phonemizer_dir
 
 
 def get_config_path_by_id(config_id: str) -> Optional[str]:

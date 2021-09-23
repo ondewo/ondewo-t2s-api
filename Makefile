@@ -54,7 +54,7 @@ run_triton:
 	-docker rm ${TRITON_CONTAINER}
 	docker run -d --shm-size=1g --gpus ${TRITON_GPUS} --ulimit memlock=-1 \
 		--ulimit stack=67108864 --network=${DOCKER_NETWORK} \
-		-v${MODEL_DIR}/triton_repo:/models \
+		-v ${MODEL_DIR}/triton_repo:/models \
 		--name ${TRITON_CONTAINER} ${IMAGE_TAG_TRITON} \
 	tritonserver --model-repository=/models --strict-model-config=false \
 		--log-verbose=1 --backend-config=tensorflow,version=2 \

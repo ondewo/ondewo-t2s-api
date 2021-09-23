@@ -17,6 +17,8 @@ class NormalizerPipeline:
         if config.custom_phonemizer_id:
             self.phonemizer_function: Optional[Callable[[str], str]] = \
                 CustomPhonemizerManager.get_phonemizer_lookup_replace_function(config.custom_phonemizer_id)
+            logger.info(f'The custom phonemizer function with id {config.custom_phonemizer_id} is downloaded '
+                        f'and will be used as a part of preprocessing step.')
         else:
             self.phonemizer_function = None
         self.normalizer: NormalizerInterface = self._get_normalizer(config=config)
@@ -57,7 +59,9 @@ class NormalizerPipeline:
             step = getattr(self.normalizer, name)
             text = step(text)
         if self.phonemizer_function:
+            logger.info(f'Applying custom phonemizer to "{text}".')
             text = self.phonemizer_function(text)
+            logger.info(f'Result of custom phonemezation is "{text}".')
         return text
 
     def get_pipeline_definition(self, config: NormalizationDataclass) -> List[str]:
