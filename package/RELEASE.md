@@ -1,5 +1,10 @@
 # Release History
 
+## Release ONDEWO T2S 1.5.4
+
+### Improvements
+* [[OND232-205]](https://ondewo.atlassian.net/browse/OND232-205) Improved lookup for custom phonemizer.
+
 ## Release ONDEWO T2S 1.5.1
 
 ### Bug fixes
