@@ -5,6 +5,7 @@ from uuid import uuid4
 
 from ondewo.logging.logger import logger_console as logger
 
+from grpc_server.persistance_utils import get_or_create_custom_phonemizers_dir
 from normalization.constants import CUSTOM_PHONEMIZER_PREFIX_PTTRN
 
 
@@ -15,7 +16,7 @@ class CustomPhonemizerManager:
     @classmethod
     def create_phonemizer(cls, phonemizer_dict: Optional[Dict[str, str]] = None, prefix: str = '') -> str:
         cmu_dict: Dict[str, str] = phonemizer_dict or {}
-        return cls._register_and_save(cmu_dict, prefix)
+        return cls._create_id_register_and_save(cmu_dict, prefix)
 
     @classmethod
     def load_phonemizer_from_path(cls, path: str) -> None:
@@ -32,7 +33,7 @@ class CustomPhonemizerManager:
             logger.warning(f"The file content of {path} has wrong typing. Expected Dict[str, str]."
                            f"This file will not be loaded.")
             return None
-        cls.manager[phonemizer_id] = dict_from_file
+        cls._register_and_save(cmu_dict=dict_from_file, phonemizer_id=phonemizer_id)
 
     @classmethod
     def get_phonemizer_lookup_replace_function(cls, phonemizer_id: str) -> Callable[[str], str]:
@@ -42,25 +43,32 @@ class CustomPhonemizerManager:
                 f'Id {phonemizer_id} does not exist. Existing ids are {list(cls.manager.keys())}')
 
         def look_up_replace(text: str) -> str:
-            words: List[str] = text.split()
             assert isinstance(phonemizer, dict)
-            phonemized_text: str = ' '.join([phonemizer.get(word) or word for word in words])
-            return phonemized_text
+            for key, value in phonemizer.items():
+                text = text.replace(key, value)
+            return text
 
         return look_up_replace
 
     @classmethod
-    def _register_and_save(cls, cmu_dict: Dict[str, str], prefix: str = '') -> str:
+    def _create_id_register_and_save(cls, cmu_dict: Dict[str, str], prefix: str = '') -> str:
         if not cls.validate_prefix(prefix=prefix):
             raise ValueError(f'Prefix of the phonemizer id should have only alphanumeric '
                              f'and underscore chars. Got {prefix}.')
         phonemizer_id: str = f'{(prefix + "_") * bool(prefix)}{uuid4()}'
+        cls._register_and_save(cmu_dict=cmu_dict, phonemizer_id=phonemizer_id)
+        return phonemizer_id
+
+    @classmethod
+    def _register_and_save(cls, cmu_dict: Dict[str, str], phonemizer_id: str) -> None:
+        # sort custom phonemizer dict by the length of word
+        cmu_dict = {k: v for k, v in sorted(cmu_dict.items(), key=lambda item: len(item[0]), reverse=True)}
+        cls.persistence_dir = get_or_create_custom_phonemizers_dir()
         persistence_path: str = f'{phonemizer_id}.json'
         cls.manager[phonemizer_id] = cmu_dict
         os.makedirs(cls.persistence_dir, exist_ok=True)
         with open(os.path.join(cls.persistence_dir, persistence_path), 'w') as f:
             json.dump(cmu_dict, f)
-        return phonemizer_id
 
     @classmethod
     def update_phonemizer(cls, phonemizer_id: str, new_dict: Dict[str, str]) -> Dict[str, str]:
