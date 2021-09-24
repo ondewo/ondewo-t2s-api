@@ -1,7 +1,7 @@
 fluent-logger==0.9.6
 git+https://github.com/wilsonchingg/logmmse.git
 msgpack
-numpy==1.20
+# numpy==1.20
 omegaconf
 ondewo-logging==1.6.1
 pydub==0.24.1
