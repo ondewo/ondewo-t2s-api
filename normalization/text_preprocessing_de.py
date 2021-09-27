@@ -45,7 +45,7 @@ class TextNormalizerDe(NormalizerInterface):
 
     pttrn_audible_char = re.compile(r'[a-zA-Z]')
 
-    date_regex: str = r'(\s*(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0[1-9])(?:(?:\.((?:19|20)\d{2}))|\s|\b|$)' \
+    date_regex: str = r'(\s*(3[01]|[12][0-9]|0?[1-9])[./](1[012]|0[1-9])(?:(?:[./]((?:19|20)\d{2}))|\s|\b|$)' \
                       r'|\s*(3[01]|[12][0-9]|0?[1-9])\.? ((?:[jJ]anuar|[jJ]änner|[fF]ebruar|[mM]ärz|' \
                       r'[aA]pril|[mM]ai|[jJ]uni|[jJ]uli|[aA]ugust|[sS]eptember|[oO]ktober|[nN]ovember|' \
                       r'[dD]ezember)|[01][0-9])\.?(?:((?: 19| 20)\d{2})|\s|\b|$))'
