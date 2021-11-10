@@ -72,7 +72,7 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
         start_time = time.perf_counter()
         # get model set for
         t2s_pipeline: Optional[Tuple[NormalizerPipeline, Inference, Postprocessor, T2SConfigDataclass]] = \
-            T2SPipelineManager.get_t2s_pipeline(request.t2s_pipeline_id)
+            T2SPipelineManager.get_t2s_pipeline(request.config.t2s_pipeline_id)
         if t2s_pipeline is None:
             raise ModuleNotFoundError(f'Model set with model id {request.t2s_pipeline_id} is not registered'
                                       f' in ModelManager. Available ids for model sets are '
@@ -82,10 +82,10 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
         # extract parameters from request
         text = request.text
         sample_rate: int = request.sample_rate or 22050
-        pcm: str = text_to_speech_pb2.SynthesizeRequest.Pcm.Name(request.pcm)
-        length_scale: Optional[float] = request.length_scale or None
-        noise_scale: Optional[float] = request.noise_scale or None
-        audio_format: str = text_to_speech_pb2.AudioFormat.Name(request.audio_format)
+        pcm: str = text_to_speech_pb2.RequestConfig.Pcm.Name(request.config.pcm)
+        length_scale: Optional[float] = request.config.length_scale or None
+        noise_scale: Optional[float] = request.config.noise_scale or None
+        audio_format: str = text_to_speech_pb2.AudioFormat.Name(request.config.audio_format)
 
         # handle case of ogg format
         if audio_format == 'ogg':
@@ -125,10 +125,8 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
             audio=audio_bytes,
             generation_time=generation_time,
             audio_length=audio_length,
-            t2s_pipeline_id=request.t2s_pipeline_id,
-            audio_format=request.audio_format,
             text=text,
-            sample_rate=sample_rate,
+            config=request.config,
         )
 
     @Timer()
