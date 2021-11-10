@@ -41,10 +41,8 @@ service Text2Speech {
 // SYNTHESIZE //
 ////////////////
 message SynthesizeRequest {
-    string t2s_pipeline_id = 1; // id of the model that will generate audio
-    string text = 2; // text for t2s
-    RequestConfig config = 3;
-
+    string text = 1; // text for t2s
+    RequestConfig config = 2;
 }
 
 message RequestConfig {
@@ -62,27 +60,25 @@ message RequestConfig {
         DOUBLE = 6;
     }
     Pcm pcm = 5; // pulse-code modulation of the wav file, by default 16
-    AudioFormat audio_format = 6;
-}
 
-enum AudioFormat {
-    wav = 0;
-    flac = 1;
-    caf = 2;
-    mp3 = 3;
-    aac = 4;
-    ogg = 5;
-    wma = 6;
+    enum AudioFormat {
+        wav = 0;
+        flac = 1;
+        caf = 2;
+        mp3 = 3;
+        aac = 4;
+        ogg = 5;
+        wma = 6;
+    }
+    AudioFormat audio_format = 6;
 }
 
 message SynthesizeResponse {
     bytes audio = 1; // generated wav file with the parameters described in request
     float generation_time = 2;
     float audio_length = 3;
-    string t2s_pipeline_id = 4;
-    AudioFormat audio_format = 5;
     string text = 6;
-    int32 sample_rate = 7;
+    RequestConfig config = 7;
 }
 
 ////////////////////////
@@ -98,7 +94,7 @@ message ListT2sPipelinesRequest {
 }
 
 message ListT2sPipelinesResponse {
-    repeated Temp pipelines = 1;
+    repeated Text2SpeechConfig pipelines = 1;
 }
 
 ////////////////////////
@@ -145,31 +141,14 @@ message T2sPipelineId {
 
 // configuration of text-to-speech models
 message Text2SpeechConfig {
-    // Pipeline unique id.
-    string pipeline_id = 1;
-
-    // Text to be synthesized.
-    string text = 2;
-
-    // Configuration of pipeline.
-    Temp config = 3;
-}
-
-message Temp {
-    // Configuration id.
     string id = 1;
-
-    // Pipeline description.
-    Description description = 2;
-
-    bool active = 3;
-
-    Inference inference = 4;
-
-    Normalization normalization = 5;
-
-    Postprocessing postprocessing = 6;
+    Description description = 3;
+    bool active = 4;
+    Inference inference = 5;
+    Normalization normalization = 6;
+    Postprocessing postprocessing = 7;
 }
+
 
 message Description {
     string language = 1;
