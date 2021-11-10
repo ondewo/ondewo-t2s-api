@@ -43,9 +43,15 @@ service Text2Speech {
 message SynthesizeRequest {
     string t2s_pipeline_id = 1; // id of the model that will generate audio
     string text = 2; // text for t2s
-    float length_scale = 3; // this parameter defines the speed of the audio. Should not be very much off 1.0
-    float noise_scale = 4; // can be from 0.0 to 1. Defines the noise in the generated audio
-    int32 sample_rate = 5; // by default 22050 sample rate of the generated wav file
+    RequestConfig config = 3;
+
+}
+
+message RequestConfig {
+    string t2s_pipeline_id = 1;
+    float length_scale = 2; // this parameter defines the speed of the audio. Should not be very much off 1.0
+    float noise_scale = 3; // can be from 0.0 to 1. Defines the noise in the generated audio
+    int32 sample_rate = 4; // by default 22050 sample rate of the generated wav file
     enum Pcm {
         PCM_16 = 0;
         PCM_24 = 1;
@@ -55,8 +61,8 @@ message SynthesizeRequest {
         FLOAT = 5;
         DOUBLE = 6;
     }
-    Pcm pcm = 6; // pulse-code modulation of the wav file, by default 16
-    AudioFormat audio_format = 7;
+    Pcm pcm = 5; // pulse-code modulation of the wav file, by default 16
+    AudioFormat audio_format = 6;
 }
 
 enum AudioFormat {
@@ -92,7 +98,7 @@ message ListT2sPipelinesRequest {
 }
 
 message ListT2sPipelinesResponse {
-    repeated Text2SpeechConfig pipelines = 1;
+    repeated Temp pipelines = 1;
 }
 
 ////////////////////////
@@ -139,11 +145,29 @@ message T2sPipelineId {
 
 // configuration of text-to-speech models
 message Text2SpeechConfig {
+    // Pipeline unique id.
+    string pipeline_id = 1;
+
+    // Text to be synthesized.
+    string text = 2;
+
+    // Configuration of pipeline.
+    Temp config = 3;
+}
+
+message Temp {
+    // Configuration id.
     string id = 1;
+
+    // Pipeline description.
     Description description = 2;
+
     bool active = 3;
+
     Inference inference = 4;
+
     Normalization normalization = 5;
+
     Postprocessing postprocessing = 6;
 }
 
@@ -172,7 +196,6 @@ message Text2Mel {
     GlowTTS glow_tts = 3;
     GlowTTSTriton glow_tts_triton = 4;
 }
-
 
 message GlowTTS {
     int64 batch_size = 1;
@@ -221,7 +244,6 @@ message MbMelganTriton {
     string triton_model_name = 3;
     string triton_url = 4;
 }
-
 
 message Caching {
     bool active = 1;
