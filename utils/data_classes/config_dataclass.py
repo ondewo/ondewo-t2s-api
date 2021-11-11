@@ -431,7 +431,6 @@ class DescriptionDataclass(object):
 @dataclass
 class T2SConfigDataclass(object):
     id: str
-    text: str
     description: DescriptionDataclass
     active: bool
     inference: InferenceDataclass
@@ -441,7 +440,6 @@ class T2SConfigDataclass(object):
     def to_proto(self) -> text_to_speech_pb2.Text2SpeechConfig:
         return text_to_speech_pb2.Text2SpeechConfig(
             id=self.id,
-            text=self.text,
             active=self.active,
             description=self.description.to_proto(),
             inference=self.inference.to_proto(),
@@ -453,7 +451,6 @@ class T2SConfigDataclass(object):
     def from_proto(cls, proto: text_to_speech_pb2.Text2SpeechConfig) -> 'T2SConfigDataclass':
         return cls(
             id=proto.id,
-            text=proto.text,
             active=proto.active,
             description=DescriptionDataclass.from_proto(proto=proto.description),
             inference=InferenceDataclass.from_proto(proto=proto.inference),
