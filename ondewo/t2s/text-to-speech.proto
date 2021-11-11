@@ -19,20 +19,30 @@ import "google/protobuf/empty.proto";
 
 // endpoints of t2s generate service
 service Text2Speech {
+
+    // Synthesizes an specific text sent in the request with the configuration requirements and retrieves a response
+    // that includes the synthesized text to audio and the configuration wanted.
     rpc Synthesize (SynthesizeRequest) returns (SynthesizeResponse) {
     };
+    // Retrieves the configuration of the specified pipeline.
     rpc GetT2sPipeline (T2sPipelineId) returns (Text2SpeechConfig) {
     };
+    // Creates a pipeline with the specified configuration and retrieves its id.
     rpc CreateT2sPipeline (Text2SpeechConfig) returns (T2sPipelineId) {
     };
+    // Deletes the specified pipeline.
     rpc DeleteT2sPipeline (T2sPipelineId) returns (google.protobuf.Empty) {
     };
+    // Update a specified pipeline with certain configuration.
     rpc UpdateT2sPipeline (Text2SpeechConfig) returns (google.protobuf.Empty) {
     };
+    // Retrieve the list of pipelines with an specific requirement.
     rpc ListT2sPipelines (ListT2sPipelinesRequest) returns (ListT2sPipelinesResponse) {
     };
+    // Retrieve the list of languages given a specific config request.
     rpc ListT2sLanguages (ListT2sLanguagesRequest) returns (ListT2sLanguagesResponse) {
     };
+    // Retrieve the list of domains given a specific config request.
     rpc ListT2sDomains (ListT2sDomainsRequest) returns (ListT2sDomainsResponse) {
     };
 }
@@ -40,17 +50,37 @@ service Text2Speech {
 ////////////////
 // SYNTHESIZE //
 ////////////////
+
+// Represents a Synthesize Request.
+// A Synthesize Request contains the information need to perform a text to speech conversion.
 message SynthesizeRequest {
-    string text = 1; // text for t2s
+    // Required. Represents the text that will be transformed to speech.
+    string text = 1;
+
+    // Required. Represents the specifications needed to do the text to speech transformation.
     RequestConfig config = 2;
 }
 
+// Represents a Configuration for the text to speech conversion.
 message RequestConfig {
+
+    // Required. Represents the pipeline id of the model configuration that will be used.
     string t2s_pipeline_id = 1;
-    float length_scale = 2; // this parameter defines the speed of the audio. Should not be very much off 1.0
+    // Optional. this parameter defines the speed of the audio. Should not be very much off 1.0
+    float length_scale = 2;
     float noise_scale = 3; // can be from 0.0 to 1. Defines the noise in the generated audio
     int32 sample_rate = 4; // by default 22050 sample rate of the generated wav file
-    enum Pcm {
+    oneof _Pcm {
+        Pcm pcm = 5;
+    }// pulse-code modulation of the wav file, by default 16
+    oneof _AudioFormat {
+        AudioFormat audio_format = 6;
+    }
+    bool use_cache = 7;
+
+}
+
+enum Pcm {
         PCM_16 = 0;
         PCM_24 = 1;
         PCM_32 = 2;
@@ -59,9 +89,8 @@ message RequestConfig {
         FLOAT = 5;
         DOUBLE = 6;
     }
-    Pcm pcm = 5; // pulse-code modulation of the wav file, by default 16
 
-    enum AudioFormat {
+enum AudioFormat {
         wav = 0;
         flac = 1;
         caf = 2;
@@ -70,8 +99,6 @@ message RequestConfig {
         ogg = 5;
         wma = 6;
     }
-    AudioFormat audio_format = 6;
-}
 
 message SynthesizeResponse {
     bytes audio = 1; // generated wav file with the parameters described in request
