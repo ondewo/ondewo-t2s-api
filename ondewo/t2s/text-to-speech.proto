@@ -54,6 +54,7 @@ service Text2Speech {
 // Represents a Synthesize Request.
 // A Synthesize Request contains the information need to perform a text to speech conversion.
 message SynthesizeRequest {
+
     // Required. Represents the text that will be transformed to speech.
     string text = 1;
 
@@ -66,20 +67,41 @@ message RequestConfig {
 
     // Required. Represents the pipeline id of the model configuration that will be used.
     string t2s_pipeline_id = 1;
-    // Optional. this parameter defines the speed of the audio. Should not be very much off 1.0
+
+    // Optional. This parameter is used for time stretching which is the process of
+    // changing the speed or duration of an audio.
+    // It should be much more than 1.0. O is not a valid number for this variable.
+    // The default value is 1.
     float length_scale = 2;
-    float noise_scale = 3; // can be from 0.0 to 1. Defines the noise in the generated audio
-    int32 sample_rate = 4; // by default 22050 sample rate of the generated wav file
+
+    // Optional. Defines the noise in the generated audio.
+    // It should be between 0.0 and 1.
+    // The default value is 0.0.
+    float noise_scale = 3;
+
+    // Optional. Defines the sample rate of the generated wav file.
+    // The default value is 22050.
+    int32 sample_rate = 4;
+
+    // Optional. Defines the pulse-code modulation of the wav file.
+    // The default value is PCM_16.
     oneof _Pcm {
         Pcm pcm = 5;
-    }// pulse-code modulation of the wav file, by default 16
+    }
+
+    // Optional. Defines the format of the desired audio.
+    // The default value is wav.
     oneof _AudioFormat {
         AudioFormat audio_format = 6;
     }
+
+    // Optional. Define if cache should be used or not.
+    // The default value is False.
     bool use_cache = 7;
 
 }
 
+// Represents a pulse-code modulation technique.
 enum Pcm {
         PCM_16 = 0;
         PCM_24 = 1;
@@ -90,6 +112,8 @@ enum Pcm {
         DOUBLE = 6;
     }
 
+// Represents an audio file format, which is a file format for storing
+// digital audio data on a computer system.
 enum AudioFormat {
         wav = 0;
         flac = 1;
@@ -100,27 +124,61 @@ enum AudioFormat {
         wma = 6;
     }
 
+// Represents a Synthesize Response.
+// A Synthesize Request contains the converted text to audio and the requested configuration.
 message SynthesizeResponse {
-    bytes audio = 1; // generated wav file with the parameters described in request
-    float generation_time = 2;
-    float audio_length = 3;
-    string text = 6;
-    RequestConfig config = 7;
+
+    // Required. Represents the pipeline id of the model configuration that will be used.
+    string audio_id = 1;
+
+    // Required. Generated file with the parameters described in request.
+    bytes audio = 2;
+
+    // Required. Time to generate audio.
+    float generation_time = 3;
+
+    // Required. Audio length.
+    float audio_length = 4;
+
+    // Required. Text from which audio was generated.
+    string text = 5;
+
+    // Required. Configuration from which audio was generated.
+    RequestConfig config = 6;
 }
 
 ////////////////////////
 // LIST T2S PIPELINES //
 ////////////////////////
 
+// Pipeline Request representation.
+// The request message for ListT2sPipelines.
+// Filter pipelines by attributed in request.
 message ListT2sPipelinesRequest {
+
+    // Optional. Define the language/ languages.
     repeated string languages = 1;
+
+    // Optional. Define the speaker sex.
     repeated string speaker_sexes = 2;
+
+    // Optional. Define the pipeline owner/ owners.
     repeated string pipeline_owners = 3;
+
+    // Optional. Define the speaker name/ names.
     repeated string speaker_names = 4;
+
+    // Optional. Define the domain/ domains.
     repeated string domains = 5;
 }
 
+// Pipeline Response representation.
+// The response message for ListT2sPipelines.
 message ListT2sPipelinesResponse {
+
+    // Required. Representation of a list of pipelines configurations.
+    // Retrieved by ListT2sPipelines, containing the configurations of
+    // pipelines with the specifications received in the ListT2sPipelinesRequest.
     repeated Text2SpeechConfig pipelines = 1;
 }
 
@@ -128,14 +186,32 @@ message ListT2sPipelinesResponse {
 // LIST T2S LANGUAGES //
 ////////////////////////
 
+
+// Language Request representation.
+// The request message for ListT2sLanguages.
+// Filter languages of pipelines by attributed in request.
 message ListT2sLanguagesRequest {
+
+    // Optional. Define the speaker sex.
     repeated string speaker_sexes = 1;
+
+    // Optional. Define the pipeline owner/ owners.
     repeated string pipeline_owners = 2;
+
+    // Optional. Define the speaker name/ names.
     repeated string speaker_names = 3;
+
+    // Optional. Define the domain/ domains.
     repeated string domains = 4;
 }
 
+
+// Language Response representation.
+// The response message for ListT2sLanguages.
 message ListT2sLanguagesResponse {
+
+    // Required. Define the language/ languages that satisfy/ies
+    // the specifications in the ListT2sLanguagesRequest.
     repeated string languages = 1;
 }
 
@@ -143,14 +219,31 @@ message ListT2sLanguagesResponse {
 // LIST T2S DOMAINS //
 //////////////////////
 
+
+// Domain Request representation.
+// The request message for ListT2sDomains.
+// Filter domains of pipelines by attributed in request.
 message ListT2sDomainsRequest {
+
+    // Optional. Define the speaker sex.
     repeated string speaker_sexes = 1;
+
+    // Optional. Define the pipeline owner/ owners.
     repeated string pipeline_owners = 2;
+
+    // Optional. Define the speaker name/ names.
     repeated string speaker_names = 3;
+
+    // Optional. Define the language/ languages.
     repeated string languages = 4;
 }
 
+// Domains Response representation.
+// The response message for ListT2sDomains.
 message ListT2sDomainsResponse {
+
+    // Required. Define the domain/ domains that satisfy/ies
+    // the specifications in the ListT2sDomainsRequest.
     repeated string domains = 1;
 }
 
@@ -158,21 +251,38 @@ message ListT2sDomainsResponse {
 // UPDATE T2S PIPELINE //
 /////////////////////////
 
+
+// Pipeline Id representation.
+// Used in the creation, deletion and getter of pipelines.
 message T2sPipelineId {
-    string id = 1; // id of the model that will generate audio
+
+    // Required. Defines the id of the pipeline.
+    string id = 1;
 }
 
 ///////////////////////////
 // Text-to-Speech Config //
 ///////////////////////////
 
-// configuration of text-to-speech models
+// Configuration of text-to-speech models representation.
 message Text2SpeechConfig {
+
+    // Required. Defines the id of the pipeline.
     string id = 1;
+
+    // Required. Defines the description of the pipeline representation.
     Description description = 3;
+
+    // Required. Defines if the pipeline is active or inactive.
     bool active = 4;
+
+    // Required. Defines he inference of the pipeline representation.
     Inference inference = 5;
+
+    // Required. Defines the normalization process of the pipeline representation.
     Normalization normalization = 6;
+
+    // Required. Defines the postprocessing process of the pipeline representation.
     Postprocessing postprocessing = 7;
 }
 
