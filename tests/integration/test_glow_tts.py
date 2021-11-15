@@ -21,7 +21,7 @@ class TestGlowTts:
     @staticmethod
     @pytest.mark.parametrize('test_config_path, texts_list', [
         (test_config_path_de, ['alles klar', 'noch ein text', 'und noch ein text']),
-        (test_config_path_en, ['hey, this is a test', 'this is another text', 'and one more text']),
+        (test_config_path_en, ['hey, this is a tests', 'this is another text', 'and one more text']),
         (test_config_path_triton, ['alles klar', 'noch ein text', 'und noch ein text']),
     ])
     @pytest.mark.parametrize("batch_size", [1, 2])

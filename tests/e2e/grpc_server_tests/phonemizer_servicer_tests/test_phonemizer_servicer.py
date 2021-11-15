@@ -15,7 +15,7 @@ from tests.e2e.grpc_server_tests.phonemizer_servicer_tests.operations import Ope
 def clean_configs_dir() -> Iterator[None]:
     yield
     for pth in Path("tests", "resources", "configs", "custom_phonemizers").iterdir():
-        if "test" not in pth.name and pth.is_file():
+        if "tests" not in pth.name and pth.is_file():
             pth.unlink()
 
 
@@ -24,12 +24,12 @@ class TestCustomPhonemizerServicer:
     @staticmethod
     def test_create_get_update_delete(clean_configs_dir: Iterator[None]) -> None:
         request: CreateCustomPhonemizerRequest = CreateCustomPhonemizerRequest(
-            prefix='test',
+            prefix='tests',
             maps=[Map(word='test_word', phoneme_groups='{T EH S T}')]
         )
         phonemizer_id_proto: custom_phonemizer_pb2.PhonemizerId = \
             OperationCreateCustomPhonemizer(request=request).execute_grpc()
-        assert 'test' in phonemizer_id_proto.id
+        assert 'tests' in phonemizer_id_proto.id
         response: custom_phonemizer_pb2.CustomPhonemizerProto = \
             OperationGetCustomPhonemizer(request=phonemizer_id_proto).execute_grpc()
         assert response.maps[0] == Map(word='test_word', phoneme_groups='{T EH S T}')

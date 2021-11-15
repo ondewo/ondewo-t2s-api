@@ -52,10 +52,12 @@ class TestGrpcServicerUnit:
             Text2SpeechServicer().handle_list_t2s_pipeline_ids_request(request=list_pipelines_request)
         assert len(response.pipelines) == 2
         for pipeline in response.pipelines:
+            config: text_to_speech_pb2.RequestConfig = text_to_speech_pb2.RequestConfig(
+                t2s_pipeline_id=pipeline.id,
+                audio_format=audio_format)
             request: text_to_speech_pb2.SynthesizeRequest = text_to_speech_pb2.SynthesizeRequest(
                 text='some text',
-                t2s_pipeline_id=pipeline.id,
-                audio_format=audio_format,
+                config=config
             )
             response_synthesize: text_to_speech_pb2.SynthesizeResponse = \
                 Text2SpeechServicer().handle_synthesize_request(request=request)
@@ -130,7 +132,6 @@ class TestGrpcServicerUnit:
             Text2SpeechServicer().handle_list_t2s_pipeline_ids_request(request=list_pipelines_request)
         assert len(response.pipelines) >= 1
         for pipeline in response.pipelines:
-
             # check if model is in the cache
             assert ModelCache.create_glow_tts_key(
                 config=GlowTTSDataclass.from_proto(

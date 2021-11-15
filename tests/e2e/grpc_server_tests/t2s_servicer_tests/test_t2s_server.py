@@ -68,10 +68,13 @@ class TestGRPC:
         response: text_to_speech_pb2.ListT2sPipelinesResponse = operation_list_ids.execute_grpc()
         assert len(response.pipelines) >= 1
         for pipeline in response.pipelines:
-            request: text_to_speech_pb2.SynthesizeRequest = text_to_speech_pb2.SynthesizeRequest(
-                text='some text',
+            config: text_to_speech_pb2.RequestConfig = text_to_speech_pb2.RequestConfig(
                 t2s_pipeline_id=pipeline.id,
                 audio_format=audio_format
+            )
+            request: text_to_speech_pb2.SynthesizeRequest = text_to_speech_pb2.SynthesizeRequest(
+                text='some text',
+                config=config
             )
             operation_synthesize: OperationSynthesize = OperationSynthesize(request=request)
             response_synthesize: text_to_speech_pb2.SynthesizeResponse = operation_synthesize.execute_grpc()

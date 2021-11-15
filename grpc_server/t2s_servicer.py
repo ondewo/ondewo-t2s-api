@@ -147,7 +147,8 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
             T2SPipelineManager.get_all_t2s_pipeline_descriptions()
         pipelines_persisted: List[T2SConfigDataclass] = get_all_pipelines_from_config_files()
         pipelines = list(set(pipelines_persisted + pipelines_registered))
-        pipelines = filter_pipelines(pipelines, languages=list(request.languages), domains=list(request.domains),
+        pipelines = filter_pipelines(pipelines, languages=list(request.languages),
+                                     domains=list(request.domains),
                                      speaker_sexes=list(request.speaker_sexes),
                                      speaker_names=list(request.speaker_names),
                                      pipeline_owners=list(request.pipeline_owners))
@@ -188,6 +189,7 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
     @Timer()
     def handle_get_t2s_pipeline_request(self, request: text_to_speech_pb2.T2sPipelineId
                                         ) -> text_to_speech_pb2.Text2SpeechConfig:
+        # what is the request doesnt have an id?
         t2s_pipeline_id: str = request.id
         config: Optional[T2SConfigDataclass] = get_config_by_id(config_id=t2s_pipeline_id)
         if config is None:
