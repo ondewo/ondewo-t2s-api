@@ -11,6 +11,7 @@ import soundfile as sf
 from ondewo.logging.decorators import Timer
 from ondewo.logging.logger import logger_console as logger
 from ruamel.yaml import YAML
+import uuid
 
 from grpc_server.t2s_pipeline_manager import T2SPipelineManager
 from grpc_server.pipeline_utils import create_t2s_pipeline_from_config, generate_config_path, \
@@ -77,16 +78,21 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
             raise ModuleNotFoundError(f'Model set with model id {request.t2s_pipeline_id} is not registered'
                                       f' in ModelManager. Available ids for model sets are '
                                       f'{T2SPipelineManager.get_all_t2s_pipeline_ids()}')
-        preprocess_pipeline, inference, postprocessor, _ = t2s_pipeline
+        preprocess_pipeline, inference, postprocessor, default_config = t2s_pipeline
 
         # extract parameters from request
         text = request.text
-        sample_rate: int = request.config.sample_rate or 22050
-        pcm: str = text_to_speech_pb2.Pcm.Name(request.config.pcm)
-        length_scale: Optional[float] = request.config.length_scale or None
-        noise_scale: Optional[float] = request.config.noise_scale or 0
+        # sample rate vs sampling rate. I should stay with one of them.
+        sample_rate: int = request.config.sample_rate or default_config.inference.caching.sampling_rate
+        pcm: str = text_to_speech_pb2.Pcm.Name(request.config.pcm) or text_to_speech_pb2.Pcm.PCM_16
+        text2mel_type = default_config.inference.composite_inference.text2mel.type
+        text2mel_model = getattr(default_config.inference.composite_inference.text2mel, text2mel_type)
+        # should length scale and noise scale be optional?
+        length_scale: Optional[float] = request.config.length_scale or text2mel_model.length_scale
+        noise_scale: Optional[float] = request.config.noise_scale or text2mel_model.noise_scale
+        # whats the default value of audio format?
         audio_format: str = text_to_speech_pb2.AudioFormat.Name(request.config.audio_format)
-        use_cache: bool = request.config.use_cache or False
+        use_cache: bool = request.config.use_cache or default_config.inference.caching.active
 
         # handle case of ogg format
         if audio_format == 'ogg':
@@ -100,7 +106,8 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
             audio_list: List[np.ndarray] = inference.synthesize(
                 texts=texts,
                 length_scale=length_scale,
-                noise_scale=noise_scale
+                noise_scale=noise_scale,
+                use_cache=use_cache,
             )
             audio: np.ndarray = postprocessor.postprocess(audio_list)
         else:
@@ -118,11 +125,12 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
             raise ValueError(f"Audio format {audio_format} is not supported. Supported formats are "
                              f"{['wav', 'flac', 'caf', 'ogg', 'mp3', 'aac', 'wma']}.")
         out.seek(0)
+        audio_id: str = str(uuid.uuid4())
         audio_bytes: bytes = out.read()
-
         generation_time = time.perf_counter() - start_time
         audio_length: float = len(audio) / sample_rate
         return text_to_speech_pb2.SynthesizeResponse(
+            audio_id=audio_id,
             audio=audio_bytes,
             generation_time=generation_time,
             audio_length=audio_length,

@@ -27,7 +27,12 @@ class CompositeInference(Inference):
             texts: List[str],
             length_scale: Optional[float] = None,
             noise_scale: Optional[float] = None,
+            use_cache: bool = False
     ) -> List[np.ndarray]:
+
+        if use_cache:
+            logger.error("Use_cache parameter can only be used in cached inference.")
+
         mel_spectrograms: List[np.ndarray] = self.text2mel.text2mel(
             texts=texts,
             length_scale=length_scale,
