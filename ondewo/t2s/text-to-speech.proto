@@ -24,6 +24,9 @@ service Text2Speech {
     // that includes the synthesized text to audio and the configuration wanted.
     rpc Synthesize (SynthesizeRequest) returns (SynthesizeResponse) {
     };
+    // will this safe time when doing batch predict on the AI model?
+    rpc BatchSynthesize (BatchSynthesizeRequest) returns (BatchSynthesizeResponse) {
+    };
     // Retrieves the configuration of the specified pipeline.
     rpc GetT2sPipeline (T2sPipelineId) returns (Text2SpeechConfig) {
     };
@@ -60,6 +63,20 @@ message SynthesizeRequest {
 
     // Required. Represents the specifications needed to do the text to speech transformation.
     RequestConfig config = 2;
+}
+
+message BatchSynthesizeRequest {
+
+    repeated string text = 1;
+
+    // Required. Represents the specifications needed to do the text to speech transformation.
+    repeated RequestConfig config = 2;
+}
+
+message BatchSynthesizeResponse {
+
+    repeated SynthesizeResponse response = 1;
+
 }
 
 // Represents a Configuration for the text to speech conversion.
@@ -129,7 +146,7 @@ enum AudioFormat {
 message SynthesizeResponse {
 
     // Required. Represents the pipeline id of the model configuration that will be used.
-    string audio_id = 1;
+    string audio_uuid = 1;
 
     // Required. Generated file with the parameters described in request.
     bytes audio = 2;
