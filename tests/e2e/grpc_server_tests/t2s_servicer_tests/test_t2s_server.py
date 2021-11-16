@@ -17,7 +17,7 @@ from tests.e2e.grpc_server_tests.t2s_servicer_tests.operations import OperationS
 def clean_configs_dir() -> Iterator[None]:
     yield
     for pth in Path("tests", "resources", "configs").iterdir():
-        if pth.name not in ("config.yaml", "config_en.yaml") and pth.is_file():
+        if pth.name not in ("config.yaml", "config_en.yaml", "custom_phonemizers") and pth.is_file():
             pth.unlink()
 
 

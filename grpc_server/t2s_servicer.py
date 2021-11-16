@@ -33,6 +33,10 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
                    context: grpc.ServicerContext) -> text_to_speech_pb2.SynthesizeResponse:
         return self.handle_synthesize_request(request)
 
+    def BatchSynthesize(self, request: text_to_speech_pb2.BatchSynthesizeRequest,
+                        context: grpc.ServicerContext) -> text_to_speech_pb2.BatchSynthesizeResponse:
+        return self.handle_batch_synthesize_request(request)
+
     def ListT2sPipelines(
             self, request: text_to_speech_pb2.ListT2sPipelinesRequest,
             context: grpc.ServicerContext,
@@ -130,13 +134,30 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
         generation_time = time.perf_counter() - start_time
         audio_length: float = len(audio) / sample_rate
         return text_to_speech_pb2.SynthesizeResponse(
-            audio_id=audio_id,
+            audio_uuid=audio_id,
             audio=audio_bytes,
             generation_time=generation_time,
             audio_length=audio_length,
             text=text,
             config=request.config,
         )
+
+    @Timer()
+    def handle_batch_synthesize_request(self, request: text_to_speech_pb2.BatchSynthesizeRequest
+                                        ) -> text_to_speech_pb2.BatchSynthesizeResponse:
+        if request.config is None:
+            raise ValueError("Specify configuration to synthesize.")
+        elif 1 < len(request.config) < len(request.text):
+            raise ValueError(
+                "Specify one configuration for all texts or configurations for each text to synthesize.")
+
+        if len(request.config) == 1:
+            configs = [request.config[0]] * len(request.text)
+        else:
+            configs = request.config
+        response = [self.handle_synthesize_request(text_to_speech_pb2.SynthesizeRequest(text=text, config=config))
+                    for text, config in zip(request.text, configs)]
+        return text_to_speech_pb2.BatchSynthesizeResponse(response=response)
 
     @Timer()
     def handle_list_t2s_pipeline_ids_request(
