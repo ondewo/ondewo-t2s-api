@@ -1,4 +1,4 @@
-id: glow_tts&hifi_gan-e976dd6c-2f41-484b-aec2-3e6868d37280
+id: glow_tts&hifi_gan-e976dd6c-2f41-484b-aec2-3e6868d37290
 description:
   language: de
   speaker_sex: female
@@ -14,7 +14,7 @@ inference:
       type: glow_tts
       glow_tts:
         batch_size: 5
-        use_gpu: true
+        use_gpu: false
         length_scale: 1.0
         noise_scale: 0.6669999957084656
         path: models/glow-tts/de/kerstin_blank.pth
@@ -37,7 +37,7 @@ inference:
         triton_model_name: mb_melgan
         triton_url: localhost:50511
       hifi_gan:
-        use_gpu: true
+        use_gpu: false
         batch_size: 20
         config_path: models/HiFiGan/universal/config.json
         model_path: models/HiFiGan/universal/g_02500000
@@ -63,7 +63,7 @@ normalization:
   - normalize_numbers
   - remove_unaudible_texts
   - lower_case
-  custom_phonemizer_id:
+  custom_phonemizer_id: ''
 postprocessing:
   silence_secs: 0.25
   pipeline: []
