@@ -146,6 +146,7 @@ pipeline {
                                             -v ${MODEL_DIR}:/opt/ondewo-t2s/models \
                                             -v ${CONFIG_DIR}:/opt/ondewo-t2s/config \
                                             --env CONFIG_FILE="config/config.yaml" \
+                                            --env CONFIG_DIR="config" \
                                             --env CUSTOM_PHOMENIZER_DIR="config/custom_phonemizers" \
                                             --name ${REST_CONTAINER} \
                                             ${PUSH_NAME_STREAM_REST}"""

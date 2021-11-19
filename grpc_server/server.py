@@ -7,9 +7,10 @@ from grpc_reflection.v1alpha import reflection
 from ondewo.logging.logger import logger_console as logger
 from ruamel.yaml import YAML
 
+from grpc_server.persistance_utils import get_or_create_custom_phonemizers_dir
 from grpc_server.phonemizer_servicer import CustomPhonemizerServicer
 from grpc_server.pipeline_utils import create_t2s_pipeline_from_config, \
-    get_or_create_custom_phonemizers_dir, get_list_of_json_files_paths, get_all_config_paths
+    get_list_of_json_files_paths, get_all_config_paths
 from grpc_server.t2s_pipeline_manager import T2SPipelineManager
 from grpc_server.t2s_servicer import Text2SpeechServicer
 from normalization.custom_phonemizer_manager import CustomPhonemizerManager

@@ -39,6 +39,8 @@ class TestNormalization:
         ('100', ' hundert '),
         ('101', ' hunderteins '),
         ('111', ' hundertelf '),
+        ("001", " null null eins "),
+        ("021", " null zwei eins "),
         ('121', ' hunderteinundzwanzig '),
         ('065789', ' null sechs fünf sieben acht neun '),
     ])
@@ -55,6 +57,8 @@ class TestNormalization:
         ('ggg 167lkkkk', 'ggg hundertsiebenundsechzig lkkkk'),
         ('ggg 267lkkkk', 'ggg zweihundertsiebenundsechzig lkkkk'),
         ('ggg 999lkkkk', 'ggg neunhundertneunundneunzig lkkkk'),
+        ('ggg 00123654lkkkk', 'ggg null null eins zwei drei sechs fünf vier lkkkk'),
+
         ('ggg 1456lkkkk', 'ggg eins vier fünf sechs lkkkk'),
     ])
     def test_normalize_numbers(number: str, expected_result: str) -> None:
@@ -102,7 +106,16 @@ class TestNormalization:
          'Ihre Sozialversicherungsnummer ist eins zwei drei vier und sie sind am fünfzehnten Januar '
          'neunzehnhundertachtundneunzig geboren. Richtig?'
          ),
-        ("Wie geht's dir???", "Wie geht's dir???")
+        ('text 001 text', 'text null null eins text'),
+        ('text 0001 text', 'text null null null eins text'),
+        ('text 00001 text', 'text null null null null eins text'),
+        ('text 02001 text', 'text null zwei null null eins text'),
+        ('text 00201 text', 'text null null zwei null eins text'),
+        ('meine telephonnummer ist 0677700113 text',
+         'meine telephonnummer ist null sechs sieben sieben sieben null null eins eins drei text'),
+        ("Wie geht's dir???", "Wie geht's dir???"),
+        ('text 30:50:00 text', 'text dreißig : fünfzig : null null text')
+
     ]
     )
     def test_normalize_and_split(text: str, expected_result: str) -> None:
@@ -143,6 +156,12 @@ class TestNormalization:
          'punkt fundamt punkt geh fau punkt ah teh '),
         ('text www.google-tests.de/index another text ',
          'text weh weh weh punkt google strich tests punkt deh eh '
+         'schrägstrich index  another text '),
+        ('text https://www.google-test.de/index another text ',
+         'text weh weh weh punkt google strich test punkt deh eh '
+         'schrägstrich index  another text '),
+        ('text http://www.google-test.de/index another text ',
+         'text weh weh weh punkt google strich test punkt deh eh '
          'schrägstrich index  another text ')
     ])
     def test_normalize_urls(text: str, expected_result: str) -> None:

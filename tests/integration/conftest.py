@@ -4,7 +4,8 @@ from typing import List, Dict, Any, Iterator
 import pytest
 from ruamel import yaml
 
-from grpc_server.pipeline_utils import create_t2s_pipeline_from_config, get_or_create_custom_phonemizers_dir, \
+from grpc_server.persistance_utils import get_or_create_custom_phonemizers_dir
+from grpc_server.pipeline_utils import create_t2s_pipeline_from_config, \
     get_list_of_json_files_paths, \
     get_all_config_paths
 from grpc_server.t2s_pipeline_manager import T2SPipelineManager

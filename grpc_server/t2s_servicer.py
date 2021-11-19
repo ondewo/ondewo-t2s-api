@@ -86,15 +86,12 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
 
         # extract parameters from request
         text = request.text
-        # sample rate vs sampling rate. I should stay with one of them.
-        sample_rate: int = request.config.sample_rate or default_config.inference.caching.sampling_rate
+        sample_rate: int = request.config.sample_rate or 22050
         pcm: str = text_to_speech_pb2.Pcm.Name(request.config.pcm) or text_to_speech_pb2.Pcm.PCM_16
         text2mel_type = default_config.inference.composite_inference.text2mel.type
         text2mel_model = getattr(default_config.inference.composite_inference.text2mel, text2mel_type)
-        # should length scale and noise scale be optional?
-        length_scale: Optional[float] = request.config.length_scale or text2mel_model.length_scale
-        noise_scale: Optional[float] = request.config.noise_scale or text2mel_model.noise_scale
-        # whats the default value of audio format?
+        length_scale: float = request.config.length_scale or text2mel_model.length_scale
+        noise_scale: float = request.config.noise_scale or text2mel_model.noise_scale
         audio_format: str = text_to_speech_pb2.AudioFormat.Name(request.config.audio_format)
         use_cache: bool = request.config.use_cache or default_config.inference.caching.active
 
@@ -210,7 +207,6 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
     @Timer()
     def handle_get_t2s_pipeline_request(self, request: text_to_speech_pb2.T2sPipelineId
                                         ) -> text_to_speech_pb2.Text2SpeechConfig:
-        # what is the request doesnt have an id?
         t2s_pipeline_id: str = request.id
         config: Optional[T2SConfigDataclass] = get_config_by_id(config_id=t2s_pipeline_id)
         if config is None:
