@@ -79,7 +79,7 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
         t2s_pipeline: Optional[Tuple[NormalizerPipeline, Inference, Postprocessor, T2SConfigDataclass]] = \
             T2SPipelineManager.get_t2s_pipeline(request.config.t2s_pipeline_id)
         if t2s_pipeline is None:
-            raise ModuleNotFoundError(f'Model set with model id {request.t2s_pipeline_id} is not registered'
+            raise ModuleNotFoundError(f'Model set with model id {request.config.t2s_pipeline_id} is not registered'
                                       f' in ModelManager. Available ids for model sets are '
                                       f'{T2SPipelineManager.get_all_t2s_pipeline_ids()}')
         preprocess_pipeline, inference, postprocessor, default_config = t2s_pipeline
