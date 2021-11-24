@@ -79,7 +79,7 @@ class TestGRPC:
             operation_synthesize: OperationSynthesize = OperationSynthesize(request=request)
             response_synthesize: text_to_speech_pb2.SynthesizeResponse = operation_synthesize.execute_grpc()
             assert response_synthesize.audio
-            assert response_synthesize.audio_id
+            assert response_synthesize.audio_uuid
             if audio_format in [text_to_speech_pb2.AudioFormat.wav,
                                 text_to_speech_pb2.AudioFormat.flac,
                                 text_to_speech_pb2.AudioFormat.caf,

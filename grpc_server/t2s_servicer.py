@@ -14,14 +14,12 @@ from ruamel.yaml import YAML
 import uuid
 
 from grpc_server.t2s_pipeline_manager import T2SPipelineManager
-from grpc_server.pipeline_utils import create_t2s_pipeline_from_config, generate_config_path, \
+from grpc_server.pipeline_utils import generate_config_path, \
     get_config_path_by_id, get_all_pipelines_from_config_files, get_config_by_id, filter_pipelines
-from inference.inference_interface import Inference
-from normalization.pipeline_constructor import NormalizerPipeline
-from normalization.postprocessor import Postprocessor
 from ondewo_grpc.ondewo.t2s import text_to_speech_pb2_grpc, text_to_speech_pb2
 from utils.audio_converter import convert_to_format
 from utils.data_classes.config_dataclass import T2SConfigDataclass
+from utils.t2sPipeline import T2SPipeline
 
 yaml = YAML()
 yaml.default_flow_style = False
@@ -71,46 +69,69 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
         self.handle_update_t2s_pipeline_request(request)
         return empty_pb2.Empty()
 
+    def _replace_default_values_request_config(
+            self,
+            request_config: text_to_speech_pb2.RequestConfig,
+            default_config: T2SConfigDataclass
+    ) -> text_to_speech_pb2.RequestConfig:
+
+        text2mel_type = default_config.inference.composite_inference.text2mel.type
+        text2mel_model = getattr(default_config.inference.composite_inference.text2mel, text2mel_type)
+
+        config_to_update = text_to_speech_pb2.RequestConfig(
+            t2s_pipeline_id=request_config.t2s_pipeline_id,
+            length_scale=text2mel_model.length_scale,
+            noise_scale=text2mel_model.noise_scale,
+            sample_rate=22050,
+            pcm=text_to_speech_pb2.Pcm.PCM_16,
+            audio_format=text_to_speech_pb2.AudioFormat.wav,
+            use_cache=False
+        )
+
+        # Substitute default fields with fields from request config.
+        config_to_update.MergeFrom(request_config)
+
+        return config_to_update
+
     @Timer(log_arguments=False)
     def handle_synthesize_request(self, request: text_to_speech_pb2.SynthesizeRequest
                                   ) -> text_to_speech_pb2.SynthesizeResponse:
         start_time = time.perf_counter()
-        # get model set for
-        t2s_pipeline: Optional[Tuple[NormalizerPipeline, Inference, Postprocessor, T2SConfigDataclass]] = \
-            T2SPipelineManager.get_t2s_pipeline(request.config.t2s_pipeline_id)
+
+        t2s_pipeline: Optional[T2SPipeline] = T2SPipelineManager.get_t2s_pipeline(
+            t2s_pipeline_id=request.config.t2s_pipeline_id
+        )
+
         if t2s_pipeline is None:
-            raise ModuleNotFoundError(f'Model set with model id {request.t2s_pipeline_id} is not registered'
+            raise ModuleNotFoundError(f'Model set with model id {request.config.t2s_pipeline_id} is not registered'
                                       f' in ModelManager. Available ids for model sets are '
                                       f'{T2SPipelineManager.get_all_t2s_pipeline_ids()}')
-        preprocess_pipeline, inference, postprocessor, default_config = t2s_pipeline
 
-        # extract parameters from request
+        resulting_config = self._replace_default_values_request_config(
+            request_config=request.config,
+            default_config=t2s_pipeline.t2s_config
+        )
+
         text = request.text
-        sample_rate: int = request.config.sample_rate or 22050
-        pcm: str = text_to_speech_pb2.Pcm.Name(request.config.pcm) or text_to_speech_pb2.Pcm.PCM_16
-        text2mel_type = default_config.inference.composite_inference.text2mel.type
-        text2mel_model = getattr(default_config.inference.composite_inference.text2mel, text2mel_type)
-        length_scale: float = request.config.length_scale or text2mel_model.length_scale
-        noise_scale: float = request.config.noise_scale or text2mel_model.noise_scale
-        audio_format: str = text_to_speech_pb2.AudioFormat.Name(request.config.audio_format)
-        use_cache: bool = request.config.use_cache or default_config.inference.caching.active
+        audio_format = text_to_speech_pb2.AudioFormat.Name(resulting_config.audio_format)
+        pcm = text_to_speech_pb2.Pcm.Name(resulting_config.pcm)
+        sample_rate = resulting_config.sample_rate
 
-        # handle case of ogg format
         if audio_format == 'ogg':
             pcm = 'VORBIS'
 
         if re.search(r'[A-Za-z0-9]+', text):
             logger.info(f'Text to transcribe: "{text}"')
-            texts: List[str] = preprocess_pipeline.apply(text)
+            texts: List[str] = t2s_pipeline.normalizer.apply(text)
             logger.info(f'After normalization texts are: {texts}')
 
-            audio_list: List[np.ndarray] = inference.synthesize(
+            audio_list: List[np.ndarray] = t2s_pipeline.inference.synthesize(
                 texts=texts,
-                length_scale=length_scale,
-                noise_scale=noise_scale,
-                use_cache=use_cache,
+                length_scale=resulting_config.length_scale,
+                noise_scale=resulting_config.noise_scale,
+                use_cache=resulting_config.use_cache,
             )
-            audio: np.ndarray = postprocessor.postprocess(audio_list)
+            audio: np.ndarray = t2s_pipeline.postprocessor.postprocess(audio_list=audio_list)
         else:
             logger.info(f'Text to synthesize should contain at least one letter or number. Got "{text}". '
                         f'Silence will be synthesized.')
@@ -121,40 +142,28 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
             sf.write(out, audio, samplerate=sample_rate, format=audio_format, subtype=pcm)
         elif audio_format in ['mp3', 'aac', 'wma']:
             sf.write(out, audio, samplerate=sample_rate, format='wav', subtype=pcm)
-            out = convert_to_format(out, audio_format=audio_format)
+            out = convert_to_format(out, audio_format='wav')
         else:
             raise ValueError(f"Audio format {audio_format} is not supported. Supported formats are "
                              f"{['wav', 'flac', 'caf', 'ogg', 'mp3', 'aac', 'wma']}.")
         out.seek(0)
-        audio_id: str = str(uuid.uuid4())
-        audio_bytes: bytes = out.read()
-        generation_time = time.perf_counter() - start_time
-        audio_length: float = len(audio) / sample_rate
+
         return text_to_speech_pb2.SynthesizeResponse(
-            audio_uuid=audio_id,
-            audio=audio_bytes,
-            generation_time=generation_time,
-            audio_length=audio_length,
+            audio_uuid=str(uuid.uuid4()),
+            audio=out.read(),
+            generation_time=time.perf_counter() - start_time,
+            audio_length=len(audio) / sample_rate,
             text=text,
-            config=request.config,
+            config=resulting_config,
         )
 
     @Timer()
     def handle_batch_synthesize_request(self, request: text_to_speech_pb2.BatchSynthesizeRequest
                                         ) -> text_to_speech_pb2.BatchSynthesizeResponse:
-        if request.config is None:
-            raise ValueError("Specify configuration to synthesize.")
-        elif 1 < len(request.config) < len(request.text):
-            raise ValueError(
-                "Specify one configuration for all texts or configurations for each text to synthesize.")
-
-        if len(request.config) == 1:
-            configs = [request.config[0]] * len(request.text)
-        else:
-            configs = request.config
-        response = [self.handle_synthesize_request(text_to_speech_pb2.SynthesizeRequest(text=text, config=config))
-                    for text, config in zip(request.text, configs)]
-        return text_to_speech_pb2.BatchSynthesizeResponse(response=response)
+        # What should I validate?
+        batch_response = [self.handle_synthesize_request(
+            single_request) for single_request in request.batch_request]
+        return text_to_speech_pb2.BatchSynthesizeResponse(batch_response=batch_response)
 
     @Timer()
     def handle_list_t2s_pipeline_ids_request(
@@ -165,11 +174,13 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
             T2SPipelineManager.get_all_t2s_pipeline_descriptions()
         pipelines_persisted: List[T2SConfigDataclass] = get_all_pipelines_from_config_files()
         pipelines = list(set(pipelines_persisted + pipelines_registered))
-        pipelines = filter_pipelines(pipelines, languages=list(request.languages),
+        pipelines = filter_pipelines(pipelines,
+                                     languages=list(request.languages),
                                      domains=list(request.domains),
                                      speaker_sexes=list(request.speaker_sexes),
                                      speaker_names=list(request.speaker_names),
-                                     pipeline_owners=list(request.pipeline_owners))
+                                     pipeline_owners=list(request.pipeline_owners)
+                                     )
         return text_to_speech_pb2.ListT2sPipelinesResponse(
             pipelines=[pipeline.to_proto() for pipeline in pipelines]
         )
@@ -181,10 +192,13 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
         logger.info(f"List languages request {request} received.")
         pipelines: List[T2SConfigDataclass] = \
             T2SPipelineManager.get_all_t2s_pipeline_descriptions()
-        pipelines = filter_pipelines(pipelines, domains=list(request.domains),
+        pipelines = filter_pipelines(pipelines,
+                                     domains=list(request.domains),
                                      pipeline_owners=list(request.pipeline_owners),
-                                     languages=[], speaker_names=list(request.speaker_names),
-                                     speaker_sexes=list(request.speaker_sexes))
+                                     languages=[],
+                                     speaker_names=list(request.speaker_names),
+                                     speaker_sexes=list(request.speaker_sexes)
+                                     )
         return text_to_speech_pb2.ListT2sLanguagesResponse(
             languages=list(set([pipeline.description.language for pipeline in pipelines]))
         )
@@ -196,10 +210,13 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
         logger.info(f"List domains request {request} received.")
         pipelines: List[T2SConfigDataclass] = \
             T2SPipelineManager.get_all_t2s_pipeline_descriptions()
-        pipelines = filter_pipelines(pipelines, languages=list(request.languages),
+        pipelines = filter_pipelines(pipelines,
+                                     languages=list(request.languages),
                                      pipeline_owners=list(request.pipeline_owners),
-                                     domains=[], speaker_sexes=list(request.speaker_sexes),
-                                     speaker_names=list(request.speaker_names))
+                                     domains=[],
+                                     speaker_sexes=list(request.speaker_sexes),
+                                     speaker_names=list(request.speaker_names)
+                                     )
         return text_to_speech_pb2.ListT2sDomainsResponse(
             domains=list(set([pipeline.description.domain for pipeline in pipelines]))
         )
@@ -218,10 +235,11 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
             self,
             request: text_to_speech_pb2.Text2SpeechConfig) -> text_to_speech_pb2.T2sPipelineId:
         config: T2SConfigDataclass = T2SConfigDataclass.from_proto(proto=request)
-        preprocess_pipeline, inference, postprocessor, config = create_t2s_pipeline_from_config(config)
+        t2s_pipeline: T2SPipeline = T2SPipeline.create_t2s_pipeline_from_config(config)
+        config = t2s_pipeline.t2s_config
         T2SPipelineManager.register_t2s_pipeline(
             t2s_pipeline_id=config.id,
-            t2s_pipeline=(preprocess_pipeline, inference, postprocessor, config)
+            t2s_pipeline=t2s_pipeline
         )
         t2s_pipeline_id: str = config.id
 
@@ -260,10 +278,11 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
 
         # update pipeline in the manager
         if config.active:
-            preprocess_pipeline, inference, postprocessor, config = create_t2s_pipeline_from_config(config)
+            t2s_pipeline = T2SPipeline.create_t2s_pipeline_from_config(config)
+            config = t2s_pipeline.t2s_config
             T2SPipelineManager.register_t2s_pipeline(
                 t2s_pipeline_id=config.id,
-                t2s_pipeline=(preprocess_pipeline, inference, postprocessor, config)
+                t2s_pipeline=t2s_pipeline
             )
         else:
             T2SPipelineManager.del_t2s_pipeline(t2s_pipeline_id=config.id)

@@ -5,13 +5,13 @@ import pytest
 from ruamel import yaml
 
 from grpc_server.persistance_utils import get_or_create_custom_phonemizers_dir
-from grpc_server.pipeline_utils import create_t2s_pipeline_from_config, \
-    get_list_of_json_files_paths, \
+from grpc_server.pipeline_utils import get_list_of_json_files_paths, \
     get_all_config_paths
 from grpc_server.t2s_pipeline_manager import T2SPipelineManager
 from normalization.custom_phonemizer_manager import CustomPhonemizerManager
 from utils.data_classes.config_dataclass import T2SConfigDataclass
 from utils.models_cache import ModelCache
+from utils.t2sPipeline import T2SPipeline
 
 
 @pytest.fixture(scope='function')
@@ -34,7 +34,8 @@ def create_pipelines() -> Iterator[None]:
             config = T2SConfigDataclass.from_dict(config_dict)  # type: ignore
         if not config.active:
             continue
-        preprocess_pipeline, inference, postprocessor, config = create_t2s_pipeline_from_config(config)
+        t2s_pipeline = T2SPipeline.create_t2s_pipeline_from_config(config)
+        config = t2s_pipeline.t2s_config
 
         assert ModelCache.create_glow_tts_key(
             config=config.inference.composite_inference.text2mel.glow_tts
@@ -45,7 +46,8 @@ def create_pipelines() -> Iterator[None]:
 
         T2SPipelineManager.register_t2s_pipeline(
             t2s_pipeline_id=config.id,
-            t2s_pipeline=(preprocess_pipeline, inference, postprocessor, config))
+            t2s_pipeline=t2s_pipeline
+        )
         ids.append(config.id)
     yield None
     for id_ in ids:
