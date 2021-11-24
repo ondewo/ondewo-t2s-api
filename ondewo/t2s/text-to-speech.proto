@@ -67,16 +67,12 @@ message SynthesizeRequest {
 
 message BatchSynthesizeRequest {
 
-    repeated string text = 1;
-
-    // Required. Represents the specifications needed to do the text to speech transformation.
-    repeated RequestConfig config = 2;
+    repeated SynthesizeRequest batch_request = 1;
 }
 
 message BatchSynthesizeResponse {
 
-    repeated SynthesizeResponse response = 1;
-
+    repeated SynthesizeResponse batch_response = 1;
 }
 
 // Represents a Configuration for the text to speech conversion.
