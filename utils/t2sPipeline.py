@@ -8,6 +8,7 @@ from utils.data_classes.config_dataclass import T2SConfigDataclass
 
 
 class T2SPipeline:
+
     def __init__(
             self,
             normalizer: NormalizerPipeline,
