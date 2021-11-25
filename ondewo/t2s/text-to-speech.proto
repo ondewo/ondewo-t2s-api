@@ -85,16 +85,22 @@ message RequestConfig {
     // changing the speed or duration of an audio.
     // It should be much more than 1.0. O is not a valid number for this variable.
     // The default value is 1.
-    float length_scale = 2;
+    oneof _length_scale {
+        float length_scale = 2;
+    }
+
 
     // Optional. Defines the noise in the generated audio.
     // It should be between 0.0 and 1.
-    // The default value is 0.0.
-    float noise_scale = 3;
+    // The default value is 0.0
+    optional float noise_scale = 3;
+
 
     // Optional. Defines the sample rate of the generated wav file.
     // The default value is 22050.
-    int32 sample_rate = 4;
+    oneof optional_sample_rate {
+        int32 sample_rate = 4;
+    }
 
     // Optional. Defines the pulse-code modulation of the wav file.
     // The default value is PCM_16.
@@ -110,9 +116,11 @@ message RequestConfig {
 
     // Optional. Define if cache should be used or not.
     // The default value is False.
-    bool use_cache = 7;
-
+    oneof optional_use_cache {
+        bool use_cache = 7;
+    }
 }
+
 
 // Represents a pulse-code modulation technique.
 enum Pcm {
@@ -158,6 +166,15 @@ message SynthesizeResponse {
 
     // Required. Configuration from which audio was generated.
     RequestConfig config = 6;
+}
+
+
+//////////////////////
+// GET SERVICE INFO //
+//////////////////////
+
+message GetServiceInfoResponse {
+  string version = 1;
 }
 
 ////////////////////////
