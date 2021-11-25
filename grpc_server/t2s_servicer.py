@@ -139,7 +139,7 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
             sf.write(out, audio, samplerate=sample_rate, format=audio_format, subtype=pcm)
         elif audio_format in ['mp3', 'aac', 'wma']:
             sf.write(out, audio, samplerate=sample_rate, format='wav', subtype=pcm)
-            out = convert_to_format(out, audio_format='wav')
+            out = convert_to_format(out, audio_format=audio_format)
         else:
             raise ValueError(f"Audio format {audio_format} is not supported. Supported formats are "
                              f"{['wav', 'flac', 'caf', 'ogg', 'mp3', 'aac', 'wma']}.")

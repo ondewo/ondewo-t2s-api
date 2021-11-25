@@ -154,8 +154,8 @@ class TestNormalization:
         ('text www.google.de another text www.fundamt.gv.at',
          'text weh weh weh punkt google punkt deh eh  another text weh weh weh '
          'punkt fundamt punkt geh fau punkt ah teh '),
-        ('text www.google-tests.de/index another text ',
-         'text weh weh weh punkt google strich tests punkt deh eh '
+        ('text www.google-test.de/index another text ',
+         'text weh weh weh punkt google strich test punkt deh eh '
          'schrägstrich index  another text '),
         ('text https://www.google-test.de/index another text ',
          'text weh weh weh punkt google strich test punkt deh eh '

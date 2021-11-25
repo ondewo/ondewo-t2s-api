@@ -18,7 +18,7 @@ class TestCustomPhonemizerServicer:
         )
         phonemizer_id_proto: custom_phonemizer_pb2.PhonemizerId = \
             CustomPhonemizerServicer.handle_create_custom_phonemizer(request=request)
-        assert 'tests' in phonemizer_id_proto.id
+        assert 'test' in phonemizer_id_proto.id
         response: custom_phonemizer_pb2.CustomPhonemizerProto = \
             CustomPhonemizerServicer.handle_get_custom_phonemizer(request=phonemizer_id_proto)
         assert response.maps[0] == Map(word='test_word', phoneme_groups='{T EH S T}')
