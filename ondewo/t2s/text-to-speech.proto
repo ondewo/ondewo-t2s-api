@@ -19,20 +19,33 @@ import "google/protobuf/empty.proto";
 
 // endpoints of t2s generate service
 service Text2Speech {
+
+    // Synthesizes an specific text sent in the request with the configuration requirements and retrieves a response
+    // that includes the synthesized text to audio and the configuration wanted.
     rpc Synthesize (SynthesizeRequest) returns (SynthesizeResponse) {
     };
+    // will this safe time when doing batch predict on the AI model?
+    rpc BatchSynthesize (BatchSynthesizeRequest) returns (BatchSynthesizeResponse) {
+    };
+    // Retrieves the configuration of the specified pipeline.
     rpc GetT2sPipeline (T2sPipelineId) returns (Text2SpeechConfig) {
     };
+    // Creates a pipeline with the specified configuration and retrieves its id.
     rpc CreateT2sPipeline (Text2SpeechConfig) returns (T2sPipelineId) {
     };
+    // Deletes the specified pipeline.
     rpc DeleteT2sPipeline (T2sPipelineId) returns (google.protobuf.Empty) {
     };
+    // Update a specified pipeline with certain configuration.
     rpc UpdateT2sPipeline (Text2SpeechConfig) returns (google.protobuf.Empty) {
     };
+    // Retrieve the list of pipelines with an specific requirement.
     rpc ListT2sPipelines (ListT2sPipelinesRequest) returns (ListT2sPipelinesResponse) {
     };
+    // Retrieve the list of languages given a specific config request.
     rpc ListT2sLanguages (ListT2sLanguagesRequest) returns (ListT2sLanguagesResponse) {
     };
+    // Retrieve the list of domains given a specific config request.
     rpc ListT2sDomains (ListT2sDomainsRequest) returns (ListT2sDomainsResponse) {
     };
 }
@@ -40,13 +53,79 @@ service Text2Speech {
 ////////////////
 // SYNTHESIZE //
 ////////////////
+
+// Represents a Synthesize Request.
+// A Synthesize Request contains the information need to perform a text to speech conversion.
 message SynthesizeRequest {
-    string t2s_pipeline_id = 1; // id of the model that will generate audio
-    string text = 2; // text for t2s
-    float length_scale = 3; // this parameter defines the speed of the audio. Should not be very much off 1.0
-    float noise_scale = 4; // can be from 0.0 to 1. Defines the noise in the generated audio
-    int32 sample_rate = 5; // by default 22050 sample rate of the generated wav file
-    enum Pcm {
+
+    // Required. Represents the text that will be transformed to speech.
+    string text = 1;
+
+    // Required. Represents the specifications needed to do the text to speech transformation.
+    RequestConfig config = 2;
+}
+
+message BatchSynthesizeRequest {
+
+    repeated SynthesizeRequest batch_request = 1;
+}
+
+message BatchSynthesizeResponse {
+
+    repeated SynthesizeResponse batch_response = 1;
+}
+
+// Represents a Configuration for the text to speech conversion.
+message RequestConfig {
+
+    // Required. Represents the pipeline id of the model configuration that will be used.
+    string t2s_pipeline_id = 1;
+
+    // Optional. This parameter is used for time stretching which is the process of
+    // changing the speed or duration of an audio.
+    // It should be much more than 1.0. O is not a valid number for this variable.
+    // The default value is 1.
+    oneof _length_scale {
+        float length_scale = 2;
+    }
+
+
+    // Optional. Defines the noise in the generated audio.
+    // It should be between 0.0 and 1.
+    // The default value is 0.0
+    oneof  _noise_scale {
+        float noise_scale = 3;
+    }
+
+
+    // Optional. Defines the sample rate of the generated wav file.
+    // The default value is 22050.
+    oneof _sample_rate {
+        int32 sample_rate = 4;
+    }
+
+    // Optional. Defines the pulse-code modulation of the wav file.
+    // The default value is PCM_16.
+    oneof _Pcm {
+        Pcm pcm = 5;
+    }
+
+    // Optional. Defines the format of the desired audio.
+    // The default value is wav.
+    oneof _AudioFormat {
+        AudioFormat audio_format = 6;
+    }
+
+    // Optional. Define if cache should be used or not.
+    // The default value is False.
+    oneof _use_cache {
+        bool use_cache = 7;
+    }
+}
+
+
+// Represents a pulse-code modulation technique.
+enum Pcm {
         PCM_16 = 0;
         PCM_24 = 1;
         PCM_32 = 2;
@@ -55,43 +134,83 @@ message SynthesizeRequest {
         FLOAT = 5;
         DOUBLE = 6;
     }
-    Pcm pcm = 6; // pulse-code modulation of the wav file, by default 16
-    AudioFormat audio_format = 7;
-}
 
+// Represents an audio file format, which is a file format for storing
+// digital audio data on a computer system.
 enum AudioFormat {
-    wav = 0;
-    flac = 1;
-    caf = 2;
-    mp3 = 3;
-    aac = 4;
-    ogg = 5;
-    wma = 6;
+        wav = 0;
+        flac = 1;
+        caf = 2;
+        mp3 = 3;
+        aac = 4;
+        ogg = 5;
+        wma = 6;
+    }
+
+// Represents a Synthesize Response.
+// A Synthesize Request contains the converted text to audio and the requested configuration.
+message SynthesizeResponse {
+
+    // Required. Represents the pipeline id of the model configuration that will be used.
+    string audio_uuid = 1;
+
+    // Required. Generated file with the parameters described in request.
+    bytes audio = 2;
+
+    // Required. Time to generate audio.
+    float generation_time = 3;
+
+    // Required. Audio length.
+    float audio_length = 4;
+
+    // Required. Text from which audio was generated.
+    string text = 5;
+
+    // Required. Configuration from which audio was generated.
+    RequestConfig config = 6;
 }
 
-message SynthesizeResponse {
-    bytes audio = 1; // generated wav file with the parameters described in request
-    float generation_time = 2;
-    float audio_length = 3;
-    string t2s_pipeline_id = 4;
-    AudioFormat audio_format = 5;
-    string text = 6;
-    int32 sample_rate = 7;
+
+//////////////////////
+// GET SERVICE INFO //
+//////////////////////
+
+message GetServiceInfoResponse {
+  string version = 1;
 }
 
 ////////////////////////
 // LIST T2S PIPELINES //
 ////////////////////////
 
+// Pipeline Request representation.
+// The request message for ListT2sPipelines.
+// Filter pipelines by attributed in request.
 message ListT2sPipelinesRequest {
+
+    // Optional. Define the language/ languages.
     repeated string languages = 1;
+
+    // Optional. Define the speaker sex.
     repeated string speaker_sexes = 2;
+
+    // Optional. Define the pipeline owner/ owners.
     repeated string pipeline_owners = 3;
+
+    // Optional. Define the speaker name/ names.
     repeated string speaker_names = 4;
+
+    // Optional. Define the domain/ domains.
     repeated string domains = 5;
 }
 
+// Pipeline Response representation.
+// The response message for ListT2sPipelines.
 message ListT2sPipelinesResponse {
+
+    // Required. Representation of a list of pipelines configurations.
+    // Retrieved by ListT2sPipelines, containing the configurations of
+    // pipelines with the specifications received in the ListT2sPipelinesRequest.
     repeated Text2SpeechConfig pipelines = 1;
 }
 
@@ -99,14 +218,32 @@ message ListT2sPipelinesResponse {
 // LIST T2S LANGUAGES //
 ////////////////////////
 
+
+// Language Request representation.
+// The request message for ListT2sLanguages.
+// Filter languages of pipelines by attributed in request.
 message ListT2sLanguagesRequest {
+
+    // Optional. Define the speaker sex.
     repeated string speaker_sexes = 1;
+
+    // Optional. Define the pipeline owner/ owners.
     repeated string pipeline_owners = 2;
+
+    // Optional. Define the speaker name/ names.
     repeated string speaker_names = 3;
+
+    // Optional. Define the domain/ domains.
     repeated string domains = 4;
 }
 
+
+// Language Response representation.
+// The response message for ListT2sLanguages.
 message ListT2sLanguagesResponse {
+
+    // Required. Define the language/ languages that satisfy/ies
+    // the specifications in the ListT2sLanguagesRequest.
     repeated string languages = 1;
 }
 
@@ -114,14 +251,31 @@ message ListT2sLanguagesResponse {
 // LIST T2S DOMAINS //
 //////////////////////
 
+
+// Domain Request representation.
+// The request message for ListT2sDomains.
+// Filter domains of pipelines by attributed in request.
 message ListT2sDomainsRequest {
+
+    // Optional. Define the speaker sex.
     repeated string speaker_sexes = 1;
+
+    // Optional. Define the pipeline owner/ owners.
     repeated string pipeline_owners = 2;
+
+    // Optional. Define the speaker name/ names.
     repeated string speaker_names = 3;
+
+    // Optional. Define the language/ languages.
     repeated string languages = 4;
 }
 
+// Domains Response representation.
+// The response message for ListT2sDomains.
 message ListT2sDomainsResponse {
+
+    // Required. Define the domain/ domains that satisfy/ies
+    // the specifications in the ListT2sDomainsRequest.
     repeated string domains = 1;
 }
 
@@ -129,23 +283,41 @@ message ListT2sDomainsResponse {
 // UPDATE T2S PIPELINE //
 /////////////////////////
 
+
+// Pipeline Id representation.
+// Used in the creation, deletion and getter of pipelines.
 message T2sPipelineId {
-    string id = 1; // id of the model that will generate audio
+
+    // Required. Defines the id of the pipeline.
+    string id = 1;
 }
 
 ///////////////////////////
 // Text-to-Speech Config //
 ///////////////////////////
 
-// configuration of text-to-speech models
+// Configuration of text-to-speech models representation.
 message Text2SpeechConfig {
+
+    // Required. Defines the id of the pipeline.
     string id = 1;
+
+    // Required. Defines the description of the pipeline representation.
     Description description = 2;
+
+    // Required. Defines if the pipeline is active or inactive.
     bool active = 3;
+
+    // Required. Defines he inference of the pipeline representation.
     Inference inference = 4;
+
+    // Required. Defines the normalization process of the pipeline representation.
     Normalization normalization = 5;
+
+    // Required. Defines the postprocessing process of the pipeline representation.
     Postprocessing postprocessing = 6;
 }
+
 
 message Description {
     string language = 1;
@@ -169,10 +341,9 @@ message CompositeInference {
 
 message Text2Mel {
     string type = 1;
-    GlowTTS glow_tts = 3;
-    GlowTTSTriton glow_tts_triton = 4;
+    GlowTTS glow_tts = 2;
+    GlowTTSTriton glow_tts_triton = 3;
 }
-
 
 message GlowTTS {
     int64 batch_size = 1;
@@ -221,7 +392,6 @@ message MbMelganTriton {
     string triton_model_name = 3;
     string triton_url = 4;
 }
-
 
 message Caching {
     bool active = 1;
