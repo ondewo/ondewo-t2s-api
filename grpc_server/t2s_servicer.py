@@ -157,7 +157,6 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
     @Timer()
     def handle_batch_synthesize_request(self, request: text_to_speech_pb2.BatchSynthesizeRequest
                                         ) -> text_to_speech_pb2.BatchSynthesizeResponse:
-        # What should I validate?
         batch_response = [self.handle_synthesize_request(
             single_request) for single_request in request.batch_request]
         return text_to_speech_pb2.BatchSynthesizeResponse(batch_response=batch_response)

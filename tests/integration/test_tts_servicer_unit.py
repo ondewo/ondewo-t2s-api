@@ -72,6 +72,42 @@ class TestGrpcServicerUnit:
                 assert 0. < audio[0].max() < 1.
 
     @staticmethod
+    @pytest.mark.parametrize('audio_format', text_to_speech_pb2.AudioFormat.values())
+    def test_batch_synthesize_unit(create_pipelines: None, audio_format: text_to_speech_pb2.AudioFormat) -> None:
+        list_pipelines_request = text_to_speech_pb2.ListT2sPipelinesRequest()
+        response: text_to_speech_pb2.ListT2sPipelinesResponse = \
+            Text2SpeechServicer().handle_list_t2s_pipeline_ids_request(request=list_pipelines_request)
+        assert len(response.pipelines) == 2
+        for pipeline_1, pipeline_2 in zip(*[iter(response.pipelines)]*2):
+            config_1: text_to_speech_pb2.RequestConfig = text_to_speech_pb2.RequestConfig(
+                t2s_pipeline_id=pipeline_1.id,
+                audio_format=audio_format)
+            request_1: text_to_speech_pb2.SynthesizeRequest = text_to_speech_pb2.SynthesizeRequest(
+                text='some text 1',
+                config=config_1
+            )
+            config_2: text_to_speech_pb2.RequestConfig = text_to_speech_pb2.RequestConfig(
+                t2s_pipeline_id=pipeline_2.id,
+                audio_format=audio_format)
+            request_2: text_to_speech_pb2.SynthesizeRequest = text_to_speech_pb2.SynthesizeRequest(
+                text='some text 2',
+                config=config_2
+            )
+            requests = text_to_speech_pb2.BatchSynthesizeRequest(batch_request=[request_1, request_2])
+            response_batch_synthesize: text_to_speech_pb2.BatchSynthesizeResponse = \
+                Text2SpeechServicer().handle_batch_synthesize_request(request=requests)
+            for response in response_batch_synthesize.batch_response:
+                assert response.audio
+                if audio_format in [text_to_speech_pb2.AudioFormat.wav,
+                                    text_to_speech_pb2.AudioFormat.flac,
+                                    text_to_speech_pb2.AudioFormat.caf,
+                                    text_to_speech_pb2.AudioFormat.ogg]:
+                    bio = io.BytesIO(response.audio)
+                    audio = sf.read(bio)
+                    assert audio[1] == 22050
+                    assert 0. < audio[0].max() < 1.
+
+    @staticmethod
     def test_get_t2s_pipeline_unit(create_pipelines: None) -> None:
         list_pipelines_request = text_to_speech_pb2.ListT2sPipelinesRequest()
         response: text_to_speech_pb2.ListT2sPipelinesResponse = \

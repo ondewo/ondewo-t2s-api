@@ -37,13 +37,6 @@ def get_all_pipelines_from_config_files() -> List[T2SConfigDataclass]:
     return description_list
 
 
-# def create_t2s_pipeline_from_config(
-#         config: T2SConfigDataclass
-# ) -> T2SPipeline:
-#     t2s_pipeline: T2SPipeline = T2SPipeline.create_t2s_pipeline_from_config(config)
-#     return t2s_pipeline
-
-
 def generate_config_path() -> str:
     config_dir = get_config_dir()
     config_file_name: str = f'config-{uuid4()}.yaml'
