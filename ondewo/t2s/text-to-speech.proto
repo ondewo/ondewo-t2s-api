@@ -93,12 +93,14 @@ message RequestConfig {
     // Optional. Defines the noise in the generated audio.
     // It should be between 0.0 and 1.
     // The default value is 0.0
-    optional float noise_scale = 3;
+    oneof  _noise_scale {
+        float noise_scale = 3;
+    }
 
 
     // Optional. Defines the sample rate of the generated wav file.
     // The default value is 22050.
-    oneof optional_sample_rate {
+    oneof _sample_rate {
         int32 sample_rate = 4;
     }
 
@@ -116,7 +118,7 @@ message RequestConfig {
 
     // Optional. Define if cache should be used or not.
     // The default value is False.
-    oneof optional_use_cache {
+    oneof _use_cache {
         bool use_cache = 7;
     }
 }
