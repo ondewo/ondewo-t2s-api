@@ -92,3 +92,10 @@ class T2SPipelineManager:
         for path in cached_paths:
             if path not in active_keys:
                 del ModelCache.cached_models[path]
+
+    @classmethod
+    def get_t2s_pipeline_config(cls, t2s_pipeline_id: str) -> Optional[T2SConfigDataclass]:
+        logger.info(f"Trying to get the configuration for pipeline with id {t2s_pipeline_id}. available id's: "
+                    f"{cls.get_all_t2s_pipeline_ids()}")
+        optional_pipeline: Optional[T2SPipeline] = cls._t2s_pipelines.get(t2s_pipeline_id)
+        return optional_pipeline.t2s_config if optional_pipeline else None
