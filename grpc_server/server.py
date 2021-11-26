@@ -9,13 +9,13 @@ from ruamel.yaml import YAML
 
 from grpc_server.persistance_utils import get_or_create_custom_phonemizers_dir
 from grpc_server.phonemizer_servicer import CustomPhonemizerServicer
-from grpc_server.pipeline_utils import create_t2s_pipeline_from_config, \
-    get_list_of_json_files_paths, get_all_config_paths
+from grpc_server.pipeline_utils import get_list_of_json_files_paths, get_all_config_paths
 from grpc_server.t2s_pipeline_manager import T2SPipelineManager
 from grpc_server.t2s_servicer import Text2SpeechServicer
 from normalization.custom_phonemizer_manager import CustomPhonemizerManager
 from ondewo_grpc.ondewo.t2s import text_to_speech_pb2_grpc, text_to_speech_pb2, custom_phonemizer_pb2_grpc, \
     custom_phonemizer_pb2
+from utils.t2sPipeline import T2SPipeline
 from utils.data_classes.config_dataclass import T2SConfigDataclass
 
 yaml = YAML()
@@ -70,7 +70,7 @@ class Server:
                 config = T2SConfigDataclass.from_dict(config_dict)  # type: ignore
             if not config.active:
                 continue
-            preprocess_pipeline, inference, postprocessor, config = create_t2s_pipeline_from_config(config)
+            config = T2SPipeline.create_t2s_pipeline_from_config(config).t2s_config
 
             # persist t2s_pipeline_id
             with open(config_path, 'w') as f:
@@ -78,5 +78,5 @@ class Server:
                 yaml.dump(config_dict, f)
             T2SPipelineManager.register_t2s_pipeline(
                 t2s_pipeline_id=config.id,
-                t2s_pipeline=(preprocess_pipeline, inference, postprocessor, config))
+                t2s_pipeline=T2SPipeline.create_t2s_pipeline_from_config(config))
             logger.info(f'Pipeline was loaded with id {config.id}')

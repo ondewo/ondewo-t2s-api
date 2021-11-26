@@ -24,7 +24,8 @@ def gen_samples(config: T2SConfigDataclass, sentences: List[str], output_dir: Pa
     for i, sentence in enumerate(sentences):
         # infer
         texts: List[str] = preprocess_pipeline.apply(sentence)
-        audio_list: List[np.ndarray] = inference.synthesize(texts=texts, length_scale=None, noise_scale=None)
+        audio_list: List[np.ndarray] = inference.synthesize(
+            texts=texts, length_scale=None, noise_scale=None, use_cache=False)
         audio = postprocessor.postprocess(audio_list)
 
         # save audio to file

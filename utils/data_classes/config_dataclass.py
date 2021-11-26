@@ -429,7 +429,7 @@ class DescriptionDataclass(object):
 
 @dataclass_json
 @dataclass
-class T2SConfigDataclass:
+class T2SConfigDataclass(object):
     id: str
     description: DescriptionDataclass
     active: bool

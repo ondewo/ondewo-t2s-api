@@ -5,11 +5,8 @@ from uuid import uuid4
 from ruamel import yaml
 
 from grpc_server.persistance_utils import get_config_dir
-from inference.inference_factory import InferenceFactory
-from inference.inference_interface import Inference
-from normalization.pipeline_constructor import NormalizerPipeline
-from normalization.postprocessor import Postprocessor
 from utils.data_classes.config_dataclass import T2SConfigDataclass
+from utils.t2sPipeline import T2SPipeline
 
 
 def _get_list_of_extension_files(dir_: str, extention: Union[str, Tuple[str, ...]]) -> List[str]:
@@ -38,18 +35,6 @@ def get_all_pipelines_from_config_files() -> List[T2SConfigDataclass]:
             config: T2SConfigDataclass = T2SConfigDataclass.from_dict(config_dict)  # type: ignore
             description_list.append(config)
     return description_list
-
-
-def create_t2s_pipeline_from_config(
-        config: T2SConfigDataclass
-) -> Tuple[NormalizerPipeline, Inference, Postprocessor, T2SConfigDataclass]:
-    inference_type = config.inference
-    inference: Inference = InferenceFactory.get_inference(inference_type)
-    preprocess_pipeline: NormalizerPipeline = NormalizerPipeline(config=config.normalization)
-    postprocessor = Postprocessor(config.postprocessing)
-    t2s_pipeline_id: str = config.id or f'{inference.name}-{uuid4()}'
-    config.id = t2s_pipeline_id
-    return preprocess_pipeline, inference, postprocessor, config
 
 
 def generate_config_path() -> str:
