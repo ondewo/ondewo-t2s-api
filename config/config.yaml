@@ -14,7 +14,7 @@ inference:
       type: glow_tts
       glow_tts:
         batch_size: 5
-        use_gpu: false
+        use_gpu: true
         length_scale: 1.0
         noise_scale: 0.6669999957084656
         path: models/glow-tts/de/kerstin_blank.pth
@@ -37,7 +37,7 @@ inference:
         triton_model_name: mb_melgan
         triton_url: localhost:50511
       hifi_gan:
-        use_gpu: false
+        use_gpu: true
         batch_size: 20
         config_path: models/HiFiGan/universal/config.json
         model_path: models/HiFiGan/universal/g_02500000
