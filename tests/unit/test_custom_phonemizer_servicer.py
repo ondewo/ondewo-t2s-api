@@ -13,7 +13,7 @@ class TestCustomPhonemizerServicer:
     def test_create_get_update_delete() -> None:
         CustomPhonemizerManager.persistence_dir = 'tests/resources'
         request: CreateCustomPhonemizerRequest = CreateCustomPhonemizerRequest(
-            prefix='tests',
+            prefix='test',
             maps=[Map(word='test_word', phoneme_groups='{T EH S T}')]
         )
         phonemizer_id_proto: custom_phonemizer_pb2.PhonemizerId = \
