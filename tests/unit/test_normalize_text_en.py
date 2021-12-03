@@ -29,7 +29,7 @@ class TestNormalization:
 
     @staticmethod
     @pytest.mark.parametrize('number, expected_result', [
-        ('1234', ' one thousand two hundred thirty four '),
+        ('1234', ' one two three four '),
         ('12', ' twelve '),
         ('13', ' thirteen '),
         ('23', ' twenty three '),
@@ -53,7 +53,7 @@ class TestNormalization:
         ('ggg 167lkkkk', 'ggg one hundred sixty seven lkkkk'),
         ('ggg 267lkkkk', 'ggg two hundred sixty seven lkkkk'),
         ('ggg 999lkkkk', 'ggg nine hundred ninety nine lkkkk'),
-        ('ggg 1456lkkkk', 'ggg one thousand four hundred fifty six lkkkk'),
+        ('ggg 1456lkkkk', 'ggg one four five six lkkkk'),
     ])
     def test_normalize_numbers(number: str, expected_result: str) -> None:
         number_text = normalizer.normalize_numbers(number)
@@ -148,9 +148,9 @@ class TestNormalization:
 
     @staticmethod
     @pytest.mark.parametrize('text, expected_result', [
-        ('text www.google.de another text www.fundamt.gv.at.sw.nw',
-         'text double u double u double u dot google dot dee e another text double u double u double u '
-         'dot fundamt dot gee vee dot ei tee dot ess double u dot en double u '),
+        ('text www.google.de another text www.fundamt.gv.at',
+         'text double u double u double u dot google dot dee e  another text double u double u double '
+         'u dot fundamt dot gee vee dot ei tee '),
         ('text www.google-test.de/index another text ',
          'text double u double u double u dot google dash test dot dee e '
          'slash index  another text '),

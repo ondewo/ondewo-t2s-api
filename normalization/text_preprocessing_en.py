@@ -172,29 +172,6 @@ class TextNormalizerEn(NormalizerInterface):
 
         return hundreds + text_tens
 
-    def texturize_thousand(self, number: int) -> str:
-        """
-
-        Args:
-            number:
-
-        Returns:
-
-        """
-        thousand_num: int = number // 1000
-        hundred: int = number % 1000
-        if thousand_num == 1:
-            thousand: str = self.textulize_tens(thousand_num) + ' thousand'
-        else:
-            thousand = self.textulize_tens(thousand_num) + ' thousands'
-
-        if hundred != 0:
-            text_hundred: str = ' ' + self.texturize_hundred(hundred)
-        else:
-            text_hundred = ''
-
-        return thousand + text_hundred
-
     def texturize_time(self, time_to_normalize: time) -> str:
         """
 
@@ -228,10 +205,12 @@ class TextNormalizerEn(NormalizerInterface):
         else:
             if len(number) <= 2:
                 texturized_number = ' ' + self.textulize_tens(number=int(number)) + ' '
-            elif len(number) == 3:
-                texturized_number = ' ' + self.texturize_hundred(number=int(number)) + ' '
-            elif len(number) == 4:
-                texturized_number = ' ' + self.texturize_thousand(number=int(number)) + ' '
+            elif len(number) > 3:
+                texturized_number = ' '
+                for digit in number:
+                    texturized_number += self.textulize_tens(number=int(digit)) + ' '
+            else:
+                texturized_number = ' ' + self.texturize_hundred(int(number)) + ' '
 
         return texturized_number
 
