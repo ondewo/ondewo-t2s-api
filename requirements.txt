@@ -6,15 +6,15 @@ flask
 git+https://github.com/wilsonchingg/logmmse.git
 google-api-core==1.13.0
 googleapis-common-protos==1.5.10
-grpcio==1.31.0
-grpcio-reflection==1.31.0
-grpcio-tools==1.31.0
+grpcio==1.42.0
+grpcio-reflection==1.42.0
+grpcio-tools==1.42.0
 msgpack
 mypy-protobuf
 num2words
 omegaconf
 ondewo-logging>=2.0.1
-protobuf==3.13.0
+protobuf==3.19.1
 pydub==0.24.1
 pyroomacoustics
 pysndfx
@@ -22,8 +22,8 @@ python_speech_features
 ruamel.yaml
 scipy
 soundfile
-torch
-tritonclient[all]==2.3.0
+torch==1.10
+tritonclient[all]==2.16.0
 webdataset
 dataclasses-json
 

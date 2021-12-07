@@ -3,6 +3,7 @@ from datetime import date, time
 from typing import Dict, List
 
 from normalization.normalizer_interface import NormalizerInterface
+from nemo_text_processing.text_normalization.normalize import Normalizer
 
 
 class TextNormalizerEn(NormalizerInterface):
@@ -364,6 +365,11 @@ class TextNormalizerEn(NormalizerInterface):
             text = text.replace(url, normalized_url)
 
         return text
+
+    def nemo_normalizer(self, text: str) -> str:
+        normalizer = Normalizer(input_case='cased', lang='en')
+        normalized_text = normalizer.normalize(text, verbose=False)
+        return str(normalized_text)
 
     def normalize_url(self, url: str) -> str:
         """

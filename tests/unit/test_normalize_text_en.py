@@ -120,6 +120,49 @@ class TestNormalization:
         assert normalized_text == expected_result.lower()
 
     @staticmethod
+    @pytest.mark.parametrize('text, expected_result', [
+        ('Still need your date of birth. '
+         'For example, say February 25 1989.',
+         'Still need your date of birth. '
+         'For example, say February twenty fifth nineteen eighty nine.'),
+        ('1st of January 1989. Is that correct?', 'first of january nineteen eighty nine . Is that correct?'),
+        ('01/01/1989. Is that correct?', 'January first, nineteen eighty nine. '
+         'Is that correct?'),
+        ('first of January. Is that correct?', 'first of January. Is that correct?'),
+        ("You were born on 26. 12. 1944. Right?", 'you were born on december '
+                                                  'twenty sixth nineteen forty four. right?'),
+        ("You were born on 22.12.1944. Right? ", 'you were born on december '
+                                                 'twenty second nineteen forty four. right?'),
+        ("my daughter's grandfather has to make appointments on 5. 10. 1936",
+         "my daughter's grandfather has to make appointments on October fifth nineteen thirty six"),
+        ("my boy have to book another child appointment for 26. 08. 2027",
+         'my boy have to book another child appointment for august twenty sixth twenty twenty seven'),
+        ("I would like to change my boy s appointment for 9. 03. 1998",
+         "I would like to change my boy s appointment for March nineth nineteen ninety eight"),
+        ('she was born on 15. January 1998',
+         'she was born on january fifteenth nineteen ninety eight'),
+        ("Your social security number is 1234 and you were born on 15. January 1998. Right?",
+         "Your social security number is one two three four and you were born on January fifteenth "
+         "nineteen ninety eight. Right?"
+         ),
+        ('text 001 text', 'text zero zero one text'),
+        ('text 0001 text', 'text zero zero zero one text'),
+        ('text 00001 text', 'text zero zero zero zero one text'),
+        ('text 02001 text', 'text zero two zero zero one text'),
+        ('text 00201 text', 'text zero zero two zero one text'),
+        ('my telephone number is 0677700113 text',
+         'my telephone number is zero six seven seven seven zero zero one one three text'),
+        ("How are you???", "How are you???"),
+        ('text 30:50:00 text', 'text thirty : fifty : zero zero text')
+
+    ]
+    )
+    def test_nemo_normalize(text: str, expected_result: str) -> None:
+        normalized_text: str = normalizer.nemo_normalizer(text)
+        assert isinstance(normalized_text, str)
+        assert normalized_text == expected_result.lower()
+
+    @staticmethod
     @pytest.mark.parametrize('time, expected_result', [
         ('text 01:20 text', 'text one twenty text'),
         ('text 01:20:00 text', 'text one twenty text'),
