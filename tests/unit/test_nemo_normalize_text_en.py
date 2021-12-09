@@ -41,11 +41,16 @@ class TestNormalization:
         ('€1.123322', 'one point one two three three two two euros'),
         ('£2.0', 'two point zero pounds'),
 
-        # Test telephones Normalization
+        # Test Telephones Normalization
         ('+1 (632) 401-5130', 'one, six three two, four o one, five one three o'),
         ('+54 (911) 81067227', 'five four, nine one one, eight one o six seven two two seven'),
         ('+43 681 34201702', '+ forty three six hundred eighty one three four two zero one seven zero two'),
         ('+4368034251702', '+ four three six eight zero three four two five one seven zero two'),
+
+        # Test Measures Normalization
+        ('10 cm', 'ten centimeters'),
+        ('0.23 oz', 'zero point two three ounces'),
+        ('1000km', 'one thousand kilometers'),
 
 
         # Test Date Normalization

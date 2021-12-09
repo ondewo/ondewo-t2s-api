@@ -182,10 +182,22 @@ class TextNormalizerEn(NormalizerInterface):
         Returns:
 
         """
+        time_to_text = ''
         hour: int = time_to_normalize.hour
         minutes: int = time_to_normalize.minute
+        seconds: int = time_to_normalize.second
 
-        return self.textulize_tens(hour) + ' ' + self.textulize_tens(minutes)
+        time_to_text += self.textulize_tens(hour if hour <= 12 else hour - 12)
+        if minutes == 0 and seconds == 0:
+            return time_to_text + ' o clock'
+        time_to_text += ' ' + self.textulize_tens(minutes) + ' '
+        if seconds != 0:
+            time_to_text += self.textulize_tens(seconds) + ' '
+        am = self.char_mapping['a']+' '+self.char_mapping['m']
+        pm = self.char_mapping['p']+' '+self.char_mapping['m']
+        time_to_text += am if hour <= 12 else pm
+
+        return time_to_text
 
     def texturize_numbers(self, number: str) -> str:
         """
