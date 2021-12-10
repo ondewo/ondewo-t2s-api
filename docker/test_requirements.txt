@@ -12,3 +12,4 @@ pytest-mock
 python_speech_features
 ruamel.yaml
 tritonclient[all]==2.3.0
+nemo-toolkit[all]==3.13.3
