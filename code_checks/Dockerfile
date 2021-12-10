@@ -1,4 +1,4 @@
-FROM registry-dev.ondewo.com:5000/python/python:3.7-slim
+FROM registry-dev.ondewo.com:5000/python/python:3.8-slim-buster
 
 ENV HOST_IP=172.17.0.1
 ENV LOCAL_MIRROR=http://"$HOST_IP":/3141/root/pypi/+simple/
@@ -14,7 +14,7 @@ RUN echo [global] >> /etc/pip.conf && \
     echo no-cache-dir = true >> /etc/pip.conf && \
     echo timeout = 100 >> /etc/pip.conf && \
     cat /etc/pip.conf && \
-    pip install flake8 mypy
+    pip install flake8 mypy types-requests types-PyYAML types-protobuf types-cachetools
 
 RUN mkdir code_to_test
 
