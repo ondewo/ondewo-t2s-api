@@ -81,8 +81,7 @@ class TextNormalizerEn(NormalizerInterface):
         return month_text + day_text + year_text
 
     def texturize_year(self, year: int, mode: int) -> str:
-        y_hund_dict1 = {19: 'nineteen', 20: 'twenty'}
-        y_hund_dict2 = {19: 'nineteen', 20: 'twenty'}
+        y_hund_dict = {19: 'nineteen', 20: 'twenty'}
 
         if year == 1900:
             mode = 2
@@ -96,12 +95,10 @@ class TextNormalizerEn(NormalizerInterface):
         if year_ten < 10:
             mode = 2
 
-        if mode == 1:
-            year_text1 = y_hund_dict1[year_hndr] + ' '
-        elif mode == 2:
-            year_text1 = y_hund_dict2[year_hndr] + ' '
+        if mode == 1 or mode == 2:
+            year_text1 = y_hund_dict[year_hndr] + ' '
         else:
-            raise ValueError
+            raise ValueError(f'Expected number between 1900 and 2099 got {year}')
 
         year_text2 = self.textulize_tens(int(year_ten))
 
@@ -354,6 +351,20 @@ class TextNormalizerEn(NormalizerInterface):
         text = self.normalize_numbers(text=text)
         text = self.remove_unaudible_texts(text=text)
         text = self.lower_case(text=text)
+        return text
+
+    def normalize_all_nemo(self, text: str) -> str:
+        """
+
+        Args:
+            text:
+
+        Returns:
+
+        """
+        text = self.fix_plus(text=text)
+        text = self.normalize_urls(text=text)
+        text = self.nemo_normalizer(text=text)
         return text
 
     @staticmethod
