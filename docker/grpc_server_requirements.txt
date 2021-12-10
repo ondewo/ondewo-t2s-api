@@ -17,6 +17,6 @@ git+https://github.com/wilsonchingg/logmmse.git
 pyroomacoustics
 python_speech_features
 pysndfx
-transformers==4.12.5
+transformers==4.13.0
 pydub==0.24.1
 nemo-toolkit[all]==1.5.1

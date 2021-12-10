@@ -27,3 +27,4 @@ tritonclient[all]==2.3.0
 webdataset
 dataclasses-json
 nemo-toolkit[all]==1.5.1
+transformers==4.13.0

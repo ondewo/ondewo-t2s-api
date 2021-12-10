@@ -1,15 +1,6 @@
-fluent-logger==0.9.6
-git+https://github.com/wilsonchingg/logmmse.git
-msgpack
-numpy==1.20
 omegaconf
-ondewo-logging==1.6.1
-pydub==0.24.1
 pyroomacoustics
 pysndfx
 pytest
 pytest-mock
-python_speech_features
-ruamel.yaml
-tritonclient[all]==2.3.0
-nemo-toolkit[all]==1.5.1
+
