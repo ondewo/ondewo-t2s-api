@@ -19,4 +19,4 @@ python_speech_features
 pysndfx
 transformers==4.12.5
 pydub==0.24.1
-nemo-toolkit[all]==3.13.3
+nemo-toolkit[all]==1.5.1

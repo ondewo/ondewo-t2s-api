@@ -26,5 +26,4 @@ torch
 tritonclient[all]==2.3.0
 webdataset
 dataclasses-json
-nemo-toolkit[all]==3.13.3
-
+nemo-toolkit[all]==1.5.1
