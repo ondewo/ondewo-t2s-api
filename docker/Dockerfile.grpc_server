@@ -32,7 +32,7 @@ RUN pip install cython
 
 COPY ./docker/grpc_server_requirements.txt .
 RUN pip install nvidia-pyindex
-RUN pip install -r grpc_server_requirements.txt --ignore-installed
+RUN pip install -r grpc_server_requirements.txt
 
 COPY --from=private_installer /root/install/ondewo-t2s-glow ./ondewo-t2s-glow
 RUN cd ondewo-t2s-glow/monotonic_align; python setup.py build_ext --inplace; cd ../..
