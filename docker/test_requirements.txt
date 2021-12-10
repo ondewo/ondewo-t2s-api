@@ -3,4 +3,4 @@ pyroomacoustics
 pysndfx
 pytest
 pytest-mock
-
+numpy==1.20.3
