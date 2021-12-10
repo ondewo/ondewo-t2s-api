@@ -120,13 +120,13 @@ class TestNormalization:
 
     @staticmethod
     @pytest.mark.parametrize('time, expected_result', [
-        ('text 01:20 text', 'text one twenty text'),
-        ('text 01:20:00 text', 'text one twenty text'),
+        ('text 01:20 text', 'text one twenty ei em text'),
+        ('text 01:20:00 text', 'text one twenty ei em text'),
         ('text 30:50 text', 'text 30:50 text'),
         ('text 30:50:00 text', 'text 30:50:00 text'),
         ('text 25:40 text', 'text 25:40 text'),
-        ('text 23:40 text', 'text twenty three forty text'),
-        ('text 1:40 text', 'text one forty text'),
+        ('text 23:40 text', 'text eleven forty pee em text'),
+        ('text 1:40 text', 'text one forty ei em text'),
         ('text 1:4 text', 'text 1:4 text'),
     ])
     def test_normalize_times(time: str, expected_result: str) -> None:
