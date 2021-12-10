@@ -21,13 +21,19 @@ RUN apt update && apt install -y wget
 RUN wget https://github.com/fullstorydev/grpcurl/releases/download/v1.8.0/grpcurl_1.8.0_linux_x86_64.tar.gz && \
     tar -C /root -xzf grpcurl_1.8.0_linux_x86_64.tar.gz
 
-FROM ${DOCKERREGISTRY}/${NAMESPACE}/base-cuda-pytorch:1.0.0 AS uncythonized
+FROM ${DOCKERREGISTRY}/nvidia/pytorch:21.11-py3 AS uncythonized
 
+ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get -y upgrade && \
 	apt-get install -y git sox ffmpeg libavcodec-extra libsndfile1-dev
 
 RUN pip install pip==20.0.2
 RUN pip install cython
+
+COPY ./docker/grpc_server_requirements.txt .
+RUN pip install nvidia-pyindex
+RUN pip install -r grpc_server_requirements.txt --ignore-installed
+
 COPY --from=private_installer /root/install/ondewo-t2s-glow ./ondewo-t2s-glow
 RUN cd ondewo-t2s-glow/monotonic_align; python setup.py build_ext --inplace; cd ../..
 RUN pip install -e ondewo-t2s-glow
@@ -36,10 +42,6 @@ COPY --from=private_installer /root/install/ondewo-t2s-hifigan ./ondewo-t2s-hifi
 RUN pip install -e ondewo-t2s-hifigan
 
 COPY --from=private_installer /root/grpcurl /usr/local/bin/
-
-COPY ./docker/grpc_server_requirements.txt .
-RUN pip install nvidia-pyindex
-RUN pip install -r grpc_server_requirements.txt --ignore-installed
 
 WORKDIR /opt/ondewo-t2s
 COPY ./utils ./utils
