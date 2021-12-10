@@ -11,4 +11,4 @@ pytest
 pytest-mock
 python_speech_features
 ruamel.yaml
-tritonclient[all]==2.3.0
+tritonclient[all]==2.16.0
