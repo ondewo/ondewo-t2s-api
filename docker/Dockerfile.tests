@@ -5,7 +5,7 @@ COPY ./docker/test_requirements.txt .
 
 RUN pip install pip==20.0.2
 RUN pip install nvidia-pyindex
-RUN pip install -r test_requirements.txt --ignore-installed
+RUN pip install -r test_requirements.txt
 
 
 WORKDIR /opt/ondewo-t2s
