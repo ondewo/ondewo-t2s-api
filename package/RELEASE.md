@@ -1,5 +1,12 @@
 # Release History
 
+
+## Release ONDEWO T2S 2.0.0
+
+### Improvements
+* [[OND232-211]](https://ondewo.atlassian.net/browse/OND232-211) Refactor synthesize request.
+* [[OND232-209]](https://ondewo.atlassian.net/browse/OND232-209) Improve english normalizer using NeMo. Remove Rest Server.
+
 ## Release ONDEWO T2S 1.5.4
 
 ### Improvements

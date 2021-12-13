@@ -6,7 +6,7 @@ import pytest
 from ruamel import yaml
 
 from inference.text2mel.glow_tts_text_processor import GlowTTSTextProcessor
-from normalization.pipeline_constructor import NormalizerPipeline
+from normalization.normalization_pipeline import NormalizerPipeline
 from utils.data_classes.config_dataclass import NormalizationDataclass
 
 

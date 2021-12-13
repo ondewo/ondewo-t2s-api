@@ -3,6 +3,5 @@ ignore = E704, E701, E501,F401,E722,E125,E302,W293,E303,E225,F841,E126,E127,E712
 exclude =
     .git,
     __pycache__,
-    ./testcode/rest_server/__init__.py,
     ./testcode/demo_server_grpc/__init__.py
 

@@ -13,7 +13,7 @@ from utils.data_classes.config_dataclass import T2SConfigDataclass
 def gen_samples(config: T2SConfigDataclass, sentences: List[str], output_dir: Path) -> None:
     from inference.inference_interface import Inference
     from inference.inference_factory import InferenceFactory
-    from normalization.pipeline_constructor import NormalizerPipeline
+    from normalization.normalization_pipeline import NormalizerPipeline
     from normalization.postprocessor import Postprocessor
 
     inference: Inference = InferenceFactory.get_inference(config.inference)

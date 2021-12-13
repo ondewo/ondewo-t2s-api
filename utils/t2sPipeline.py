@@ -2,7 +2,7 @@ from uuid import uuid4
 
 from inference.inference_factory import InferenceFactory
 from inference.inference_interface import Inference
-from normalization.pipeline_constructor import NormalizerPipeline
+from normalization.normalization_pipeline import NormalizerPipeline
 from normalization.postprocessor import Postprocessor
 from utils.data_classes.config_dataclass import T2SConfigDataclass
 

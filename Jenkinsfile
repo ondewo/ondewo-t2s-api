@@ -7,19 +7,16 @@ pipeline {
         SANITIZED_BRANCH_NAME = "${env.BRANCH_NAME}".replace('/', '-').replace('.', '-')
         IMAGE_TAG = "${SANITIZED_BRANCH_NAME}"
 
-        IMAGE_NAME_REST = 'ondewo-t2s-rest-server'
         IMAGE_NAME_GRPC = 'ondewo-t2s-grpc-server'
         IMAGE_NAME_TESTS = 'ondewo-t2s-tests'
         IMAGE_NAME_CODE_CHECK = 'ondewo-t2s-code-check'
 
-        TTS_NAME_REST = "${IMAGE_NAME_REST}:${IMAGE_TAG}"
         TTS_NAME_GRPC = "${IMAGE_NAME_GRPC}:${IMAGE_TAG}"
         TTS_NAME_TESTS = "${IMAGE_NAME_TESTS}:${IMAGE_TAG}"
         TTS_NAME_CODE_CHECK = "${IMAGE_NAME_CODE_CHECK}:${IMAGE_TAG}"
 
         NAMESPACE = "ondewo"
         DOCKERREGISTRY = "registry-dev.ondewo.com:5000"
-        PUSH_NAME_STREAM_REST = "${DOCKERREGISTRY}/${NAMESPACE}/${TTS_NAME_REST}"
         PUSH_NAME_STREAM_GRPC = "${DOCKERREGISTRY}/${NAMESPACE}/${TTS_NAME_GRPC}"
     }
 
@@ -38,7 +35,6 @@ pipeline {
             environment {
                 ssh_key_file = credentials('devops_ondewo_idrsa')
                 TRITON_CONTAINER = "ondewo-t2s-triton-${UNIQUE_BUILD_ID}"
-                REST_CONTAINER = "${IMAGE_NAME_REST}-${UNIQUE_BUILD_ID}"
                 GRPC_CONTAINER = "${IMAGE_NAME_GRPC}-${UNIQUE_BUILD_ID}"
                 MODEL_REPO = 'models.ondewo.com:/raid/jenkins/data/t2s/models/'
                 MODEL_DIR = '/mnt/disks/jenkins/data/t2s/models'
@@ -61,26 +57,13 @@ pipeline {
                         ''', label: 'set triton container name in test configs')
                     }
                 }
-                stage('Build Server Images') {
-                    parallel {
-                        stage('Build rest server') {
-                            steps {
-                                sh(script: """set +x
-                                    docker build -t ${PUSH_NAME_STREAM_REST} --build-arg SSH_PRIVATE_KEY=\"\$(cat ${ssh_key_file})\" --target uncythonized -f docker/Dockerfile.rest_server .
-                                    set -x"""
-                                    , label: 'build image'
-                                )
-                            }
-                        }
-                        stage('Build grpc server') {
-                            steps {
-                                sh(script: """set +x
-                                    docker build -t ${PUSH_NAME_STREAM_GRPC} --build-arg SSH_PRIVATE_KEY=\"\$(cat ${ssh_key_file})\" --target uncythonized -f docker/Dockerfile.grpc_server .
-                                    set -x"""
-                                    , label: 'build image'
-                                )
-                            }
-                        }
+                stage('Build grpc server') {
+                    steps {
+                        sh(script: """set +x
+                            docker build -t ${PUSH_NAME_STREAM_GRPC} --build-arg SSH_PRIVATE_KEY=\"\$(cat ${ssh_key_file})\" --target uncythonized -f docker/Dockerfile.grpc_server .
+                            set -x"""
+                            , label: 'build image'
+                        )
                     }
                 }
                 stage('Build and Run Tests') {
@@ -145,17 +128,6 @@ pipeline {
                                             --network=${DOCKER_NETWORK} \
                                             -v ${MODEL_DIR}:/opt/ondewo-t2s/models \
                                             -v ${CONFIG_DIR}:/opt/ondewo-t2s/config \
-                                            --env CONFIG_FILE="config/config.yaml" \
-                                            --env CONFIG_DIR="config" \
-                                            --env CUSTOM_PHOMENIZER_DIR="config/custom_phonemizers" \
-                                            --name ${REST_CONTAINER} \
-                                            ${PUSH_NAME_STREAM_REST}"""
-                                        , label: 'run rest server')
-                                        sh(script: """docker run -td --gpus all \
-                                            --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
-                                            --network=${DOCKER_NETWORK} \
-                                            -v ${MODEL_DIR}:/opt/ondewo-t2s/models \
-                                            -v ${CONFIG_DIR}:/opt/ondewo-t2s/config \
                                             --env CONFIG_DIR="config" \
                                             --name ${GRPC_CONTAINER} \
                                             ${PUSH_NAME_STREAM_GRPC}"""
@@ -163,36 +135,27 @@ pipeline {
                                         timeout(time: 60, unit: 'SECONDS') {
                                             waitUntil {
                                                 script {
-                                                    def status_rest = sh(
-                                                        script: "docker run --network=${DOCKER_NETWORK} registry-dev.ondewo.com:5000/curlimages/curl curl --fail http://${REST_CONTAINER}:50550/health/ready",
-                                                        returnStatus: true,
-                                                        label: 'health check rest server until ready'
-                                                    )
                                                     def status_grpc = sh(
                                                         script: "docker run --network=${DOCKER_NETWORK} registry-dev.ondewo.com:5000/networld/grpcurl ./grpcurl -plaintext -H \"\" ${GRPC_CONTAINER}:50555 list",
                                                         returnStatus: true,
                                                         label: 'health check grpc server until ready'
                                                     )
-                                                    return (status_rest + status_grpc == 0)
+                                                    return (status_grpc == 0)
                                                 }
                                             }
                                         }
-                                        sh(script: "docker logs ${REST_CONTAINER}", label: 'rest server logs when ready')
                                         sh(script: "docker logs ${GRPC_CONTAINER}", label: 'grpc server logs when ready')
                                         sh(script: """docker run --rm --gpus all \
                                             --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
                                             --network=${DOCKER_NETWORK} \
                                             -e TESTFILE=${testresults_filename} \
                                             -e T2S_GRPC_HOST=${GRPC_CONTAINER} \
-                                            -e T2S_REST_HOST=${REST_CONTAINER} \
                                             -v ${testresults_folder}:/opt/ondewo-t2s/log \
                                             -v ${MODEL_DIR}:/opt/ondewo-t2s/models \
                                             ${TTS_NAME_TESTS} ./tests/e2e"""
                                         , label: 'run e2e tests')
                                     }
                                     post { always {
-                                        sh(script: "docker logs ${REST_CONTAINER}", label: 'rest server logs after tests')
-                                        sh(script: "docker rm -f ${REST_CONTAINER}", label: 'kill rest server')
                                         sh(script: "docker logs ${GRPC_CONTAINER}", label: 'grpc server logs after tests')
                                         sh(script: "docker rm -f ${GRPC_CONTAINER}", label: 'kill grpc server')
                                     } }
@@ -210,8 +173,6 @@ pipeline {
                     steps {
                         sh(script: "docker push ${PUSH_NAME_STREAM_GRPC}", label: 'push the image to the registry')
                         sh(script: "echo ${PUSH_NAME_STREAM_GRPC} pushed to registry")
-                        sh(script: "docker push ${PUSH_NAME_STREAM_REST}", label: 'push the image to the registry')
-                        sh(script: "echo ${PUSH_NAME_STREAM_REST} pushed to registry")
                     }
                 }
             }
