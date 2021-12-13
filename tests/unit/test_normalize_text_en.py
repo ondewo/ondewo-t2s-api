@@ -262,7 +262,7 @@ class TestNormalization:
         ('text 30:50:00 text', 'text 30:50:00 text')
     ])
     def test_nemo_normalize(text: str, expected_result: str) -> None:
-        normalized_text: str = normalizer.nemo_normalizer(text)
+        normalized_text: str = normalizer.normalize_nemo(text)
         assert isinstance(normalized_text, str)
         assert normalized_text == expected_result
 

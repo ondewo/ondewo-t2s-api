@@ -7,6 +7,9 @@ from nemo_text_processing.text_normalization.normalize import Normalizer
 
 
 class TextNormalizerEn(NormalizerInterface):
+
+    nemo_normalizer = Normalizer(input_case='cased', lang='en')
+
     pttrn_spaces_bw_num = re.compile(r'(\d)\s+(\d)')
     pttrn_numbers = re.compile(r'([^0-9]|\b)(\d+)([^0-9]|\b)')
     pttrn_space = re.compile(r'\s+')
@@ -364,7 +367,7 @@ class TextNormalizerEn(NormalizerInterface):
         """
         text = self.fix_plus(text=text)
         text = self.normalize_urls(text=text)
-        text = self.nemo_normalizer(text=text)
+        text = self.normalize_nemo(text=text)
         return text
 
     @staticmethod
@@ -389,9 +392,8 @@ class TextNormalizerEn(NormalizerInterface):
 
         return text
 
-    def nemo_normalizer(self, text: str) -> str:
-        normalizer = Normalizer(input_case='cased', lang='en')
-        normalized_text = normalizer.normalize(text, verbose=False)
+    def normalize_nemo(self, text: str) -> str:
+        normalized_text = self.nemo_normalizer.normalize(text, verbose=False)
         return str(normalized_text)
 
     def normalize_url(self, url: str) -> str:
