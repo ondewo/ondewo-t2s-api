@@ -57,15 +57,13 @@ pipeline {
                         ''', label: 'set triton container name in test configs')
                     }
                 }
-                stage('Build Server Images') {
-                    stage('Build grpc server') {
-                        steps {
-                            sh(script: """set +x
-                                docker build -t ${PUSH_NAME_RELEASE_GRPC} --build-arg SSH_PRIVATE_KEY=\"\$(cat ${ssh_key_file})\" -f docker/Dockerfile.grpc_server .
-                                set -x"""
-                                , label: 'build image'
-                            )
-                        }
+                stage('Build grpc server') {
+                    steps {
+                        sh(script: """set +x
+                            docker build -t ${PUSH_NAME_RELEASE_GRPC} --build-arg SSH_PRIVATE_KEY=\"\$(cat ${ssh_key_file})\" -f docker/Dockerfile.grpc_server .
+                            set -x"""
+                            , label: 'build image'
+                        )
                     }
                 }
                 stage('Build and Run Tests') {
