@@ -2,17 +2,13 @@ DOCKERREGISTRY = "registry-dev.ondewo.com:5000"
 NAMESPACE = "ondewo"
 RELEASE_VERSION = "1.5.3"
 
-IMAGE_TAG_REST="${DOCKERREGISTRY}/${NAMESPACE}/ondewo-t2s-rest-server:${RELEASE_VERSION}"
 IMAGE_TAG_GRPC="${DOCKERREGISTRY}/${NAMESPACE}/ondewo-t2s-grpc-server:${RELEASE_VERSION}"
-IMAGE_TAG_REST_RELEASE="${DOCKERREGISTRY}/${NAMESPACE}/ondewo-t2s-rest-server-release:${RELEASE_VERSION}"
 IMAGE_TAG_GRPC_RELEASE="${DOCKERREGISTRY}/${NAMESPACE}/ondewo-t2s-grpc-server-release:${RELEASE_VERSION}"
 IMAGE_TAG_TESTS="ondewo-t2s-tests-image"
 IMAGE_TAG_TRITON="${DOCKERREGISTRY}/nvidia/tritonserver:20.09-py3"
 IMAGE_TAG_CODE_CHECK="code_check_image"
 
-REST_CONTAINER="ondewo-t2s-rest-server"
 GRPC_CONTAINER="ondewo-t2s-grpc-server"
-REST_CONTAINER_RELEASE="ondewo-t2s-rest-server-release"
 GRPC_CONTAINER_RELEASE="ondewo-t2s-grpc-server-release"
 TESTS_CONTAINER="ondewo-t2s-tests"
 TRITON_CONTAINER ?="ondewo-t2s-triton-inference-server"
@@ -31,17 +27,9 @@ run_code_checks:
 
 
 ### --- Image builds --- ###
-build_rest_server: export SSH_PRIVATE_KEY="$$(cat ~/.ssh/id_rsa)"
-build_rest_server:
-	docker build -t ${IMAGE_TAG_REST} --build-arg SSH_PRIVATE_KEY=$(SSH_PRIVATE_KEY) --target uncythonized -f docker/Dockerfile.rest_server .
-
 build_grpc_server: export SSH_PRIVATE_KEY="$$(cat ~/.ssh/id_rsa)"
 build_grpc_server:
 	docker build -t ${IMAGE_TAG_GRPC} --build-arg SSH_PRIVATE_KEY=$(SSH_PRIVATE_KEY) --target uncythonized -f docker/Dockerfile.grpc_server .
-
-build_rest_server_release: export SSH_PRIVATE_KEY="$$(cat ~/.ssh/id_rsa)"
-build_rest_server_release:
-	docker build -t ${IMAGE_TAG_REST_RELEASE} --build-arg SSH_PRIVATE_KEY=$(SSH_PRIVATE_KEY) -f docker/Dockerfile.rest_server .
 
 build_grpc_server_release: export SSH_PRIVATE_KEY="$$(cat ~/.ssh/id_rsa)"
 build_grpc_server_release:
@@ -70,32 +58,6 @@ run_triton_on_dgx:
 
 stop_ssh_tunel:
 	-kill -9 $(ps aux | grep "ssh -N -f -L localhost:50511:dgx:50511 voice_user@dgx"| grep -v grep| awk '{print $2}')
-
-
-### --- Run Rest Server --- ###
-run_rest_server:
-	-docker kill ${REST_CONTAINER}
-	-docker rm ${REST_CONTAINER}
-	docker run -td --gpus all \
-	--shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
-	--network=${DOCKER_NETWORK} \
-	-v ${MODEL_DIR}:/opt/ondewo-t2s/models \
-	-v ${CONFIG_DIR}:/opt/ondewo-t2s/config \
-	--env CONFIG_FILE="config/config.yaml" \
-	--name ${REST_CONTAINER} \
-	${IMAGE_TAG_REST}
-
-run_rest_server_release:
-	-docker kill ${REST_CONTAINER_RELEASE}
-	-docker rm ${REST_CONTAINER_RELEASE}
-	docker run -td --gpus all \
-	--shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
-	--network=${DOCKER_NETWORK} \
-	-v ${MODEL_DIR}:/opt/ondewo-t2s/models \
-	-v ${CONFIG_DIR}:/opt/ondewo-t2s/config \
-	--env CONFIG_FILE="config/config.yaml" \
-	--name ${REST_CONTAINER_RELEASE} \
-	${IMAGE_TAG_REST_RELEASE}
 
 
 ### --- Run gRPC Server --- ###
@@ -151,9 +113,7 @@ package_release: package_git_revision_and_version
 	mkdir -p ${RELEASE_FOLDER}
 
 	# tar and zip images
-	docker pull ${PUSH_NAME_RELEASE_REST}
 	docker pull ${PUSH_NAME_RELEASE_GRPC}
-	docker save ${PUSH_NAME_RELEASE_REST} | gzip > ${RELEASE_FOLDER}/ondewo-t2s-rest-server-release-${SANITIZED_DOCKER_TAG_NAME}.tar.gz
 	docker save ${PUSH_NAME_RELEASE_GRPC} | gzip > ${RELEASE_FOLDER}/ondewo-t2s-grpc-server-release-${SANITIZED_DOCKER_TAG_NAME}.tar.gz
 
 	# add configs
