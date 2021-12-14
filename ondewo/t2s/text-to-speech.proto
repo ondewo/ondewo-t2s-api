@@ -85,7 +85,7 @@ message RequestConfig {
     // changing the speed or duration of an audio.
     // It should be much more than 1.0. O is not a valid number for this variable.
     // The default value is 1.
-    oneof _length_scale {
+    oneof oneof_length_scale {
         float length_scale = 2;
     }
 
@@ -93,32 +93,32 @@ message RequestConfig {
     // Optional. Defines the noise in the generated audio.
     // It should be between 0.0 and 1.
     // The default value is 0.0
-    oneof  _noise_scale {
+    oneof  oneof_noise_scale {
         float noise_scale = 3;
     }
 
 
     // Optional. Defines the sample rate of the generated wav file.
     // The default value is 22050.
-    oneof _sample_rate {
+    oneof oneof_sample_rate {
         int32 sample_rate = 4;
     }
 
     // Optional. Defines the pulse-code modulation of the wav file.
     // The default value is PCM_16.
-    oneof _Pcm {
+    oneof oneof_Pcm {
         Pcm pcm = 5;
     }
 
     // Optional. Defines the format of the desired audio.
     // The default value is wav.
-    oneof _AudioFormat {
+    oneof oneof_AudioFormat {
         AudioFormat audio_format = 6;
     }
 
     // Optional. Define if cache should be used or not.
     // The default value is False.
-    oneof _use_cache {
+    oneof oneof_use_cache {
         bool use_cache = 7;
     }
 }
