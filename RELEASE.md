@@ -1,6 +1,13 @@
 # Release History
 *****************
 
+## Release ONDEWO APIS 2.0.0
+
+### Breaking Changes
+`RequestConfig` implemented in SynthesizeRequest.
+
+*****************
+
 ## Release ONDEWO APIS 0.2.2
 
 ### Improvements
