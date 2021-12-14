@@ -110,7 +110,12 @@ class CachedInference(Inference):
             self,
             texts: List[str],
             length_scale: Optional[float],
-            noise_scale: Optional[float]) -> List[np.ndarray]:
+            noise_scale: Optional[float],
+            use_cache: bool = True
+    ) -> List[np.ndarray]:
+
+        if not use_cache:
+            return self.inference.synthesize(texts=texts, length_scale=length_scale, noise_scale=noise_scale, use_cache=use_cache)
 
         logger.warning(f'You are using cached inference with length scale and noise scale '
                        f'{length_scale, noise_scale}. Note that changing these values '
@@ -143,7 +148,8 @@ class CachedInference(Inference):
             audio_list: List[np.ndarray] = self.inference.synthesize(
                 texts=texts_not_in_cache,
                 length_scale=length_scale,
-                noise_scale=noise_scale
+                noise_scale=noise_scale,
+                use_cache=use_cache
             )
             logger.info('Synthesizing is finished.')
             for text, audio in zip(texts_not_in_cache, audio_list):

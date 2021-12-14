@@ -10,14 +10,14 @@ from ondewo_grpc.ondewo.t2s import text_to_speech_pb2
 from tests.e2e.grpc_server_tests.t2s_servicer_tests.operations import OperationSynthesize, \
     OperationListPipelines, \
     OperationGetT2sPipeline, OperationCreateT2sPipeline, OperationDeleteT2sPipeline, \
-    OperationUpdateT2sPipeline, OperationListLanguages, OperationListDomains
+    OperationUpdateT2sPipeline, OperationListLanguages, OperationListDomains, OperationBatchSynthesize
 
 
 @pytest.fixture
 def clean_configs_dir() -> Iterator[None]:
     yield
     for pth in Path("tests", "resources", "configs").iterdir():
-        if pth.name not in ("config.yaml", "config_en.yaml") and pth.is_file():
+        if pth.name not in ("config.yaml", "config_en.yaml", "custom_phonemizers") and pth.is_file():
             pth.unlink()
 
 
@@ -68,14 +68,18 @@ class TestGRPC:
         response: text_to_speech_pb2.ListT2sPipelinesResponse = operation_list_ids.execute_grpc()
         assert len(response.pipelines) >= 1
         for pipeline in response.pipelines:
-            request: text_to_speech_pb2.SynthesizeRequest = text_to_speech_pb2.SynthesizeRequest(
-                text='some text',
+            config: text_to_speech_pb2.RequestConfig = text_to_speech_pb2.RequestConfig(
                 t2s_pipeline_id=pipeline.id,
                 audio_format=audio_format
+            )
+            request: text_to_speech_pb2.SynthesizeRequest = text_to_speech_pb2.SynthesizeRequest(
+                text='some text',
+                config=config
             )
             operation_synthesize: OperationSynthesize = OperationSynthesize(request=request)
             response_synthesize: text_to_speech_pb2.SynthesizeResponse = operation_synthesize.execute_grpc()
             assert response_synthesize.audio
+            assert response_synthesize.audio_uuid
             if audio_format in [text_to_speech_pb2.AudioFormat.wav,
                                 text_to_speech_pb2.AudioFormat.flac,
                                 text_to_speech_pb2.AudioFormat.caf,
@@ -84,6 +88,56 @@ class TestGRPC:
                 audio = sf.read(bio)
                 assert audio[1] == 22050
                 assert 0. < audio[0].max() < 1.
+
+    @staticmethod
+    @pytest.mark.parametrize('audio_format', text_to_speech_pb2.AudioFormat.values())
+    def test_batch_synthesize(audio_format: text_to_speech_pb2.AudioFormat) -> None:
+        list_pipelines_request = text_to_speech_pb2.ListT2sPipelinesRequest()
+        operation_list_ids: OperationListPipelines = OperationListPipelines(
+            request=list_pipelines_request, expected_to_fail=False)
+        response: text_to_speech_pb2.ListT2sPipelinesResponse = operation_list_ids.execute_grpc()
+        assert len(response.pipelines) >= 1
+        for pipeline_1, pipeline_2 in zip(*[iter(response.pipelines)]*2):
+            config_1: text_to_speech_pb2.RequestConfig = text_to_speech_pb2.RequestConfig(
+                t2s_pipeline_id=pipeline_1.id,
+                audio_format=audio_format
+            )
+            request_1: text_to_speech_pb2.SynthesizeRequest = text_to_speech_pb2.SynthesizeRequest(
+                text='some text 1',
+                config=config_1
+            )
+            config_2: text_to_speech_pb2.RequestConfig = text_to_speech_pb2.RequestConfig(
+                t2s_pipeline_id=pipeline_2.id,
+                audio_format=audio_format
+            )
+            request_2: text_to_speech_pb2.SynthesizeRequest = text_to_speech_pb2.SynthesizeRequest(
+                text='some text 2',
+                config=config_2
+            )
+            operation_synthesize_1: OperationSynthesize = OperationSynthesize(request=request_1)
+            response_synthesize_1: text_to_speech_pb2.SynthesizeResponse = operation_synthesize_1.execute_grpc()
+            assert response_synthesize_1.audio
+            assert response_synthesize_1.audio_uuid
+
+            operation_synthesize_2: OperationSynthesize = OperationSynthesize(request=request_2)
+            response_synthesize_2: text_to_speech_pb2.SynthesizeResponse = operation_synthesize_2.execute_grpc()
+            assert response_synthesize_2.audio
+            assert response_synthesize_2.audio_uuid
+
+            request: text_to_speech_pb2.BatchSynthesizeRequest = \
+                text_to_speech_pb2.BatchSynthesizeRequest(batch_request=[request_1, request_2])
+            operation_batch_synthesize: OperationBatchSynthesize = OperationBatchSynthesize(request=request)
+            response_batch_synthesize: text_to_speech_pb2.BatchSynthesizeResponse = operation_batch_synthesize.execute_grpc()
+
+            if audio_format in [text_to_speech_pb2.AudioFormat.wav,
+                                text_to_speech_pb2.AudioFormat.flac,
+                                text_to_speech_pb2.AudioFormat.caf,
+                                text_to_speech_pb2.AudioFormat.ogg]:
+                bio_1 = io.BytesIO(response_batch_synthesize.batch_response[0].audio)
+                bio_2 = io.BytesIO(response_batch_synthesize.batch_response[1].audio)
+                audio_1, audio_2 = sf.read(bio_1), sf.read(bio_2)
+                assert audio_1[1] == 22050 and audio_2[1] == 22050
+                assert 0. < audio_1[0].max() < 1. and 0. < audio_2[0].max() < 1.
 
     @staticmethod
     def test_get_t2s_pipeline() -> None:

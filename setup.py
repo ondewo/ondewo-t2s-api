@@ -9,7 +9,7 @@ with open("grpc_config_server/requirements.txt") as f:
 
 setuptools.setup(
     name="ONDEWO text-to-speech server",
-    version="0.1.0",
+    version="2.0.0",
     author="Ondewo GbmH",
     author_email="info@ondewo.com",
     description="Server for managing Text-To-Speech services",

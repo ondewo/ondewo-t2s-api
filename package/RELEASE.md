@@ -1,9 +1,21 @@
 # Release History
 
+
+## Release ONDEWO T2S 2.0.0
+
+### Improvements
+* [[OND232-211]](https://ondewo.atlassian.net/browse/OND232-211) Refactor synthesize request.
+* [[OND232-209]](https://ondewo.atlassian.net/browse/OND232-209) Improve english normalizer using NeMo. Remove Rest Server.
+
+## Release ONDEWO T2S 1.5.4
+
+### Improvements
+* [[OND232-205]](https://ondewo.atlassian.net/browse/OND232-205) Improved lookup for custom phonemizer.
+
 ## Release ONDEWO T2S 1.5.1
 
 ### Bug fixes
-
+* [[OND232-189]](https://ondewo.atlassian.net/browse/OND232-189) Added preprocessing english normalizer.
 * [[OND232-187]](https://ondewo.atlassian.net/browse/OND232-187) Fixed bug that did not allow load glow-tts model without gpu.
 
 ## Release ONDEWO T2S 1.5.0

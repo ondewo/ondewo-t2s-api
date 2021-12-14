@@ -24,7 +24,7 @@ class TestCustomPhonemizerServicer:
     @staticmethod
     def test_create_get_update_delete(clean_configs_dir: Iterator[None]) -> None:
         request: CreateCustomPhonemizerRequest = CreateCustomPhonemizerRequest(
-            prefix='test',
+            prefix='tests',
             maps=[Map(word='test_word', phoneme_groups='{T EH S T}')]
         )
         phonemizer_id_proto: custom_phonemizer_pb2.PhonemizerId = \

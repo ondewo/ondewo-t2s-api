@@ -29,6 +29,29 @@ class OperationSynthesize(OperationNode):
         assert not isinstance(self.result, text_to_speech_pb2.SynthesizeResponse)
 
 
+class OperationBatchSynthesize(OperationNode):
+    def __init__(self, request: text_to_speech_pb2.BatchSynthesizeRequest,
+                 expected_to_fail: bool = False) -> None:
+        super().__init__(expected_to_fail)
+        self.stub = text_to_speech_pb2_grpc.Text2SpeechStub(channel=self.channel)
+        self.request: text_to_speech_pb2.BatchSynthesizeRequest = request
+
+    def execute_grpc(self) -> Optional[text_to_speech_pb2.BatchSynthesizeResponse]:
+        f: Callable[[], Any] = lambda: self.stub.BatchSynthesize(
+            self.request,
+        )
+        self._execute_grpc_with_exception_handling(f)
+        return self.result
+
+    def _basic_positive_validate(self) -> None:
+        super(OperationBatchSynthesize, self)._basic_positive_validate()
+        assert isinstance(self.result, text_to_speech_pb2.BatchSynthesizeResponse)
+
+    def _basic_negative_validate(self) -> None:
+        super(OperationBatchSynthesize, self)._basic_negative_validate()
+        assert not isinstance(self.result, text_to_speech_pb2.BatchSynthesizeResponse)
+
+
 class OperationListPipelines(OperationNode):
     def __init__(self, request: text_to_speech_pb2.ListT2sPipelinesRequest, expected_to_fail: bool = False):
         super().__init__(expected_to_fail)
