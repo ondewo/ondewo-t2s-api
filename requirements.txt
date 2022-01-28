@@ -26,5 +26,5 @@ scipy
 soundfile
 torch
 transformers==4.13.0
-tritonclient[all]==2.3.0
+tritonclient[all]==2.17.0
 webdataset
