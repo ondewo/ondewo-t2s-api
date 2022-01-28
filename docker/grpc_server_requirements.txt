@@ -19,4 +19,4 @@ pysndfx
 python_speech_features
 ruamel.yaml
 transformers==4.13.0
-tritonclient[all]==2.16.0
+tritonclient[all]==2.17.0
