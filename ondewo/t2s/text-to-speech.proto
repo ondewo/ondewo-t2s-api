@@ -48,6 +48,9 @@ service Text2Speech {
     // Retrieve the list of domains given a specific config request.
     rpc ListT2sDomains (ListT2sDomainsRequest) returns (ListT2sDomainsResponse) {
     };
+    // Returns a message containing the version of the running text to speech server.
+    rpc GetServiceInfo (google.protobuf.Empty) returns (T2SGetServiceInfoResponse) {
+    };
 }
 
 ////////////////
@@ -175,7 +178,7 @@ message SynthesizeResponse {
 // GET SERVICE INFO //
 //////////////////////
 
-message GetServiceInfoResponse {
+message T2SGetServiceInfoResponse {
   string version = 1;
 }
 
@@ -303,23 +306,23 @@ message Text2SpeechConfig {
     string id = 1;
 
     // Required. Defines the description of the pipeline representation.
-    Description description = 2;
+    T2SDescription description = 2;
 
     // Required. Defines if the pipeline is active or inactive.
     bool active = 3;
 
     // Required. Defines he inference of the pipeline representation.
-    Inference inference = 4;
+    T2SInference inference = 4;
 
     // Required. Defines the normalization process of the pipeline representation.
-    Normalization normalization = 5;
+    T2SNormalization normalization = 5;
 
     // Required. Defines the postprocessing process of the pipeline representation.
     Postprocessing postprocessing = 6;
 }
 
 
-message Description {
+message T2SDescription {
     string language = 1;
     string speaker_sex = 2;
     string pipeline_owner = 3;
@@ -328,7 +331,7 @@ message Description {
     string domain = 6;
 }
 
-message Inference {
+message T2SInference {
     string type = 1;
     CompositeInference composite_inference = 2;
     Caching caching = 3;
@@ -402,7 +405,7 @@ message Caching {
     string cache_save_dir = 6;
 }
 
-message Normalization {
+message T2SNormalization {
     string language = 1;
     repeated string pipeline = 2;
     string custom_phonemizer_id = 3;
