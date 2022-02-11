@@ -1,5 +1,12 @@
 # Release History
 *****************
+## Release ONDEWO APIS 3.0.0
+
+### Breaking Changes
+* [[OND231-334]] -
+Rename Description, GetServiceInfoResponse, Inference and Normalization messages to include S2T
+
+*****************
 
 ## Release ONDEWO APIS 2.0.0
 
