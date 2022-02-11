@@ -291,6 +291,6 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
         T2SPipelineManager.remove_unused_models_from_cache()
 
     @staticmethod
-    def handle_get_service_info_response() -> text_to_speech_pb2.GetServiceInfoResponse:
+    def handle_get_service_info_response() -> text_to_speech_pb2.T2SGetServiceInfoResponse:
         version: str = __version__
-        return text_to_speech_pb2.GetServiceInfoResponse(version=version)
+        return text_to_speech_pb2.T2SGetServiceInfoResponse(version=version)
