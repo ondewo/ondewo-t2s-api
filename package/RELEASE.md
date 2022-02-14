@@ -1,5 +1,9 @@
 # Release History
 
+## Release ONDEWO S2T 3.0.0
+### Breaking Changes
+* [[OND231-334]] -
+Rename Description, GetServiceInfoResponse, Inference and Normalization messages to include T2S
 
 ## Release ONDEWO T2S 2.0.0
 
