@@ -71,6 +71,10 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
         self.handle_update_t2s_pipeline_request(request)
         return empty_pb2.Empty()
 
+    def GetServiceInfo(self, request: empty_pb2.Empty, context: grpc.ServicerContext) \
+            -> text_to_speech_pb2.T2SGetServiceInfoResponse:
+        return self.handle_get_service_info_response()
+
     @classmethod
     def _replace_default_values_request_config(
             self,

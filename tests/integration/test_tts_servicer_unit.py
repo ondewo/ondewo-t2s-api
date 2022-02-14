@@ -196,3 +196,10 @@ class TestGrpcServicerUnit:
             assert pipeline_config_updated_back.active
             assert T2SPipelineManager.get_t2s_pipeline(
                 t2s_pipeline_id=pipeline_config_updated_back.id) is not None
+
+    @staticmethod
+    def test_get_service_info() -> None:
+        response: text_to_speech_pb2.T2SGetServiceInfoResponse = \
+            Text2SpeechServicer.handle_get_service_info_response()
+        version: str = response.version
+        assert "." in version
