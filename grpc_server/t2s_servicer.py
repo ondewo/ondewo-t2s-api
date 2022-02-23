@@ -2,7 +2,7 @@ import io
 import os
 import re
 import time
-from typing import List, Tuple, Optional
+from typing import List, Optional
 
 import google.protobuf.empty_pb2 as empty_pb2
 import grpc

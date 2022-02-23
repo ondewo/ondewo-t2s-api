@@ -1,4 +1,5 @@
 import re
+from enum import Enum
 from typing import List, Tuple, Type, Optional, Callable
 
 from ondewo.logging.logger import logger_console as logger
@@ -7,6 +8,21 @@ from normalization.custom_phonemizer_manager import CustomPhonemizerManager
 from normalization.normalizer_interface import NormalizerInterface
 from normalization.text_splitter import TextSplitter
 from utils.data_classes.config_dataclass import NormalizationDataclass
+
+
+class TextMarkup(Enum):
+    NONE = 0
+    ARPABET = 1
+    IPA = 2
+    SSML_SAY_AS = 3
+
+    def markup_regex(self) -> re.Pattern:
+        if self.name == 'ARPABET':
+            return re.compile(r'(.*?)({.+?})(.*)')
+        elif self.name == 'IPA':
+            return re.compile(r'(.*?)([.+?])(.*)')
+        elif self.name == 'SSML_SAY_AS':
+            return re.compile(r'(.*?)([.+?])(.*)')
 
 
 class NormalizerPipeline:
@@ -36,7 +52,7 @@ class NormalizerPipeline:
         return Normalizer()
 
     def apply(self, text: str) -> List[str]:
-        text_pieces_annotated: List[Tuple[str, bool]] = self.extract_phonemized(text)
+        text_pieces_annotated: List[Tuple[str, Enum]] = self.extract_phonemized(text)
         normalized_text = self._apply_normalize(text_pieces_annotated=text_pieces_annotated)
         normalized_text = self.fix_punctuation(normalized_text)
         split_text: List[str] = self.splitter.split_texts([normalized_text])
@@ -47,6 +63,13 @@ class NormalizerPipeline:
         for text, is_phonemized in text_pieces_annotated:
             if is_phonemized:
                 normalized_texts.append(text)
+            elif is_ipa:
+                arpabet_text = ipa_2_arpabet(text)
+                normalized_texts.append(arpabet_text)
+            elif is_ssml:
+                ssml_text = SSMLFunction[ssml_code](text)
+                ssml_text_normalized = self._apply_all_steps(ssml_text)
+                normalized_texts.append(ssml_text_normalized)
             else:
                 normalized_texts.append(self._apply_all_steps(text))
         text = ' '.join(normalized_texts)
