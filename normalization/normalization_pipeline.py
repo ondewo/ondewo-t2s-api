@@ -10,21 +10,6 @@ from normalization.text_splitter import TextSplitter
 from utils.data_classes.config_dataclass import NormalizationDataclass
 
 
-class TextMarkup(Enum):
-    NONE = 0
-    ARPABET = 1
-    IPA = 2
-    SSML_SAY_AS = 3
-
-    def markup_regex(self) -> re.Pattern:
-        if self.name == 'ARPABET':
-            return re.compile(r'(.*?)({.+?})(.*)')
-        elif self.name == 'IPA':
-            return re.compile(r'(.*?)([.+?])(.*)')
-        elif self.name == 'SSML_SAY_AS':
-            return re.compile(r'(.*?)([.+?])(.*)')
-
-
 class NormalizerPipeline:
     _curly_re = re.compile(r'(.*?)({.+?})(.*)')
     pttrn_punkt = re.compile(r'[.?!](\s*)$')

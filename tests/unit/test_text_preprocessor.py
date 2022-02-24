@@ -1,5 +1,5 @@
 import os
-from typing import List, Callable, Dict, Any
+from typing import List, Callable, Dict, Any, Tuple
 
 import numpy as np
 import pytest
@@ -7,6 +7,8 @@ from ruamel import yaml
 
 from inference.text2mel.glow_tts_text_processor import GlowTTSTextProcessor
 from normalization.normalization_pipeline import NormalizerPipeline
+from normalization.text_markup_dataclass import ArpabetMarkup, IPAMarkup, SSMLMarkup
+from normalization.text_markup_extractor import ArpabetMarkupExtractor, IPAMarkupExtractor, SSMLMarkupExtractor
 from utils.data_classes.config_dataclass import NormalizationDataclass
 
 
@@ -75,3 +77,61 @@ class TestTextPreprocessor:
         normalizer_pipeline = get_normalizer_pipeline(config_path=config_path)
         normalized_text = normalizer_pipeline.apply(text)
         assert normalized_text == expected
+
+    @staticmethod
+    @pytest.mark.parametrize('text, expected_extractions', [
+        ('This is', []),
+        ('This is {test}', [ArpabetMarkup(text='test', start=8, end=14)]),
+        ('This is {test} and {test}', [
+            ArpabetMarkup(text='test', start=8, end=14),
+            ArpabetMarkup(text='test', start=19, end=25)
+        ])
+    ])
+    def test_arpabet_extractor(text: str, expected_extractions: List[ArpabetMarkup]) -> None:
+        arpabet_extractor = ArpabetMarkupExtractor()
+        extractions = arpabet_extractor.find_all_positions(text)
+        assert extractions == expected_extractions
+
+    @staticmethod
+    @pytest.mark.parametrize('text, expected_extractions', [
+        ('This is', []),
+        ('This is [test]', [IPAMarkup(text='test', start=8, end=14)]),
+        ('This is [test] and [test]', [
+            IPAMarkup(text='test', start=8, end=14),
+            IPAMarkup(text='test', start=19, end=25)
+        ])
+    ])
+    def test_ipa_extractor(text: str, expected_extractions: List[IPAMarkup]) -> None:
+        ipa_extractor = IPAMarkupExtractor()
+        extractions = ipa_extractor.find_all_positions(text)
+        assert extractions == expected_extractions
+
+    @staticmethod
+    @pytest.mark.parametrize('text, expected_extractions', [
+        # ('This is', []),
+        ('This is <say-as interpret-as="spell">test</say-as>', [
+            SSMLMarkup(text='test', start=8, end=50, type="say-as", attribute="spell")]),
+        ('This is <say-as interpret-as="spell">test</say-as> and <say-as interpret-as="spell">test</say-as>', [
+            SSMLMarkup(text='test', start=8, end=50, type="say-as", attribute="spell"),
+            SSMLMarkup(text='test', start=55, end=97, type="say-as", attribute="spell")
+        ])
+    ])
+    def test_ssml_extractor(text: str, expected_extractions: List[IPAMarkup]) -> None:
+        ssml_extractor = SSMLMarkupExtractor()
+        extractions = ssml_extractor.find_all_positions(text)
+        assert extractions == expected_extractions
+
+    @staticmethod
+    @pytest.mark.parametrize('text, extract_phonemized_expected', [
+        ('Hello nothing', [('Hello nothing', False)]),
+        ('Hello this is a {test}', [('Hello this is a ', False), ('{test}', True)]),
+    ])
+    def test_update_t2s_pipeline_deactivate_unit(
+            text: str,
+            extract_phonemized_expected: List[Tuple[str, bool]]
+    ) -> None:
+        config_path: str = 'normalizer_pipeline_de.yaml'
+        normalizer_pipeline = get_normalizer_pipeline(config_path=config_path)
+        extract_phonemized = normalizer_pipeline.extract_phonemized(text)
+        assert extract_phonemized == extract_phonemized_expected
+
