@@ -262,15 +262,15 @@ class InferenceDataclass:
     composite_inference: CompositeInferenceDataclass
     caching: CachingDataclass
 
-    def to_proto(self) -> text_to_speech_pb2.Inference:
-        return text_to_speech_pb2.Inference(
+    def to_proto(self) -> text_to_speech_pb2.T2SInference:
+        return text_to_speech_pb2.T2SInference(
             type=self.type,
             composite_inference=self.composite_inference.to_proto(),
             caching=self.caching.to_proto()
         )
 
     @classmethod
-    def from_proto(cls, proto: text_to_speech_pb2.Inference) -> 'InferenceDataclass':
+    def from_proto(cls, proto: text_to_speech_pb2.T2SInference) -> 'InferenceDataclass':
         return cls(
             type=proto.type,
             composite_inference=CompositeInferenceDataclass.from_proto(proto=proto.composite_inference),
@@ -285,15 +285,15 @@ class NormalizationDataclass:
     pipeline: List[str]
     custom_phonemizer_id: str
 
-    def to_proto(self) -> text_to_speech_pb2.Normalization:
-        return text_to_speech_pb2.Normalization(
+    def to_proto(self) -> text_to_speech_pb2.T2SNormalization:
+        return text_to_speech_pb2.T2SNormalization(
             language=self.language,
             pipeline=self.pipeline,
             custom_phonemizer_id=self.custom_phonemizer_id,
         )
 
     @classmethod
-    def from_proto(cls, proto: text_to_speech_pb2.Normalization) -> 'NormalizationDataclass':
+    def from_proto(cls, proto: text_to_speech_pb2.T2SNormalization) -> 'NormalizationDataclass':
         return cls(
             language=proto.language,
             pipeline=list(proto.pipeline),
@@ -405,8 +405,8 @@ class DescriptionDataclass(object):
     speaker_name: str
     domain: str
 
-    def to_proto(self) -> text_to_speech_pb2.Description:
-        return text_to_speech_pb2.Description(
+    def to_proto(self) -> text_to_speech_pb2.T2SDescription:
+        return text_to_speech_pb2.T2SDescription(
             language=self.language,
             speaker_sex=self.speaker_sex,
             pipeline_owner=self.pipeline_owner,
@@ -416,7 +416,7 @@ class DescriptionDataclass(object):
         )
 
     @classmethod
-    def from_proto(cls, proto: text_to_speech_pb2.Description) -> 'DescriptionDataclass':
+    def from_proto(cls, proto: text_to_speech_pb2.T2SDescription) -> 'DescriptionDataclass':
         return cls(
             language=proto.language,
             speaker_sex=proto.speaker_sex,
