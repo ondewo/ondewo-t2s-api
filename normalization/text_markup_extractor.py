@@ -1,26 +1,28 @@
 import abc
+import functools
 import re
 from abc import ABC
 from enum import EnumMeta, Enum
-from typing import Optional, Tuple, List, Dict
+from typing import Optional, List, Dict
 
-from normalization.text_markup_dataclass import BaseMarkup, ArpabetMarkup, IPAMarkup, SSMLMarkup
+from normalization.text_markup_dataclass import BaseMarkup, ArpabetMarkup, IPAMarkup, SSMLMarkup, TextMarkup
 
 
 class TextMarkupExtractor(ABC):
     MARKUP: Optional[re.Pattern] = None
 
+    @classmethod
     @abc.abstractmethod
-    def find_all_positions(self, text: str) -> List[BaseMarkup]:
+    def extract(cls, text: str) -> List[BaseMarkup]:
         pass
 
 
 class ArpabetMarkupExtractor(TextMarkupExtractor):
     MARKUP = re.compile(r'{(.+?)}')
 
-    def find_all_positions(self, text: str) -> List[ArpabetMarkup]:
+    def extract(cls, text: str) -> List[ArpabetMarkup]:
         occurances: List[ArpabetMarkup] = []
-        for m in self.MARKUP.finditer(text):
+        for m in cls.MARKUP.finditer(text):
             occurances.append(
                 ArpabetMarkup(text=m.group(1), start=m.span()[0], end=m.span()[1])
             )
@@ -30,9 +32,9 @@ class ArpabetMarkupExtractor(TextMarkupExtractor):
 class IPAMarkupExtractor(TextMarkupExtractor):
     MARKUP = re.compile(r'\[(.+?)\]')
 
-    def find_all_positions(self, text: str) -> List[IPAMarkup]:
+    def extract(cls, text: str) -> List[IPAMarkup]:
         occurances: List[IPAMarkup] = []
-        for m in self.MARKUP.finditer(text):
+        for m in cls.MARKUP.finditer(text):
             occurances.append(
                 IPAMarkup(text=m.group(1), start=m.span()[0], end=m.span()[1])
             )
@@ -40,14 +42,13 @@ class IPAMarkupExtractor(TextMarkupExtractor):
 
 
 class SSMLMarkupExtractor(TextMarkupExtractor):
-
     TYPE_ATTRIBUTE_DICT: Dict[str, str] = {
         'say-as': ['interpret-as']
     }
 
-    def find_all_positions(self, text: str) -> List[SSMLMarkup]:
+    def extract(cls, text: str) -> List[SSMLMarkup]:
         occurances: List[SSMLMarkup] = []
-        for type, attributes in self.TYPE_ATTRIBUTE_DICT.items():
+        for type, attributes in cls.TYPE_ATTRIBUTE_DICT.items():
             for attribute in attributes:
                 markup = re.compile(rf'<{type} {attribute}="(.+?)">(.+?)</{type}>')
                 for m in markup.finditer(text):
@@ -75,23 +76,57 @@ class CustomEnumMeta(EnumMeta):
             raise KeyError(f"Type {name} is not valid. Valid types are {[item.name for item in cls]}")
 
 
-class TextMarkupExtractorFactory(Enum, metaclass=CustomEnumMeta):
+class CompositeTextMarkupExtractor(Enum, metaclass=CustomEnumMeta):
+    """ Class that combines various markup extractors"""
     ARPABET = ArpabetMarkupExtractor
+    IPA = IPAMarkupExtractor
+    SSML = SSMLMarkupExtractor
 
     def create_parser(self, **kwargs) -> TextMarkupExtractor:
         return self.value(**kwargs)
 
+    @classmethod
+    def extract(cls, text: str) -> List[BaseMarkup]:
+        extracted_markups: List[BaseMarkup] = []
+        for extractor in cls:
+            extracted_markups.extend(extractor.value().extract(text))
 
-class TextMarkupExtractor(Enum):
-    NONE = 0
-    ARPABET = 1
-    IPA = 2
-    SSML_SAY_AS = 3
+        extracted_markups.sort(key=lambda x: x.start)
+        return cls.check_markups_ordered(text, extracted_markups)
 
-    def markup_regex(self) -> re.Pattern:
-        if self.name == 'ARPABET':
-            return re.compile(r'({.+?})')
-        elif self.name == 'IPA':
-            return re.compile(r'([.+?])')
-        elif self.name == 'SSML_SAY_AS':
-            return re.compile(r'(<say-as.+?>)')
+    @classmethod
+    def check_markups_ordered(cls, text: str, extracted_markups: List[BaseMarkup]) -> List[BaseMarkup]:
+        extended_markup_list: List[BaseMarkup] = []
+        last_markup_end = 0
+        for markup in extracted_markups:
+            if last_markup_end > markup.start:
+                raise ValueError(f'End of last markup at position {last_markup_end} overlaps with {markup}!')
+
+            # Add normal text markups to list
+            extended_markup_list.append(
+                TextMarkup(
+                    text=text[last_markup_end:markup.start],
+                    start=last_markup_end,
+                    end=markup.start,
+                )
+            )
+            extended_markup_list.append(markup)
+            last_markup_end = markup.end
+        # Add normal text markups to list
+        extended_markup_list.append(
+            TextMarkup(
+                text=text[last_markup_end:],
+                start=last_markup_end,
+                end=len(text),
+            )
+        )
+
+        # Filter out empty strings
+        empty_string = re.compile(r'^[ ]*$')
+        extended_markup_list = list(filter(lambda x: not empty_string.match(x.text), extended_markup_list))
+        return extended_markup_list
+
+
+if __name__ == '__main__':
+    markups = CompositeTextMarkupExtractor.extract('hello [asdf] with <say-as interpret-as="spell">test</say-as> {this} is')
+    print(markups)

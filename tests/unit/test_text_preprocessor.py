@@ -7,8 +7,9 @@ from ruamel import yaml
 
 from inference.text2mel.glow_tts_text_processor import GlowTTSTextProcessor
 from normalization.normalization_pipeline import NormalizerPipeline
-from normalization.text_markup_dataclass import ArpabetMarkup, IPAMarkup, SSMLMarkup
-from normalization.text_markup_extractor import ArpabetMarkupExtractor, IPAMarkupExtractor, SSMLMarkupExtractor
+from normalization.text_markup_dataclass import ArpabetMarkup, IPAMarkup, SSMLMarkup, TextMarkup
+from normalization.text_markup_extractor import ArpabetMarkupExtractor, IPAMarkupExtractor, SSMLMarkupExtractor, \
+    CompositeTextMarkupExtractor
 from utils.data_classes.config_dataclass import NormalizationDataclass
 
 
@@ -89,7 +90,7 @@ class TestTextPreprocessor:
     ])
     def test_arpabet_extractor(text: str, expected_extractions: List[ArpabetMarkup]) -> None:
         arpabet_extractor = ArpabetMarkupExtractor()
-        extractions = arpabet_extractor.find_all_positions(text)
+        extractions = arpabet_extractor.extract(text)
         assert extractions == expected_extractions
 
     @staticmethod
@@ -103,22 +104,49 @@ class TestTextPreprocessor:
     ])
     def test_ipa_extractor(text: str, expected_extractions: List[IPAMarkup]) -> None:
         ipa_extractor = IPAMarkupExtractor()
-        extractions = ipa_extractor.find_all_positions(text)
+        extractions = ipa_extractor.extract(text)
         assert extractions == expected_extractions
 
     @staticmethod
     @pytest.mark.parametrize('text, expected_extractions', [
-        # ('This is', []),
+        ('This is', []),
         ('This is <say-as interpret-as="spell">test</say-as>', [
             SSMLMarkup(text='test', start=8, end=50, type="say-as", attribute="spell")]),
-        ('This is <say-as interpret-as="spell">test</say-as> and <say-as interpret-as="spell">test</say-as>', [
+        ('This is <say-as interpret-as="spell">test</say-as> and <say-as interpret-as='
+         '"spell-with-names">test</say-as>', [
             SSMLMarkup(text='test', start=8, end=50, type="say-as", attribute="spell"),
-            SSMLMarkup(text='test', start=55, end=97, type="say-as", attribute="spell")
+            SSMLMarkup(text='test', start=55, end=108, type="say-as", attribute="spell-with-names")
         ])
     ])
     def test_ssml_extractor(text: str, expected_extractions: List[IPAMarkup]) -> None:
         ssml_extractor = SSMLMarkupExtractor()
-        extractions = ssml_extractor.find_all_positions(text)
+        extractions = ssml_extractor.extract(text)
+        assert extractions == expected_extractions
+
+    @staticmethod
+    @pytest.mark.parametrize('text, expected_extractions', [
+        ('This is', [TextMarkup(text='This is', start=0, end=7)]),
+        ('This is <say-as interpret-as="spell">test</say-as>', [
+            TextMarkup(text='This is ', start=0, end=8),
+            SSMLMarkup(text='test', start=8, end=50, type="say-as", attribute="spell")
+        ]),
+        ('This is <say-as interpret-as="spell">test</say-as><say-as interpret-as="spell">test2</say-as>', [
+            TextMarkup(text='This is ', start=0, end=8),
+            SSMLMarkup(text='test', start=8, end=50, type="say-as", attribute="spell"),
+            SSMLMarkup(text='test2', start=50, end=93, type="say-as", attribute="spell")
+        ]),
+        ('hello [asdf] with <say-as interpret-as="spell">test</say-as> {this} is', [
+            TextMarkup(text='hello ', start=0, end=6),
+            IPAMarkup(text='asdf', start=6, end=12),
+            TextMarkup(text=' with ', start=12, end=18),
+            SSMLMarkup(text='test', start=18, end=60, type='say-as', attribute='spell'),
+            ArpabetMarkup(text='this', start=61, end=67),
+            TextMarkup(text=' is', start=67, end=70)
+        ])
+    ])
+    def test_composite_extractor(text: str, expected_extractions: List[IPAMarkup]) -> None:
+        composite_extractor = CompositeTextMarkupExtractor
+        extractions = composite_extractor.extract(text)
         assert extractions == expected_extractions
 
     @staticmethod
