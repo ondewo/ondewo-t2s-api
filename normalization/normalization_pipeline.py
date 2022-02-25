@@ -47,6 +47,7 @@ class NormalizerPipeline:
 
     def _apply_normalize(self, markup_list: List[BaseMarkup]) -> str:
         normalized_texts: List[str] = []
+
         for markup in markup_list:
             if isinstance(markup, ArpabetMarkup):
                 normalized_texts.append(markup.text)

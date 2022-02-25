@@ -74,16 +74,18 @@ class CompositeTextMarkupExtractor(Enum, metaclass=EnumMeta):
         return self.value(**kwargs)
 
     @classmethod
-    def extract(cls, text: str) -> List[BaseMarkup]:
+    def extract(cls, text: str, extractors_to_skip: List[str] = []) -> List[BaseMarkup]:
         extracted_markups: List[BaseMarkup] = []
         for extractor in cls:
+            if extractor.name in extractors_to_skip:
+                continue
             extracted_markups.extend(extractor.value().extract(text))
 
         extracted_markups.sort(key=lambda x: x.start)
-        return cls.check_markups_ordered(text, extracted_markups)
+        return cls.add_text_markups(text, extracted_markups)
 
     @classmethod
-    def check_markups_ordered(cls, text: str, extracted_markups: List[BaseMarkup]) -> List[BaseMarkup]:
+    def add_text_markups(cls, text: str, extracted_markups: List[BaseMarkup]) -> List[BaseMarkup]:
         extended_markup_list: List[BaseMarkup] = []
         last_markup_end = 0
         for markup in extracted_markups:

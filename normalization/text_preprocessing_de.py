@@ -359,7 +359,6 @@ class TextNormalizerDe(NormalizerInterface):
         Returns:
 
         """
-        text = self.normalize_ssml(text=text)
         text = self.fix_plus(text=text)
         text = self.normalize_urls(text=text)
         text = self.normalize_dates(text=text)
