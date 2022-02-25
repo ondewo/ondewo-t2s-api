@@ -333,10 +333,10 @@ class TextNormalizerDe(NormalizerInterface):
             text = text.replace(year_str, year_txt)
         return text
 
-    def normalize_ssml(self, text: str) -> str:
-        for ssml_str in self.pttrn_ssml.findall(text):
-            ssml_text = self.texturize_ssml(text=ssml_str[0], mode=ssml_str[1])
-            text = text.replace(ssml_text, ssml_text)
+    def normalize_ssml(self, text: str, NormalizerPipeline) -> str:
+        for ssml_str in self.pttrn_ssml.findall(text.lower()):
+            ssml_text = self.texturize_ssml(text=ssml_str[1], mode=ssml_str[0])
+            text = text.replace(text, ssml_text)
         return text
 
     @staticmethod
@@ -418,10 +418,14 @@ class TextNormalizerDe(NormalizerInterface):
 
     def texturize_ssml(self, text: str, mode: str):
         textured_ssml = ''
-        if mode == "spell":
-            textured_ssml = " ".join(text)
-        elif mode == "spell-with-names":
-            textured_ssml = "A"
-            for letter in text:
-                textured_ssml += ' wie ' + self.name_mapping[letter.upper()] + ','
+        for token in text:
+            if mode == "spell-with-names" and token in self.name_mapping.keys():
+                textured_ssml += self.char_mapping[token.lower()] + ' wie ' + self.name_mapping[token.lower()]
+            elif token.lower() in self.char_mapping.keys():
+                textured_ssml += self.char_mapping[token]
+            elif token.isnumeric():
+                textured_ssml += self.normalize_numbers(token)
+            else:
+                textured_ssml += token
+            textured_ssml += ' '
         return textured_ssml
