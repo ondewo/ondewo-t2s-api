@@ -6,6 +6,7 @@ from normalization.normalizer_interface import NormalizerInterface
 
 
 class TextNormalizerDe(NormalizerInterface):
+    pttrn_ssml = re.compile('<say-as interpret-as=\"(.*)\">(.*)</say-as>')
     pttrn_spaces_bw_num = re.compile(r'(\d)\s+(\d)')
     pttrn_numbers = re.compile(r'([^0-9]|\b)(\d+)([^0-9]|\b)')
     pttrn_space = re.compile(r'\s+')
@@ -26,6 +27,13 @@ class TextNormalizerDe(NormalizerInterface):
                                     'x': 'iks', 'y': 'upsilon', 'z': 'tsett', 'ä': 'ah umlaut',
                                     'ö': 'oh umlaut', 'ü': 'uh umlaut', 'ß': 'esstsett', '-': 'strich',
                                     '/': 'schrägstrich', '.': 'punkt', }
+
+    name_mapping: Dict[str, str] = {'a': 'Albert', 'b': 'Bernhard', 'c': 'Charlotte', 'd': 'David', 'e': 'Emil',
+                                    'f': 'Friedrich', 'g': 'Gustav', 'h': 'Heinrich', 'i': 'Ida', 'j': 'Jakob',
+                                    'k': 'Katharina', 'l': 'Ludwig', 'm': 'Marie', 'n': 'Nathan', 'o': 'Otto',
+                                    'p': 'Paula', 'q': 'Quelle', 'r': 'Richard', 's': 'Samuel', 't': 'Theodor',
+                                    'u': 'Ulrich', 'v': 'Viktor', 'w': 'Wilhelm', 'x': 'Xanthippe', 'y': 'Ypsilon',
+                                    'z': 'Zacharias'}
 
     domain_str: str = r'(?:com|net|org|edu|gov|mil|aero|asia|biz|cat|coop|info|int|jobs|mobi|museum|name|' \
                       r'post|pro|tel|travel|xxx|ac|ad|ae|af|ag|ai|al|am|an|ao|aq|ar|as|at|au|aw|ax|az|ba|' \
@@ -325,6 +333,12 @@ class TextNormalizerDe(NormalizerInterface):
             text = text.replace(year_str, year_txt)
         return text
 
+    def normalize_ssml(self, text: str) -> str:
+        for ssml_str in self.pttrn_ssml.findall(text):
+            ssml_text = self.texturize_ssml(text=ssml_str[0], mode=ssml_str[1])
+            text = text.replace(ssml_text, ssml_text)
+        return text
+
     @staticmethod
     def fix_plus(text: str) -> str:
         text = text.strip()
@@ -345,6 +359,7 @@ class TextNormalizerDe(NormalizerInterface):
         Returns:
 
         """
+        text = self.normalize_ssml(text=text)
         text = self.fix_plus(text=text)
         text = self.normalize_urls(text=text)
         text = self.normalize_dates(text=text)
@@ -400,3 +415,13 @@ class TextNormalizerDe(NormalizerInterface):
             url_normalized += url_piece + ' '
 
         return url_normalized
+
+    def texturize_ssml(self, text: str, mode: str):
+        textured_ssml = ''
+        if mode == "spell":
+            textured_ssml = " ".join(text)
+        elif mode == "spell-with-names":
+            textured_ssml = "A"
+            for letter in text:
+                textured_ssml += ' wie ' + self.name_mapping[letter.upper()] + ','
+        return textured_ssml
