@@ -16,6 +16,7 @@ class SSMLProcessor:
         method_name = method_name.replace('-', '_')
         method = self.__getattribute__(method_name)
         texturized_ssml = method(text)
+        '{ae} like Anton'
         return CompositeTextMarkupExtractor.extract(texturized_ssml, extractors_to_skip=['IPA', 'SSML'])
 
     def say_as__spell(self, text: str) -> str:
