@@ -7,17 +7,21 @@ class BaseMarkup:
     start: int
     end: int
 
+
 @dataclass
 class TextMarkup(BaseMarkup):
     pass
+
 
 @dataclass
 class ArpabetMarkup(BaseMarkup):
     pass
 
+
 @dataclass
 class IPAMarkup(BaseMarkup):
     pass
+
 
 @dataclass
 class SSMLMarkup(BaseMarkup):

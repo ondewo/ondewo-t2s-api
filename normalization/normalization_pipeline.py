@@ -50,9 +50,10 @@ class NormalizerPipeline:
         for markup in markup_list:
             if isinstance(markup, ArpabetMarkup):
                 normalized_texts.append(markup.text)
-            elif isinstance(markup, IPAMarkup):
-                arpabet_text = ipa_2_arpabet(markup.text)
-                normalized_texts.append(arpabet_text)
+            #Todo: Implement IPA
+            # elif isinstance(markup, IPAMarkup):
+            #     arpabet_text = ipa_2_arpabet(markup.text)
+            #     normalized_texts.append(arpabet_text)
             elif isinstance(markup, SSMLMarkup):
                 ssml_text = SSMLFunction[ssml_code](text)
                 ssml_text_normalized = self._apply_all_steps(ssml_text)
