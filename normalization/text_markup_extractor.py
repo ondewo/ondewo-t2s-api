@@ -64,19 +64,7 @@ class SSMLMarkupExtractor(TextMarkupExtractor):
         return occurances
 
 
-class CustomEnumMeta(EnumMeta):
-    """
-    This metaclass only introduces new error message in ParserTelephonizerFactory enum
-    """
-
-    def __getitem__(cls, name: str) -> 'TextMarkupExtractorFactory':
-        try:
-            return super().__getitem__(name)
-        except KeyError:
-            raise KeyError(f"Type {name} is not valid. Valid types are {[item.name for item in cls]}")
-
-
-class CompositeTextMarkupExtractor(Enum, metaclass=CustomEnumMeta):
+class CompositeTextMarkupExtractor(Enum, metaclass=EnumMeta):
     """ Class that combines various markup extractors"""
     ARPABET = ArpabetMarkupExtractor
     IPA = IPAMarkupExtractor
