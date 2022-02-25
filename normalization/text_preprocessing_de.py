@@ -416,16 +416,3 @@ class TextNormalizerDe(NormalizerInterface):
 
         return url_normalized
 
-    def texturize_ssml(self, text: str, mode: str):
-        textured_ssml = ''
-        for token in text:
-            if mode == "spell-with-names" and token in self.name_mapping.keys():
-                textured_ssml += self.char_mapping[token.lower()] + ' wie ' + self.name_mapping[token.lower()]
-            elif token.lower() in self.char_mapping.keys():
-                textured_ssml += self.char_mapping[token]
-            elif token.isnumeric():
-                textured_ssml += self.normalize_numbers(token)
-            else:
-                textured_ssml += token
-            textured_ssml += ' '
-        return textured_ssml
