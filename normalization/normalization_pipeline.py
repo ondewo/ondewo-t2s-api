@@ -6,6 +6,8 @@ from ondewo.logging.logger import logger_console as logger
 
 from normalization.custom_phonemizer_manager import CustomPhonemizerManager
 from normalization.normalizer_interface import NormalizerInterface
+from normalization.text_markup_dataclass import BaseMarkup, ArpabetMarkup, IPAMarkup, SSMLMarkup, TextMarkup
+from normalization.text_markup_extractor import CompositeTextMarkupExtractor
 from normalization.text_splitter import TextSplitter
 from utils.data_classes.config_dataclass import NormalizationDataclass
 
@@ -37,26 +39,29 @@ class NormalizerPipeline:
         return Normalizer()
 
     def apply(self, text: str) -> List[str]:
-        text_pieces_annotated: List[Tuple[str, Enum]] = self.extract_phonemized(text)
+        text_pieces_annotated: List[BaseMarkup] = CompositeTextMarkupExtractor.extract(text)
         normalized_text = self._apply_normalize(text_pieces_annotated=text_pieces_annotated)
         normalized_text = self.fix_punctuation(normalized_text)
         split_text: List[str] = self.splitter.split_texts([normalized_text])
         return split_text
 
-    def _apply_normalize(self, text_pieces_annotated: List[Tuple[str, bool]]) -> str:
+    def _apply_normalize(self, markup_list: List[BaseMarkup]) -> str:
         normalized_texts: List[str] = []
-        for text, is_phonemized in text_pieces_annotated:
-            if is_phonemized:
-                normalized_texts.append(text)
-            elif is_ipa:
-                arpabet_text = ipa_2_arpabet(text)
-                normalized_texts.append(arpabet_text)
-            elif is_ssml:
+        for markup in markup_list:
+            if isinstance(markup, ArpabetMarkup):
+                normalized_texts.append(markup.text)
+            #Todo: Implement IPA
+            # elif isinstance(markup, IPAMarkup):
+            #     arpabet_text = ipa_2_arpabet(markup.text)
+            #     normalized_texts.append(arpabet_text)
+            elif isinstance(markup, SSMLMarkup):
                 ssml_text = SSMLFunction[ssml_code](text)
                 ssml_text_normalized = self._apply_all_steps(ssml_text)
                 normalized_texts.append(ssml_text_normalized)
+            elif isinstance(markup, TextMarkup):
+                normalized_texts.append(self._apply_all_steps(markup.text))
             else:
-                normalized_texts.append(self._apply_all_steps(text))
+                logger.warning(f'Markup {markup} not recognized.')
         text = ' '.join(normalized_texts)
         return text
 
