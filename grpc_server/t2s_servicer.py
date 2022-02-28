@@ -124,6 +124,7 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
         if re.search(r'[A-Za-z0-9]+', text):
             logger.info(f'Text to transcribe: "{text}"')
             texts: List[str] = t2s_pipeline.normalizer.apply(text)
+            print(f"NORMALIZED TEXT: {texts}")
             logger.info(f'After normalization texts are: {texts}')
 
             audio_list: List[np.ndarray] = t2s_pipeline.inference.synthesize(
