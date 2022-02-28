@@ -78,7 +78,7 @@ class TestGrpcServicerUnit:
         response: text_to_speech_pb2.ListT2sPipelinesResponse = \
             Text2SpeechServicer().handle_list_t2s_pipeline_ids_request(request=list_pipelines_request)
         assert len(response.pipelines) == 2
-        for pipeline_1, pipeline_2 in zip(*[iter(response.pipelines)]*2):
+        for pipeline_1, pipeline_2 in zip(*[iter(response.pipelines)] * 2):
             config_1: text_to_speech_pb2.RequestConfig = text_to_speech_pb2.RequestConfig(
                 t2s_pipeline_id=pipeline_1.id,
                 audio_format=audio_format)
@@ -203,3 +203,39 @@ class TestGrpcServicerUnit:
             Text2SpeechServicer.handle_get_service_info_response()
         version: str = response.version
         assert "." in version
+
+    @staticmethod
+    @pytest.mark.parametrize('text, expected_result', [
+        ('<say-as interpret-as="spell">ABCD</say-as>', 'ah beh tsehe deh.'),
+        ('<say-as interpret-as="spell">A9B109CD</say-as>', 'ah neun beh eins null neun tsehe deh.'),
+        ('<say-as interpret-as="spell">A9B-109-CD</say-as>', 'ah neun beh strich eins null neun strich tsehe deh.'),
+        ('<say-as interpret-as="spell">9657</say-as>', 'neun sechs fünf sieben.'),
+        ('<say-as interpret-as="spell">96AAA57</say-as>', 'neun sechs  ah ah ah  fünf sieben.'),
+        ('<say-as interpret-as="spell-with-names">ABCD</say-as>', 'ah wie albert beh wie bernhard tsehe wie charlotte'
+                                                                  'deh wie david.'),
+        ('<say-as interpret-as="spell-with-names">A9B109CD</say-as>', 'ah wie albert neun beh wie bernhard eins null '
+                                                                      'neun tsehe wie charlotte deh wie david.'),
+        ('<say-as interpret-as="spell-with-names">A9B-109-CD</say-as>', 'ah wie albert neun beh wie bernhard strich '
+                                                                        'eins null neun strich tsehe wie charlotte '
+                                                                        'deh wie david.'),
+        ('<say-as interpret-as="spell-with-names">9657</say-as>', 'neun sechs fünf sieben.'),
+        ('<say-as interpret-as="spell-with-names">96AAA57</say-as>', 'neun sechs ah wie Albert ah wie Albert ah '
+                                                                     'wie Albert fünf sieben.'),
+    ])
+    def test_synthesize_unit_with_ssml(create_pipelines: None, text: str, expected_result: str):
+        list_pipelines_request = text_to_speech_pb2.ListT2sPipelinesRequest()
+        response: text_to_speech_pb2.ListT2sPipelinesResponse = \
+            Text2SpeechServicer().handle_list_t2s_pipeline_ids_request(request=list_pipelines_request)
+        assert len(response.pipelines) == 2
+        for pipeline in response.pipelines:
+            config: text_to_speech_pb2.RequestConfig = text_to_speech_pb2.RequestConfig(
+                t2s_pipeline_id=pipeline.id,
+                audio_format=text_to_speech_pb2.AudioFormat.wav)
+            request: text_to_speech_pb2.SynthesizeRequest = text_to_speech_pb2.SynthesizeRequest(
+                text=text,
+                config=config
+            )
+            response_synthesize: text_to_speech_pb2.SynthesizeResponse = \
+                Text2SpeechServicer().handle_synthesize_request(request=request)
+            assert response_synthesize.audio
+            assert response_synthesize.text == expected_result

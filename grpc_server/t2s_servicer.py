@@ -154,7 +154,7 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
             audio=out.read(),
             generation_time=time.perf_counter() - start_time,
             audio_length=len(audio) / sample_rate,
-            text=text,
+            text=''.join(texts),
             config=request.config,
         )
 

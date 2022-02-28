@@ -1,6 +1,7 @@
 import re
+from abc import ABC
 from datetime import date, time
-from typing import Dict, List, Any
+from typing import Dict, List
 
 from normalization.normalizer_interface import NormalizerInterface
 
@@ -46,6 +47,8 @@ class TextNormalizerDe(NormalizerInterface):
                       r'pn|pr|ps|pt|pw|py|qa|re|ro|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|Ja|sk|sl|sm|sn|so|' \
                       r'sr|ss|st|su|sv|sx|sy|sz|tc|td|tf|tg|th|tj|tk|tl|tm|tn|to|tp|tr|tt|tv|tw|tz|ua|ug|' \
                       r'uk|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|yu|za|zm|zw)'
+
+    like_token: str = 'wie'
 
     pttrn_url = re.compile(
         rf'(?:https?://|\b)((?:[A-Za-z0-9\-]+\.)+{domain_str}(?:/[A-Za-z0-9\-]+)*)(?:$|\s|,|:|;|\?|!|.)'
@@ -331,12 +334,6 @@ class TextNormalizerDe(NormalizerInterface):
         for year_str in self.pttrn_year.findall(text):
             year_txt = self.texturize_year(year=int(year_str), mode=2)
             text = text.replace(year_str, year_txt)
-        return text
-
-    def normalize_ssml(self, text: str, NormalizerPipeline) -> str:
-        for ssml_str in self.pttrn_ssml.findall(text.lower()):
-            ssml_text = self.texturize_ssml(text=ssml_str[1], mode=ssml_str[0])
-            text = text.replace(text, ssml_text)
         return text
 
     @staticmethod

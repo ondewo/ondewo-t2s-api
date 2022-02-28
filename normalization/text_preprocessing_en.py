@@ -1,4 +1,5 @@
 import re
+from abc import ABC
 from datetime import date, time
 from typing import Dict, List
 
@@ -6,7 +7,7 @@ from normalization.normalizer_interface import NormalizerInterface
 from nemo_text_processing.text_normalization.normalize import Normalizer
 
 
-class TextNormalizerEn(NormalizerInterface):
+class TextNormalizerEn(NormalizerInterface, ABC):
 
     nemo_normalizer = Normalizer(input_case='cased', lang='en')
 
@@ -39,6 +40,13 @@ class TextNormalizerEn(NormalizerInterface):
                       r'sr|ss|st|su|sv|sx|sy|sz|tc|td|tf|tg|th|tj|tk|tl|tm|tn|to|tp|tr|tt|tv|tw|tz|ua|ug|' \
                       r'uk|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|yu|za|zm|zw)'
 
+    name_mapping: Dict[str, str] = {'a': 'Albert', 'b': 'Bernhard', 'c': 'Charlotte', 'd': 'David', 'e': 'Emil',
+                                    'f': 'Friedrich', 'g': 'Gustav', 'h': 'Heinrich', 'i': 'Ida', 'j': 'Jakob',
+                                    'k': 'Katharina', 'l': 'Ludwig', 'm': 'Marie', 'n': 'Nathan', 'o': 'Otto',
+                                    'p': 'Paula', 'q': 'Quelle', 'r': 'Richard', 's': 'Samuel', 't': 'Theodor',
+                                    'u': 'Ulrich', 'v': 'Viktor', 'w': 'Wilhelm', 'x': 'Xanthippe', 'y': 'Ypsilon',
+                                    'z': 'Zacharias'}
+
     pttrn_url = re.compile(
         rf'(?:https?://|\b)((?:[A-Za-z0-9\-]+\.)+{domain_str}(?:/[A-Za-z0-9\-]+)*)(?:$|\s|,|:|;|\?|!|.)'
     )
@@ -60,6 +68,8 @@ class TextNormalizerEn(NormalizerInterface):
                                   'April': 4, 'May': 5, 'June': 6, 'July': 7, 'August': 8, 'September': 9,
                                   'October': 10,
                                   'November': 11, 'December': 12}
+
+    like_token: str = 'like'
 
     def texturize_date(self, _date: date, mode: int = 2) -> str:
         """

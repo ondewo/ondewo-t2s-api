@@ -30,4 +30,4 @@ class NormalizerInterface(ABC):
 
     @abstractmethod
     def normalize_numbers(self, text: str) -> str:
-        pass
+        raise NotImplementedError
