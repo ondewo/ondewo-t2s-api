@@ -150,23 +150,23 @@ class TestNormalization:
         assert resulting_text == expected_result
 
 
-    @staticmethod
-    @pytest.mark.parametrize('text, expected_result', [
-        #('<say-as interpret-as="spell">ABCD</say-as>', 'ah   beh   tsehe   deh '),
-        #('<say-as interpret-as="spell">A9B109CD</say-as>', 'ah neun beh eins null neun tsehe deh '),
-        #('<say-as interpret-as="spell">A9B-109-CD</say-as>', 'ah neun beh strich eins null neun strich tsehe deh '),
-        #('<say-as interpret-as="spell">9657</say-as>', 'neun sechs fünf sieben '),
-        #('<say-as interpret-as="spell">96AAA57</say-as>', 'neun sechs ah ah ah fünf sieben '),
-        ('<say-as interpret-as="spell-with-names">ABCD</say-as>', ''),
-        ('<say-as interpret-as="spell-with-names">A9B109CD</say-as>', ''),
-        ('<say-as interpret-as="spell-with-names">A9B-109-CD</say-as>', ''),
-        ('<say-as interpret-as="spell-with-names">9657</say-as>', ''),
-        ('<say-as interpret-as="spell-with-names">96AAA57</say-as>', ''),
-    ])
-    def test_normalize_url(text: str, expected_result: str) -> None:
-        resulting_text: str = normalizer.normalize_ssml(text)
-        assert isinstance(resulting_text, str)
-        assert resulting_text == expected_result
+    # @staticmethod
+    # @pytest.mark.parametrize('text, expected_result', [
+    #     #('<say-as interpret-as="spell">ABCD</say-as>', 'ah   beh   tsehe   deh '),
+    #     #('<say-as interpret-as="spell">A9B109CD</say-as>', 'ah neun beh eins null neun tsehe deh '),
+    #     #('<say-as interpret-as="spell">A9B-109-CD</say-as>', 'ah neun beh strich eins null neun strich tsehe deh '),
+    #     #('<say-as interpret-as="spell">9657</say-as>', 'neun sechs fünf sieben '),
+    #     #('<say-as interpret-as="spell">96AAA57</say-as>', 'neun sechs ah ah ah fünf sieben '),
+    #     ('<say-as interpret-as="spell-with-names">ABCD</say-as>', ''),
+    #     ('<say-as interpret-as="spell-with-names">A9B109CD</say-as>', ''),
+    #     ('<say-as interpret-as="spell-with-names">A9B-109-CD</say-as>', ''),
+    #     ('<say-as interpret-as="spell-with-names">9657</say-as>', ''),
+    #     ('<say-as interpret-as="spell-with-names">96AAA57</say-as>', ''),
+    # ])
+    # def test_normalize_url(text: str, expected_result: str) -> None:
+    #     resulting_text: str = normalizer.normalize_ssml(text)
+    #     assert isinstance(resulting_text, str)
+    #     assert resulting_text == expected_result
 
     @staticmethod
     @pytest.mark.parametrize('text, expected_result', [
