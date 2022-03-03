@@ -1,4 +1,4 @@
-id: clara_it
+id: matteo
 description:
   language: it
   speaker_sex: female
@@ -17,7 +17,7 @@ inference:
         use_gpu: true
         length_scale: 2.0
         noise_scale: 0.6669999957084656
-        path: models/glow-tts/clara_it.pth
+        path: models/glow-tts/matteo.pth
         param_config_path: models/glow-tts/config_italian.json
         cleaners: []
       glow_tts_triton:
@@ -52,7 +52,7 @@ inference:
     sampling_rate: 22050
     load_cache: true
     save_cache: true
-    cache_save_dir: models/cache_clara_it
+    cache_save_dir: models/cache_matteo
 normalization:
   language: ''
   pipeline: []
