@@ -33,6 +33,7 @@ class NormalizerPipeline:
             from normalization.text_preprocessing_en import TextNormalizerEn as Normalizer
         else:
             from normalization.text_preprocessing_en import TextNormalizerEn as Normalizer
+            logger.info(f'No normalization function for {config.language}. Normalizer set to English by default.')
            #raise ValueError(f"Language {config.language} is not supported.")
         return Normalizer()
 
