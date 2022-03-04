@@ -40,12 +40,33 @@ class TextNormalizerEn(NormalizerInterface, ABC):
                       r'sr|ss|st|su|sv|sx|sy|sz|tc|td|tf|tg|th|tj|tk|tl|tm|tn|to|tp|tr|tt|tv|tw|tz|ua|ug|' \
                       r'uk|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|yu|za|zm|zw)'
 
-    name_mapping: Dict[str, str] = {'a': 'Albert', 'b': 'Bernhard', 'c': 'Charlotte', 'd': 'David', 'e': 'Emil',
-                                    'f': 'Friedrich', 'g': 'Gustav', 'h': 'Heinrich', 'i': 'Ida', 'j': 'Jakob',
-                                    'k': 'Katharina', 'l': 'Ludwig', 'm': 'Marie', 'n': 'Nathan', 'o': 'Otto',
-                                    'p': 'Paula', 'q': 'Quelle', 'r': 'Richard', 's': 'Samuel', 't': 'Theodor',
-                                    'u': 'Ulrich', 'v': 'Viktor', 'w': 'Wilhelm', 'x': 'Xanthippe', 'y': 'Ypsilon',
-                                    'z': 'Zacharias'}
+    name_mapping: Dict[str, str] = {'a': 'alfred',
+                                    'b': 'benjamin',
+                                    'c': 'charles',
+                                    'd': 'david',
+                                    'e': 'edward',
+                                    'f': 'frederick',
+                                    'g': 'george',
+                                    'h': 'harry',
+                                    'i': 'isaac',
+                                    'j': 'jack',
+                                    'k': 'king',
+                                    'l': 'london',
+                                    'm': 'mary',
+                                    'n': 'nellie',
+                                    'o': 'oliver',
+                                    'p': 'peter',
+                                    'q': 'queen',
+                                    'r': 'robert',
+                                    's': 'samuel',
+                                    't': 'tommy',
+                                    'u': 'uncle',
+                                    'v': 'victor',
+                                    'w': 'william',
+                                    'x': 'x-ray',
+                                    'y': 'yellow',
+                                    'z': 'zebra'
+                                    }
 
     pttrn_url = re.compile(
         rf'(?:https?://|\b)((?:[A-Za-z0-9\-]+\.)+{domain_str}(?:/[A-Za-z0-9\-]+)*)(?:$|\s|,|:|;|\?|!|.)'

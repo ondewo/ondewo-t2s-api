@@ -1,8 +1,8 @@
 from typing import Dict, List
-import string
 from normalization.normalizer_interface import NormalizerInterface
 from normalization.text_markup_dataclass import BaseMarkup
 from normalization.text_markup_extractor import CompositeTextMarkupExtractor
+from normalization.text_preprocessing_at import TextNormalizerAt
 from normalization.text_preprocessing_de import TextNormalizerDe
 from normalization.text_preprocessing_en import TextNormalizerEn
 
@@ -24,7 +24,7 @@ class SSMLProcessor:
         for token in text:
             textured_ssml += self._map_character(token, add_names=False)
             textured_ssml += ' '
-        return textured_ssml
+        return textured_ssml.strip()
 
     def say_as__spell_with_names(self, text: str) -> str:
         """ Transform text such that individual characters are spelled with names when send to the tts inferencer """
@@ -32,7 +32,7 @@ class SSMLProcessor:
         for token in text:
             textured_ssml += self._map_character(token, add_names=True)
             textured_ssml += ' '
-        return textured_ssml
+        return textured_ssml.strip()
 
     def _map_character(self, char: str, add_names: bool = False) -> str:
         if add_names and char.lower() in self.text_normalizer.name_mapping.keys():
@@ -52,6 +52,7 @@ class SSMLProcessorFactory:
     AVAILABLE_NORMALIZERS: Dict[str, NormalizerInterface] = {
         'en': TextNormalizerEn(),
         'de': TextNormalizerDe(),
+        'at': TextNormalizerAt(),
     }
 
     @classmethod

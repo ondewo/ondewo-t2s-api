@@ -1,5 +1,4 @@
 import re
-from abc import ABC
 from datetime import date, time
 from typing import Dict, List
 
@@ -29,12 +28,36 @@ class TextNormalizerDe(NormalizerInterface):
                                     'ö': 'oh umlaut', 'ü': 'uh umlaut', 'ß': 'esstsett', '-': 'strich',
                                     '/': 'schrägstrich', '.': 'punkt', }
 
-    name_mapping: Dict[str, str] = {'a': 'Albert', 'b': 'Bernhard', 'c': 'Charlotte', 'd': 'David', 'e': 'Emil',
-                                    'f': 'Friedrich', 'g': 'Gustav', 'h': 'Heinrich', 'i': 'Ida', 'j': 'Jakob',
-                                    'k': 'Katharina', 'l': 'Ludwig', 'm': 'Marie', 'n': 'Nathan', 'o': 'Otto',
-                                    'p': 'Paula', 'q': 'Quelle', 'r': 'Richard', 's': 'Samuel', 't': 'Theodor',
-                                    'u': 'Ulrich', 'v': 'Viktor', 'w': 'Wilhelm', 'x': 'Xanthippe', 'y': 'Ypsilon',
-                                    'z': 'Zacharias'}
+    name_mapping: Dict[str, str] = {'a': 'anna',
+                                    'ä': 'äsch',
+                                    'b': 'berta',
+                                    'c': 'cäsar',
+                                    'd': 'daniel',
+                                    'e': 'emil',
+                                    'f': 'friedrich',
+                                    'g': 'gustav',
+                                    'h': 'heinrich',
+                                    'i': 'ida',
+                                    'j': 'jakob',
+                                    'k': 'kaiser',
+                                    'l': 'leopold',
+                                    'm': 'marie',
+                                    'n': 'niklaus',
+                                    'o': 'otto',
+                                    'ö': 'örlikon',
+                                    'p': 'peter',
+                                    'q': 'quasi',
+                                    'r': 'rosa',
+                                    's': 'sophie',
+                                    't': 'theodor',
+                                    'u': 'ulrich',
+                                    'ü': 'übermut',
+                                    'v': 'viktor',
+                                    'w': 'wilhelm',
+                                    'x': 'xavier',
+                                    'y': 'ypsilon',
+                                    'z': 'zürich'
+                                    }
 
     domain_str: str = r'(?:com|net|org|edu|gov|mil|aero|asia|biz|cat|coop|info|int|jobs|mobi|museum|name|' \
                       r'post|pro|tel|travel|xxx|ac|ad|ae|af|ag|ai|al|am|an|ao|aq|ar|as|at|au|aw|ax|az|ba|' \
