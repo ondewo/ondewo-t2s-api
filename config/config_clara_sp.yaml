@@ -20,12 +20,13 @@ inference:
         path: models/glow-tts/clara_sp.pth
         param_config_path: models/glow-tts/config_spanish.json
         cleaners:
-        - cleaners_spanish.py
+        - spanish_cleaners
       glow_tts_triton:
         batch_size: 8
         length_scale: 1.0
         noise_scale: 0.6669999957084656
-        cleaners: []
+        cleaners:
+        - spanish_cleaners
         max_text_length: 100
         param_config_path: models/glow-tts/config_spanish.json
         triton_url: localhost:50511
