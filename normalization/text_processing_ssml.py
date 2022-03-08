@@ -16,7 +16,10 @@ class SSMLProcessor:
         method_name = method_name.replace('-', '_')
         method = self.__getattribute__(method_name)
         texturized_ssml = method(text)
-        return CompositeTextMarkupExtractor.extract(texturized_ssml, extractors_to_skip=['IPA', 'SSML'])
+        return CompositeTextMarkupExtractor.extract(  # type: ignore
+            texturized_ssml,
+            extractors_to_skip=['IPA', 'SSML']
+        )
 
     def say_as__spell(self, text: str) -> str:
         """ Transform text such that individual characters are spelled when send to the tts inferencer """

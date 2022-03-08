@@ -3,7 +3,7 @@ import functools
 import re
 from abc import ABC
 from enum import EnumMeta, Enum
-from typing import Optional, List, Dict, Tuple
+from typing import Optional, List, Dict, Tuple, Any
 
 from normalization.text_markup_dataclass import BaseMarkup, ArpabetMarkup, IPAMarkup, SSMLMarkup, TextMarkup
 
@@ -20,7 +20,7 @@ class TextMarkupExtractor(ABC):
 class ArpabetMarkupExtractor(TextMarkupExtractor):
     MARKUP = re.compile(r'{(.+?)}')
 
-    def extract(cls, text: str) -> List[ArpabetMarkup]:
+    def extract(cls, text: str) -> List[ArpabetMarkup]:  # type: ignore
         occurances: List[ArpabetMarkup] = []
         for m in cls.MARKUP.finditer(text):
             occurances.append(
@@ -32,7 +32,7 @@ class ArpabetMarkupExtractor(TextMarkupExtractor):
 class IPAMarkupExtractor(TextMarkupExtractor):
     MARKUP = re.compile(r'\[(.+?)\]')
 
-    def extract(cls, text: str) -> List[IPAMarkup]:
+    def extract(cls, text: str) -> List[IPAMarkup]:  # type: ignore
         occurances: List[IPAMarkup] = []
         for m in cls.MARKUP.finditer(text):
             occurances.append(
@@ -43,11 +43,11 @@ class IPAMarkupExtractor(TextMarkupExtractor):
 
 class SSMLMarkupExtractor(TextMarkupExtractor):
     SPELLING_MARKUP: re.Pattern = re.compile(r'([a-zA-Z]\w*[0-9]\w*|[0-9]\w*[a-zA-Z]\w*)')
-    TYPE_ATTRIBUTE_DICT: Dict[str, str] = {
+    TYPE_ATTRIBUTE_DICT: Dict[str, List[str]] = {
         'say-as': ['interpret-as']
     }
 
-    def extract(cls, text: str) -> List[SSMLMarkup]:
+    def extract(cls, text: str) -> List[SSMLMarkup]:  # type: ignore
         occurances: List[SSMLMarkup] = []
         spans: List[Tuple[int, int]] = []
         for type, attributes in cls.TYPE_ATTRIBUTE_DICT.items():
@@ -92,8 +92,8 @@ class CompositeTextMarkupExtractor(Enum, metaclass=EnumMeta):
     IPA = IPAMarkupExtractor
     SSML = SSMLMarkupExtractor
 
-    def create_parser(self, **kwargs) -> TextMarkupExtractor:
-        return self.value(**kwargs)
+    def create_parser(self, **kwargs: Any) -> TextMarkupExtractor:
+        return self.value(**kwargs)  # type: ignore
 
     @classmethod
     def extract(cls, text: str, extractors_to_skip: List[str] = []) -> List[BaseMarkup]:
@@ -103,7 +103,7 @@ class CompositeTextMarkupExtractor(Enum, metaclass=EnumMeta):
                 continue
             extracted_markups.extend(extractor.value().extract(text))
 
-        extracted_markups.sort(key=lambda x: x.start)
+        extracted_markups.sort(key=lambda x: x.start)  # type: ignore
         return cls.add_text_markups(text, extracted_markups)
 
     @classmethod
@@ -140,5 +140,6 @@ class CompositeTextMarkupExtractor(Enum, metaclass=EnumMeta):
 
 
 if __name__ == '__main__':
-    markups = CompositeTextMarkupExtractor.extract('hello [asdf] with <say-as interpret-as="spell">test</say-as> {this} is')
+    markups = CompositeTextMarkupExtractor.extract(
+        'hello [asdf] with <say-as interpret-as="spell">test</say-as> {this} is')
     print(markups)

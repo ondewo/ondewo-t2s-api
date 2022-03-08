@@ -12,7 +12,8 @@ class TestProcessingSSML:
     @pytest.mark.parametrize('text, expected_result', [
         ('<say-as interpret-as="spell">ABCD</say-as>', 'ah beh tsehe deh'),
         ('<say-as interpret-as="spell">A9B109CD</say-as>', 'ah  neun  beh  eins null neun  tsehe deh'),
-        ('<say-as interpret-as="spell">A9B-109-CD</say-as>', 'ah  neun  beh strich  eins null neun  strich tsehe deh'),
+        ('<say-as interpret-as="spell">A9B-109-CD</say-as>',
+         'ah  neun  beh strich  eins null neun  strich tsehe deh'),
         ('<say-as interpret-as="spell">9657</say-as>', 'neun sechs fünf sieben'),
         ('<say-as interpret-as="spell">96AAA57</say-as>', 'neun sechs  ah ah ah  fünf sieben'),
         ('<say-as interpret-as="spell-with-names">ABCD</say-as>',
@@ -38,7 +39,8 @@ class TestProcessingSSML:
     @pytest.mark.parametrize('text, expected_result', [
         ('<say-as interpret-as="spell">ABCD</say-as>', 'ah beh tsehe deh'),
         ('<say-as interpret-as="spell">A9B109CD</say-as>', 'ah  neun  beh  eins null neun  tsehe deh'),
-        ('<say-as interpret-as="spell">A9B-109-CD</say-as>', 'ah  neun  beh strich  eins null neun  strich tsehe deh'),
+        ('<say-as interpret-as="spell">A9B-109-CD</say-as>',
+         'ah  neun  beh strich  eins null neun  strich tsehe deh'),
         ('<say-as interpret-as="spell">9657</say-as>', 'neun sechs fünf sieben'),
         ('<say-as interpret-as="spell">96AAA57</say-as>', 'neun sechs  ah ah ah  fünf sieben'),
         ('<say-as interpret-as="spell-with-names">ABCD</say-as>',

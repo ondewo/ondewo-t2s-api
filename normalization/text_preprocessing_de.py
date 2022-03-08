@@ -434,4 +434,3 @@ class TextNormalizerDe(NormalizerInterface):
             url_normalized += url_piece + ' '
 
         return url_normalized
-
