@@ -114,9 +114,37 @@ class TestTextPreprocessor:
             SSMLMarkup(text='test', start=8, end=50, type="say-as", attribute="spell")]),
         ('This is <say-as interpret-as="spell">test</say-as> and <say-as interpret-as='
          '"spell-with-names">test</say-as>', [
-            SSMLMarkup(text='test', start=8, end=50, type="say-as", attribute="spell"),
-            SSMLMarkup(text='test', start=55, end=108, type="say-as", attribute="spell-with-names")
-        ])
+                SSMLMarkup(text='test', start=8, end=50, type="say-as", attribute="spell"),
+                SSMLMarkup(text='test', start=55, end=108, type="say-as", attribute="spell-with-names")
+             ]
+         ),
+        ('This is a1 test', [SSMLMarkup(text='a1', start=8, end=10, type="say-as", attribute="spell")]),
+        ('This is 1a test', [SSMLMarkup(text='1a', start=8, end=10, type="say-as", attribute="spell")]),
+        ('This is a1bcE test', [SSMLMarkup(text='a1bcE', start=8, end=13, type="say-as", attribute="spell")]),
+        ('This is 1abcE test', [SSMLMarkup(text='1abcE', start=8, end=13, type="say-as", attribute="spell")]),
+        ('This is a1bcE23 test', [SSMLMarkup(text='a1bcE23', start=8, end=15, type="say-as", attribute="spell")]),
+        ('This is 1abcE23A test', [SSMLMarkup(text='1abcE23A', start=8, end=16, type="say-as", attribute="spell")]),
+        ('This is a1bcE23 test 1323', [
+            SSMLMarkup(text='a1bcE23', start=8, end=15, type="say-as", attribute="spell"),
+        ]),
+        ('This is a1bcE23 test asdf', [
+            SSMLMarkup(text='a1bcE23', start=8, end=15, type="say-as", attribute="spell"),
+        ]),
+        ('This is a1bcE23 test 1a3', [
+            SSMLMarkup(text='a1bcE23', start=8, end=15, type="say-as", attribute="spell"),
+            SSMLMarkup(text='1a3', start=21, end=24, type="say-as", attribute="spell"),
+        ]),
+        ('This is 1abcE23A test 124a', [
+            SSMLMarkup(text='1abcE23A', start=8, end=16, type="say-as", attribute="spell"),
+            SSMLMarkup(text='124a', start=22, end=26, type="say-as", attribute="spell"),
+        ]),
+        ('This is <say-as interpret-as="spell">test</say-as> and <say-as interpret-as='
+         '"spell-with-names">test</say-as> there is an id abc2', [
+             SSMLMarkup(text='test', start=8, end=50, type="say-as", attribute="spell"),
+             SSMLMarkup(text='test', start=55, end=108, type="say-as", attribute="spell-with-names"),
+             SSMLMarkup(text='abc2', start=124, end=128, type="say-as", attribute="spell"),
+            ]
+         )
     ])
     def test_ssml_extractor(text: str, expected_extractions: List[IPAMarkup]) -> None:
         ssml_extractor = SSMLMarkupExtractor()

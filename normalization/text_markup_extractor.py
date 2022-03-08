@@ -3,7 +3,7 @@ import functools
 import re
 from abc import ABC
 from enum import EnumMeta, Enum
-from typing import Optional, List, Dict
+from typing import Optional, List, Dict, Tuple
 
 from normalization.text_markup_dataclass import BaseMarkup, ArpabetMarkup, IPAMarkup, SSMLMarkup, TextMarkup
 
@@ -42,16 +42,19 @@ class IPAMarkupExtractor(TextMarkupExtractor):
 
 
 class SSMLMarkupExtractor(TextMarkupExtractor):
+    SPELLING_MARKUP: re.Pattern = re.compile(r'([a-zA-Z]\w*[0-9]\w*|[0-9]\w*[a-zA-Z]\w*)')
     TYPE_ATTRIBUTE_DICT: Dict[str, str] = {
         'say-as': ['interpret-as']
     }
 
     def extract(cls, text: str) -> List[SSMLMarkup]:
         occurances: List[SSMLMarkup] = []
+        spans: List[Tuple[int, int]] = []
         for type, attributes in cls.TYPE_ATTRIBUTE_DICT.items():
             for attribute in attributes:
                 markup = re.compile(rf'<{type} {attribute}="(.+?)">(.+?)</{type}>')
                 for m in markup.finditer(text):
+                    spans.append(m.span())
                     occurances.append(
                         SSMLMarkup(
                             text=m.group(2),
@@ -61,7 +64,26 @@ class SSMLMarkupExtractor(TextMarkupExtractor):
                             attribute=m.group(1),
                         )
                     )
+
+        occurances.extend(cls.extract_spelling(text, spans))
         return occurances
+
+    @classmethod
+    def extract_spelling(cls, text: str, spans: List[Tuple[int, int]]) -> List[SSMLMarkup]:
+        spelling_markups: List[SSMLMarkup] = []
+        for m in cls.SPELLING_MARKUP.finditer(text):
+            in_other_markups = any(m.span()[0] > span[0] and m.span()[1] < span[1] for span in spans)
+            if not in_other_markups:
+                spelling_markups.append(
+                    SSMLMarkup(
+                        text=m.group(),
+                        start=m.span()[0],
+                        end=m.span()[1],
+                        type="say-as",
+                        attribute="spell",
+                    )
+                )
+        return spelling_markups
 
 
 class CompositeTextMarkupExtractor(Enum, metaclass=EnumMeta):
