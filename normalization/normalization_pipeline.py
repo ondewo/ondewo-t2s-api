@@ -52,7 +52,7 @@ class NormalizerPipeline:
         markup_list = self._preprocess_ssml_markups(markup_list)
         for markup in markup_list:
             if isinstance(markup, ArpabetMarkup):
-                normalized_texts.append(markup.text)
+                normalized_texts.append(f"{{{markup.text}}}")
             # Todo: Implement IPA
             # elif isinstance(markup, IPAMarkup):
             #     arpabet_text = ipa_2_arpabet(markup.text)
