@@ -55,7 +55,6 @@ inference:
 normalization:
   language: de
   pipeline:
-  - normalize_ssml
   - fix_plus
   - normalize_urls
   - normalize_dates
