@@ -13,20 +13,23 @@ class TextNormalizerDe(NormalizerInterface):
     pttrn_time = re.compile(r'(?:\s|\b|^)(([01][0-9]|[0-9]|2[0-3]):([0-5][0-9])(?:\s|\b|$)'
                             r'(?::[0-5][0-9](?:\s|\b|$))?)')
 
-    num_dict: Dict[int, str] = {0: 'null', 1: 'eins', 2: 'zwei', 3: 'drei', 4: 'vier', 5: 'fünf',
-                                6: 'sechs', 7: 'sieben',
-                                8: 'acht', 9: 'neun', 10: 'zehn', 11: 'elf', 12: 'zwölf', 20: 'zwanzig',
+    num_dict: Dict[int, str] = {0: 'null', 1: 'eins', 2: 'zwei', 3: 'drei', 4: 'vier', 5: 'fünff',
+                                6: 'sechss', 7: 'sieben',
+                                8: 'achttt', 9: 'nouin', 10: 'zehn', 11: 'elf', 12: 'zwölf', 20: 'zwanzig',
                                 30: 'dreißig',
                                 40: 'vierzig', 50: 'fünfzig', 60: 'sechzig', 70: 'siebzig', 80: 'achtzig',
                                 90: 'neunzig'}
 
-    char_mapping: Dict[str, str] = {'a': 'ah', 'b': 'beh', 'c': 'tsehe', 'd': 'deh', 'e': 'eh',
-                                    'f': 'eff', 'g': 'geh', 'h': 'ha', 'i': 'ii', 'j': 'yot', 'k': 'kah',
-                                    'l': 'ell', 'm': 'emm', 'n': 'enn', 'o': 'oh', 'p': 'peh', 'q': 'kuh',
-                                    'r': 'err', 's': 'ess', 't': 'teh', 'u': 'uh', 'v': 'fau', 'w': 'weh',
-                                    'x': 'iks', 'y': 'upsilon', 'z': 'tsett', 'ä': 'ah umlaut',
-                                    'ö': 'oh umlaut', 'ü': 'uh umlaut', 'ß': 'esstsett', '-': 'strich',
-                                    '/': 'schrägstrich', '.': 'punkt', }
+    char_mapping: Dict[str, str] = {'a': 'aaah', 'b': 'beehh', 'c': 'zeeh', 'd': 'deeehh', 'e': 'eeeeeehh',
+                                    'f': 'eeff', 'g': 'geeeh', 'h': 'haaa', 'i': 'iiih', 'j': 'jeeeh', 'k': 'kaaah',
+                                    'l': 'eelll', 'm': 'eehmmm', 'n': 'eennnn', 'o': 'ooohh', 'p': 'peehh', 'q': 'queeeh',
+                                    'r': 'ehrrh', 's': 'eessss', 't': 'teeeh', 'u': 'uuuu', 'v': 'vauh', 'w': 'weeeh',
+                                    'x': 'ixxx', 'y': 'ypsilon', 'z': 'tsett', 'ä': 'ah umlaut eeehh',
+                                    'ö': 'umlaut öh', 'ü': 'umlaut üh', 'ß': 'scharfes eesss', '-': 'Bindestrich',
+                                    '/': 'schrägstrich', '.': 'Punkt', ',': 'Komma', '!': 'Ausrufezeichen',
+                                    '?': 'Fragezeichen', '=': 'Gleichheitszeichen',
+                                    '(': 'Klammer auf', ')': 'Klammer zu', '&': 'Logisches und', '%': 'Prozent',
+                                    '§': 'Paragraff'}
 
     name_mapping: Dict[str, str] = {'a': 'anna',
                                     'ä': 'äsch',

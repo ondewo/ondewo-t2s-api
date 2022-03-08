@@ -44,9 +44,9 @@ class SSMLProcessor:
                   f"{self.text_normalizer.name_mapping[char.lower()]}. "
             return aux
         elif char.lower() in self.text_normalizer.char_mapping.keys():
-            return f"{{{self.text_normalizer.char_mapping[char.lower()]}}}"
+            return f"{{{self.text_normalizer.char_mapping[char.lower()]}.}}"
         elif char.isnumeric():
-            return f"{self.text_normalizer.normalize_numbers(char.lower())}"
+            return f"{self.text_normalizer.normalize_numbers(char.lower())}."
         else:
             return char
 
