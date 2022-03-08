@@ -42,7 +42,8 @@ class IPAMarkupExtractor(TextMarkupExtractor):
 
 
 class SSMLMarkupExtractor(TextMarkupExtractor):
-    SPELLING_MARKUP: re.Pattern = re.compile(r'([a-zA-Z]\w*[0-9]\w*|[0-9]\w*[a-zA-Z]\w*)')
+    EMPLOYEE_ID: re.Pattern = re.compile(r'([a-zA-Z]\w*[0-9]\w*|[0-9]\w*[a-zA-Z]\w*)')
+    EMPLOYEE_ID_SPAN: Tuple[int, int] = (5, 10)
     TYPE_ATTRIBUTE_DICT: Dict[str, List[str]] = {
         'say-as': ['interpret-as']
     }
@@ -71,9 +72,10 @@ class SSMLMarkupExtractor(TextMarkupExtractor):
     @classmethod
     def extract_spelling(cls, text: str, spans: List[Tuple[int, int]]) -> List[SSMLMarkup]:
         spelling_markups: List[SSMLMarkup] = []
-        for m in cls.SPELLING_MARKUP.finditer(text):
-            in_other_markups = any(m.span()[0] > span[0] and m.span()[1] < span[1] for span in spans)
-            if not in_other_markups:
+        for m in cls.EMPLOYEE_ID.finditer(text):
+            #in_other_markups = any(m.span()[0] > span[0] and m.span()[1] < span[1] for span in spans)
+            is_employee_id = cls.EMPLOYEE_ID_SPAN[0] <= m.span()[1]-m.span()[0] <= cls.EMPLOYEE_ID_SPAN[1]
+            if is_employee_id:
                 spelling_markups.append(
                     SSMLMarkup(
                         text=m.group(),
