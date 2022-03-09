@@ -24,7 +24,7 @@ class ArpabetMarkupExtractor(TextMarkupExtractor):
         occurances: List[ArpabetMarkup] = []
         for m in cls.MARKUP.finditer(text):
             occurances.append(
-                ArpabetMarkup(text=m.group(1), start=m.span()[0], end=m.span()[1])
+                ArpabetMarkup(text=f"{{{m.group(1)}}}", start=m.span()[0], end=m.span()[1])
             )
         return occurances
 

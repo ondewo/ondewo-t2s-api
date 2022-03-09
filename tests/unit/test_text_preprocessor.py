@@ -63,8 +63,8 @@ class TestTextPreprocessor:
         ('This is', []),
         ('This is {test}', [ArpabetMarkup(text='test', start=8, end=14)]),
         ('This is {test} and {test}', [
-            ArpabetMarkup(text='test', start=8, end=14),
-            ArpabetMarkup(text='test', start=19, end=25)
+            ArpabetMarkup(text='{test}', start=8, end=14),
+            ArpabetMarkup(text='{test}', start=19, end=25)
         ])
     ])
     def test_arpabet_extractor(text: str, expected_extractions: List[ArpabetMarkup]) -> None:
@@ -101,6 +101,7 @@ class TestTextPreprocessor:
         ('This is 1a test', [SSMLMarkup(text='1a', start=8, end=10, type="say-as", attribute="spell")]),
         ('This is a1bcE test', [SSMLMarkup(text='a1bcE', start=8, end=13, type="say-as", attribute="spell")]),
         ('This is 1abcE test', [SSMLMarkup(text='1abcE', start=8, end=13, type="say-as", attribute="spell")]),
+        ('This is AMADEUS test', []),
         ('This is a1bcE23 test', [SSMLMarkup(text='a1bcE23',
                                              start=8, end=15, type="say-as", attribute="spell")]),
         ('This is 1abcE23A test', [SSMLMarkup(text='1abcE23A',
