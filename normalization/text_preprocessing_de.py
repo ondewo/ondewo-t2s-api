@@ -20,16 +20,29 @@ class TextNormalizerDe(NormalizerInterface):
                                 40: 'vierzig', 50: 'fünfzig', 60: 'sechzig', 70: 'siebzig', 80: 'achtzig',
                                 90: 'neunzig'}
 
-    char_mapping: Dict[str, str] = {'a': 'aaah', 'b': 'beehh', 'c': 'zeeh', 'd': 'deeehh', 'e': 'eeeeeehh',
-                                    'f': 'eeff', 'g': 'geeeh', 'h': 'haaa', 'i': 'iiih', 'j': 'jeeeh', 'k': 'kaaah',
-                                    'l': 'eelll', 'm': 'eehmmm', 'n': 'eennnn', 'o': 'ooohh', 'p': 'peehh', 'q': 'queeeh',
-                                    'r': 'ehrrh', 's': 'eessss', 't': 'teeeh', 'u': 'uuuu', 'v': 'vauh', 'w': 'weeeh',
-                                    'x': 'ixxx', 'y': 'ypsilon', 'z': 'tsett', 'ä': 'ah umlaut eeehh',
-                                    'ö': 'umlaut öh', 'ü': 'umlaut üh', 'ß': 'scharfes eesss', '-': 'Bindestrich',
-                                    '/': 'schrägstrich', '.': 'Punkt', ',': 'Komma', '!': 'Ausrufezeichen',
-                                    '?': 'Fragezeichen', '=': 'Gleichheitszeichen',
-                                    '(': 'Klammer auf', ')': 'Klammer zu', '&': 'Logisches und', '%': 'Prozent',
-                                    '§': 'Paragraff'}
+    # char_mapping: Dict[str, str] = {'a': 'aaah', 'b': 'beehh', 'c': 'zeeh', 'd': 'deeehh', 'e': 'eeeeeehh',
+    #                                 'f': 'eeff', 'g': 'geeeh', 'h': 'haaa', 'i': 'iiih', 'j': 'jeeeh', 'k': 'kaaah',
+    #                                 'l': 'eelll', 'm': 'eehmmm', 'n': 'eennnn', 'o': 'ooohh', 'p': 'peehh', 'q': 'queeeh',
+    #                                 'r': 'ehrrh', 's': 'eessss', 't': 'teeeh', 'u': 'uuuu', 'v': 'vauh', 'w': 'weeeh',
+    #                                 'x': 'ixxx', 'y': 'ypsilon', 'z': 'tsett', 'ä': 'ah umlaut eeehh',
+    #                                 'ö': 'umlaut öh', 'ü': 'umlaut üh', 'ß': 'scharfes eesss', '-': 'Bindestrich',
+    #                                 '/': 'schrägstrich', '.': 'Punkt', ',': 'Komma', '!': 'Ausrufezeichen',
+    #                                 '?': 'Fragezeichen', '=': 'Gleichheitszeichen',
+    #                                 '(': 'Klammer auf', ')': 'Klammer zu', '&': 'Logisches und', '%': 'Prozent',
+    #                                 '§': 'Paragraff'}
+
+    char_mapping: Dict[str, str] = {'a': '{AH AH1}', 'b': '{B EH1}', 'c': '{TZ EH1}', 'd': '{D EH EH1}', 'e': '{EH EH1}',
+                                    'f': '{EH F}', 'g': '{G EH EH1}', 'h': '{HH AH AH1}', 'i': '{I IH}',
+                                    'j': '{I IH O1 T T T T}', 'k': '{K AH AH1}',
+                                    'l': '{EH L}', 'm': '{EH EH M M}', 'n': '{EH1 EH1 N N}', 'o': '{O1 O1}',
+                                    'p': '{P EH1 EH1}', 'q': '{K UH UH}',
+                                    'r': '{EH1 R R}', 's': '{EH S}', 't': '{T EH EH}', 'u': '{UH UH}',
+                                    'v': '{F F AW UH}', 'w': '{V EH1 EH1}',
+                                    'x': '{IH K S}', 'y': '{YO P S IY1 L O1 N}', 'z': '{T Z EH T}',
+                                    'ä': '{UH M L AW T}, {EH1 EH1}',
+                                    'ö': '{UH M L AW T}, {OE1 EH}', 'ü': '{UH M L AW T}, {YO YO}',
+                                    'ß': '{SH A R F EH S}. {EH S S}', '-': '{SH T R IH X}',
+                                    '/': '{SH RR EH K SH T R IH X}', '.': '{P UH N K K T}', }
 
     name_mapping: Dict[str, str] = {'a': 'anna',
                                     'ä': 'äsch',
@@ -369,7 +382,7 @@ class TextNormalizerDe(NormalizerInterface):
         return text
 
     def remove_unaudible_texts(self, text: str) -> str:
-        if not self.pttrn_audible_char.findall(text):
+        if not self.pttrn_audible_char.findall(text) and text != '.':
             return ''
         return text
 

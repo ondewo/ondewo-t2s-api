@@ -12,7 +12,7 @@ class TestNormalization:
     @staticmethod
     @pytest.mark.parametrize('time_to_normalize, expected_result', [
         (time(15, 30), 'fünfzehn Uhr dreißig'),
-        (time(15, 35, 45), 'fünfzehn Uhr fünfunddreißig'),
+        (time(15, 35, 45), f'{normalizer.num_dict[5]}zehn Uhr {normalizer.num_dict[5]}unddreißig'),
     ])
     def test_normalize_time(time_to_normalize: time, expected_result: str) -> None:
         time_text = normalizer.texturize_time(time_to_normalize)

@@ -73,9 +73,9 @@ class SSMLMarkupExtractor(TextMarkupExtractor):
     def extract_spelling(cls, text: str, spans: List[Tuple[int, int]]) -> List[SSMLMarkup]:
         spelling_markups: List[SSMLMarkup] = []
         for m in cls.EMPLOYEE_ID.finditer(text):
-            #in_other_markups = any(m.span()[0] > span[0] and m.span()[1] < span[1] for span in spans)
+            in_other_markups = any(m.span()[0] > span[0] and m.span()[1] < span[1] for span in spans)
             is_employee_id = cls.EMPLOYEE_ID_SPAN[0] <= m.span()[1]-m.span()[0] <= cls.EMPLOYEE_ID_SPAN[1]
-            if is_employee_id:
+            if is_employee_id and not in_other_markups:
                 spelling_markups.append(
                     SSMLMarkup(
                         text=m.group(),

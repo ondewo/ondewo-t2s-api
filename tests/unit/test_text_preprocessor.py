@@ -61,7 +61,7 @@ class TestTextPreprocessor:
     @staticmethod
     @pytest.mark.parametrize('text, expected_extractions', [
         ('This is', []),
-        ('This is {test}', [ArpabetMarkup(text='test', start=8, end=14)]),
+        ('This is {test}', [ArpabetMarkup(text='{test}', start=8, end=14)]),
         ('This is {test} and {test}', [
             ArpabetMarkup(text='{test}', start=8, end=14),
             ArpabetMarkup(text='{test}', start=19, end=25)
@@ -97,8 +97,6 @@ class TestTextPreprocessor:
              SSMLMarkup(text='test', start=55, end=108, type="say-as", attribute="spell-with-names")
          ]
          ),
-        ('This is a1 test', [SSMLMarkup(text='a1', start=8, end=10, type="say-as", attribute="spell")]),
-        ('This is 1a test', [SSMLMarkup(text='1a', start=8, end=10, type="say-as", attribute="spell")]),
         ('This is a1bcE test', [SSMLMarkup(text='a1bcE', start=8, end=13, type="say-as", attribute="spell")]),
         ('This is 1abcE test', [SSMLMarkup(text='1abcE', start=8, end=13, type="say-as", attribute="spell")]),
         ('This is AMADEUS test', []),
@@ -112,19 +110,19 @@ class TestTextPreprocessor:
         ('This is a1bcE23 test asdf', [
             SSMLMarkup(text='a1bcE23', start=8, end=15, type="say-as", attribute="spell"),
         ]),
-        ('This is a1bcE23 test 1a3', [
+        ('This is a1bcE23 test 1a3df', [
             SSMLMarkup(text='a1bcE23', start=8, end=15, type="say-as", attribute="spell"),
-            SSMLMarkup(text='1a3', start=21, end=24, type="say-as", attribute="spell"),
+            SSMLMarkup(text='1a3df', start=21, end=26, type="say-as", attribute="spell"),
         ]),
-        ('This is 1abcE23A test 124a', [
+        ('This is 1abcE23A test 124ba', [
             SSMLMarkup(text='1abcE23A', start=8, end=16, type="say-as", attribute="spell"),
-            SSMLMarkup(text='124a', start=22, end=26, type="say-as", attribute="spell"),
+            SSMLMarkup(text='124ba', start=22, end=27, type="say-as", attribute="spell"),
         ]),
         ('This is <say-as interpret-as="spell">test</say-as> and <say-as interpret-as='
-         '"spell-with-names">test</say-as> there is an id abc2', [
+         '"spell-with-names">test</say-as> there is an id abc2a', [
              SSMLMarkup(text='test', start=8, end=50, type="say-as", attribute="spell"),
              SSMLMarkup(text='test', start=55, end=108, type="say-as", attribute="spell-with-names"),
-             SSMLMarkup(text='abc2', start=124, end=128, type="say-as", attribute="spell"),
+             SSMLMarkup(text='abc2a', start=124, end=129, type="say-as", attribute="spell"),
          ]
          )
     ])
@@ -150,7 +148,7 @@ class TestTextPreprocessor:
             IPAMarkup(text='asdf', start=6, end=12),
             TextMarkup(text=' with ', start=12, end=18),
             SSMLMarkup(text='test', start=18, end=60, type='say-as', attribute='spell'),
-            ArpabetMarkup(text='this', start=61, end=67),
+            ArpabetMarkup(text='{this}', start=61, end=67),
             TextMarkup(text=' is', start=67, end=70)
         ])
     ])
@@ -172,3 +170,21 @@ class TestTextPreprocessor:
         normalizer_pipeline = get_normalizer_pipeline(config_path=config_path)
         extract_phonemized = normalizer_pipeline.extract_phonemized(text)
         assert extract_phonemized == extract_phonemized_expected
+
+    @staticmethod
+    @pytest.mark.parametrize('config_path, text, expected', [
+        ('normalizer_pipeline_en.yaml', 'english text {phonemes 1 2 3 }',
+         ['english text  {phonemes 1 2 3 }.']),
+        ('normalizer_pipeline_en.yaml', '{phonemes 7 89 } english text {phonemes 1 2 3 }',
+         ['{phonemes 7 89 }  english text  {phonemes 1 2 3 }.']),
+        ('normalizer_pipeline_de.yaml', '1 deutscher text {phonemes 1 2 3 }',
+         ['eins deutscher text {phonemes 1 2 3 }.']),
+        ('normalizer_pipeline_de.yaml', '1 deutscher text {phonemes 1 2 3 } text 2 {phonemes 4 5 6} ',
+         ['eins deutscher text {phonemes 1 2 3 } text zwei {phonemes 4 5 6}.']),
+        ('normalizer_pipeline_de.yaml', '{phonemes 7 89 } 1 deutscher text {phonemes 1 2 3 } text 2 {phonemes 4 5 6} ',
+         ['{phonemes 7 89 } eins deutscher text {phonemes 1 2 3 } text zwei {phonemes 4 5 6}.']),
+    ])
+    def test_preprocessing_with_phonemes(config_path: str, text: str, expected: List[str]) -> None:
+        normalizer_pipeline = get_normalizer_pipeline(config_path=config_path)
+        normalized_text = normalizer_pipeline.apply(text)
+        assert normalized_text == expected
