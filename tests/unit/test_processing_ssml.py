@@ -43,28 +43,20 @@ class TestProcessingSSML:
 
     @staticmethod
     @pytest.mark.parametrize('text, expected_result', [
-        ('<say-as interpret-as="spell">ABCD</say-as>', '{aaah.} {beehh.} {zeeh.} {deeehh.}'),
-        ('<say-as interpret-as="spell">A9B109CD</say-as>',
-         '{aaah.}  nouin.  {beehh.}  eins. null. nouin.  {zeeh.} {deeehh.}'),
-        ('<say-as interpret-as="spell">A9B-109-CD</say-as>',
-         '{aaah.}  nouin.  {beehh.} {Bindestrich.}  eins. null. nouin.  {Bindestrich.} '
-         '{zeeh.} {deeehh.}'),
-        ('<say-as interpret-as="spell">9657</say-as>', 'nouin. sechss. fünff. sieben.'),
-        ('<say-as interpret-as="spell">96AAA57</say-as>',
-         'nouin. sechss.  {aaah.} {aaah.} {aaah.}  fünff. sieben.'),
         ('<say-as interpret-as="spell-with-names">ABCD</say-as>',
-         '{aaah} , wie  anton.   {beehh} , wie  berta.   {zeeh} , wie  cäsar.   '
-         '{deeehh} , wie  dora.'),
+         '{AH AH1} , wie  anton.   {B EH1} , wie  berta.   {TZ EH1} , wie  cäsar.   {D '
+         'EH EH1} , wie  dora.'),
         ('<say-as interpret-as="spell-with-names">A9B109CD</say-as>',
-         '{aaah} , wie  anton.  nouin.  {beehh} , wie  berta.  eins. null. nouin.  '
-         '{zeeh} , wie  cäsar.   {deeehh} , wie  dora.'),
+         '{AH AH1} , wie  anton.  nouin.  {B EH1} , wie  berta.  eins. null. nouin.  '
+         '{TZ EH1} , wie  cäsar.   {D EH EH1} , wie  dora.'),
         ('<say-as interpret-as="spell-with-names">A9B-109-CD</say-as>',
-         '{aaah} , wie  anton.  nouin.  {beehh} , wie  berta.   {Bindestrich.}  eins. '
-         'null. nouin.  {Bindestrich.} {zeeh} , wie  cäsar.   {deeehh} , wie  dora.'),
+         '{AH AH1} , wie  anton.  nouin.  {B EH1} , wie  berta.   {SH T R IH X} . '
+         'eins. null. nouin.  {SH T R IH X} .  {TZ EH1} , wie  cäsar.   {D EH EH1} , '
+         'wie  dora.'),
         ('<say-as interpret-as="spell-with-names">9657</say-as>', 'nouin. sechss. fünff. sieben.'),
         ('<say-as interpret-as="spell-with-names">96AAA57</say-as>',
-         'nouin. sechss.  {aaah} , wie  anton.   {aaah} , wie  anton.   {aaah} , wie  '
-         'anton.  fünff. sieben.'),
+         'nouin. sechss.  {AH AH1} , wie  anton.   {AH AH1} , wie  anton.   {AH AH1} , '
+         'wie  anton.  fünff. sieben.'),
     ])
     def test_texturize_ssml_at(text: str, expected_result: str) -> None:
         ssml_processor = SSMLProcessorFactory.create_ssml_processor(language='at')
@@ -75,26 +67,20 @@ class TestProcessingSSML:
 
     @staticmethod
     @pytest.mark.parametrize('text, expected_result', [
-        ('<say-as interpret-as="spell">ABCD</say-as>', '{ei.} {bee.} {cee.} {dee.}'),
-        ('<say-as interpret-as="spell">A9B109CD</say-as>',
-         '{ei.}  nine.  {bee.}  one. zero. nine.  {cee.} {dee.}'),
-        ('<say-as interpret-as="spell">A9B-109-CD</say-as>',
-         '{ei.}  nine.  {bee.} {dash.}  one. zero. nine.  {dash.} {cee.} {dee.}'),
-        ('<say-as interpret-as="spell">9657</say-as>', 'nine. six. five. seven.'),
-        ('<say-as interpret-as="spell">96AAA57</say-as>', 'nine. six.  {ei.} {ei.} {ei.}  five. seven.'),
         ('<say-as interpret-as="spell-with-names">ABCD</say-as>',
-         '{ei} , like  alfred.   {bee} , like  benjamin.   {cee} , like  charles.   '
-         '{dee} , like  david.'),
+         '{EY IH0} , like  alfred.   {B IH0} , like  benjamin.   {S IH1} , like  '
+         'charles.   {D IH1} , like  david.'),
         ('<say-as interpret-as="spell-with-names">A9B109CD</say-as>',
-         '{ei} , like  alfred.  nine.  {bee} , like  benjamin.  one. zero. nine.  '
-         '{cee} , like  charles.   {dee} , like  david.'),
+         '{EY IH0} , like  alfred.  nine.  {B IH0} , like  benjamin.  one. zero. '
+         'nine.  {S IH1} , like  charles.   {D IH1} , like  david.'),
         ('<say-as interpret-as="spell-with-names">A9B-109-CD</say-as>',
-         '{ei} , like  alfred.  nine.  {bee} , like  benjamin.   {dash.}  one. zero. '
-         'nine.  {dash.} {cee} , like  charles.   {dee} , like  david.'),
+         '{EY IH0} , like  alfred.  nine.  {B IH0} , like  benjamin.   {D AE1 SH} . '
+         'one. zero. nine.  {D AE1 SH} .  {S IH1} , like  charles.   {D IH1} , like  '
+         'david.'),
         ('<say-as interpret-as="spell-with-names">9657</say-as>', 'nine. six. five. seven.'),
         ('<say-as interpret-as="spell-with-names">96AAA57</say-as>',
-         'nine. six.  {ei} , like  alfred.   {ei} , like  alfred.   {ei} , like  '
-         'alfred.  five. seven.'),
+         'nine. six.  {EY IH0} , like  alfred.   {EY IH0} , like  alfred.   {EY IH0} , '
+         'like  alfred.  five. seven.'),
     ])
     def test_texturize_ssml_en(text: str, expected_result: str) -> None:
         ssml_processor = SSMLProcessorFactory.create_ssml_processor(language='en')
