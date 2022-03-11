@@ -37,8 +37,7 @@ class NormalizerPipeline:
         elif config.language == 'en':
             from normalization.text_preprocessing_en import TextNormalizerEn as Normalizer
         else:
-            from normalization.text_preprocessing_en import TextNormalizerEn as Normalizer
-           # raise ValueError(f"Language {config.language} is not supported.")
+            raise ValueError(f"Language {config.language} is not supported.")
         return Normalizer()
 
     def apply(self, text: str) -> List[str]:
