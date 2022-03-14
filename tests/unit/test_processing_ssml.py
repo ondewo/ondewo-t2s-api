@@ -10,25 +10,26 @@ class TestProcessingSSML:
 
     @staticmethod
     @pytest.mark.parametrize('text, expected_result', [
-        ('<say-as interpret-as="spell">ABCD</say-as>', '{AH AH1} .  {B EH1} .  {TZ EH1} .  {D EH EH1} .'),
+        ('<say-as interpret-as="spell">ABCD</say-as>', '{AH AH1} .  {B EH} .  {TZ EH1} .  {D EH} .'),
         ('<say-as interpret-as="spell">A9B109CD</say-as>',
-         '{AH AH1} . nouin.  {B EH1} . eins. null. nouin.  {TZ EH1} .  {D EH EH1} .'),
+         '{AH AH1} . nouin.  {B EH} . eins. null. nouin.  {TZ EH1} .  {D EH} .'),
         ('<say-as interpret-as="spell">A9B-109-CD</say-as>',
-         '{AH AH1} . nouin.  {B EH1} .  {SH T R IH X} . eins. null. nouin.  {SH T R IH '
-         'X} .  {TZ EH1} .  {D EH EH1} .'),
+         '{AH AH1} . nouin.  {B EH} .  {SH T R IH X} . eins. null. nouin.  {SH T R IH '
+         'X} .  {TZ EH1} .  {D EH} .'),
         ('<say-as interpret-as="spell">9657</say-as>', 'nouin. sechss. fünff. sieben.'),
         ('<say-as interpret-as="spell">96AAA57</say-as>',
          'nouin. sechss.  {AH AH1} .  {AH AH1} .  {AH AH1} . fünff. sieben.'),
         ('<say-as interpret-as="spell-with-names">ABCD</say-as>',
-         '{AH AH1} , wie  anna.   {B EH1} , wie  berta.   {TZ EH1} , wie  cäsar.   {D '
-         'EH EH1} , wie  daniel.'),
+         '{AH AH1} , wie  anna.   {B EH} , wie  berta.   {TZ EH1} , wie  cäsar.   {D '
+         'EH} , wie  daniel.'),
         ('<say-as interpret-as="spell-with-names">A9B109CD</say-as>',
-         '{AH AH1} , wie  anna.  nouin.  {B EH1} , wie  berta.  eins. null. nouin.  '
-         '{TZ EH1} , wie  cäsar.   {D EH EH1} , wie  daniel.'),
+         '{AH AH1} , wie  anna.  nouin.  {B EH} , wie  berta.  eins. null. nouin.  {TZ '
+         'EH1} , wie  cäsar.   {D EH} , wie  daniel.'),
         ('<say-as interpret-as="spell-with-names">A9B-109-CD</say-as>',
-         '{AH AH1} , wie  anna.  nouin.  {B EH1} , wie  berta.   {SH T R IH X} . eins. '
-         'null. nouin.  {SH T R IH X} .  {TZ EH1} , wie  cäsar.   {D EH EH1} , wie  '
-         'daniel.'),
+         '{AH AH1} , wie  anna.  nouin.  {B EH} , wie  berta.   {SH T R IH X} . eins. '
+         'null. nouin.  {SH T R IH X} .  {TZ EH1} , wie  cäsar.   {D EH} , wie  '
+         'daniel.'
+         ),
         ('<say-as interpret-as="spell-with-names">9657</say-as>', 'nouin. sechss. fünff. sieben.'),
         ('<say-as interpret-as="spell-with-names">96AAA57</say-as>',
          'nouin. sechss.  {AH AH1} , wie  anna.   {AH AH1} , wie  anna.   {AH AH1} , '
@@ -44,15 +45,14 @@ class TestProcessingSSML:
     @staticmethod
     @pytest.mark.parametrize('text, expected_result', [
         ('<say-as interpret-as="spell-with-names">ABCD</say-as>',
-         '{AH AH1} , wie  anton.   {B EH1} , wie  berta.   {TZ EH1} , wie  cäsar.   {D '
-         'EH EH1} , wie  dora.'),
+         '{AH AH1} , wie  anton.   {B EH} , wie  berta.   {TZ EH1} , wie  cäsar.   {D '
+         'EH} , wie  dora.'),
         ('<say-as interpret-as="spell-with-names">A9B109CD</say-as>',
-         '{AH AH1} , wie  anton.  nouin.  {B EH1} , wie  berta.  eins. null. nouin.  '
-         '{TZ EH1} , wie  cäsar.   {D EH EH1} , wie  dora.'),
+         '{AH AH1} , wie  anton.  nouin.  {B EH} , wie  berta.  eins. null. nouin.  '
+         '{TZ EH1} , wie  cäsar.   {D EH} , wie  dora.'),
         ('<say-as interpret-as="spell-with-names">A9B-109-CD</say-as>',
-         '{AH AH1} , wie  anton.  nouin.  {B EH1} , wie  berta.   {SH T R IH X} . '
-         'eins. null. nouin.  {SH T R IH X} .  {TZ EH1} , wie  cäsar.   {D EH EH1} , '
-         'wie  dora.'),
+         '{AH AH1} , wie  anton.  nouin.  {B EH} , wie  berta.   {SH T R IH X} . eins. '
+         'null. nouin.  {SH T R IH X} .  {TZ EH1} , wie  cäsar.   {D EH} , wie  dora.'),
         ('<say-as interpret-as="spell-with-names">9657</say-as>', 'nouin. sechss. fünff. sieben.'),
         ('<say-as interpret-as="spell-with-names">96AAA57</say-as>',
          'nouin. sechss.  {AH AH1} , wie  anton.   {AH AH1} , wie  anton.   {AH AH1} , '

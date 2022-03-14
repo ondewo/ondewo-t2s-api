@@ -86,9 +86,11 @@ class TestNormalization:
         ('1. Januar 1989. Ist das korrekt?', 'erster januar neunzehnhundertnouinundachtzig. ist das korrekt?'),
         ('erster Januar 1989. Ist das korrekt?', 'erster januar neunzehnhundertnouinundachtzig. ist das korrekt?'),
         ('erster Januar. Ist das korrekt?', 'erster Januar. Ist das korrekt?'),
-        ("Sie sind am 26. 12. 1944 geboren. Richtig? ", 'sie sind am sechssundzwanzigsten dezember neunzehnhundertvierundvierzig '
+        ("Sie sind am 26. 12. 1944 geboren. Richtig? ",
+         'sie sind am sechssundzwanzigsten dezember neunzehnhundertvierundvierzig '
          'geboren. richtig?'),
-        ("Sie sind am 26.12.1944 geboren. Richtig? ", 'sie sind am sechssundzwanzigsten dezember neunzehnhundertvierundvierzig '
+        ("Sie sind am 26.12.1944 geboren. Richtig? ",
+         'sie sind am sechssundzwanzigsten dezember neunzehnhundertvierundvierzig '
          'geboren. richtig?'),
         ('meiner Tochter müssen Großvater Terminumbuchen 5. 10. 1936 anders',
          'meiner tochter müssen großvater terminumbuchen fünffter oktober '
@@ -140,10 +142,10 @@ class TestNormalization:
 
     @staticmethod
     @pytest.mark.parametrize('text, expected_result', [
-        ('www.google.de', '{V EH1 EH1} {V EH1 EH1} {V EH1 EH1} {P UH N K K T} google {P UH N K K T} {D '
-                          'EH EH1} {EH EH1} '),
-        ('www.fundamt.gv.at', '{V EH1 EH1} {V EH1 EH1} {V EH1 EH1} {P UH N K K T} fundamt {P UH N K K T} {G '
-                              'EH EH1} {F F AW UH} {P UH N K K T} {AH AH1} {T EH EH} ')
+        ('www.google.de', '{V EH EH1} {V EH EH1} {V EH EH1} {P UH N K K T} google {P UH N K K T} {D EH} '
+                          '{EH EH1} '),
+        ('www.fundamt.gv.at', '{V EH EH1} {V EH EH1} {V EH EH1} {P UH N K K T} fundamt {P UH N K K T} {G EH '
+                              'EH1} {F F AH AW UH} {P UH N K K T} {AH AH1} {T EH EH} ')
     ])
     def test_normalize_url(text: str, expected_result: str) -> None:
         resulting_text: str = normalizer.normalize_url(text)
@@ -153,22 +155,22 @@ class TestNormalization:
     @staticmethod
     @pytest.mark.parametrize('text, expected_result', [
         ('text www.google.de another text www.fundamt.gv.at',
-         'text {V EH1 EH1} {V EH1 EH1} {V EH1 EH1} {P UH N K K T} google {P UH N K K '
-         'T} {D EH EH1} {EH EH1}  another text {V EH1 EH1} {V EH1 EH1} {V EH1 EH1} {P '
-         'UH N K K T} fundamt {P UH N K K T} {G EH EH1} {F F AW UH} {P UH N K K T} {AH '
-         'AH1} {T EH EH} '),
+         'text {V EH EH1} {V EH EH1} {V EH EH1} {P UH N K K T} google {P UH N K K T} '
+         '{D EH} {EH EH1}  another text {V EH EH1} {V EH EH1} {V EH EH1} {P UH N K K '
+         'T} fundamt {P UH N K K T} {G EH EH1} {F F AH AW UH} {P UH N K K T} {AH AH1} '
+         '{T EH EH} '),
         ('text www.google-test.de/index another text ',
-         'text {V EH1 EH1} {V EH1 EH1} {V EH1 EH1} {P UH N K K T} google {SH T R IH X} '
-         'test {P UH N K K T} {D EH EH1} {EH EH1} {SH RR EH K SH T R IH X} index  '
-         'another text '),
+         'text {V EH EH1} {V EH EH1} {V EH EH1} {P UH N K K T} google {SH T R IH X} '
+         'test {P UH N K K T} {D EH} {EH EH1} {SH RR EH K SH T R IH X} index  another '
+         'text '),
         ('text https://www.google-test.de/index another text ',
-         'text {V EH1 EH1} {V EH1 EH1} {V EH1 EH1} {P UH N K K T} google {SH T R IH X} '
-         'test {P UH N K K T} {D EH EH1} {EH EH1} {SH RR EH K SH T R IH X} index  '
-         'another text '),
+         'text {V EH EH1} {V EH EH1} {V EH EH1} {P UH N K K T} google {SH T R IH X} '
+         'test {P UH N K K T} {D EH} {EH EH1} {SH RR EH K SH T R IH X} index  another '
+         'text '),
         ('text http://www.google-test.de/index another text ',
-         'text {V EH1 EH1} {V EH1 EH1} {V EH1 EH1} {P UH N K K T} google {SH T R IH X} '
-         'test {P UH N K K T} {D EH EH1} {EH EH1} {SH RR EH K SH T R IH X} index  '
-         'another text ')
+         'text {V EH EH1} {V EH EH1} {V EH EH1} {P UH N K K T} google {SH T R IH X} '
+         'test {P UH N K K T} {D EH} {EH EH1} {SH RR EH K SH T R IH X} index  another '
+         'text ')
     ])
     def test_normalize_urls(text: str, expected_result: str) -> None:
         resulting_text: str = normalizer.normalize_urls(text)
