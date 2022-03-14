@@ -5,6 +5,7 @@ from normalization.text_markup_extractor import CompositeTextMarkupExtractor
 from normalization.text_preprocessing_at import TextNormalizerAt
 from normalization.text_preprocessing_de import TextNormalizerDe
 from normalization.text_preprocessing_en import TextNormalizerEn
+from normalization.text_preprocessing_nato import TextNormalizerNato
 
 
 class SSMLProcessor:
@@ -56,6 +57,7 @@ class SSMLProcessorFactory:
         'en': TextNormalizerEn(),
         'de': TextNormalizerDe(),
         'at': TextNormalizerAt(),
+        'nato': TextNormalizerNato(),
     }
 
     @classmethod

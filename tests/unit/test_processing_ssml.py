@@ -68,15 +68,16 @@ class TestProcessingSSML:
     @staticmethod
     @pytest.mark.parametrize('text, expected_result', [
         ('<say-as interpret-as="spell-with-names">ABCD</say-as>',
-         '{EY IH0} , like  alfred.   {B IH0} , like  benjamin.   {S IH1} , like  '
-         'charles.   {D IH1} , like  david.'),
+         '{EY IH0} , like  alfred.   {B IH1 IY0} , like  benjamin.   {S IH1} , like  '
+         'charles.   {D IH1 IY0} , like  david.'),
         ('<say-as interpret-as="spell-with-names">A9B109CD</say-as>',
-         '{EY IH0} , like  alfred.  nine.  {B IH0} , like  benjamin.  one. zero. '
-         'nine.  {S IH1} , like  charles.   {D IH1} , like  david.'),
-        ('<say-as interpret-as="spell-with-names">A9B-109-CD</say-as>',
-         '{EY IH0} , like  alfred.  nine.  {B IH0} , like  benjamin.   {D AE1 SH} . '
-         'one. zero. nine.  {D AE1 SH} .  {S IH1} , like  charles.   {D IH1} , like  '
-         'david.'),
+         '{EY IH0} , like  alfred.  nine.  {B IH1 IY0} , like  benjamin.  one. zero. '
+         'nine.  {S IH1} , like  charles.   {D IH1 IY0} , like  david.'),
+        ('<say-as interpret-as="spell-with-names">A9B-109-CD</say-as>', '{EY IH0} , like  alfred.  nine.  {B IH1 IY0} '
+                                                                        ', like  benjamin.   {D AE1 SH} '
+                                                                        '. one. zero. nine.  {D AE1 SH} .  {S IH1} , '
+                                                                        'like  charles.   {D IH1 IY0} , '
+                                                                        'like  david.'),
         ('<say-as interpret-as="spell-with-names">9657</say-as>', 'nine. six. five. seven.'),
         ('<say-as interpret-as="spell-with-names">96AAA57</say-as>',
          'nine. six.  {EY IH0} , like  alfred.   {EY IH0} , like  alfred.   {EY IH0} , '

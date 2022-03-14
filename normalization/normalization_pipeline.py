@@ -35,7 +35,7 @@ class NormalizerPipeline:
         if config.language == 'de':
             from normalization.text_preprocessing_de import TextNormalizerDe as Normalizer
         elif config.language == 'en':
-            from normalization.text_preprocessing_en import TextNormalizerAt as Normalizer
+            from normalization.text_preprocessing_nato import TextNormalizerNato as Normalizer
         else:
             from normalization.text_preprocessing_en import TextNormalizerEn as Normalizer
             #raise ValueError(f"Language {config.language} is not supported.")

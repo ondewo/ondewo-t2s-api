@@ -3,7 +3,7 @@ from typing import Dict
 from normalization.text_preprocessing_en import TextNormalizerEn
 
 
-class TextNormalizerAt(TextNormalizerEn):
+class TextNormalizerNato(TextNormalizerEn):
     name_mapping: Dict[str, str] = {'a': 'alpha',
                                     'b': 'bravo',
                                     'c': 'charlie',
@@ -30,6 +30,28 @@ class TextNormalizerAt(TextNormalizerEn):
                                     'x': 'x ray',
                                     'y': 'yankee',
                                     'z': 'zulu',
-                                    '4': 'fower',
-                                    '9': 'niner',
                                     }
+    num_dict: Dict[int, str] = {0: 'zero',
+                                1: 'one',
+                                2: 'two',
+                                3: 'three',
+                                4: 'fower',
+                                5: 'five',
+                                6: 'six',
+                                7: 'seven',
+                                8: 'eight',
+                                9: 'niner',
+                                10: 'ten',
+                                11: 'eleven',
+                                12: 'twelve',
+                                13: 'thirteen',
+                                15: 'fifteen',
+                                18: 'eighteen',
+                                20: 'twenty',
+                                30: 'thirty',
+                                40: 'forty',
+                                50: 'fifty',
+                                60: 'sixty',
+                                70: 'seventy',
+                                80: 'eighty',
+                                90: 'ninety'}

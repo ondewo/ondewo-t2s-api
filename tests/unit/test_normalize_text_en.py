@@ -136,11 +136,11 @@ class TestNormalization:
     @staticmethod
     @pytest.mark.parametrize('text, expected_result', [
         ('www.google.de', '{D AH1 B AH0 L}, {IH0 UW0} {D AH1 B AH0 L}, {IH0 UW0} {D AH1 B AH0 L}, {IH0 '
-                          'UW0} {D AA2 T} google {D AA2 T} {D IH1} {IH1 IY0} '),
+                          'UW0} {D AA2 T} google {D AA2 T} {D IH1 IY0} {IH1 IY0} '),
         ('www.fundamt.gv.at.sw.nw', '{D AH1 B AH0 L}, {IH0 UW0} {D AH1 B AH0 L}, {IH0 UW0} {D AH1 B AH0 L}, {IH0 '
-                                    'UW0} {D AA2 T} fundamt {D AA2 T} {JH IH1} {V IH1} {D AA2 T} {EY IH0} {T IY1} '
-                                    '{D AA2 T} {EH1 S} {D AH1 B AH0 L}, {IH0 UW0} {D AA2 T} {EH0 N} {D AH1 B AH0 '
-                                    'L}, {IH0 UW0} '),
+                                    'UW0} {D AA2 T} fundamt {D AA2 T} {JH IH1} {V IH1 IY0} {D AA2 T} {EY IH0} {T '
+                                    'IY1} {D AA2 T} {EH1 S} {D AH1 B AH0 L}, {IH0 UW0} {D AA2 T} {EH0 N} {D AH1 B '
+                                    'AH0 L}, {IH0 UW0} '),
     ])
     def test_normalize_url(text: str, expected_result: str) -> None:
         resulting_text: str = normalizer.normalize_url(text)
@@ -151,21 +151,22 @@ class TestNormalization:
     @pytest.mark.parametrize('text, expected_result', [
         ('text www.google.de another text www.fundamt.gv.at',
          'text {D AH1 B AH0 L}, {IH0 UW0} {D AH1 B AH0 L}, {IH0 UW0} {D AH1 B AH0 L}, '
-         '{IH0 UW0} {D AA2 T} google {D AA2 T} {D IH1} {IH1 IY0}  another text {D AH1 '
-         'B AH0 L}, {IH0 UW0} {D AH1 B AH0 L}, {IH0 UW0} {D AH1 B AH0 L}, {IH0 UW0} {D '
-         'AA2 T} fundamt {D AA2 T} {JH IH1} {V IH1} {D AA2 T} {EY IH0} {T IY1} '),
+         '{IH0 UW0} {D AA2 T} google {D AA2 T} {D IH1 IY0} {IH1 IY0}  another text {D '
+         'AH1 B AH0 L}, {IH0 UW0} {D AH1 B AH0 L}, {IH0 UW0} {D AH1 B AH0 L}, {IH0 '
+         'UW0} {D AA2 T} fundamt {D AA2 T} {JH IH1} {V IH1 IY0} {D AA2 T} {EY IH0} {T '
+         'IY1} '),
         ('text www.google-test.de/index another text ',
          'text {D AH1 B AH0 L}, {IH0 UW0} {D AH1 B AH0 L}, {IH0 UW0} {D AH1 B AH0 L}, '
-         '{IH0 UW0} {D AA2 T} google {D AE1 SH} test {D AA2 T} {D IH1} {IH1 IY0} {S L '
-         'AE1 SH} index  another text '),
+         '{IH0 UW0} {D AA2 T} google {D AE1 SH} test {D AA2 T} {D IH1 IY0} {IH1 IY0} '
+         '{S L AE1 SH} index  another text '),
         ('text https://www.google-test.de/index another text ',
          'text {D AH1 B AH0 L}, {IH0 UW0} {D AH1 B AH0 L}, {IH0 UW0} {D AH1 B AH0 L}, '
-         '{IH0 UW0} {D AA2 T} google {D AE1 SH} test {D AA2 T} {D IH1} {IH1 IY0} {S L '
-         'AE1 SH} index  another text '),
+         '{IH0 UW0} {D AA2 T} google {D AE1 SH} test {D AA2 T} {D IH1 IY0} {IH1 IY0} '
+         '{S L AE1 SH} index  another text '),
         ('text http://www.google-test.de/index another text ',
          'text {D AH1 B AH0 L}, {IH0 UW0} {D AH1 B AH0 L}, {IH0 UW0} {D AH1 B AH0 L}, '
-         '{IH0 UW0} {D AA2 T} google {D AE1 SH} test {D AA2 T} {D IH1} {IH1 IY0} {S L '
-         'AE1 SH} index  another text '
+         '{IH0 UW0} {D AA2 T} google {D AE1 SH} test {D AA2 T} {D IH1 IY0} {IH1 IY0} '
+         '{S L AE1 SH} index  another text '
          )
     ])
     def test_normalize_urls(text: str, expected_result: str) -> None:
@@ -287,11 +288,11 @@ class TestNormalization:
         # Test Urls Normalization
         ('www.google.de', '{D A H one B A H zero L}, { I H zero U W zero } {D A H one B A H zero L}, { '
                           'I H zero U W zero } {D A H one B A H zero L}, { I H zero U W zero } {D A A '
-                          'two T} google {D A A two T} {D I H one } { I H one I Y zero }'),
+                          'two T} google {D A A two T} {D I H one I Y zero } { I H one I Y zero }'),
         ('www.fundamt.gv.at', '{D A H one B A H zero L}, { I H zero U W zero } {D A H one B A H zero L}, { '
                               'I H zero U W zero } {D A H one B A H zero L}, { I H zero U W zero } {D A A '
-                              'two T} fundamt {D A A two T} { j h I H one } {V I H one } {D A A two T} { e '
-                              'y I H zero } {T I Y one }'),
+                              'two T} fundamt {D A A two T} { j h I H one } {V I H one I Y zero } {D A A '
+                              'two T} { e y I H zero } {T I Y one }'),
 
     ])
     def test_combined_normalizer(text: str, expected_result: str) -> None:
