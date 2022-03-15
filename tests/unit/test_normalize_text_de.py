@@ -155,21 +155,28 @@ class TestNormalization:
     @staticmethod
     @pytest.mark.parametrize('text, expected_result', [
         ('text www.google.de another text www.fundamt.gv.at',
-         'text {V EH EH1} {V EH EH1} {V EH EH1} {P UH N K K T} google {P UH N K K T} '
-         '{D EH} {EH EH1}  another text {V EH EH1} {V EH EH1} {V EH EH1} {P UH N K K '
-         'T} fundamt {P UH N K K T} {G EH EH1} {F F AH AW UH} {P UH N K K T} {AH AH1} '
-         '{T EH EH} '),
+         f'text {normalizer.char_mapping["w"]} {normalizer.char_mapping["w"]} {normalizer.char_mapping["w"]} '
+         f'{normalizer.char_mapping["."]} google {normalizer.char_mapping["."]} '
+         f'{normalizer.char_mapping["d"]} {normalizer.char_mapping["e"]}  '
+         f'another text {normalizer.char_mapping["w"]} {normalizer.char_mapping["w"]} {normalizer.char_mapping["w"]} '
+         f'{normalizer.char_mapping["."]} fundamt {normalizer.char_mapping["."]} {normalizer.char_mapping["g"]} '
+         f'{normalizer.char_mapping["v"]} {normalizer.char_mapping["."]} {normalizer.char_mapping["a"]} '
+         f'{normalizer.char_mapping["t"]} '),
         ('text www.google-test.de/index another text ',
-         'text {V EH EH1} {V EH EH1} {V EH EH1} {P UH N K K T} google {SH T R IH X} '
-         'test {P UH N K K T} {D EH} {EH EH1} {SH RR EH K SH T R IH X} index  another '
+         f'text {normalizer.char_mapping["w"]} {normalizer.char_mapping["w"]} {normalizer.char_mapping["w"]} '
+         f'{normalizer.char_mapping["."]} google {normalizer.char_mapping["-"]} '
+         f'test {normalizer.char_mapping["."]} {normalizer.char_mapping["d"]} {normalizer.char_mapping["e"]} '
+         f'{normalizer.char_mapping["/"]} index  another '
          'text '),
         ('text https://www.google-test.de/index another text ',
-         'text {V EH EH1} {V EH EH1} {V EH EH1} {P UH N K K T} google {SH T R IH X} '
-         'test {P UH N K K T} {D EH} {EH EH1} {SH RR EH K SH T R IH X} index  another '
-         'text '),
+         f'text {normalizer.char_mapping["w"]} {normalizer.char_mapping["w"]} {normalizer.char_mapping["w"]} '
+         f'{normalizer.char_mapping["."]} google {normalizer.char_mapping["-"]} '
+         f'test {normalizer.char_mapping["."]} {normalizer.char_mapping["d"]} {normalizer.char_mapping["e"]} '
+         f'{normalizer.char_mapping["/"]} index  another text '),
         ('text http://www.google-test.de/index another text ',
-         'text {V EH EH1} {V EH EH1} {V EH EH1} {P UH N K K T} google {SH T R IH X} '
-         'test {P UH N K K T} {D EH} {EH EH1} {SH RR EH K SH T R IH X} index  another '
+         f'text {normalizer.char_mapping["w"]} {normalizer.char_mapping["w"]} {normalizer.char_mapping["w"]} '
+         f'{normalizer.char_mapping["."]} google {normalizer.char_mapping["-"]} test {normalizer.char_mapping["."]} '
+         f'{normalizer.char_mapping["d"]} {normalizer.char_mapping["e"]} {normalizer.char_mapping["/"]} index  another '
          'text ')
     ])
     def test_normalize_urls(text: str, expected_result: str) -> None:

@@ -61,8 +61,11 @@ class SSMLProcessorFactory:
     }
 
     @classmethod
-    def create_ssml_processor(cls, language: str) -> SSMLProcessor:
+    def create_ssml_processor(cls, language: str, arpabet_mapping: Dict[str, str] = {}) -> SSMLProcessor:
         if language not in cls.AVAILABLE_NORMALIZERS:
             raise KeyError(f"Language {language} is not supported. Available languages"
                            f" {list(cls.AVAILABLE_NORMALIZERS.keys())}")
-        return SSMLProcessor(cls.AVAILABLE_NORMALIZERS[language])
+        normalizer = cls.AVAILABLE_NORMALIZERS[language]
+        if arpabet_mapping != {}:
+            normalizer.char_mapping(arpabet_mapping)
+        return SSMLProcessor(normalizer)

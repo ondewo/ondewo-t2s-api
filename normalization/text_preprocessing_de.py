@@ -6,6 +6,11 @@ from normalization.normalizer_interface import NormalizerInterface
 
 
 class TextNormalizerDe(NormalizerInterface):
+
+    def __init__(self, arpabet_mapping: Dict[str, str] = {}):
+        if arpabet_mapping != {}:
+            self.char_mapping = arpabet_mapping
+
     pttrn_ssml = re.compile('<say-as interpret-as=\"(.*)\">(.*)</say-as>')
     pttrn_spaces_bw_num = re.compile(r'(\d)\s+(\d)')
     pttrn_numbers = re.compile(r'([^0-9]|\b)(\d+)([^0-9]|\b)')

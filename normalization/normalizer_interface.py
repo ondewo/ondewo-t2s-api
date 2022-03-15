@@ -9,11 +9,6 @@ class NormalizerInterface(ABC):
 
     @property
     @abstractmethod
-    def char_mapping(self) -> Dict[str, str]:
-        raise NotImplementedError
-
-    @property
-    @abstractmethod
     def name_mapping(self) -> Dict[str, str]:
         raise NotImplementedError
 
@@ -31,3 +26,7 @@ class NormalizerInterface(ABC):
     @abstractmethod
     def normalize_numbers(self, text: str) -> str:
         raise NotImplementedError
+
+    def char_mapping(self, value: Dict[str, str]) -> Dict[str, str]:
+        self._char_mapping = value
+        return value
