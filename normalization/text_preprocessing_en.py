@@ -1,4 +1,5 @@
 import re
+from abc import ABC
 from datetime import date, time
 from typing import Dict, List
 
@@ -6,7 +7,7 @@ from normalization.normalizer_interface import NormalizerInterface
 from nemo_text_processing.text_normalization.normalize import Normalizer
 
 
-class TextNormalizerEn(NormalizerInterface):
+class TextNormalizerEn(NormalizerInterface, ABC):
 
     nemo_normalizer = Normalizer(input_case='cased', lang='en')
 
@@ -21,11 +22,13 @@ class TextNormalizerEn(NormalizerInterface):
                                 13: 'thirteen', 15: 'fifteen', 18: 'eighteen', 20: 'twenty', 30: 'thirty',
                                 40: 'forty', 50: 'fifty', 60: 'sixty', 70: 'seventy', 80: 'eighty', 90: 'ninety'}
 
-    char_mapping: Dict[str, str] = {'a': 'ei', 'b': 'bee', 'c': 'cee', 'd': 'dee', 'e': 'e',
-                                    'f': 'ef', 'g': 'gee', 'h': 'aitch', 'i': 'i', 'j': 'jay', 'k': 'kay',
-                                    'l': 'el', 'm': 'em', 'n': 'en', 'o': 'o', 'p': 'pee', 'q': 'cue',
-                                    'r': 'ar', 's': 'ess', 't': 'tee', 'u': 'u', 'v': 'vee', 'w': 'double u',
-                                    'x': 'ex', 'y': 'wy', 'z': 'zed', '-': 'dash', '/': 'slash', '.': 'dot', }
+    char_mapping: Dict[str, str] = {'a': '{EY IH0}', 'b': '{B IH1 IY0}', 'c': '{S IH1}', 'd': '{D IH1 IY0}', 'e': '{IH1 '
+                                    'IY0}', 'f': '{EH1 F}', 'g': '{JH IH1}', 'h': '{EH1 IY0 CH}', 'i': '{AY1 IH0}',
+                                    'j': '{JH EY1}', 'k': '{K EY1}', 'l': '{EH1 L}', 'm': '{EH0 M}', 'n': '{EH0 N}',
+                                    'o': '{OW1}', 'p': '{P IY1}', 'q': '{K Y UW0}', 'r': '{AA1 R R}', 's': '{EH1 S}',
+                                    't': '{T IY1}', 'u': '{IH0 UW0}', 'v': '{V IH1 IY0}',
+                                    'w': '{D AH1 B AH0 L}, {IH0 UW0}', 'x': '{EH0 K S}', 'y': '{W AY1}',
+                                    'z': '{Z EH1 T}', '-': '{D AE1 SH}', '/': '{S L AE1 SH}', '.': '{D AA2 T}', }
 
     domain_str: str = r'(?:com|net|org|edu|gov|mil|aero|asia|biz|cat|coop|info|int|jobs|mobi|museum|name|' \
                       r'post|pro|tel|travel|xxx|ac|ad|ae|af|ag|ai|al|am|an|ao|aq|ar|as|at|au|aw|ax|az|ba|' \
@@ -38,6 +41,34 @@ class TextNormalizerEn(NormalizerInterface):
                       r'pn|pr|ps|pt|pw|py|qa|re|ro|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|Ja|sk|sl|sm|sn|so|' \
                       r'sr|ss|st|su|sv|sx|sy|sz|tc|td|tf|tg|th|tj|tk|tl|tm|tn|to|tp|tr|tt|tv|tw|tz|ua|ug|' \
                       r'uk|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|yu|za|zm|zw)'
+
+    name_mapping: Dict[str, str] = {'a': 'alfred',
+                                    'b': 'benjamin',
+                                    'c': 'charles',
+                                    'd': 'david',
+                                    'e': 'edward',
+                                    'f': 'frederick',
+                                    'g': 'george',
+                                    'h': 'harry',
+                                    'i': 'isaac',
+                                    'j': 'jack',
+                                    'k': 'king',
+                                    'l': 'london',
+                                    'm': 'mary',
+                                    'n': 'nellie',
+                                    'o': 'oliver',
+                                    'p': 'peter',
+                                    'q': 'queen',
+                                    'r': 'robert',
+                                    's': 'samuel',
+                                    't': 'tommy',
+                                    'u': 'uncle',
+                                    'v': 'victor',
+                                    'w': 'william',
+                                    'x': 'x-ray',
+                                    'y': 'yellow',
+                                    'z': 'zebra'
+                                    }
 
     pttrn_url = re.compile(
         rf'(?:https?://|\b)((?:[A-Za-z0-9\-]+\.)+{domain_str}(?:/[A-Za-z0-9\-]+)*)(?:$|\s|,|:|;|\?|!|.)'
@@ -60,6 +91,8 @@ class TextNormalizerEn(NormalizerInterface):
                                   'April': 4, 'May': 5, 'June': 6, 'July': 7, 'August': 8, 'September': 9,
                                   'October': 10,
                                   'November': 11, 'December': 12}
+
+    like_token: str = 'like'
 
     def texturize_date(self, _date: date, mode: int = 2) -> str:
         """
@@ -333,7 +366,7 @@ class TextNormalizerEn(NormalizerInterface):
         return text
 
     def remove_unaudible_texts(self, text: str) -> str:
-        if not self.pttrn_audible_char.findall(text):
+        if not self.pttrn_audible_char.findall(text) and text != '.':
             return ''
         return text
 

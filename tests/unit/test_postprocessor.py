@@ -24,14 +24,14 @@ def postprocessor() -> Callable[[Dict], Postprocessor]:
 ])
 def test_postprocess(postprocessor: Callable[[Dict], Postprocessor], inputs: List[np.ndarray], input_len: int) -> None:
 
-    postproc = postprocessor(config)
+    postproc = postprocessor(config)  # type: ignore
     expected_shape = input_len + (len(inputs) - 1) * len(postproc.silence)
     out = postproc.postprocess(inputs)
     assert out.shape[0] <= expected_shape
     for i, j in zip(inputs[0], out):
         assert i != j
 
-    postproc_empty = postprocessor(config_empty)
+    postproc_empty = postprocessor(config_empty)  # type: ignore
     expected_shape = input_len + (len(inputs) - 1) * len(postproc_empty.silence)
     out = postproc_empty.postprocess(inputs)
     assert out.shape[0] == expected_shape
@@ -44,7 +44,7 @@ def test_postprocess(postprocessor: Callable[[Dict], Postprocessor], inputs: Lis
     (np.random.randn(1001), (1001,)),
 ])
 def test_apodize(postprocessor: Callable[[Dict], Postprocessor], inputs: np.ndarray, expected_shape: Tuple[int]) -> None:
-    postproc = postprocessor(config)
+    postproc = postprocessor(config)  # type: ignore
     out = postproc._apodize(inputs)
     assert out.shape == expected_shape
     for i, j in zip(inputs, out):

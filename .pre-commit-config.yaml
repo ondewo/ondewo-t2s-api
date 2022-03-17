@@ -46,3 +46,11 @@ repos:
           (?x) (
           ^demo_server/__init__.py
           )
+
+  - repo: https://github.com/milin/giticket
+    rev: 6f166c66f2423e8e27898b39385d1166f9b643a3
+    hooks:
+      - id: giticket  # Prepend the commit message with the JIRA ticket
+        args: [ '--regex=(?:(?:feature|bugfix|support|hotfix)/)?(OND[0-9]{3}-[0-9]{1,5})[_-][\w-]+',
+                '--format=[{ticket}] {commit_msg}',
+                '--mode=regex_match' ]
