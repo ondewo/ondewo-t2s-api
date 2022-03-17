@@ -1,10 +1,14 @@
 import re
+from enum import Enum
 from typing import List, Tuple, Type, Optional, Callable
 
 from ondewo.logging.logger import logger_console as logger
 
 from normalization.custom_phonemizer_manager import CustomPhonemizerManager
 from normalization.normalizer_interface import NormalizerInterface
+from normalization.text_markup_dataclass import BaseMarkup, ArpabetMarkup, IPAMarkup, SSMLMarkup, TextMarkup
+from normalization.text_markup_extractor import CompositeTextMarkupExtractor
+from normalization.text_processing_ssml import SSMLProcessorFactory
 from normalization.text_splitter import TextSplitter
 from utils.data_classes.config_dataclass import NormalizationDataclass
 
@@ -24,33 +28,53 @@ class NormalizerPipeline:
         self.normalizer: NormalizerInterface = self._get_normalizer(config=config)
         self.pipeline_definition: List[str] = self.get_pipeline_definition(config)
         self.splitter = TextSplitter
+        self.ssml_processor = SSMLProcessorFactory.create_ssml_processor(language=config.language)
 
     @classmethod
     def _get_normalizer(cls, config: NormalizationDataclass) -> NormalizerInterface:
         if config.language == 'de':
             from normalization.text_preprocessing_de import TextNormalizerDe as Normalizer
         elif config.language == 'en':
-            from normalization.text_preprocessing_en import TextNormalizerEn as Normalizer
+            from normalization.text_preprocessing_nato import TextNormalizerNato as Normalizer
         else:
-            raise ValueError(f"Language {config.language} is not supported.")
+            from normalization.text_preprocessing_en import TextNormalizerEn as Normalizer
+            #raise ValueError(f"Language {config.language} is not supported.")
         return Normalizer()
 
     def apply(self, text: str) -> List[str]:
-        text_pieces_annotated: List[Tuple[str, bool]] = self.extract_phonemized(text)
-        normalized_text = self._apply_normalize(text_pieces_annotated=text_pieces_annotated)
+        markup_list: List[BaseMarkup] = CompositeTextMarkupExtractor.extract(text)
+        normalized_text = self._apply_normalize(markup_list=markup_list)
         normalized_text = self.fix_punctuation(normalized_text)
         split_text: List[str] = self.splitter.split_texts([normalized_text])
         return split_text
 
-    def _apply_normalize(self, text_pieces_annotated: List[Tuple[str, bool]]) -> str:
+    def _apply_normalize(self, markup_list: List[BaseMarkup]) -> str:
         normalized_texts: List[str] = []
-        for text, is_phonemized in text_pieces_annotated:
-            if is_phonemized:
-                normalized_texts.append(text)
+        markup_list = self._preprocess_ssml_markups(markup_list)
+        for markup in markup_list:
+            if isinstance(markup, ArpabetMarkup):
+                normalized_texts.append(markup.text)
+            # Todo: Implement IPA
+            # elif isinstance(markup, IPAMarkup):
+            #     arpabet_text = ipa_2_arpabet(markup.text)
+            #     normalized_texts.append(arpabet_text)
+            elif isinstance(markup, TextMarkup):
+                normalized_texts.append(self._apply_all_steps(markup.text))
             else:
-                normalized_texts.append(self._apply_all_steps(text))
+                logger.warning(f'Markup {markup} not recognized.')
         text = ' '.join(normalized_texts)
         return text
+
+    def _preprocess_ssml_markups(self, markup_list: List[BaseMarkup]) -> List[BaseMarkup]:
+        modified_markup_list: List[BaseMarkup] = []
+        for markup in markup_list:
+            if isinstance(markup, SSMLMarkup):
+                modified_markup_list.extend(
+                    self.ssml_processor.texturize_ssml(markup.text, markup.type, markup.attribute)
+                )
+            else:
+                modified_markup_list.append(markup)
+        return modified_markup_list
 
     def _apply_all_steps(self, text: str) -> str:
         for name in self.pipeline_definition:

@@ -78,7 +78,7 @@ class TestGrpcServicerUnit:
         response: text_to_speech_pb2.ListT2sPipelinesResponse = \
             Text2SpeechServicer().handle_list_t2s_pipeline_ids_request(request=list_pipelines_request)
         assert len(response.pipelines) == 2
-        for pipeline_1, pipeline_2 in zip(*[iter(response.pipelines)]*2):
+        for pipeline_1, pipeline_2 in zip(*[iter(response.pipelines)] * 2):
             config_1: text_to_speech_pb2.RequestConfig = text_to_speech_pb2.RequestConfig(
                 t2s_pipeline_id=pipeline_1.id,
                 audio_format=audio_format)

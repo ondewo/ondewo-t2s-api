@@ -49,8 +49,8 @@ run_triton:
 		--grpc-port=50511 --http-port=50510
 
 kill_triton:
-	docker kill ${TRITON_CONTAINER}
-	docker rm ${TRITON_CONTAINER}
+	- docker kill ${TRITON_CONTAINER}
+	- docker rm ${TRITON_CONTAINER}
 
 run_triton_on_dgx:
 	-kill -9 $(ps aux | grep "ssh -N -f -L localhost:50511:dgx:50511 voice_user@dgx"| grep -v grep| awk '{print $2}')
