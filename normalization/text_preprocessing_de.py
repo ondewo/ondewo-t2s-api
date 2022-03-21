@@ -1,31 +1,100 @@
 import re
 from datetime import date, time
-from typing import Dict, List, Any
+from typing import Dict, List
 
 from normalization.normalizer_interface import NormalizerInterface
 
 
 class TextNormalizerDe(NormalizerInterface):
+    pttrn_ssml = re.compile('<say-as interpret-as=\"(.*)\">(.*)</say-as>')
     pttrn_spaces_bw_num = re.compile(r'(\d)\s+(\d)')
     pttrn_numbers = re.compile(r'([^0-9]|\b)(\d+)([^0-9]|\b)')
     pttrn_space = re.compile(r'\s+')
     pttrn_time = re.compile(r'(?:\s|\b|^)(([01][0-9]|[0-9]|2[0-3]):([0-5][0-9])(?:\s|\b|$)'
                             r'(?::[0-5][0-9](?:\s|\b|$))?)')
 
-    num_dict: Dict[int, str] = {0: 'null', 1: 'eins', 2: 'zwei', 3: 'drei', 4: 'vier', 5: 'fünf',
-                                6: 'sechs', 7: 'sieben',
-                                8: 'acht', 9: 'neun', 10: 'zehn', 11: 'elf', 12: 'zwölf', 20: 'zwanzig',
-                                30: 'dreißig',
-                                40: 'vierzig', 50: 'fünfzig', 60: 'sechzig', 70: 'siebzig', 80: 'achtzig',
+    num_dict: Dict[int, str] = {0: 'nulllh', 1: 'eiins', 2: 'zweiii', 3: 'dreiii', 4: 'viieer', 5: 'fünnff',
+                                6: 'sex', 7: 'siiebeenn',
+                                8: 'aachttth', 9: 'neunhh', 10: 'tzeeeennnhh', 11: 'elf {F F}', 12: 'zwölf {F1}', 20: 'zwaanzikk',
+                                30: 'dreiißßiigkkk',
+                                40: 'vieerzigkk', 50: 'fünf {F} zig {K}', 60: 'sechzig {KH}', 70: 'siiebzigk', 80: 'acht {T} zig',
                                 90: 'neunzig'}
 
-    char_mapping: Dict[str, str] = {'a': 'ah', 'b': 'beh', 'c': 'tsehe', 'd': 'deh', 'e': 'eh',
-                                    'f': 'eff', 'g': 'geh', 'h': 'ha', 'i': 'ii', 'j': 'yot', 'k': 'kah',
-                                    'l': 'ell', 'm': 'emm', 'n': 'enn', 'o': 'oh', 'p': 'peh', 'q': 'kuh',
-                                    'r': 'err', 's': 'ess', 't': 'teh', 'u': 'uh', 'v': 'fau', 'w': 'weh',
-                                    'x': 'iks', 'y': 'upsilon', 'z': 'tsett', 'ä': 'ah umlaut',
-                                    'ö': 'oh umlaut', 'ü': 'uh umlaut', 'ß': 'esstsett', '-': 'strich',
-                                    '/': 'schrägstrich', '.': 'punkt', }
+    char_mapping: Dict[str, str] = {'a': '{AH1 AH1 AH1 AH1 AH1}',
+                                    'b': '{V AY X EH S}, {B EH EH EH EH1}',
+                                    'c': '{TZ EH EH EH EH EH1}',
+                                    'd': '{V AY X EH S}, {D EH EH EH EH1 EH1}',
+                                    'e': '{EH EH EH EH EH1}',
+                                    'f': '{EH EH F F F F}',
+                                    'g': '{G EH EH EH EH1}',
+                                    'h': '{HH AH AH AH1 AH1 AH1 AH1}',
+                                    'i': '{IH IH IH IH}',
+                                    'j': '{Y O1 T T T T}',
+                                    'k': '{K AH AH AH AH1 AH1 AH1}',
+                                    'l': '{EH EH L L L L L L L}',
+                                    'm': '{EH EH M M M}',
+                                    'n': '{EH EH N N N N N N N}',
+                                    'o': '{O1 O1 O1 O1 O1}',
+                                    'p': '{HH A R T EH S}, {P EH1 EH1}',
+                                    'q': '{K UH UH UH UH}',
+                                    'r': '{EH EH1 R R R R}',
+                                    's': '{EH S S S}',
+                                    't': '{HH A R T EH S}, {T EH1 EH1 EH1}',
+                                    'u': '{UH UH UH UH UH}',
+                                    'v': '{F F AH AW UH UH UH}',
+                                    'w': '{V EH EH EH1}',
+                                    'x': '{IH K S S S}',
+                                    'y': '{YO YO P S S IY1 L O1 N}',
+                                    'z': '{T Z EH T T}',
+                                    'ä': '{UH M L AW T}, {EH EH EH EH EH EH EH EH}',
+                                    'ö': '{UH M L AW T}, {OE OE OE OE1 OE1 OE1 OE1}',
+                                    'ü': '{UH M L AW T}, {YO YO1 YO1}',
+                                    'ß': '{SH A R F EH S}. {EH S S}',
+                                    '/': '{SH RR EH K SH T R IH X}',
+                                    '.': '{P UH N K K T}',
+                                    '!': '{AW S RR UW F EH1 TZ AY X EH N}',
+                                    '#': '{HH A SH}, {T AH1 AH1 G}',
+                                    '$': '{D AO L L AH1 R}, {TZ AY X EH N}',
+                                    '*': '{SH T EH R N X EH N}',
+                                    '&': '{UH N T T}, {TZ AY X EH N}',
+                                    '(': '{L IH NG K EH1}, {K L A M E RR RR}',
+                                    ')': '{RR EH X T EH}, {K L A M E RR RR}',
+                                    '-': '{B IH N D EH SH T R IH X}',
+                                    '_': '{UH N T AR SH T R IH X}',
+                                    '+': '{P L UH S}, {TZ AY X EH N}',
+                                    '=': '{IH S T} {G L AY X} {TZ AY X EH N}',
+                                    '?': '{F RR AH1 G EH1}, {TZ AY X EH N}'}
+
+    name_mapping: Dict[str, str] = {'a': 'anna',
+                                    'ä': 'äsch',
+                                    'b': 'berta',
+                                    'c': 'cäsar',
+                                    'd': 'daniel',
+                                    'e': 'emil',
+                                    'f': 'friedrich',
+                                    'g': 'gustav',
+                                    'h': 'heinrich',
+                                    'i': 'ida',
+                                    'j': 'jakob',
+                                    'k': 'kaiser',
+                                    'l': 'leopold',
+                                    'm': 'marie',
+                                    'n': 'niklaus',
+                                    'o': 'otto',
+                                    'ö': 'örlikon',
+                                    'p': 'peter',
+                                    'q': 'quasi',
+                                    'r': 'rosa',
+                                    's': 'sophie',
+                                    't': 'theodor',
+                                    'u': 'ulrich',
+                                    'ü': 'übermut',
+                                    'v': 'viktor',
+                                    'w': 'wilhelm',
+                                    'x': 'xavier',
+                                    'y': 'ypsilon',
+                                    'z': 'zürich'
+                                    }
 
     domain_str: str = r'(?:com|net|org|edu|gov|mil|aero|asia|biz|cat|coop|info|int|jobs|mobi|museum|name|' \
                       r'post|pro|tel|travel|xxx|ac|ad|ae|af|ag|ai|al|am|an|ao|aq|ar|as|at|au|aw|ax|az|ba|' \
@@ -38,6 +107,8 @@ class TextNormalizerDe(NormalizerInterface):
                       r'pn|pr|ps|pt|pw|py|qa|re|ro|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|Ja|sk|sl|sm|sn|so|' \
                       r'sr|ss|st|su|sv|sx|sy|sz|tc|td|tf|tg|th|tj|tk|tl|tm|tn|to|tp|tr|tt|tv|tw|tz|ua|ug|' \
                       r'uk|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|yu|za|zm|zw)'
+
+    like_token: str = 'wie'
 
     pttrn_url = re.compile(
         rf'(?:https?://|\b)((?:[A-Za-z0-9\-]+\.)+{domain_str}(?:/[A-Za-z0-9\-]+)*)(?:$|\s|,|:|;|\?|!|.)'
@@ -332,7 +403,7 @@ class TextNormalizerDe(NormalizerInterface):
         return text
 
     def remove_unaudible_texts(self, text: str) -> str:
-        if not self.pttrn_audible_char.findall(text):
+        if not self.pttrn_audible_char.findall(text) and text != '.':
             return ''
         return text
 

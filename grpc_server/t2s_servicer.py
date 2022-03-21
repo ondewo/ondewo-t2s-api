@@ -2,7 +2,7 @@ import io
 import os
 import re
 import time
-from typing import List, Tuple, Optional
+from typing import List, Optional
 
 import google.protobuf.empty_pb2 as empty_pb2
 import grpc
@@ -124,6 +124,7 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
         if re.search(r'[A-Za-z0-9]+', text):
             logger.info(f'Text to transcribe: "{text}"')
             texts: List[str] = t2s_pipeline.normalizer.apply(text)
+            print(f"NORMALIZED TEXT: {texts}")
             logger.info(f'After normalization texts are: {texts}')
 
             audio_list: List[np.ndarray] = t2s_pipeline.inference.synthesize(
@@ -154,7 +155,7 @@ class Text2SpeechServicer(text_to_speech_pb2_grpc.Text2SpeechServicer):
             audio=out.read(),
             generation_time=time.perf_counter() - start_time,
             audio_length=len(audio) / sample_rate,
-            text=text,
+            text=request.text,
             config=request.config,
         )
 

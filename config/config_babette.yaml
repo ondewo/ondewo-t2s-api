@@ -14,7 +14,7 @@ inference:
       type: glow_tts
       glow_tts:
         batch_size: 5
-        use_gpu: true
+        use_gpu: false
         length_scale: 2.0
         noise_scale: 0.6669999957084656
         path: models/glow-tts/babette.pth
@@ -38,7 +38,7 @@ inference:
         triton_model_name: mb_melgan
         triton_url: localhost:50511
       hifi_gan:
-        use_gpu: true
+        use_gpu: false
         batch_size: 20
         config_path: models/HiFiGan/config.json
         model_path: models/HiFiGan/g_02500000
