@@ -9,6 +9,10 @@ from nemo_text_processing.text_normalization.normalize import Normalizer
 
 class TextNormalizerEn(NormalizerInterface, ABC):
 
+    def __init__(self, arpabet_mapping: Dict[str, str] = {}):
+        if arpabet_mapping != {}:
+            self.char_mapping = arpabet_mapping
+
     nemo_normalizer = Normalizer(input_case='cased', lang='en')
 
     pttrn_spaces_bw_num = re.compile(r'(\d)\s+(\d)')

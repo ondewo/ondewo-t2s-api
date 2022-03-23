@@ -1,6 +1,5 @@
 import re
-from enum import Enum
-from typing import List, Tuple, Type, Optional, Callable
+from typing import List, Tuple, Optional, Callable, Dict
 
 from ondewo.logging.logger import logger_console as logger
 
@@ -28,7 +27,8 @@ class NormalizerPipeline:
         self.normalizer: NormalizerInterface = self._get_normalizer(config=config)
         self.pipeline_definition: List[str] = self.get_pipeline_definition(config)
         self.splitter = TextSplitter
-        self.ssml_processor = SSMLProcessorFactory.create_ssml_processor(language=config.language)
+        self.ssml_processor = SSMLProcessorFactory.create_ssml_processor(language=config.language,
+                                                                         arpabet_mapping=self.normalizer.char_mapping())
 
     @classmethod
     def _get_normalizer(cls, config: NormalizationDataclass) -> NormalizerInterface:
@@ -101,6 +101,15 @@ class NormalizerPipeline:
         if not pipeline_definition:
             logger.warning('Preprocessing pipeline is not defined or empty. No preprocessing will be applied')
         return pipeline_definition
+
+    @classmethod
+    def get_char_mapping(cls, config: NormalizationDataclass) -> Dict[str, str]:
+        char_mappping: List[str] = config.arpabet_mappping
+        arpabet_mappping: List[List[str]] = [phoneme.split(': ') for phoneme in char_mappping]
+        items: Dict[str, str] = {}
+        for character, phoneme in arpabet_mappping:
+            items[character] = phoneme
+        return items
 
     def extract_phonemized(self, text: str) -> List[Tuple[str, bool]]:
         text_pieces: List[Tuple[str, bool]] = []
