@@ -1,5 +1,9 @@
 # Release History
 
+## Release ONDEWO S2T 3.1.1
+### Breaking Changes
+* [[ONETEAM-271]](https://ondewo.atlassian.net/browse/ONETEAM-271) - Introduced changes needed to deploy more voices.
+
 ## Release ONDEWO S2T 3.1.0
 ### Breaking Changes
 * [[OND232-320]](https://ondewo.atlassian.net/browse/OND232-320) - Introduced SSML feature for spelling, with names and without. Added an Austrian and Nato normalizer.
