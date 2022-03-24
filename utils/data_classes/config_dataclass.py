@@ -284,7 +284,7 @@ class NormalizationDataclass:
     language: str
     pipeline: List[str]
     custom_phonemizer_id: str
-    arpabet_mappping: Optional[str]
+    arpabet_mappping: Optional[str] = None
 
     def to_proto(self) -> text_to_speech_pb2.T2SNormalization:
         return text_to_speech_pb2.T2SNormalization(
