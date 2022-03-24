@@ -1,15 +1,17 @@
 import re
+from abc import ABC
 from datetime import date, time
 from typing import Dict, List
 
 from normalization.normalizer_interface import NormalizerInterface
 
 
-class TextNormalizerDe(NormalizerInterface):
+class TextNormalizerDe(NormalizerInterface, ABC):
 
     def __init__(self, arpabet_mapping: Dict[str, str] = {}):
+        super().__init__()
         if arpabet_mapping != {}:
-            self.char_mapping = arpabet_mapping
+            self._char_mapping = arpabet_mapping
 
     pttrn_ssml = re.compile('<say-as interpret-as=\"(.*)\">(.*)</say-as>')
     pttrn_spaces_bw_num = re.compile(r'(\d)\s+(\d)')
@@ -25,50 +27,50 @@ class TextNormalizerDe(NormalizerInterface):
                                 40: 'vieerzigkk', 50: 'fünf {F} zig {K}', 60: 'sechzig {KH}', 70: 'siiebzigk', 80: 'acht {T} zig',
                                 90: 'neunzig'}
 
-    char_mapping: Dict[str, str] = {'a': '{AH1 AH1 AH1 AH1 AH1}',
-                                    'b': '{V AY X EH S}, {B EH EH EH EH1}',
-                                    'c': '{TZ EH EH EH EH EH1}',
-                                    'd': '{V AY X EH S}, {D EH EH EH EH1 EH1}',
-                                    'e': '{EH EH EH EH EH1}',
-                                    'f': '{EH EH F F F F}',
-                                    'g': '{G EH EH EH EH1}',
-                                    'h': '{HH AH AH AH1 AH1 AH1 AH1}',
-                                    'i': '{IH IH IH IH}',
-                                    'j': '{Y O1 T T T T}',
-                                    'k': '{K AH AH AH AH1 AH1 AH1}',
-                                    'l': '{EH EH L L L L L L L}',
-                                    'm': '{EH EH M M M}',
-                                    'n': '{EH EH N N N N N N N}',
-                                    'o': '{O1 O1 O1 O1 O1}',
-                                    'p': '{HH A R T EH S}, {P EH1 EH1}',
-                                    'q': '{K UH UH UH UH}',
-                                    'r': '{EH EH1 R R R R}',
-                                    's': '{EH S S S}',
-                                    't': '{HH A R T EH S}, {T EH1 EH1 EH1}',
-                                    'u': '{UH UH UH UH UH}',
-                                    'v': '{F F AH AW UH UH UH}',
-                                    'w': '{V EH EH EH1}',
-                                    'x': '{IH K S S S}',
-                                    'y': '{YO YO P S S IY1 L O1 N}',
-                                    'z': '{T Z EH T T}',
-                                    'ä': '{UH M L AW T}, {EH EH EH EH EH EH EH EH}',
-                                    'ö': '{UH M L AW T}, {OE OE OE OE1 OE1 OE1 OE1}',
-                                    'ü': '{UH M L AW T}, {YO YO1 YO1}',
-                                    'ß': '{SH A R F EH S}. {EH S S}',
-                                    '/': '{SH RR EH K SH T R IH X}',
-                                    '.': '{P UH N K K T}',
-                                    '!': '{AW S RR UW F EH1 TZ AY X EH N}',
-                                    '#': '{HH A SH}, {T AH1 AH1 G}',
-                                    '$': '{D AO L L AH1 R}, {TZ AY X EH N}',
-                                    '*': '{SH T EH R N X EH N}',
-                                    '&': '{UH N T T}, {TZ AY X EH N}',
-                                    '(': '{L IH NG K EH1}, {K L A M E RR RR}',
-                                    ')': '{RR EH X T EH}, {K L A M E RR RR}',
-                                    '-': '{B IH N D EH SH T R IH X}',
-                                    '_': '{UH N T AR SH T R IH X}',
-                                    '+': '{P L UH S}, {TZ AY X EH N}',
-                                    '=': '{IH S T} {G L AY X} {TZ AY X EH N}',
-                                    '?': '{F RR AH1 G EH1}, {TZ AY X EH N}'}
+    _char_mapping: Dict[str, str] = {'a': '{AH1 AH1 AH1 AH1 AH1}',
+                                     'b': '{V AY X EH S}, {B EH EH EH EH1}',
+                                     'c': '{TZ EH EH EH EH EH1}',
+                                     'd': '{V AY X EH S}, {D EH EH EH EH1 EH1}',
+                                     'e': '{EH EH EH EH EH1}',
+                                     'f': '{EH EH F F F F}',
+                                     'g': '{G EH EH EH EH1}',
+                                     'h': '{HH AH AH AH1 AH1 AH1 AH1}',
+                                     'i': '{IH IH IH IH}',
+                                     'j': '{Y O1 T T T T}',
+                                     'k': '{K AH AH AH AH1 AH1 AH1}',
+                                     'l': '{EH EH L L L L L L L}',
+                                     'm': '{EH EH M M M}',
+                                     'n': '{EH EH N N N N N N N}',
+                                     'o': '{O1 O1 O1 O1 O1}',
+                                     'p': '{HH A R T EH S}, {P EH1 EH1}',
+                                     'q': '{K UH UH UH UH}',
+                                     'r': '{EH EH1 R R R R}',
+                                     's': '{EH S S S}',
+                                     't': '{HH A R T EH S}, {T EH1 EH1 EH1}',
+                                     'u': '{UH UH UH UH UH}',
+                                     'v': '{F F AH AW UH UH UH}',
+                                     'w': '{V EH EH EH1}',
+                                     'x': '{IH K S S S}',
+                                     'y': '{YO YO P S S IY1 L O1 N}',
+                                     'z': '{T Z EH T T}',
+                                     'ä': '{UH M L AW T}, {EH EH EH EH EH EH EH EH}',
+                                     'ö': '{UH M L AW T}, {OE OE OE OE1 OE1 OE1 OE1}',
+                                     'ü': '{UH M L AW T}, {YO YO1 YO1}',
+                                     'ß': '{SH A R F EH S}. {EH S S}',
+                                     '/': '{SH RR EH K SH T R IH X}',
+                                     '.': '{P UH N K K T}',
+                                     '!': '{AW S RR UW F EH1 TZ AY X EH N}',
+                                     '#': '{HH A SH}, {T AH1 AH1 G}',
+                                     '$': '{D AO L L AH1 R}, {TZ AY X EH N}',
+                                     '*': '{SH T EH R N X EH N}',
+                                     '&': '{UH N T T}, {TZ AY X EH N}',
+                                     '(': '{L IH NG K EH1}, {K L A M E RR RR}',
+                                     ')': '{RR EH X T EH}, {K L A M E RR RR}',
+                                     '-': '{B IH N D EH SH T R IH X}',
+                                     '_': '{UH N T AR SH T R IH X}',
+                                     '+': '{P L UH S}, {TZ AY X EH N}',
+                                     '=': '{IH S T} {G L AY X} {TZ AY X EH N}',
+                                     '?': '{F RR AH1 G EH1}, {TZ AY X EH N}'}
 
     name_mapping: Dict[str, str] = {'a': 'anna',
                                     'ä': 'äsch',
@@ -472,7 +474,7 @@ class TextNormalizerDe(NormalizerInterface):
                 url_piece = url_pieces[ind]
             else:
                 url_piece = ' '.join(
-                    [(self.char_mapping.get(char.lower()) or char.lower()) for char in url_pieces[ind]])
+                    [(self._char_mapping.get(char.lower()) or char.lower()) for char in url_pieces[ind]])
             url_normalized += url_piece + ' '
 
         return url_normalized

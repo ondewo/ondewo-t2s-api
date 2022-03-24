@@ -1,9 +1,10 @@
+from abc import ABC
 from typing import Dict
 
 from normalization.text_preprocessing_en import TextNormalizerEn
 
 
-class TextNormalizerNato(TextNormalizerEn):
+class TextNormalizerNato(TextNormalizerEn, ABC):
     name_mapping: Dict[str, str] = {'a': 'alpha',
                                     'b': 'bravo',
                                     'c': 'charlie',

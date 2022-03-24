@@ -28,7 +28,7 @@ class NormalizerPipeline:
         self.pipeline_definition: List[str] = self.get_pipeline_definition(config)
         self.splitter = TextSplitter
         self.ssml_processor = SSMLProcessorFactory.create_ssml_processor(language=config.language,
-                                                                         arpabet_mapping=self.normalizer.char_mapping())
+                                                                         arpabet_mapping=self.normalizer.char_mapping)
 
     @classmethod
     def _get_normalizer(cls, config: NormalizationDataclass) -> NormalizerInterface:

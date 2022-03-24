@@ -30,6 +30,9 @@ class SSMLProcessor:
             textured_ssml += ' '
         return textured_ssml.strip()
 
+    def say_as__phone(self, text: str) -> str:
+        return self.say_as__spell(text)
+
     def say_as__spell_with_names(self, text: str) -> str:
         """ Transform text such that individual characters are spelled with names when send to the tts inferencer """
         textured_ssml = ''
@@ -66,6 +69,6 @@ class SSMLProcessorFactory:
             raise KeyError(f"Language {language} is not supported. Available languages"
                            f" {list(cls.AVAILABLE_NORMALIZERS.keys())}")
         normalizer = cls.AVAILABLE_NORMALIZERS[language]
-        if arpabet_mapping != {}:
-            normalizer.char_mapping(arpabet_mapping)
+        if arpabet_mapping and arpabet_mapping != {}:
+            normalizer.char_mapping = arpabet_mapping
         return SSMLProcessor(normalizer)

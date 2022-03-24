@@ -7,6 +7,8 @@ class NormalizerInterface(ABC):
     This interface exists for typing purposes only, to unify text preprocessing for different languages
     """
 
+    _char_mapping: Dict[str, str] = {}
+
     @property
     @abstractmethod
     def name_mapping(self) -> Dict[str, str]:
@@ -27,6 +29,10 @@ class NormalizerInterface(ABC):
     def normalize_numbers(self, text: str) -> str:
         raise NotImplementedError
 
-    def char_mapping(self, value: Dict[str, str]) -> Dict[str, str]:
+    @property
+    def char_mapping(self) -> Dict[str, str]:
+        return self._char_mapping
+
+    @char_mapping.setter
+    def char_mapping(self, value: Dict[str, str]) -> None:
         self._char_mapping = value
-        return value
