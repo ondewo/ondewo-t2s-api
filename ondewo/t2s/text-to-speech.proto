@@ -409,6 +409,7 @@ message T2SNormalization {
     string language = 1;
     repeated string pipeline = 2;
     string custom_phonemizer_id = 3;
+    string arpabet_mappping = 4;
 }
 
 message Postprocessing {
