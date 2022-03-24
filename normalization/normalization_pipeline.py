@@ -1,3 +1,4 @@
+import json
 import re
 from typing import List, Tuple, Optional, Callable, Dict
 
@@ -38,11 +39,10 @@ class NormalizerPipeline:
             from normalization.text_preprocessing_nato import TextNormalizerNato as Normalizer
         else:
             from normalization.text_preprocessing_en import TextNormalizerEn as Normalizer
-            logger.info(
-                f'No normalization function for {config.language}. Normalizer set to English by default.')
-        # raise ValueError(f"Language {config.language} is not supported.")
-
-        return Normalizer()
+            # raise ValueError(f"Language {config.language} is not supported.")
+        char_mapping: Dict[str, str] = cls.get_char_mapping(config)
+        logger.info(f'The character mapping for phonemes is loaded as {char_mapping}.')
+        return Normalizer(arpabet_mapping=char_mapping)
 
     def apply(self, text: str) -> List[str]:
         markup_list: List[BaseMarkup] = CompositeTextMarkupExtractor.extract(text)
@@ -104,12 +104,16 @@ class NormalizerPipeline:
 
     @classmethod
     def get_char_mapping(cls, config: NormalizationDataclass) -> Dict[str, str]:
-        char_mappping: List[str] = config.arpabet_mappping
-        arpabet_mappping: List[List[str]] = [phoneme.split(': ') for phoneme in char_mappping]
-        items: Dict[str, str] = {}
-        for character, phoneme in arpabet_mappping:
-            items[character] = phoneme
-        return items
+        char_mappping: Optional[str] = config.arpabet_mappping
+        if not char_mappping:
+            return dict()
+        with open(char_mappping, 'r') as f:
+            return json.load(f)   # type: ignore
+        # arpabet_mappping: List[List[str]] = [phoneme.split(': ') for phoneme in char_mappping]
+        # items: Dict[str, str] = {}
+        # for character, phoneme in arpabet_mappping:
+        #     items[character] = phoneme
+        # return items
 
     def extract_phonemized(self, text: str) -> List[Tuple[str, bool]]:
         text_pieces: List[Tuple[str, bool]] = []
