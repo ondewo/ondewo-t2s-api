@@ -30,9 +30,6 @@ class SSMLProcessor:
             textured_ssml += ' '
         return textured_ssml.strip()
 
-    def say_as__phone(self, text: str) -> str:
-        return self.say_as__spell(text)
-
     def say_as__spell_with_names(self, text: str) -> str:
         """ Transform text such that individual characters are spelled with names when send to the tts inferencer """
         textured_ssml = ''
@@ -40,6 +37,18 @@ class SSMLProcessor:
             textured_ssml += self._map_character(token, add_names=True)
             textured_ssml += ' '
         return textured_ssml.strip()
+
+    def say_as__phone(self, text: str) -> str:
+        textured_ssml: str = self.say_as__spell(text)
+        return textured_ssml
+
+    def say_as__email(self, text: str) -> str:
+        textured_ssml: str = self.text_normalizer.normalize_email(text)
+        return textured_ssml
+
+    def say_as__url(self, text: str) -> str:
+        textured_ssml: str = self.text_normalizer.normalize_url(text)
+        return textured_ssml
 
     def _map_character(self, char: str, add_names: bool = False) -> str:
         if add_names and char.lower() in self.text_normalizer.name_mapping.keys():

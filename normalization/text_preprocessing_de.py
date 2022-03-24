@@ -22,9 +22,11 @@ class TextNormalizerDe(NormalizerInterface, ABC):
 
     num_dict: Dict[int, str] = {0: 'nulllh', 1: 'eiins', 2: 'zweiii', 3: 'dreiii', 4: 'viieer', 5: 'fünnff',
                                 6: 'sex', 7: 'siiebeenn',
-                                8: 'aachttth', 9: 'neunhh', 10: 'tzeeeennnhh', 11: 'elf {F F}', 12: 'zwölf {F1}', 20: 'zwaanzikk',
+                                8: 'aachttth', 9: 'neunhh', 10: 'tzeeeennnhh', 11: 'elf {F F}', 12: 'zwölf {F1}',
+                                20: 'zwaanzikk',
                                 30: 'dreiißßiigkkk',
-                                40: 'vieerzigkk', 50: 'fünf {F} zig {K}', 60: 'sechzig {KH}', 70: 'siiebzigk', 80: 'acht {T} zig',
+                                40: 'vieerzigkk', 50: 'fünf {F} zig {K}', 60: 'sechzig {KH}', 70: 'siiebzigk',
+                                80: 'acht {T} zig',
                                 90: 'neunzig'}
 
     _char_mapping: Dict[str, str] = {'a': '{AH1 AH1 AH1 AH1 AH1}',
@@ -70,7 +72,9 @@ class TextNormalizerDe(NormalizerInterface, ABC):
                                      '_': '{UH N T AR SH T R IH X}',
                                      '+': '{P L UH S}, {TZ AY X EH N}',
                                      '=': '{IH S T} {G L AY X} {TZ AY X EH N}',
-                                     '?': '{F RR AH1 G EH1}, {TZ AY X EH N}'}
+                                     '?': '{F RR AH1 G EH1}, {TZ AY X EH N}',
+                                     '@': 'at'
+                                     }
 
     name_mapping: Dict[str, str] = {'a': 'anna',
                                     'ä': 'äsch',
@@ -415,14 +419,7 @@ class TextNormalizerDe(NormalizerInterface, ABC):
         return text
 
     def normalize_all(self, text: str) -> str:
-        """
 
-        Args:
-            text:
-
-        Returns:
-
-        """
         text = self.fix_plus(text=text)
         text = self.normalize_urls(text=text)
         text = self.normalize_dates(text=text)
@@ -432,10 +429,6 @@ class TextNormalizerDe(NormalizerInterface, ABC):
         text = self.remove_unaudible_texts(text=text)
         text = self.lower_case(text=text)
         return text
-
-    @staticmethod
-    def lower_case(text: str) -> str:
-        return text.lower()
 
     def normalize_urls(self, text: str) -> str:
         """
@@ -454,27 +447,3 @@ class TextNormalizerDe(NormalizerInterface, ABC):
             text = text.replace(url, normalized_url)
 
         return text
-
-    def normalize_url(self, url: str) -> str:
-        """
-
-        Args:
-            url:
-
-        Returns:
-
-        """
-
-        list_of_words: List[str] = ['com', 'net', 'org', 'gov', 'pro', 'edu', ]
-
-        url_pieces: List[str] = re.split(r'(?<=[./\-\d])|(?=[./\-\d])', url)
-        url_normalized: str = ''
-        for ind in range(len(url_pieces)):
-            if len(url_pieces[ind]) > 3 or url_pieces[ind] in list_of_words:
-                url_piece = url_pieces[ind]
-            else:
-                url_piece = ' '.join(
-                    [(self._char_mapping.get(char.lower()) or char.lower()) for char in url_pieces[ind]])
-            url_normalized += url_piece + ' '
-
-        return url_normalized
