@@ -64,7 +64,7 @@ normalization:
   - remove_unaudible_texts
   - lower_case
   custom_phonemizer_id: ''
-  arpabet_mappping:
+  arpabet_mappping: ''
 postprocessing:
   silence_secs: 0.25
   pipeline: []
