@@ -18,7 +18,7 @@ class TextNormalizerDe(NormalizerInterface):
                                 8: 'aachttth', 9: 'neunhh', 10: 'tzeeeennnhh', 11: 'elf {F F}', 12: 'zwölf {F1}', 20: 'zwaanzikk',
                                 30: 'dreiißßiigkkk',
                                 40: 'vieerzigkk', 50: 'fünf {F} zig {K}', 60: 'sechzig {KH}', 70: 'siiebzigk', 80: 'acht {T} zig',
-                                90: 'neunzig'}
+                                90: 'neunzig', 100: 'hundert', 1000: 'tausend'}
 
     char_mapping: Dict[str, str] = {'a': '{AH1 AH1 AH1 AH1 AH1}',
                                     'b': '{V AY X EH S}, {B EH EH EH EH1}',

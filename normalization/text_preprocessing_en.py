@@ -20,7 +20,7 @@ class TextNormalizerEn(NormalizerInterface, ABC):
     num_dict: Dict[int, str] = {0: 'zero', 1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: 'six',
                                 7: 'seven', 8: 'eight', 9: 'nine', 10: 'ten', 11: 'eleven', 12: 'twelve',
                                 13: 'thirteen', 15: 'fifteen', 18: 'eighteen', 20: 'twenty', 30: 'thirty',
-                                40: 'forty', 50: 'fifty', 60: 'sixty', 70: 'seventy', 80: 'eighty', 90: 'ninety'}
+                                40: 'forty', 50: 'fifty', 60: 'sixty', 70: 'seventy', 80: 'eighty', 90: 'ninety', 100: 'hundred', 1000: 'thousand'}
 
     char_mapping: Dict[str, str] = {'a': '{EY IH0}', 'b': '{B IH1 IY0}', 'c': '{S IH1}', 'd': '{D IH1 IY0}', 'e': '{IH1 '
                                     'IY0}', 'f': '{EH1 F}', 'g': '{JH IH1}', 'h': '{EH1 IY0 CH}', 'i': '{AY1 IH0}',
@@ -197,7 +197,7 @@ class TextNormalizerEn(NormalizerInterface, ABC):
         hundreds_num: int = number // 100
         tens: int = number % 100
 
-        hundreds: str = self.textulize_tens(hundreds_num) + ' hundred'
+        hundreds: str = self.textulize_tens(hundreds_num) + ' ' + self.num_dict[100]
 
         if tens != 0:
             text_tens: str = ' ' + self.textulize_tens(tens)

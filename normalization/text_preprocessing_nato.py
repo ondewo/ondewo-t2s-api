@@ -31,15 +31,18 @@ class TextNormalizerNato(TextNormalizerEn):
                                     'y': 'yankee',
                                     'z': 'zulu',
                                     }
+
+
+class TextNormalizerATC(TextNormalizerNato):
     num_dict: Dict[int, str] = {0: 'zero',
-                                1: 'one',
-                                2: 'two',
-                                3: 'three',
+                                1: 'wun',
+                                2: 'too',
+                                3: 'tree',
                                 4: 'fower',
-                                5: 'five',
+                                5: 'fife',
                                 6: 'six',
                                 7: 'seven',
-                                8: 'eight',
+                                8: 'ait',
                                 9: 'niner',
                                 10: 'ten',
                                 11: 'eleven',
@@ -54,4 +57,6 @@ class TextNormalizerNato(TextNormalizerEn):
                                 60: 'sixty',
                                 70: 'seventy',
                                 80: 'eighty',
-                                90: 'ninety'}
+                                90: 'ninety',
+                                100: 'hun dred',
+                                1000: 'tousand'}
