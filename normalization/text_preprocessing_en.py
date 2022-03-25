@@ -9,6 +9,11 @@ from nemo_text_processing.text_normalization.normalize import Normalizer
 
 class TextNormalizerEn(NormalizerInterface, ABC):
 
+    def __init__(self, arpabet_mapping: Dict[str, str] = {}):
+        super().__init__()
+        if arpabet_mapping != {}:
+            self._char_mapping = arpabet_mapping
+
     nemo_normalizer = Normalizer(input_case='cased', lang='en')
 
     pttrn_spaces_bw_num = re.compile(r'(\d)\s+(\d)')
@@ -22,13 +27,13 @@ class TextNormalizerEn(NormalizerInterface, ABC):
                                 13: 'thirteen', 15: 'fifteen', 18: 'eighteen', 20: 'twenty', 30: 'thirty',
                                 40: 'forty', 50: 'fifty', 60: 'sixty', 70: 'seventy', 80: 'eighty', 90: 'ninety', 100: 'hundred', 1000: 'thousand'}
 
-    char_mapping: Dict[str, str] = {'a': '{EY IH0}', 'b': '{B IH1 IY0}', 'c': '{S IH1}', 'd': '{D IH1 IY0}', 'e': '{IH1 '
-                                    'IY0}', 'f': '{EH1 F}', 'g': '{JH IH1}', 'h': '{EH1 IY0 CH}', 'i': '{AY1 IH0}',
-                                    'j': '{JH EY1}', 'k': '{K EY1}', 'l': '{EH1 L}', 'm': '{EH0 M}', 'n': '{EH0 N}',
-                                    'o': '{OW1}', 'p': '{P IY1}', 'q': '{K Y UW0}', 'r': '{AA1 R R}', 's': '{EH1 S}',
-                                    't': '{T IY1}', 'u': '{IH0 UW0}', 'v': '{V IH1 IY0}',
-                                    'w': '{D AH1 B AH0 L}, {IH0 UW0}', 'x': '{EH0 K S}', 'y': '{W AY1}',
-                                    'z': '{Z EH1 T}', '-': '{D AE1 SH}', '/': '{S L AE1 SH}', '.': '{D AA2 T}', }
+    _char_mapping: Dict[str, str] = {'a': '{EY IH0}', 'b': '{B IH1 IY0}', 'c': '{S IH1}', 'd': '{D IH1 IY0}', 'e': '{IH1 '
+                                     'IY0}', 'f': '{EH1 F}', 'g': '{JH IH1}', 'h': '{EH1 IY0 CH}', 'i': '{AY1 IH0}',
+                                     'j': '{JH EY1}', 'k': '{K EY1}', 'l': '{EH1 L}', 'm': '{EH0 M}', 'n': '{EH0 N}',
+                                     'o': '{OW1}', 'p': '{P IY1}', 'q': '{K Y UW0}', 'r': '{AA1 R R}', 's': '{EH1 S}',
+                                     't': '{T IY1}', 'u': '{IH0 UW0}', 'v': '{V IH1 IY0}',
+                                     'w': '{D AH1 B AH0 L}, {IH0 UW0}', 'x': '{EH0 K S}', 'y': '{W AY1}',
+                                     'z': '{Z EH1 T}', '-': '{D AE1 SH}', '/': '{S L AE1 SH}', '.': '{D AA2 T}', }
 
     domain_str: str = r'(?:com|net|org|edu|gov|mil|aero|asia|biz|cat|coop|info|int|jobs|mobi|museum|name|' \
                       r'post|pro|tel|travel|xxx|ac|ad|ae|af|ag|ai|al|am|an|ao|aq|ar|as|at|au|aw|ax|az|ba|' \
@@ -226,8 +231,8 @@ class TextNormalizerEn(NormalizerInterface, ABC):
         time_to_text += ' ' + self.textulize_tens(minutes) + ' '
         if seconds != 0:
             time_to_text += self.textulize_tens(seconds) + ' '
-        am = self.char_mapping['a']+' '+self.char_mapping['m']
-        pm = self.char_mapping['p']+' '+self.char_mapping['m']
+        am = self._char_mapping['a'] + ' ' + self._char_mapping['m']
+        pm = self._char_mapping['p'] + ' ' + self._char_mapping['m']
         time_to_text += am if hour <= 12 else pm
 
         return time_to_text
@@ -448,7 +453,7 @@ class TextNormalizerEn(NormalizerInterface, ABC):
                 url_piece = url_pieces[ind]
             else:
                 url_piece = ' '.join(
-                    [(self.char_mapping.get(char.lower()) or char.lower()) for char in url_pieces[ind]])
+                    [(self._char_mapping.get(char.lower()) or char.lower()) for char in url_pieces[ind]])
             url_normalized += url_piece + ' '
 
         return url_normalized

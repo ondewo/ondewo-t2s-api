@@ -54,8 +54,17 @@ inference:
     cache_save_dir: models/cache
 normalization:
   language: de
-  pipeline: []
+  pipeline:
+  - fix_plus
+  - normalize_urls
+  - normalize_dates
+  - normalize_year
+  - normalize_time
+  - normalize_numbers
+  - remove_unaudible_texts
+  - lower_case
   custom_phonemizer_id: ''
+  arpabet_mappping: ''
 postprocessing:
   silence_secs: 0.25
   pipeline: []

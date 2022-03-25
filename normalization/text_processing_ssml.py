@@ -38,6 +38,18 @@ class SSMLProcessor:
             textured_ssml += ' '
         return textured_ssml.strip()
 
+    def say_as__phone(self, text: str) -> str:
+        textured_ssml: str = self.say_as__spell(text)
+        return textured_ssml
+
+    def say_as__email(self, text: str) -> str:
+        textured_ssml: str = self.text_normalizer.normalize_email(text)
+        return textured_ssml
+
+    def say_as__url(self, text: str) -> str:
+        textured_ssml: str = self.text_normalizer.normalize_url(text)
+        return textured_ssml
+
     def _map_character(self, char: str, add_names: bool = False) -> str:
         if add_names and char.lower() in self.text_normalizer.name_mapping.keys():
             aux = f"{self.text_normalizer.char_mapping[char.lower()]}, " \
@@ -61,9 +73,11 @@ class SSMLProcessorFactory:
     }
 
     @classmethod
-    def create_ssml_processor(cls, language: str) -> SSMLProcessor:
+    def create_ssml_processor(cls, language: str, arpabet_mapping: Dict[str, str] = {}) -> SSMLProcessor:
         if language not in cls.AVAILABLE_NORMALIZERS:
-            return SSMLProcessor(cls.AVAILABLE_NORMALIZERS['en'])
-            # raise KeyError(f"Language {language} is not supported. Available languages"
-            #               f" {list(cls.AVAILABLE_NORMALIZERS.keys())}")
-        return SSMLProcessor(cls.AVAILABLE_NORMALIZERS[language])
+            raise KeyError(f"Language {language} is not supported. Available languages"
+                           f" {list(cls.AVAILABLE_NORMALIZERS.keys())}")
+        normalizer = cls.AVAILABLE_NORMALIZERS[language]
+        if arpabet_mapping and arpabet_mapping != {}:
+            normalizer.char_mapping = arpabet_mapping
+        return SSMLProcessor(normalizer)
