@@ -17,7 +17,7 @@ inference:
         use_gpu: true
         length_scale: 1.0
         noise_scale: 0.6669999957084656
-        path: models/glow-tts/brigitte.pth
+        path: models/glow-tts/en/pretrained.pth
         param_config_path: models/glow-tts/en/config.json
         cleaners:
         - english_cleaners
