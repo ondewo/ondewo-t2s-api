@@ -86,7 +86,8 @@ class TestNormalization:
         ('1. Januar 1989. Ist das korrekt?',
          'eiinster januar neunzehnhundertneunhhundacht {t} zig. ist das korrekt?'),
         (
-            'erster Januar 1989. Ist das korrekt?', 'erster januar neunzehnhundertneunhhundacht {t} zig. ist das korrekt?'),
+            'erster Januar 1989. Ist das korrekt?',
+            'erster januar neunzehnhundertneunhhundacht {t} zig. ist das korrekt?'),
         ('erster Januar. Ist das korrekt?', 'erster Januar. Ist das korrekt?'),
         ("Sie sind am 26. 12. 1944 geboren. Richtig? ",
          'sie sind am sexundzwaanzikkten dezember neunzehnhundertviieerundvieerzigkk '
@@ -170,14 +171,13 @@ class TestNormalization:
          'D EH SH T R IH X} test {P UH N K K T} {V AY X EH S}, {D EH EH EH EH1 EH1} '
          '{EH EH EH EH EH1} {SH RR EH K SH T R IH X} index  another text '),
         ('text https://www.google-test.de/index another text ',
-         'text {V EH EH EH1} {V EH EH EH1} {V EH EH EH1} {P UH N K K T} google {B IH N '
-         'D EH SH T R IH X} test {P UH N K K T} {V AY X EH S}, {D EH EH EH EH1 EH1} '
-         '{EH EH EH EH EH1} {SH RR EH K SH T R IH X} index  another text '
-         ),
+         'text https://{V EH EH EH1} {V EH EH EH1} {V EH EH EH1} {P UH N K K T} google '
+         '{B IH N D EH SH T R IH X} test {P UH N K K T} {V AY X EH S}, {D EH EH EH EH1 '
+         'EH1} {EH EH EH EH EH1} {SH RR EH K SH T R IH X} index  another text '),
         ('text http://www.google-test.de/index another text ',
-         'text {V EH EH EH1} {V EH EH EH1} {V EH EH EH1} {P UH N K K T} google {B IH N '
-         'D EH SH T R IH X} test {P UH N K K T} {V AY X EH S}, {D EH EH EH EH1 EH1} '
-         '{EH EH EH EH EH1} {SH RR EH K SH T R IH X} index  another text '
+         'text http://{V EH EH EH1} {V EH EH EH1} {V EH EH EH1} {P UH N K K T} google '
+         '{B IH N D EH SH T R IH X} test {P UH N K K T} {V AY X EH S}, {D EH EH EH EH1 '
+         'EH1} {EH EH EH EH EH1} {SH RR EH K SH T R IH X} index  another text '
          )
     ])
     def test_normalize_urls(text: str, expected_result: str) -> None:
