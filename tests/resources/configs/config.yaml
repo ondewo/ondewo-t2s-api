@@ -1,10 +1,10 @@
-id: glow_tts&hifi_gan-e976dd6c-2f41-484b-aec2-3e6868d37280
+id: brigitte_de
 description:
   language: de
-  speaker_sex: male
+  speaker_sex: female
   pipeline_owner: ondewo
   comments: trained on public domain dataset
-  speaker_name: Thorsten
+  speaker_name: Brigitte
   domain: general
 active: true
 inference:
@@ -17,18 +17,20 @@ inference:
         use_gpu: true
         length_scale: 1.0
         noise_scale: 0.6669999957084656
-        path: models/glow-tts/de/thorsten_blank.pth
+        path: models/glow-tts/brigitte_de.pth
         param_config_path: models/glow-tts/de/config_blank.json
-        cleaners: []
+        cleaners:
+          - german_cleaners
       glow_tts_triton:
         batch_size: 8
         length_scale: 1.0
         noise_scale: 0.6669999957084656
-        cleaners: []
+        cleaners:
+          - german_cleaners
         max_text_length: 100
         param_config_path: models/glow-tts/de/config_blank.json
         triton_url: localhost:50511
-        triton_model_name: glow_tts_thorsten
+        triton_model_name: glow_tts_brigitte_de
     mel2audio:
       type: hifi_gan
       mb_melgan_triton:
@@ -64,7 +66,7 @@ normalization:
   - remove_unaudible_texts
   - lower_case
   custom_phonemizer_id: test_custom_phonemizer_b9b38839-dad3-4f9a-a715-a5fcfba24dfd
-  arpabet_mappping: ''
+  arpabet_mappping:
 postprocessing:
   silence_secs: 0.25
   pipeline: []

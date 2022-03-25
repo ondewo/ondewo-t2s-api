@@ -45,7 +45,7 @@ class NormalizerInterface(ABC):
     def normalize_url(self, text: str) -> str:
         list_of_words: List[str] = ['com', 'net', 'org', 'gov', 'pro', 'edu', ]
 
-        url_pieces: List[str] = re.split(r'(?<=[./\-\d])|(?=[./\-\d])', text)
+        url_pieces: List[str] = re.split(r'([^a-zA-Z0-9])', text)
         url_normalized: str = ''
         for ind in range(len(url_pieces)):
             if len(url_pieces[ind]) > 3 or url_pieces[ind] in list_of_words:
@@ -60,7 +60,7 @@ class NormalizerInterface(ABC):
     def normalize_email(self, text: str) -> str:
         list_of_words: List[str] = ['com', 'net', 'org', 'gov', 'pro', 'edu', ]
 
-        email_pieces: List[str] = re.split(r'(?<=[./\-\d_@])|(?=[./\-\d_@])', text)
+        email_pieces: List[str] = re.split(r'([^a-zA-Z0-9])', text)
         email_normalized: str = ''
         for ind in range(len(email_pieces)):
             if len(email_pieces[ind]) > 3 or email_pieces[ind] in list_of_words:
