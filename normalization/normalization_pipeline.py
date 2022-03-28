@@ -6,7 +6,7 @@ from ondewo.logging.logger import logger_console as logger
 
 from normalization.custom_phonemizer_manager import CustomPhonemizerManager
 from normalization.normalizer_interface import NormalizerInterface
-from normalization.text_markup_dataclass import BaseMarkup, ArpabetMarkup, IPAMarkup, SSMLMarkup, TextMarkup
+from normalization.text_markup_dataclass import BaseMarkup, ArpabetMarkup, SSMLMarkup, TextMarkup
 from normalization.text_markup_extractor import CompositeTextMarkupExtractor
 from normalization.text_processing_ssml import SSMLProcessorFactory
 from normalization.text_splitter import TextSplitter
@@ -43,7 +43,8 @@ class NormalizerPipeline:
             from normalization.text_preprocessing_nato import TextNormalizerATC as Normalizer
         else:
             from normalization.text_preprocessing_en import TextNormalizerEn as Normalizer
-            # raise ValueError(f"Language {config.language} is not supported.")
+            raise logger.info(f"Language {config.language} is not supported. Normalization set to default language:"
+                              f" English")
         char_mapping: Dict[str, str] = cls.get_char_mapping(config)
         logger.info(f'The character mapping for phonemes is loaded as {char_mapping}.')
         return Normalizer(arpabet_mapping=char_mapping)
@@ -113,11 +114,6 @@ class NormalizerPipeline:
             return dict()
         with open(char_mappping, 'r') as f:
             return json.load(f)   # type: ignore
-        # arpabet_mappping: List[List[str]] = [phoneme.split(': ') for phoneme in char_mappping]
-        # items: Dict[str, str] = {}
-        # for character, phoneme in arpabet_mappping:
-        #     items[character] = phoneme
-        # return items
 
     def extract_phonemized(self, text: str) -> List[Tuple[str, bool]]:
         text_pieces: List[Tuple[str, bool]] = []

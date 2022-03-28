@@ -151,7 +151,9 @@ class TestNormalization:
                           'T} {V AY X EH S}, {D EH EH EH EH1 EH1} {EH EH EH EH EH1} '),
         ('www.fundamt.gv.at', '{V EH EH EH1} {V EH EH EH1} {V EH EH EH1} {P UH N K K T} fundamt {P UH N K K '
                               'T} {G EH EH EH EH1} {F F AH AW UH UH UH} {P UH N K K T} {AH1 AH1 AH1 AH1 '
-                              'AH1} {HH A R T EH S}, {T EH1 EH1 EH1} ')
+                              'AH1} {HH A R T EH S}, {T EH1 EH1 EH1} '),
+        ('www.facebook.com', '{V EH EH EH1} {V EH EH EH1} {V EH EH EH1} {P UH N K K T} facebook {P UH N K '
+                             'K T} com ')
     ])
     def test_normalize_url(text: str, expected_result: str) -> None:
         resulting_text: str = normalizer.normalize_url(text)
