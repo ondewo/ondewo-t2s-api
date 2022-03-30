@@ -1,11 +1,12 @@
 from typing import Dict, List
+
 from normalization.normalizer_interface import NormalizerInterface
 from normalization.text_markup_dataclass import BaseMarkup
 from normalization.text_markup_extractor import CompositeTextMarkupExtractor
 from normalization.text_preprocessing_at import TextNormalizerAt
 from normalization.text_preprocessing_de import TextNormalizerDe
 from normalization.text_preprocessing_en import TextNormalizerEn
-from normalization.text_preprocessing_nato import TextNormalizerNato
+from normalization.text_preprocessing_nato import TextNormalizerNato, TextNormalizerATC
 
 
 class SSMLProcessor:
@@ -70,6 +71,7 @@ class SSMLProcessorFactory:
         'de': TextNormalizerDe(),
         'at': TextNormalizerAt(),
         'nato': TextNormalizerNato(),
+        'atc': TextNormalizerATC(),
     }
 
     @classmethod

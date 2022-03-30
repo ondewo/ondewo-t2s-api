@@ -3,8 +3,9 @@ from abc import ABC
 from datetime import date, time
 from typing import Dict, List
 
-from normalization.normalizer_interface import NormalizerInterface
 from nemo_text_processing.text_normalization.normalize import Normalizer
+
+from normalization.normalizer_interface import NormalizerInterface
 
 
 class TextNormalizerEn(NormalizerInterface, ABC):
@@ -25,15 +26,62 @@ class TextNormalizerEn(NormalizerInterface, ABC):
     num_dict: Dict[int, str] = {0: 'zero', 1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: 'six',
                                 7: 'seven', 8: 'eight', 9: 'nine', 10: 'ten', 11: 'eleven', 12: 'twelve',
                                 13: 'thirteen', 15: 'fifteen', 18: 'eighteen', 20: 'twenty', 30: 'thirty',
-                                40: 'forty', 50: 'fifty', 60: 'sixty', 70: 'seventy', 80: 'eighty', 90: 'ninety', 100: 'hundred', 1000: 'thousand'}
+                                40: 'forty', 50: 'fifty', 60: 'sixty', 70: 'seventy', 80: 'eighty', 90: 'ninety',
+                                100: 'hundred', 1000: 'thousand'}
 
-    _char_mapping: Dict[str, str] = {'a': '{EY IH0}', 'b': '{B IH1 IY0}', 'c': '{S IH1}', 'd': '{D IH1 IY0}', 'e': '{IH1 '
-                                     'IY0}', 'f': '{EH1 F}', 'g': '{JH IH1}', 'h': '{EH1 IY0 CH}', 'i': '{AY1 IH0}',
-                                     'j': '{JH EY1}', 'k': '{K EY1}', 'l': '{EH1 L}', 'm': '{EH0 M}', 'n': '{EH0 N}',
-                                     'o': '{OW1}', 'p': '{P IY1}', 'q': '{K Y UW0}', 'r': '{AA1 R R}', 's': '{EH1 S}',
-                                     't': '{T IY1}', 'u': '{IH0 UW0}', 'v': '{V IH1 IY0}',
-                                     'w': '{D AH1 B AH0 L}, {IH0 UW0}', 'x': '{EH0 K S}', 'y': '{W AY1}',
-                                     'z': '{Z EH1 T}', '-': '{D AE1 SH}', '/': '{S L AE1 SH}', '.': '{D AA2 T}', }
+    _char_mapping: Dict[str, str] = {
+        "!": "{EH2 K S K L AH0 M EY1 SH AH0}, {N P OY2 N T}",
+        "#": "{HH AE1 SH T AE2 G}",
+        "$": "{D AA1 L ER0}, {S AY1 N}",
+        "%": "{P ER0 S EH1 N T}",
+        "&": "{AE1 M P ER0 S AE2 N D}",
+        "'": "{AH0 P AA1 S T R AH0 F IY0}",
+        "(": "{OW1 P AH0 N IH0 NG}, {B R AE1 K}",
+        ")": "{K L OW1 Z IH0 NG}, {B R AE1 K}",
+        "*": "{AE1 S T ER0 IH0 S K}",
+        "+": "{P L AH1 S}",
+        ",": "{K AA1 M AH0}",
+        "-": "{D AE1 SH}",
+        ".": "{D AA1 T}",
+        "/": "{S L AE1 SH}",
+        ":": "{K OW1 L AH0 N}",
+        ";": "{S EH1 M IY0 K OW1 L AH0 N}",
+        "=": "{IY1 K W AH0 L}",
+        "?": "{}",
+        "@": "{AE0 T}",
+        "[": "{OW1 P AH0 N IH0 NG}, {B R AE1 K IH0 T}",
+        "]": "{K L OW1 Z IH0 NG}, {B R AE1 K IH0 T}",
+        "_": "{{AH1 N D ER0}, {S K AO1 R}}",
+        "a": "{EY0}",
+        "b": "{B IY1 IY1}",
+        "c": "{S IY1 IY1 IY1}",
+        "d": "{D IY1 IY1}",
+        "e": "{E IY1 IY1 IY1}",
+        "f": "{EH0 F}",
+        "g": "{CH IY1 IY1 IY1}",
+        "h": "aitch",
+        "i": "{AY2}",
+        "j": "{JH EY0}",
+        "k": "{K EY0}",
+        "l": "{EH1 L L L}",
+        "m": "{EH2 M M M}",
+        "n": "{EH2 N N N}",
+        "o": "{OW0}",
+        "p": "{P EH0}",
+        "q": "{K UH1}",
+        "r": "{AA1 R}",
+        "s": "{EH1 S}",
+        "t": "{T IH1}",
+        "u": "{UW2}",
+        "v": "{V IH2}",
+        "w": "double {UW2}",
+        "x": "{EH0 K S}",
+        "y": "{W AH1 IY0}",
+        "z": "{Z IH1}",
+        "{": "{OW1 P AH0 N IH0 NG}, {K ER1 L IY0}, {B R AE1 K IH0 T}",
+        "|": "{P AY2 P}",
+        "}": "{K L OW1 Z IH0 NG}, {K ER1 L IY0}, {B R AE1 K IH0 T}",
+    }
 
     domain_str: str = r'(?:com|net|org|edu|gov|mil|aero|asia|biz|cat|coop|info|int|jobs|mobi|museum|name|' \
                       r'post|pro|tel|travel|xxx|ac|ad|ae|af|ag|ai|al|am|an|ao|aq|ar|as|at|au|aw|ax|az|ba|' \
@@ -191,18 +239,11 @@ class TextNormalizerEn(NormalizerInterface, ABC):
         return num_text
 
     def texturize_hundred(self, number: int) -> str:
-        """
-
-        Args:
-            number:
-
-        Returns:
-
-        """
         hundreds_num: int = number // 100
         tens: int = number % 100
 
-        hundreds: str = self.textulize_tens(hundreds_num) + ' ' + self.num_dict[100]
+        hundreds: str = self.textulize_tens(hundreds_num)
+        hundreds += ' ' if hundreds_num == 0 else ' ' + self.num_dict[100]
 
         if tens != 0:
             text_tens: str = ' ' + self.textulize_tens(tens)

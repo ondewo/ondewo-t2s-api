@@ -17,7 +17,7 @@ inference:
         use_gpu: true
         length_scale: 1.0
         noise_scale: 0.6669999957084656
-        path: models/glow-tts/en/pretrained.pth
+        path: models/glow-tts/brigitte.pth
         param_config_path: models/glow-tts/en/config.json
         cleaners:
         - english_cleaners
@@ -66,7 +66,7 @@ normalization:
   - remove_unaudible_texts
   - lower_case
   custom_phonemizer_id:
-  arpabet_mappping: config/linda_char_map.json
+  arpabet_mappping: config/brigitte_en_char_map.json
 postprocessing:
   silence_secs: 0.0
   pipeline: []
