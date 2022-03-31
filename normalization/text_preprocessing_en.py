@@ -18,7 +18,7 @@ class TextNormalizerEn(NormalizerInterface, ABC):
     nemo_normalizer = Normalizer(input_case='cased', lang='en')
 
     pttrn_spaces_bw_num = re.compile(r'(\d)\s+(\d)')
-    pttrn_numbers = re.compile(r'([^0-9]|\b)(\d+)([^0-9]|\b)')
+    pttrn_numbers = re.compile(r'([^0-9]|\b)(\d+[\x20./]\d+|\d+)([^0-9]|\b)')
     pttrn_space = re.compile(r'\s+')
     pttrn_time = re.compile(r'(?:\s|\b|^)(([01][0-9]|[0-9]|2[0-3]):([0-5][0-9])(?:\s|\b|$)'
                             r'(?::[0-5][0-9](?:\s|\b|$))?)')
@@ -445,8 +445,8 @@ class TextNormalizerEn(NormalizerInterface, ABC):
 
         """
         text = self.fix_plus(text=text)
-        text = self.normalize_urls(text=text)
         text = self.normalize_nemo(text=text)
+
         return text
 
     @staticmethod

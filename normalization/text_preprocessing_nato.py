@@ -78,7 +78,7 @@ class TextNormalizerATC(TextNormalizerEn, ABC):
                                     'z': 'zoo loo',
                                     }
 
-    def textulize_numbers(self, number: str, is_decimal: bool = False, is_code: bool = False) -> str:
+    def textulize_number(self, number: str, is_decimal: bool = False, is_code: bool = False) -> str:
 
         if int(number) == 0 and is_decimal:
             return self.num_dict[0]
@@ -97,12 +97,12 @@ class TextNormalizerATC(TextNormalizerEn, ABC):
             texturized_number += self.num_dict[int(n)] + ' '
         return texturized_number
 
-    def normalize_numbers(self, text: str) -> str:
+    def texturize_numbers(self, text: str) -> str:
 
         number_pieces = re.split(r'(?<=[./\x20])|(?=[./\x20])', text)
         decimal_pieces = re.split(r'(?<=[./])|(?=[./])', text)
-        is_decimal: bool = False
-        is_code: bool = True if number_pieces[0] == text else False
+        is_decimal: bool = True if text.__contains__('.') else False
+        is_code: bool = True if number_pieces[0] else False
         texturized_code: str = ''
 
         for n in number_pieces:
@@ -112,15 +112,15 @@ class TextNormalizerATC(TextNormalizerEn, ABC):
             elif n == ' ':
                 char = 'TOUSAND'
             elif len(n) >= 4:
-                char = self.textulize_numbers(n, is_code)
+                char = self.textulize_number(n, is_code)
             else:
-                char = self.textulize_numbers(n, is_decimal)
+                char = self.textulize_number(n, is_decimal)
             texturized_code += char + ', '
         texturized_code = re.sub(r"\s+", " ", texturized_code)
         return texturized_code
 
     def normalize_year(self, text: str) -> str:
         for year_str in self.pttrn_year.findall(text):
-            year_txt = self.textulize_numbers(text)
+            year_txt = self.textulize_number(text, is_code=True)
             text = text.replace(year_str, year_txt)
         return text
