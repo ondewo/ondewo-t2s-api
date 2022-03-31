@@ -25,30 +25,36 @@ class SSMLProcessor:
 
     def say_as__spell(self, text: str) -> str:
         """ Transform text such that individual characters are spelled when send to the tts inferencer """
-        textured_ssml = ''
+        textured_ssml = '. '
         for token in text:
             textured_ssml += self._map_character(token, add_names=False)
             textured_ssml += ' '
-        return textured_ssml.strip()
+        return textured_ssml
 
     def say_as__spell_with_names(self, text: str) -> str:
         """ Transform text such that individual characters are spelled with names when send to the tts inferencer """
-        textured_ssml = ''
+        textured_ssml = '. '
         for token in text:
             textured_ssml += self._map_character(token, add_names=True)
             textured_ssml += ' '
-        return textured_ssml.strip()
+        return textured_ssml
 
     def say_as__phone(self, text: str) -> str:
-        textured_ssml: str = self.say_as__spell(text)
+        textured_ssml: str = '. '
+        textured_ssml += self.say_as__spell(text)
+        textured_ssml += ' '
         return textured_ssml
 
     def say_as__email(self, text: str) -> str:
-        textured_ssml: str = self.text_normalizer.normalize_email(text)
+        textured_ssml: str = '. '
+        textured_ssml += self.text_normalizer.normalize_email(text)
+        textured_ssml += ' '
         return textured_ssml
 
     def say_as__url(self, text: str) -> str:
-        textured_ssml: str = self.text_normalizer.normalize_url(text)
+        textured_ssml: str = '. '
+        textured_ssml += self.text_normalizer.normalize_url(text)
+        textured_ssml += ' '
         return textured_ssml
 
     def _map_character(self, char: str, add_names: bool = False) -> str:

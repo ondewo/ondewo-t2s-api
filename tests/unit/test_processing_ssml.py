@@ -27,17 +27,19 @@ class TestTextSSMLPreprocessor:
         ('normalizer_pipeline_de.yaml', '<say-as interpret-as="spell">',
          ['<say-as interpret-as="spell">.']),
         ('normalizer_pipeline_de.yaml', '<say-as interpret-as="spell">ABCDEFGHIJKLMNOPQRSTUVWXYZ</say-as>',
-         ['{a} .', ' {b} .', ' {c} .', ' {d} .', ' {e} .', ' {f} .', ' {g} .', ' {h} .', ' {i} .', ' {j} .', ' {k} .',
+         ['.', ' {a} .', ' {b} .', ' {c} .', ' {d} .', ' {e} .', ' {f} .', ' {g} .', ' {h} .', ' {i} .', ' {j} .',
+          ' {k} .',
           ' {l} .', ' {m} .', ' {n} .', ' {o} .', ' {p} .', ' {q} .', ' {r} .', ' {s} .', ' {t} .', ' {u} .', ' {v} .',
           ' {w} .', ' {x} .', ' {y} .', ' {z} .']),
         ('normalizer_pipeline_de.yaml', '<say-as interpret-as="spell">ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789</say-as>',
-         ['{a} .', ' {b} .', ' {c} .', ' {d} .', ' {e} .', ' {f} .', ' {g} .', ' {h} .', ' {i} .', ' {j} .', ' {k} .',
+         ['.', ' {a} .', ' {b} .', ' {c} .', ' {d} .', ' {e} .', ' {f} .', ' {g} .', ' {h} .', ' {i} .', ' {j} .',
+          ' {k} .',
           ' {l} .', ' {m} .', ' {n} .', ' {o} .', ' {p} .', ' {q} .', ' {r} .', ' {s} .', ' {t} .', ' {u} .', ' {v} .',
           ' {w} .', ' {x} .', ' {y} .', ' {z} .', ' eiins.', ' zweiii.', ' dreiii.', ' viieer.', ' fünnff.', ' sex.',
           ' siiebeenn.', ' aachttth.', ' neunhh.']),
         ('normalizer_pipeline_de.yaml', 'text <say-as interpret-as="spell">ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789</say'
                                         '-as> text',
-         ['text {a} .', ' {b} .', ' {c} .', ' {d} .', ' {e} .', ' {f} .', ' {g} .', ' {h} .', ' {i} .', ' {j} .',
+         ['text .', ' {a} .', ' {b} .', ' {c} .', ' {d} .', ' {e} .', ' {f} .', ' {g} .', ' {h} .', ' {i} .', ' {j} .',
           ' {k} .',
           ' {l} .', ' {m} .', ' {n} .', ' {o} .', ' {p} .', ' {q} .', ' {r} .', ' {s} .', ' {t} .', ' {u} .', ' {v} .',
           ' {w} .', ' {x} .', ' {y} .', ' {z} .', ' eiins.', ' zweiii.', ' dreiii.', ' viieer.', ' fünnff.', ' sex.',
@@ -58,7 +60,7 @@ class TestTextSSMLPreprocessor:
         ('normalizer_pipeline_de.yaml', '<say-as interpret-as="spell-with-names">',
          ['<say-as interpret-as="spell-with-names">.']),
         ('normalizer_pipeline_de.yaml', '<say-as interpret-as="spell-with-names">ABCDEFGHIJKLMNOPQRSTUVWXYZ</say-as>',
-         ['{a} , wie anna.', ' {b} , wie berta.', ' {c} , wie cäsar.', ' {d} , wie daniel.', ' {e} , wie emil.',
+         ['.', ' {a} , wie anna.', ' {b} , wie berta.', ' {c} , wie cäsar.', ' {d} , wie daniel.', ' {e} , wie emil.',
           ' {f} , wie friedrich.', ' {g} , wie gustav.', ' {h} , wie heinrich.', ' {i} , wie ida.', ' {j} , wie jakob.',
           ' {k} , wie kaiser.', ' {l} , wie leopold.', ' {m} , wie marie.', ' {n} , wie niklaus.', ' {o} , wie otto.',
           ' {p} , wie peter.', ' {q} , wie quasi.', ' {r} , wie rosa.', ' {s} , wie sophie.', ' {t} , wie theodor.',
@@ -67,7 +69,7 @@ class TestTextSSMLPreprocessor:
           ' {z} , wie zürich.']),
         ('normalizer_pipeline_de.yaml', '<say-as interpret-as="spell-with-names">ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789'
                                         '</say-as>',
-         ['{a} , wie anna.', ' {b} , wie berta.', ' {c} , wie cäsar.', ' {d} , wie daniel.', ' {e} , wie emil.',
+         ['.', ' {a} , wie anna.', ' {b} , wie berta.', ' {c} , wie cäsar.', ' {d} , wie daniel.', ' {e} , wie emil.',
           ' {f} , wie friedrich.', ' {g} , wie gustav.', ' {h} , wie heinrich.', ' {i} , wie ida.', ' {j} , wie jakob.',
           ' {k} , wie kaiser.', ' {l} , wie leopold.', ' {m} , wie marie.', ' {n} , wie niklaus.', ' {o} , wie otto.',
           ' {p} , wie peter.', ' {q} , wie quasi.', ' {r} , wie rosa.', ' {s} , wie sophie.', ' {t} , wie theodor.',
@@ -78,7 +80,8 @@ class TestTextSSMLPreprocessor:
         ('normalizer_pipeline_de.yaml', 'text <say-as interpret-as="spell-with-names'
                                         '">ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789 '
                                         '</say-as> text',
-         ['text {a} , wie anna.', ' {b} , wie berta.', ' {c} , wie cäsar.', ' {d} , wie daniel.', ' {e} , wie emil.',
+         ['text .', ' {a} , wie anna.', ' {b} , wie berta.', ' {c} , wie cäsar.', ' {d} , wie daniel.',
+          ' {e} , wie emil.',
           ' {f} , wie friedrich.', ' {g} , wie gustav.', ' {h} , wie heinrich.', ' {i} , wie ida.', ' {j} , wie jakob.',
           ' {k} , wie kaiser.', ' {l} , wie leopold.', ' {m} , wie marie.', ' {n} , wie niklaus.', ' {o} , wie otto.',
           ' {p} , wie peter.', ' {q} , wie quasi.', ' {r} , wie rosa.', ' {s} , wie sophie.', ' {t} , wie theodor.',
@@ -112,7 +115,9 @@ class TestTextSSMLPreprocessor:
         ('normalizer_pipeline_de.yaml', '<say-as interpret-as="phone">',
          ['<say-as interpret-as="phone">.']),
         ('normalizer_pipeline_de.yaml', '<say-as interpret-as="phone">1561187227</say-as>',
-         ['eiins.', ' fünnff.', ' sex.', ' eiins.', ' eiins.', ' aachttth.', ' siiebeenn.', ' zweiii.', ' zweiii.',
+         ['.',
+          ' .',
+          ' eiins.', ' fünnff.', ' sex.', ' eiins.', ' eiins.', ' aachttth.', ' siiebeenn.', ' zweiii.', ' zweiii.',
           ' siiebeenn.']),
         ('normalizer_pipeline_de.yaml', '<say-as interpret-as="phone">+1561187227</say-as>',
          ['{+} .', ' eiins.', ' fünnff.', ' sex.', ' eiins.', ' eiins.', ' aachttth.', ' siiebeenn.', ' zweiii.',
@@ -124,14 +129,16 @@ class TestTextSSMLPreprocessor:
           ' zweiii.', ' zweiii.', ' siiebeenn.']
          ),
         ('normalizer_pipeline_de.yaml', '<say-as interpret-as="phone">156 118 7227</say-as>',
-         ['eiins.', ' fünnff.', ' sex.', ' eiins.', ' eiins.', ' aachttth.', ' siiebeenn.', ' zweiii.', ' zweiii.',
+         ['.',
+          ' .',
+          ' eiins.', ' fünnff.', ' sex.', ' eiins.', ' eiins.', ' aachttth.', ' siiebeenn.', ' zweiii.', ' zweiii.',
           ' siiebeenn.']),
         ('normalizer_pipeline_de.yaml', '<say-as interpret-as="phone">+156 118 7227</say-as>',
          ['{+} .', ' eiins.', ' fünnff.', ' sex.', ' eiins.', ' eiins.', ' aachttth.', ' siiebeenn.', ' zweiii.',
           ' zweiii.',
           ' siiebeenn.']),
         ('normalizer_pipeline_de.yaml', 'text <say-as interpret-as="phone">+156 118 7227</say-as> text',
-         ['text {+} .', ' eiins.', ' fünnff.', ' sex.', ' eiins.', ' eiins.', ' aachttth.', ' siiebeenn.', ' zweiii.',
+         ['text  {+} .', ' eiins.', ' fünnff.', ' sex.', ' eiins.', ' eiins.', ' aachttth.', ' siiebeenn.', ' zweiii.',
           ' zweiii.', ' siiebeenn.', ' text.']),
         # ('normalizer_pipeline_de.yaml', '<say-as interpret-as="phone">text +156 118 7227 text</say-as>',
         #  ['{+} .', ' eiins.', ' fünnff.', ' sex.', ' eiins.', ' eiins.', ' aachttth.', ' siiebeenn.', ' zweiii.',
@@ -153,18 +160,19 @@ class TestTextSSMLPreprocessor:
         ('normalizer_pipeline_de.yaml', '<say-as interpret-as="email">',
          ['<say-as interpret-as="email">.']),
         ('normalizer_pipeline_de.yaml', '<say-as interpret-as="email">abcd@gmail.com</say-as>',
-         ['abcd {@} gmail {punkt} com.']),
+         ['.', ' abcd {@} gmail {punkt} com.']),
         ('normalizer_pipeline_de.yaml', '<say-as interpret-as="email">abcd123@gmail.com</say-as>',
-         ['abcd hundertdreiiiundzwaanzikk {@} gmail {punkt} com.']),
+         ['.', ' abcd hundertdreiiiundzwaanzikk {@} gmail {punkt} com.']),
         ('normalizer_pipeline_de.yaml', '<say-as interpret-as="email">abcd123-_*@gmail.com</say-as>',
-         ['abcd hundertdreiiiundzwaanzikk {-} {_} {*} {@} gmail {punkt} com.']),
+         ['.', ' abcd hundertdreiiiundzwaanzikk {-} {_} {*} {@} gmail {punkt} com.']),
         ('normalizer_pipeline_de.yaml', '<say-as interpret-as="email">abcd123!#$%^&*()_-+={}[];:@gmail.com</say-as>',
-         ['abcd hundertdreiiiundzwaanzikk {ausrufezeichen} {#} {$}  {&} {*} {(} {)} {_} '
+         ['.', ' abcd hundertdreiiiundzwaanzikk {ausrufezeichen} {#} {$}  {&} {*} {(} {)} {_} '
           '{-} {+} {=} {  }  {@} gmail {punkt} com.']),
         ('normalizer_pipeline_de.yaml', 'text <say-as interpret-as="email">abcd123-_*@gmail.com</say-as> text',
-         ['text abcd hundertdreiiiundzwaanzikk {-} {_} {*} {@} gmail {punkt} com text.']),
+         ['text .',
+          ' abcd hundertdreiiiundzwaanzikk {-} {_} {*} {@} gmail {punkt} com text.']),
         ('normalizer_pipeline_de.yaml', '<say-as interpret-as="email">text abcd123-_*@gmail.com text</say-as>',
-         ['text abcd hundertdreiiiundzwaanzikk {-} {_} {*} {@} gmail {punkt} com text.']),
+         ['.', ' text abcd hundertdreiiiundzwaanzikk {-} {_} {*} {@} gmail {punkt} com text.']),
 
     ])
     def test_ssml_processing__email(config_path: str, text: str, expected: List[str]) -> None:
@@ -185,22 +193,22 @@ class TestTextSSMLPreprocessor:
         ('normalizer_pipeline_de.yaml', '<say-as interpret-as="url">',
          ['<say-as interpret-as="url">.']),
         ('normalizer_pipeline_de.yaml', '<say-as interpret-as="url">google.com</say-as>',
-         ['google {punkt} com.']),
+         ['.', ' google {punkt} com.']),
         ('normalizer_pipeline_de.yaml', '<say-as interpret-as="url">www.google.com</say-as>',
-         ['{w} {w} {w} {punkt} google {punkt} com.']),
+         ['.', ' {w} {w} {w} {punkt} google {punkt} com.']),
         ('normalizer_pipeline_de.yaml', '<say-as interpret-as="url">google.com.ar</say-as>',
-         ['google {punkt} com {punkt} {a} {r}.']),
+         ['.', ' google {punkt} com {punkt} {a} {r}.']),
         ('normalizer_pipeline_de.yaml', '<say-as interpret-as="url">https://open.spotify.com/playlist'
                                         '/37i9dQZF1E4nr6hJNUgTDh</say-as>',
-         ['https : {/} {/} open {punkt} spotify {punkt} com {/} playlist {/} '
+         ['.', ' https : {/} {/} open {punkt} spotify {punkt} com {/} playlist {/} '
           'siiebeennunddreiißßiigkkk i9dqzf eiins e4nr sex hjnugtdh.']),
         ('normalizer_pipeline_de.yaml', 'text <say-as interpret-as="url">https://open.spotify.com/playlist'
                                         '/37i9dQZF1E4nr6hJNUgTDh</say-as> text',
-         ['text https : {/} {/} open {punkt} spotify {punkt} com {/} playlist {/} '
+         ['text .', ' https : {/} {/} open {punkt} spotify {punkt} com {/} playlist {/} '
           'siiebeennunddreiißßiigkkk i9dqzf eiins e4nr sex hjnugtdh text.']),
         ('normalizer_pipeline_de.yaml', '<say-as interpret-as="url">text https://open.spotify.com/playlist'
                                         '/37i9dQZF1E4nr6hJNUgTDh text</say-as>',
-         ['text https : {/} {/} open {punkt} spotify {punkt} com {/} playlist {/} '
+         ['.', ' text https : {/} {/} open {punkt} spotify {punkt} com {/} playlist {/} '
           'siiebeennunddreiißßiigkkk i9dqzf eiins e4nr sex hjnugtdh text.']),
 
     ])
