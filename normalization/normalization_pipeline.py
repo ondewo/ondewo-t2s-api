@@ -1,12 +1,12 @@
+import json
 import re
-from enum import Enum
-from typing import List, Tuple, Type, Optional, Callable
+from typing import List, Tuple, Optional, Callable, Dict
 
 from ondewo.logging.logger import logger_console as logger
 
 from normalization.custom_phonemizer_manager import CustomPhonemizerManager
 from normalization.normalizer_interface import NormalizerInterface
-from normalization.text_markup_dataclass import BaseMarkup, ArpabetMarkup, IPAMarkup, SSMLMarkup, TextMarkup
+from normalization.text_markup_dataclass import BaseMarkup, ArpabetMarkup, SSMLMarkup, TextMarkup
 from normalization.text_markup_extractor import CompositeTextMarkupExtractor
 from normalization.text_processing_ssml import SSMLProcessorFactory
 from normalization.text_splitter import TextSplitter
@@ -28,21 +28,26 @@ class NormalizerPipeline:
         self.normalizer: NormalizerInterface = self._get_normalizer(config=config)
         self.pipeline_definition: List[str] = self.get_pipeline_definition(config)
         self.splitter = TextSplitter
-        self.ssml_processor = SSMLProcessorFactory.create_ssml_processor(language=config.language)
+        self.ssml_processor = SSMLProcessorFactory.create_ssml_processor(language=config.language,
+                                                                         arpabet_mapping=self.normalizer.char_mapping)
 
     @classmethod
     def _get_normalizer(cls, config: NormalizationDataclass) -> NormalizerInterface:
         if config.language == 'de':
             from normalization.text_preprocessing_de import TextNormalizerDe as Normalizer
         elif config.language == 'en':
+            from normalization.text_preprocessing_en import TextNormalizerEn as Normalizer
+        elif config.language == 'nato':
             from normalization.text_preprocessing_nato import TextNormalizerNato as Normalizer
+        elif config.language == 'atc':
+            from normalization.text_preprocessing_nato import TextNormalizerATC as Normalizer
         else:
             from normalization.text_preprocessing_en import TextNormalizerEn as Normalizer
-            logger.info(
-                f'No normalization function for {config.language}. Normalizer set to English by default.')
-        # raise ValueError(f"Language {config.language} is not supported.")
-
-        return Normalizer()
+            raise logger.info(f"Language {config.language} is not supported. Normalization set to default language:"
+                              f" English")
+        char_mapping: Dict[str, str] = cls.get_char_mapping(config)
+        logger.info(f'The character mapping for phonemes is loaded as {char_mapping}.')
+        return Normalizer(arpabet_mapping=char_mapping)
 
     def apply(self, text: str) -> List[str]:
         markup_list: List[BaseMarkup] = CompositeTextMarkupExtractor.extract(text)
@@ -101,6 +106,14 @@ class NormalizerPipeline:
         if not pipeline_definition:
             logger.warning('Preprocessing pipeline is not defined or empty. No preprocessing will be applied')
         return pipeline_definition
+
+    @classmethod
+    def get_char_mapping(cls, config: NormalizationDataclass) -> Dict[str, str]:
+        char_mappping: Optional[str] = config.arpabet_mappping
+        if not char_mappping:
+            return dict()
+        with open(char_mappping, 'r') as f:
+            return json.load(f)   # type: ignore
 
     def extract_phonemized(self, text: str) -> List[Tuple[str, bool]]:
         text_pieces: List[Tuple[str, bool]] = []

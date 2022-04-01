@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List
+from typing import List, Optional
 
 from dataclasses_json import dataclass_json
 
@@ -284,12 +284,14 @@ class NormalizationDataclass:
     language: str
     pipeline: List[str]
     custom_phonemizer_id: str
+    arpabet_mappping: Optional[str] = None
 
     def to_proto(self) -> text_to_speech_pb2.T2SNormalization:
         return text_to_speech_pb2.T2SNormalization(
             language=self.language,
             pipeline=self.pipeline,
             custom_phonemizer_id=self.custom_phonemizer_id,
+            arpabet_mappping=self.arpabet_mappping
         )
 
     @classmethod
@@ -298,6 +300,7 @@ class NormalizationDataclass:
             language=proto.language,
             pipeline=list(proto.pipeline),
             custom_phonemizer_id=proto.custom_phonemizer_id,
+            arpabet_mappping=proto.arpabet_mappping
         )
 
 

@@ -1,11 +1,12 @@
 from typing import Dict, List
+
 from normalization.normalizer_interface import NormalizerInterface
 from normalization.text_markup_dataclass import BaseMarkup
 from normalization.text_markup_extractor import CompositeTextMarkupExtractor
 from normalization.text_preprocessing_at import TextNormalizerAt
 from normalization.text_preprocessing_de import TextNormalizerDe
 from normalization.text_preprocessing_en import TextNormalizerEn
-from normalization.text_preprocessing_nato import TextNormalizerNato
+from normalization.text_preprocessing_nato import TextNormalizerNato, TextNormalizerATC
 
 
 class SSMLProcessor:
@@ -24,19 +25,37 @@ class SSMLProcessor:
 
     def say_as__spell(self, text: str) -> str:
         """ Transform text such that individual characters are spelled when send to the tts inferencer """
-        textured_ssml = ''
+        textured_ssml = '. '
         for token in text:
             textured_ssml += self._map_character(token, add_names=False)
             textured_ssml += ' '
-        return textured_ssml.strip()
+        return textured_ssml
 
     def say_as__spell_with_names(self, text: str) -> str:
         """ Transform text such that individual characters are spelled with names when send to the tts inferencer """
-        textured_ssml = ''
+        textured_ssml = '. '
         for token in text:
             textured_ssml += self._map_character(token, add_names=True)
             textured_ssml += ' '
-        return textured_ssml.strip()
+        return textured_ssml
+
+    def say_as__phone(self, text: str) -> str:
+        textured_ssml: str = '. '
+        textured_ssml += self.say_as__spell(text)
+        textured_ssml += ' '
+        return textured_ssml
+
+    def say_as__email(self, text: str) -> str:
+        textured_ssml: str = '. '
+        textured_ssml += self.text_normalizer.normalize_email(text)
+        textured_ssml += ' '
+        return textured_ssml
+
+    def say_as__url(self, text: str) -> str:
+        textured_ssml: str = '. '
+        textured_ssml += self.text_normalizer.normalize_url(text)
+        textured_ssml += ' '
+        return textured_ssml
 
     def _map_character(self, char: str, add_names: bool = False) -> str:
         if add_names and char.lower() in self.text_normalizer.name_mapping.keys():
@@ -58,12 +77,15 @@ class SSMLProcessorFactory:
         'de': TextNormalizerDe(),
         'at': TextNormalizerAt(),
         'nato': TextNormalizerNato(),
+        'atc': TextNormalizerATC(),
     }
 
     @classmethod
-    def create_ssml_processor(cls, language: str) -> SSMLProcessor:
+    def create_ssml_processor(cls, language: str, arpabet_mapping: Dict[str, str] = {}) -> SSMLProcessor:
         if language not in cls.AVAILABLE_NORMALIZERS:
-            return SSMLProcessor(cls.AVAILABLE_NORMALIZERS['en'])
-            # raise KeyError(f"Language {language} is not supported. Available languages"
-            #               f" {list(cls.AVAILABLE_NORMALIZERS.keys())}")
-        return SSMLProcessor(cls.AVAILABLE_NORMALIZERS[language])
+            raise KeyError(f"Language {language} is not supported. Available languages"
+                           f" {list(cls.AVAILABLE_NORMALIZERS.keys())}")
+        normalizer = cls.AVAILABLE_NORMALIZERS[language]
+        if arpabet_mapping and arpabet_mapping != {}:
+            normalizer.char_mapping = arpabet_mapping
+        return SSMLProcessor(normalizer)
