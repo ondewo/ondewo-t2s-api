@@ -1,5 +1,10 @@
 # Release History
 
+## Release ONDEWO S2T 3.1.2
+### Breaking Changes
+* [[ONETEAM-290]](https://ondewo.atlassian.net/browse/ONETEAM-290) - Introduced ATC Pronunciation and configuration of phonemes for each voice.
+
+
 ## Release ONDEWO S2T 3.1.1
 ### Breaking Changes
 * [[ONETEAM-271]](https://ondewo.atlassian.net/browse/ONETEAM-271) - Introduced changes needed to deploy more voices.
