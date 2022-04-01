@@ -38,7 +38,10 @@ class NormalizerPipeline:
             from normalization.text_preprocessing_nato import TextNormalizerNato as Normalizer
         else:
             from normalization.text_preprocessing_en import TextNormalizerEn as Normalizer
-            #raise ValueError(f"Language {config.language} is not supported.")
+            logger.info(
+                f'No normalization function for {config.language}. Normalizer set to English by default.')
+        # raise ValueError(f"Language {config.language} is not supported.")
+
         return Normalizer()
 
     def apply(self, text: str) -> List[str]:

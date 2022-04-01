@@ -63,6 +63,7 @@ class SSMLProcessorFactory:
     @classmethod
     def create_ssml_processor(cls, language: str) -> SSMLProcessor:
         if language not in cls.AVAILABLE_NORMALIZERS:
-            raise KeyError(f"Language {language} is not supported. Available languages"
-                           f" {list(cls.AVAILABLE_NORMALIZERS.keys())}")
+            return SSMLProcessor(cls.AVAILABLE_NORMALIZERS['en'])
+            # raise KeyError(f"Language {language} is not supported. Available languages"
+            #               f" {list(cls.AVAILABLE_NORMALIZERS.keys())}")
         return SSMLProcessor(cls.AVAILABLE_NORMALIZERS[language])

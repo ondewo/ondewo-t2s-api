@@ -12,7 +12,7 @@ RUN echo "StrictHostKeyChecking no" >> /root/.ssh/config
 RUN apt-get update && apt-get -y upgrade && \
 	apt-get install -y git docker.io wget
 
-RUN git clone git@bitbucket.org:ondewo/ondewo-t2s-glow.git && cd ondewo-t2s-glow && git checkout eeeb5b56b387e575d84e10269fa1ee311f38af82
+RUN git clone git@bitbucket.org:ondewo/ondewo-t2s-glow.git && cd ondewo-t2s-glow && git checkout 1e57b850c9a7ef506250a7b0d0780289caeff347
 
 RUN git clone git@bitbucket.org:ondewo/ondewo-t2s-hifigan.git && cd ondewo-t2s-hifigan && git checkout 1d691b8abc13275649be72809b681333bc47f1e6
 
