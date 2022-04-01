@@ -56,6 +56,7 @@ normalization:
   language: de
   pipeline: []
   custom_phonemizer_id: ''
+  arpabet_mappping: ''
 postprocessing:
   silence_secs: 0.25
   pipeline: []

@@ -15,7 +15,7 @@ inference:
       glow_tts:
         batch_size: 5
         use_gpu: true
-        length_scale: 1.0
+        length_scale: 2.0
         noise_scale: 0.6669999957084656
         path: models/glow-tts/de/kerstin_blank.pth
         param_config_path: models/glow-tts/de/config_blank.json
@@ -64,6 +64,7 @@ normalization:
   - remove_unaudible_texts
   - lower_case
   custom_phonemizer_id: ''
+  arpabet_mappping: config/linda_char_map.json
 postprocessing:
   silence_secs: 0.25
   pipeline: []

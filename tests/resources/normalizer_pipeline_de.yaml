@@ -9,3 +9,4 @@ pipeline:
   - normalize_numbers
   - remove_unaudible_texts
   - lower_case
+arpabet_mappping: tests/resources/configs/brigitte_char_map.json

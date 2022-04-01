@@ -1,10 +1,10 @@
-id: glow_tts&hifi_gan-0118e07a-8447-4c87-9f6b-4802a7dd7a07
+id: brigitte
 description:
   language: en
   speaker_sex: female
   pipeline_owner: ondewo
   comments: trained on public domain dataset Lj_speech
-  speaker_name: Linda
+  speaker_name: Brigitte
   domain: general
 active: true
 inference:
@@ -15,16 +15,18 @@ inference:
       glow_tts:
         batch_size: 5
         use_gpu: true
-        length_scale: 1.0
+        length_scale: 2.0
         noise_scale: 0.6669999957084656
-        path: models/glow-tts/en/pretrained.pth
+        path: models/glow-tts/brigitte.pth
         param_config_path: models/glow-tts/en/config.json
-        cleaners: []
+        cleaners:
+        - english_cleaners
       glow_tts_triton:
         batch_size: 8
         length_scale: 1.0
         noise_scale: 0.6669999957084656
-        cleaners: []
+        cleaners:
+        - english_cleaners
         max_text_length: 100
         param_config_path: models/glow-tts/en/config.json
         triton_url: localhost:50511
@@ -53,11 +55,20 @@ inference:
     save_cache: true
     cache_save_dir: models/cache
 normalization:
-  language: en
-  pipeline: []
-  custom_phonemizer_id:
+  language: atc
+  pipeline:
+  - fix_plus
+  - normalize_urls
+  - normalize_dates
+  - normalize_year
+  - normalize_time
+  - normalize_numbers
+  - remove_unaudible_texts
+  - lower_case
+  custom_phonemizer_id: ''
+  arpabet_mappping: config/brigitte_en_char_map.json
 postprocessing:
-  silence_secs: 0.25
+  silence_secs: 0.0
   pipeline: []
   logmmse:
     initial_noise: 100

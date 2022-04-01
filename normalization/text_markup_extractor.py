@@ -1,5 +1,4 @@
 import abc
-import functools
 import re
 from abc import ABC
 from enum import EnumMeta, Enum
@@ -53,7 +52,7 @@ class SSMLMarkupExtractor(TextMarkupExtractor):
         spans: List[Tuple[int, int]] = []
         for type, attributes in cls.TYPE_ATTRIBUTE_DICT.items():
             for attribute in attributes:
-                markup = re.compile(rf'<{type} {attribute}="(.+?)">(.+?)</{type}>')
+                markup = re.compile(rf'<{type} {attribute}="(.+?)">(.*?)</{type}>')
                 for m in markup.finditer(text):
                     spans.append(m.span())
                     occurances.append(
@@ -98,7 +97,7 @@ class CompositeTextMarkupExtractor(Enum, metaclass=EnumMeta):
         return self.value(**kwargs)  # type: ignore
 
     @classmethod
-    def extract(cls, text: str, extractors_to_skip: List[str] = []) -> List[BaseMarkup]:
+    def extract(cls, text: str = "", extractors_to_skip: List[str] = []) -> List[BaseMarkup]:
         extracted_markups: List[BaseMarkup] = []
         for extractor in cls:
             if extractor.name in extractors_to_skip:
