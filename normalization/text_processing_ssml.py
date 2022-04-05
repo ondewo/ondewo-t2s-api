@@ -59,14 +59,17 @@ class SSMLProcessor:
 
     def _map_character(self, char: str, add_names: bool = False) -> str:
         if add_names and char.lower() in self.text_normalizer.name_mapping.keys():
-            aux = f"{self.text_normalizer.char_mapping[char.lower()]}, " \
-                  f"{self.text_normalizer.like_token}  " \
-                  f"{self.text_normalizer.name_mapping[char.lower()]}. "
+            if isinstance(self.text_normalizer, TextNormalizerATC):
+                aux = f"{self.text_normalizer.name_mapping[char.lower()]}, "
+            else:
+                aux = f"{self.text_normalizer.char_mapping[char.lower()]}, " \
+                      f"{self.text_normalizer.like_token}  " \
+                      f"{self.text_normalizer.name_mapping[char.lower()]}, "
             return aux
         elif char.lower() in self.text_normalizer.char_mapping.keys():
-            return f"{self.text_normalizer.char_mapping[char.lower()]}."
+            return f"{self.text_normalizer.char_mapping[char.lower()]},"
         elif char.isnumeric():
-            return f"{self.text_normalizer.normalize_numbers(char.lower())}."
+            return f"{self.text_normalizer.normalize_numbers(char.lower())}"
         else:
             return char
 

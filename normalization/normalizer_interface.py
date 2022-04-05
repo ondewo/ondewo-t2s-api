@@ -1,6 +1,6 @@
+import re
 from abc import ABC, abstractmethod
 from typing import Dict, List
-import re
 
 
 class NormalizerInterface(ABC):

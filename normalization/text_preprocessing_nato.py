@@ -78,49 +78,44 @@ class TextNormalizerATC(TextNormalizerEn, ABC):
                                     'z': 'zoo loo',
                                     }
 
-    def textulize_number(self, number: str, is_decimal: bool = False, is_code: bool = False) -> str:
-
-        if int(number) == 0 and is_decimal:
-            return self.num_dict[0]
-        elif int(number) == 0 and not is_code:
-            return ''
+    def texturize_single_number(self, number: str, is_decimal: bool = False) -> str:
+        # Todo: Check if rules are the same before and after decimal!
 
         texturized_number: str = ''
-        if int(number) // 100 > 0 and not is_decimal and not is_code:
-            hundreds = int(number) // 100
-            texturized_number = self.num_dict[hundreds] + ' ' + self.num_dict[100]
+        while number[0] == '0':
+            texturized_number += self.num_dict[0] + ' '
             number = number[1:]
-            if int(number) == 0:
-                return texturized_number
+            if not number:
+                return texturized_number.strip()
 
-        for n in number:
-            texturized_number += self.num_dict[int(n)] + ' '
-        return texturized_number
+        if int(number) >= 100 and int(number) % 100 == 0:
+            thousands = (int(number) // 1000)
+            hundreds = int(number) // 100 - thousands * 10
+            if thousands > 0:
+                texturized_number += f"{self.texturize_digits(str(thousands))} {self.num_dict[1000]} "
+            if hundreds > 0:
+                texturized_number += f"{self.num_dict[hundreds]} {self.num_dict[100]} "
+        else:
+            texturized_number += self.texturize_digits(number)
+
+        return texturized_number.strip()
+
+    def texturize_digits(self, number: str) -> str:
+        return ' '.join(self.num_dict[int(n)] for n in number)
 
     def texturize_numbers(self, text: str) -> str:
 
-        number_pieces = re.split(r'(?<=[./\x20])|(?=[./\x20])', text)
-        decimal_pieces = re.split(r'(?<=[./])|(?=[./])', text)
-        is_decimal: bool = True if text.__contains__('.') else False
-        is_code: bool = True if number_pieces[0] else False
+        number_pieces = re.split(r'(?<=[./])|(?=[./])', text)
         texturized_code: str = ''
-
-        for n in number_pieces:
-            if n == '.' and decimal_pieces:
-                char = 'DAYSEEMAL'
+        is_decimal: bool = False
+        for idx, number_piece in enumerate(number_pieces):
+            if number_piece == '.':
+                char = 'dayseemal'
                 is_decimal = True
-            elif n == ' ':
-                char = 'TOUSAND'
-            elif len(n) >= 4:
-                char = self.textulize_number(n, is_code)
+            # elif idx == 1 and len(number_pieces) == 2:
+            #     char = 'TOUSAND' + self.texturize_single_number(number_piece)
             else:
-                char = self.textulize_number(n, is_decimal)
+                char = self.texturize_single_number(number_piece, is_decimal)
             texturized_code += char + ', '
         texturized_code = re.sub(r"\s+", " ", texturized_code)
-        return texturized_code
-
-    def normalize_year(self, text: str) -> str:
-        for year_str in self.pttrn_year.findall(text):
-            year_txt = self.textulize_number(text, is_code=True)
-            text = text.replace(year_str, year_txt)
-        return text
+        return texturized_code.strip()

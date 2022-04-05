@@ -2,3 +2,4 @@ language: en
 custom_phonemizer_id:
 pipeline:
   - lower_case
+arpabet_mappping: ''
