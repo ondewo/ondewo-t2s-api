@@ -27,23 +27,17 @@ class TestTextSSMLPreprocessor:
         ('normalizer_pipeline_de.yaml', '<say-as interpret-as="spell">',
          ['<say-as interpret-as="spell">.']),
         ('normalizer_pipeline_de.yaml', '<say-as interpret-as="spell">ABCDEFGHIJKLMNOPQRSTUVWXYZ</say-as>',
-         ['.', ' {a} .', ' {b} .', ' {c} .', ' {d} .', ' {e} .', ' {f} .', ' {g} .', ' {h} .', ' {i} .', ' {j} .',
-          ' {k} .',
-          ' {l} .', ' {m} .', ' {n} .', ' {o} .', ' {p} .', ' {q} .', ' {r} .', ' {s} .', ' {t} .', ' {u} .', ' {v} .',
-          ' {w} .', ' {x} .', ' {y} .', ' {z} .']),
+         ['.', ' {a}  {b}  {c}  {d}  {e}  {f}  {g}  {h}  {i}  {j}  {k}  {l}  {m}  {n}  {o}  '
+               '{p}  {q}  {r}  {s}  {t}  {u}  {v}  {w}  {x}  {y}  {z}.']),
         ('normalizer_pipeline_de.yaml', '<say-as interpret-as="spell">ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789</say-as>',
-         ['.', ' {a} .', ' {b} .', ' {c} .', ' {d} .', ' {e} .', ' {f} .', ' {g} .', ' {h} .', ' {i} .', ' {j} .',
-          ' {k} .',
-          ' {l} .', ' {m} .', ' {n} .', ' {o} .', ' {p} .', ' {q} .', ' {r} .', ' {s} .', ' {t} .', ' {u} .', ' {v} .',
-          ' {w} .', ' {x} .', ' {y} .', ' {z} .', ' eiins.', ' zweiii.', ' dreiii.', ' viieer.', ' fünnff.', ' sex.',
-          ' siiebeenn.', ' aachttth.', ' neunhh.']),
+         ['.', ' {a}  {b}  {c}  {d}  {e}  {f}  {g}  {h}  {i}  {j}  {k}  {l}  {m}  {n}  {o}  '
+               '{p}  {q}  {r}  {s}  {t}  {u}  {v}  {w}  {x}  {y}  {z} , eiins zweiii dreiii '
+               'viieer fünnff sex siiebeenn aachttth neunhh.']),
         ('normalizer_pipeline_de.yaml', 'text <say-as interpret-as="spell">ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789</say'
                                         '-as> text',
-         ['text .', ' {a} .', ' {b} .', ' {c} .', ' {d} .', ' {e} .', ' {f} .', ' {g} .', ' {h} .', ' {i} .', ' {j} .',
-          ' {k} .',
-          ' {l} .', ' {m} .', ' {n} .', ' {o} .', ' {p} .', ' {q} .', ' {r} .', ' {s} .', ' {t} .', ' {u} .', ' {v} .',
-          ' {w} .', ' {x} .', ' {y} .', ' {z} .', ' eiins.', ' zweiii.', ' dreiii.', ' viieer.', ' fünnff.', ' sex.',
-          ' siiebeenn.', ' aachttth.', ' neunhh.', ' text.']),
+         ['text .', ' {a}  {b}  {c}  {d}  {e}  {f}  {g}  {h}  {i}  {j}  {k}  {l}  {m}  {n}  {o}  '
+                    '{p}  {q}  {r}  {s}  {t}  {u}  {v}  {w}  {x}  {y}  {z} , eiins zweiii dreiii '
+                    'viieer fünnff sex siiebeenn aachttth neunhh text.']),
     ])
     def test_ssml_processing__spell(config_path: str, text: str, expected: List[str]) -> None:
         normalizer_pipeline = get_normalizer_pipeline(config_path=config_path)
@@ -60,35 +54,34 @@ class TestTextSSMLPreprocessor:
         ('normalizer_pipeline_de.yaml', '<say-as interpret-as="spell-with-names">',
          ['<say-as interpret-as="spell-with-names">.']),
         ('normalizer_pipeline_de.yaml', '<say-as interpret-as="spell-with-names">ABCDEFGHIJKLMNOPQRSTUVWXYZ</say-as>',
-         ['.', ' {a} , wie anna.', ' {b} , wie berta.', ' {c} , wie cäsar.', ' {d} , wie daniel.', ' {e} , wie emil.',
-          ' {f} , wie friedrich.', ' {g} , wie gustav.', ' {h} , wie heinrich.', ' {i} , wie ida.', ' {j} , wie jakob.',
-          ' {k} , wie kaiser.', ' {l} , wie leopold.', ' {m} , wie marie.', ' {n} , wie niklaus.', ' {o} , wie otto.',
-          ' {p} , wie peter.', ' {q} , wie quasi.', ' {r} , wie rosa.', ' {s} , wie sophie.', ' {t} , wie theodor.',
-          ' {u} , wie ulrich.', ' {v} , wie viktor.', ' {w} , wie wilhelm.', ' {x} , wie xavier.',
-          ' {y} , wie ypsilon.',
-          ' {z} , wie zürich.']),
+         ['.',
+          ' {a} , wie anna, {b} , wie berta, {c} , wie cäsar, {d} , wie daniel, {e} , '
+          'wie emil, {f} , wie friedrich, {g} , wie gustav, {h} , wie heinrich, {i} , '
+          'wie ida, {j} , wie jakob, {k} , wie kaiser, {l} , wie leopold, {m} , wie '
+          'marie, {n} , wie niklaus, {o} , wie otto, {p} , wie peter, {q} , wie quasi, '
+          '{r} , wie rosa, {s} , wie sophie, {t} , wie theodor, {u} , wie ulrich, {v} , '
+          'wie viktor, {w} , wie wilhelm, {x} , wie xavier, {y} , wie ypsilon, {z} , '
+          'wie zürich,.']),
         ('normalizer_pipeline_de.yaml', '<say-as interpret-as="spell-with-names">ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789'
                                         '</say-as>',
-         ['.', ' {a} , wie anna.', ' {b} , wie berta.', ' {c} , wie cäsar.', ' {d} , wie daniel.', ' {e} , wie emil.',
-          ' {f} , wie friedrich.', ' {g} , wie gustav.', ' {h} , wie heinrich.', ' {i} , wie ida.', ' {j} , wie jakob.',
-          ' {k} , wie kaiser.', ' {l} , wie leopold.', ' {m} , wie marie.', ' {n} , wie niklaus.', ' {o} , wie otto.',
-          ' {p} , wie peter.', ' {q} , wie quasi.', ' {r} , wie rosa.', ' {s} , wie sophie.', ' {t} , wie theodor.',
-          ' {u} , wie ulrich.', ' {v} , wie viktor.', ' {w} , wie wilhelm.', ' {x} , wie xavier.',
-          ' {y} , wie ypsilon.',
-          ' {z} , wie zürich.', ' eiins.', ' zweiii.', ' dreiii.', ' viieer.', ' fünnff.', ' sex.', ' siiebeenn.',
-          ' aachttth.', ' neunhh.']),
+         ['.', ' {a} , wie anna, {b} , wie berta, {c} , wie cäsar, {d} , wie daniel, {e} , '
+               'wie emil, {f} , wie friedrich, {g} , wie gustav, {h} , wie heinrich, {i} , '
+               'wie ida, {j} , wie jakob, {k} , wie kaiser, {l} , wie leopold, {m} , wie '
+               'marie, {n} , wie niklaus, {o} , wie otto, {p} , wie peter, {q} , wie quasi, '
+               '{r} , wie rosa, {s} , wie sophie, {t} , wie theodor, {u} , wie ulrich, {v} , '
+               'wie viktor, {w} , wie wilhelm, {x} , wie xavier, {y} , wie ypsilon, {z} , '
+               'wie zürich, eiins zweiii dreiii viieer fünnff sex siiebeenn aachttth neunhh.']),
         ('normalizer_pipeline_de.yaml', 'text <say-as interpret-as="spell-with-names'
                                         '">ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789 '
                                         '</say-as> text',
-         ['text .', ' {a} , wie anna.', ' {b} , wie berta.', ' {c} , wie cäsar.', ' {d} , wie daniel.',
-          ' {e} , wie emil.',
-          ' {f} , wie friedrich.', ' {g} , wie gustav.', ' {h} , wie heinrich.', ' {i} , wie ida.', ' {j} , wie jakob.',
-          ' {k} , wie kaiser.', ' {l} , wie leopold.', ' {m} , wie marie.', ' {n} , wie niklaus.', ' {o} , wie otto.',
-          ' {p} , wie peter.', ' {q} , wie quasi.', ' {r} , wie rosa.', ' {s} , wie sophie.', ' {t} , wie theodor.',
-          ' {u} , wie ulrich.', ' {v} , wie viktor.', ' {w} , wie wilhelm.', ' {x} , wie xavier.',
-          ' {y} , wie ypsilon.',
-          ' {z} , wie zürich.', ' eiins.', ' zweiii.', ' dreiii.', ' viieer.', ' fünnff.', ' sex.', ' siiebeenn.',
-          ' aachttth.', ' neunhh.', ' text.']),
+         ['text .', ' {a} , wie anna, {b} , wie berta, {c} , wie cäsar, {d} , wie daniel, {e} , '
+          'wie emil, {f} , wie friedrich, {g} , wie gustav, {h} , wie heinrich, {i} , '
+          'wie ida, {j} , wie jakob, {k} , wie kaiser, {l} , wie leopold, {m} , wie '
+          'marie, {n} , wie niklaus, {o} , wie otto, {p} , wie peter, {q} , wie quasi, '
+          '{r} , wie rosa, {s} , wie sophie, {t} , wie theodor, {u} , wie ulrich, {v} , '
+          'wie viktor, {w} , wie wilhelm, {x} , wie xavier, {y} , wie ypsilon, {z} , '
+          'wie zürich, eiins zweiii dreiii viieer fünnff sex siiebeenn aachttth neunhh '
+          'text.']),
         (pytest.param('normalizer_pipeline_de.yaml', 'text <say-as interpret-as="spell-with-names">ABC {a} {b} '
                                                      '</say-as> text',
                       "ValueError: End of last markup at position 66 overlaps "
@@ -115,31 +108,24 @@ class TestTextSSMLPreprocessor:
         ('normalizer_pipeline_de.yaml', '<say-as interpret-as="phone">',
          ['<say-as interpret-as="phone">.']),
         ('normalizer_pipeline_de.yaml', '<say-as interpret-as="phone">1561187227</say-as>',
-         ['.',
-          ' .',
-          ' eiins.', ' fünnff.', ' sex.', ' eiins.', ' eiins.', ' aachttth.', ' siiebeenn.', ' zweiii.', ' zweiii.',
-          ' siiebeenn.']),
+         ['.', ' .', ' eiins fünnff sex eiins eiins aachttth siiebeenn zweiii zweiii siiebeenn.']),
         ('normalizer_pipeline_de.yaml', '<say-as interpret-as="phone">+1561187227</say-as>',
-         ['{+} .', ' eiins.', ' fünnff.', ' sex.', ' eiins.', ' eiins.', ' aachttth.', ' siiebeenn.', ' zweiii.',
-          ' zweiii.',
-          ' siiebeenn.']),
+         ['{+} , eiins fünnff sex eiins eiins aachttth siiebeenn zweiii zweiii '
+          'siiebeenn.']),
         ('normalizer_pipeline_de.yaml', '<say-as interpret-as="phone">+156-118-7227</say-as>',
-         ['{+} .', ' eiins.', ' fünnff.', ' sex.', ' {-} .', ' eiins.', ' eiins.', ' aachttth.', ' {-} .',
-          ' siiebeenn.',
-          ' zweiii.', ' zweiii.', ' siiebeenn.']
+         ['{+} , eiins fünnff sex {-} , eiins eiins aachttth {-} , siiebeenn zweiii '
+          'zweiii siiebeenn.']
          ),
         ('normalizer_pipeline_de.yaml', '<say-as interpret-as="phone">156 118 7227</say-as>',
          ['.',
           ' .',
-          ' eiins.', ' fünnff.', ' sex.', ' eiins.', ' eiins.', ' aachttth.', ' siiebeenn.', ' zweiii.', ' zweiii.',
-          ' siiebeenn.']),
+          ' eiins fünnff sex eiins eiins aachttth siiebeenn zweiii zweiii siiebeenn.']),
         ('normalizer_pipeline_de.yaml', '<say-as interpret-as="phone">+156 118 7227</say-as>',
-         ['{+} .', ' eiins.', ' fünnff.', ' sex.', ' eiins.', ' eiins.', ' aachttth.', ' siiebeenn.', ' zweiii.',
-          ' zweiii.',
-          ' siiebeenn.']),
+         ['{+} , eiins fünnff sex eiins eiins aachttth siiebeenn zweiii zweiii '
+          'siiebeenn.']),
         ('normalizer_pipeline_de.yaml', 'text <say-as interpret-as="phone">+156 118 7227</say-as> text',
-         ['text  {+} .', ' eiins.', ' fünnff.', ' sex.', ' eiins.', ' eiins.', ' aachttth.', ' siiebeenn.', ' zweiii.',
-          ' zweiii.', ' siiebeenn.', ' text.']),
+         ['text  {+} , eiins fünnff sex eiins eiins aachttth siiebeenn zweiii zweiii '
+          'siiebeenn text.']),
         # ('normalizer_pipeline_de.yaml', '<say-as interpret-as="phone">text +156 118 7227 text</say-as>',
         #  ['{+} .', ' eiins.', ' fünnff.', ' sex.', ' eiins.', ' eiins.', ' aachttth.', ' siiebeenn.', ' zweiii.',
         #   ' zweiii.',' siiebeenn.'])
@@ -167,7 +153,7 @@ class TestTextSSMLPreprocessor:
          ['.', ' abcd hundertdreiiiundzwaanzikk {-} {_} {*} {@} gmail {punkt} com.']),
         ('normalizer_pipeline_de.yaml', '<say-as interpret-as="email">abcd123!#$%^&*()_-+={}[];:@gmail.com</say-as>',
          ['.', ' abcd hundertdreiiiundzwaanzikk {ausrufezeichen} {#} {$}  {&} {*} {(} {)} {_} '
-          '{-} {+} {=} {  }  {@} gmail {punkt} com.']),
+               '{-} {+} {=} {  }  {@} gmail {punkt} com.']),
         ('normalizer_pipeline_de.yaml', 'text <say-as interpret-as="email">abcd123-_*@gmail.com</say-as> text',
          ['text .',
           ' abcd hundertdreiiiundzwaanzikk {-} {_} {*} {@} gmail {punkt} com text.']),
@@ -201,15 +187,15 @@ class TestTextSSMLPreprocessor:
         ('normalizer_pipeline_de.yaml', '<say-as interpret-as="url">https://open.spotify.com/playlist'
                                         '/37i9dQZF1E4nr6hJNUgTDh</say-as>',
          ['.', ' https : {/} {/} open {punkt} spotify {punkt} com {/} playlist {/} '
-          'siiebeennunddreiißßiigkkk i9dqzf eiins e4nr sex hjnugtdh.']),
+               'siiebeennunddreiißßiigkkk i9dqzf eiins e4nr sex hjnugtdh.']),
         ('normalizer_pipeline_de.yaml', 'text <say-as interpret-as="url">https://open.spotify.com/playlist'
                                         '/37i9dQZF1E4nr6hJNUgTDh</say-as> text',
          ['text .', ' https : {/} {/} open {punkt} spotify {punkt} com {/} playlist {/} '
-          'siiebeennunddreiißßiigkkk i9dqzf eiins e4nr sex hjnugtdh text.']),
+                    'siiebeennunddreiißßiigkkk i9dqzf eiins e4nr sex hjnugtdh text.']),
         ('normalizer_pipeline_de.yaml', '<say-as interpret-as="url">text https://open.spotify.com/playlist'
                                         '/37i9dQZF1E4nr6hJNUgTDh text</say-as>',
          ['.', ' text https : {/} {/} open {punkt} spotify {punkt} com {/} playlist {/} '
-          'siiebeennunddreiißßiigkkk i9dqzf eiins e4nr sex hjnugtdh text.']),
+               'siiebeennunddreiißßiigkkk i9dqzf eiins e4nr sex hjnugtdh text.']),
 
     ])
     def test_ssml_processing__url(config_path: str, text: str, expected: List[str]) -> None:
