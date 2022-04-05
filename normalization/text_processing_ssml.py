@@ -7,6 +7,7 @@ from normalization.text_preprocessing_at import TextNormalizerAt
 from normalization.text_preprocessing_de import TextNormalizerDe
 from normalization.text_preprocessing_en import TextNormalizerEn
 from normalization.text_preprocessing_nato import TextNormalizerNato, TextNormalizerATC
+from ondewo.logging.logger import logger_console as logger
 
 
 class SSMLProcessor:
@@ -86,9 +87,12 @@ class SSMLProcessorFactory:
     @classmethod
     def create_ssml_processor(cls, language: str, arpabet_mapping: Dict[str, str] = {}) -> SSMLProcessor:
         if language not in cls.AVAILABLE_NORMALIZERS:
-            raise KeyError(f"Language {language} is not supported. Available languages"
-                           f" {list(cls.AVAILABLE_NORMALIZERS.keys())}")
-        normalizer = cls.AVAILABLE_NORMALIZERS[language]
+            logger.info(f"Language {language} is not supported. Available languages"
+                        f" {list(cls.AVAILABLE_NORMALIZERS.keys())}. Normalization set to default language:"
+                        f" English")
+            normalizer = cls.AVAILABLE_NORMALIZERS['en']
+        else:
+            normalizer = cls.AVAILABLE_NORMALIZERS[language]
         if arpabet_mapping and arpabet_mapping != {}:
             normalizer.char_mapping = arpabet_mapping
         return SSMLProcessor(normalizer)
