@@ -43,8 +43,8 @@ class NormalizerPipeline:
             from normalization.text_preprocessing_nato import TextNormalizerATC as Normalizer
         else:
             from normalization.text_preprocessing_en import TextNormalizerEn as Normalizer
-            raise logger.info(f"Language {config.language} is not supported. Normalization set to default language:"
-                              f" English")
+            logger.info(f"Language {config.language} is not supported. Normalization set to default language:"
+                        f" English")
         char_mapping: Dict[str, str] = cls.get_char_mapping(config)
         logger.info(f'The character mapping for phonemes is loaded as {char_mapping}.')
         return Normalizer(arpabet_mapping=char_mapping)
