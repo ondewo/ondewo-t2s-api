@@ -157,7 +157,7 @@ sphinxcontrib-htmlhelp==1.0.3
 sphinxcontrib-jsmath==1.0.1
 sphinxcontrib-qthelp==1.0.3
 sphinxcontrib-serializinghtml==1.1.4
-tensorboard==2.2.2
+tensorboard<2.3.0
 tensorboard-plugin-wit==1.6.0.post3
 tensorboardX==2.0
 tensorflow==2.2.0
