@@ -1,14 +1,14 @@
-from typing import Dict, Optional, List, Tuple
+from typing import Dict, List, Tuple
 
 import grpc
 from google.protobuf.empty_pb2 import Empty
+from ondewo.t2s import custom_phonemizer_pb2_grpc, custom_phonemizer_pb2
+from ondewo.t2s.custom_phonemizer_pb2 import CustomPhonemizerProto, Map, \
+    UpdateCustomPhonemizerRequest
 from ruamel.yaml import YAML
 
 from grpc_server.t2s_pipeline_manager import T2SPipelineManager
 from normalization.custom_phonemizer_manager import CustomPhonemizerManager
-from ondewo_grpc.ondewo.t2s import custom_phonemizer_pb2_grpc, custom_phonemizer_pb2
-from ondewo_grpc.ondewo.t2s.custom_phonemizer_pb2 import CustomPhonemizerProto, Map, \
-    UpdateCustomPhonemizerRequest
 
 yaml = YAML()
 yaml.default_flow_style = False

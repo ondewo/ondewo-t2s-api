@@ -2,6 +2,7 @@ import io
 import os
 import re
 import time
+import uuid
 from typing import List, Optional
 
 import google.protobuf.empty_pb2 as empty_pb2
@@ -10,14 +11,13 @@ import numpy as np
 import soundfile as sf
 from ondewo.logging.decorators import Timer
 from ondewo.logging.logger import logger_console as logger
+from ondewo.t2s import text_to_speech_pb2_grpc, text_to_speech_pb2
 from ruamel.yaml import YAML
-import uuid
 
-from grpc_server.t2s_pipeline_manager import T2SPipelineManager
 from grpc_server.pipeline_utils import generate_config_path, \
     get_config_path_by_id, get_all_pipelines_from_config_files, get_config_by_id, filter_pipelines
+from grpc_server.t2s_pipeline_manager import T2SPipelineManager
 from grpc_server.utils import replace_default_values_synthesize_request_config
-from ondewo_grpc.ondewo.t2s import text_to_speech_pb2_grpc, text_to_speech_pb2
 from utils.audio_converter import convert_to_format
 from utils.data_classes.config_dataclass import T2SConfigDataclass
 from utils.t2sPipeline import T2SPipeline

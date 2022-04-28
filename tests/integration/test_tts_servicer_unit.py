@@ -3,10 +3,10 @@ import io
 
 import pytest
 import soundfile as sf
+from ondewo.t2s import text_to_speech_pb2
 
-from grpc_server.t2s_servicer import Text2SpeechServicer
 from grpc_server.t2s_pipeline_manager import T2SPipelineManager
-from ondewo_grpc.ondewo.t2s import text_to_speech_pb2
+from grpc_server.t2s_servicer import Text2SpeechServicer
 from utils.data_classes.config_dataclass import GlowTTSDataclass
 from utils.models_cache import ModelCache
 

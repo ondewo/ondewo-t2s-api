@@ -1,4 +1,5 @@
-from ondewo_grpc.ondewo.t2s import text_to_speech_pb2
+from ondewo.t2s import text_to_speech_pb2
+
 from utils.data_classes.config_dataclass import T2SConfigDataclass
 
 

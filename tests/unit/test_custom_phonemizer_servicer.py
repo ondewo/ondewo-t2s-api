@@ -1,10 +1,10 @@
 import pytest
+from ondewo.t2s import custom_phonemizer_pb2
+from ondewo.t2s.custom_phonemizer_pb2 import Map, UpdateCustomPhonemizerRequest, \
+    ListCustomPhonemizerResponse, ListCustomPhonemizerRequest, CreateCustomPhonemizerRequest
 
 from grpc_server.phonemizer_servicer import CustomPhonemizerServicer
 from normalization.custom_phonemizer_manager import CustomPhonemizerManager
-from ondewo_grpc.ondewo.t2s import custom_phonemizer_pb2
-from ondewo_grpc.ondewo.t2s.custom_phonemizer_pb2 import Map, UpdateCustomPhonemizerRequest, \
-    ListCustomPhonemizerResponse, ListCustomPhonemizerRequest, CreateCustomPhonemizerRequest
 
 
 class TestCustomPhonemizerServicer:

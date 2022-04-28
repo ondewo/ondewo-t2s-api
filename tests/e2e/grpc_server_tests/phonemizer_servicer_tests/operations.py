@@ -1,8 +1,8 @@
 from typing import Callable, Any, Optional
 
 import google.protobuf.empty_pb2 as empty_pb2
+from ondewo.t2s import custom_phonemizer_pb2, custom_phonemizer_pb2_grpc
 
-from ondewo_grpc.ondewo.t2s import custom_phonemizer_pb2, custom_phonemizer_pb2_grpc
 from tests.e2e.grpc_server_tests.node_operation import OperationNode
 
 

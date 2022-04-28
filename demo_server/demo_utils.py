@@ -1,13 +1,13 @@
+import os
 from threading import Thread
 from time import sleep, time
-import os
+from typing import Dict, List, Any
 
 import grpc
 from ondewo.logging.logger import logger_console as logger
+from ondewo.t2s import text_to_speech_pb2_grpc, text_to_speech_pb2
 
-from ondewo_grpc.ondewo.t2s import text_to_speech_pb2_grpc, text_to_speech_pb2
 from . import GRPC_HOST, GRPC_PORT, WORK_DIR
-from typing import Dict, List, Any
 
 MAX_MESSAGE_LENGTH: int = 60000000
 CHANNEL: str = f"{GRPC_HOST}:{GRPC_PORT}"

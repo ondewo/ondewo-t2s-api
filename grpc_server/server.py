@@ -5,6 +5,8 @@ from typing import List, Dict, Any
 import grpc
 from grpc_reflection.v1alpha import reflection
 from ondewo.logging.logger import logger_console as logger
+from ondewo.t2s import text_to_speech_pb2_grpc, text_to_speech_pb2, custom_phonemizer_pb2_grpc, \
+    custom_phonemizer_pb2
 from ruamel.yaml import YAML
 
 from grpc_server.persistance_utils import get_or_create_custom_phonemizers_dir
@@ -13,10 +15,8 @@ from grpc_server.pipeline_utils import get_list_of_json_files_paths, get_all_con
 from grpc_server.t2s_pipeline_manager import T2SPipelineManager
 from grpc_server.t2s_servicer import Text2SpeechServicer
 from normalization.custom_phonemizer_manager import CustomPhonemizerManager
-from ondewo_grpc.ondewo.t2s import text_to_speech_pb2_grpc, text_to_speech_pb2, custom_phonemizer_pb2_grpc, \
-    custom_phonemizer_pb2
-from utils.t2sPipeline import T2SPipeline
 from utils.data_classes.config_dataclass import T2SConfigDataclass
+from utils.t2sPipeline import T2SPipeline
 
 yaml = YAML()
 yaml.default_flow_style = False

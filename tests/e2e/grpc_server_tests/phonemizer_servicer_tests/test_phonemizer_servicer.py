@@ -2,10 +2,10 @@ from pathlib import Path
 from typing import Iterator
 
 import pytest
-
-from ondewo_grpc.ondewo.t2s import custom_phonemizer_pb2
-from ondewo_grpc.ondewo.t2s.custom_phonemizer_pb2 import Map, UpdateCustomPhonemizerRequest, \
+from ondewo.t2s import custom_phonemizer_pb2
+from ondewo.t2s.custom_phonemizer_pb2 import Map, UpdateCustomPhonemizerRequest, \
     ListCustomPhonemizerResponse, ListCustomPhonemizerRequest, CreateCustomPhonemizerRequest
+
 from tests.e2e.grpc_server_tests.phonemizer_servicer_tests.operations import OperationGetCustomPhonemizer, \
     OperationCreateCustomPhonemizer, OperationUpdateCustomPhonemizer, OperationDeleteCustomPhonemizer, \
     OperationListCustomPhonemizer

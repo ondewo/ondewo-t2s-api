@@ -1,9 +1,9 @@
 from typing import Callable, Any, Optional
 
 import google.protobuf.empty_pb2 as empty_pb2
+from ondewo.t2s import text_to_speech_pb2_grpc, text_to_speech_pb2
 
 from tests.e2e.grpc_server_tests.node_operation import OperationNode
-from ondewo_grpc.ondewo.t2s import text_to_speech_pb2_grpc, text_to_speech_pb2
 
 
 class OperationSynthesize(OperationNode):

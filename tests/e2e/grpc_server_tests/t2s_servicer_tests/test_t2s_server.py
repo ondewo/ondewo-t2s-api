@@ -5,8 +5,8 @@ from typing import Iterator
 
 import pytest
 import soundfile as sf
+from ondewo.t2s import text_to_speech_pb2
 
-from ondewo_grpc.ondewo.t2s import text_to_speech_pb2
 from tests.e2e.grpc_server_tests.t2s_servicer_tests.operations import OperationSynthesize, \
     OperationListPipelines, \
     OperationGetT2sPipeline, OperationCreateT2sPipeline, OperationDeleteT2sPipeline, \

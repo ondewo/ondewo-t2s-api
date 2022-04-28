@@ -2,8 +2,7 @@ from dataclasses import dataclass, field
 from typing import List, Optional
 
 from dataclasses_json import dataclass_json
-
-from ondewo_grpc.ondewo.t2s import text_to_speech_pb2
+from ondewo.t2s import text_to_speech_pb2
 
 
 @dataclass_json
