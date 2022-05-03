@@ -1,4 +1,12 @@
 # Release History
+
+*****************
+## Release ONDEWO APIS 4.0.0
+
+### Breaking Changes
+* [[OND232-343]] -
+Rename oneof attributes and merged custom-phonemizer proto into text-to-speech proto
+
 *****************
 ## Release ONDEWO APIS 3.0.0
 
