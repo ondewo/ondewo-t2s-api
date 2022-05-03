@@ -1,6 +1,6 @@
 import pytest
-from ondewo.t2s import custom_phonemizer_pb2
-from ondewo.t2s.custom_phonemizer_pb2 import Map, UpdateCustomPhonemizerRequest, \
+from ondewo.t2s import text_to_speech_pb2
+from ondewo.t2s.text_to_speech_pb2 import Map, UpdateCustomPhonemizerRequest, \
     ListCustomPhonemizerResponse, ListCustomPhonemizerRequest, CreateCustomPhonemizerRequest
 
 from grpc_server.phonemizer_servicer import CustomPhonemizerServicer
@@ -16,10 +16,10 @@ class TestCustomPhonemizerServicer:
             prefix='test',
             maps=[Map(word='test_word', phoneme_groups='{T EH S T}')]
         )
-        phonemizer_id_proto: custom_phonemizer_pb2.PhonemizerId = \
+        phonemizer_id_proto: text_to_speech_pb2.PhonemizerId = \
             CustomPhonemizerServicer.handle_create_custom_phonemizer(request=request)
         assert 'test' in phonemizer_id_proto.id
-        response: custom_phonemizer_pb2.CustomPhonemizerProto = \
+        response: text_to_speech_pb2.CustomPhonemizerProto = \
             CustomPhonemizerServicer.handle_get_custom_phonemizer(request=phonemizer_id_proto)
         assert response.maps[0] == Map(word='test_word', phoneme_groups='{T EH S T}')
         CustomPhonemizerServicer.handle_update_custom_phonemizer(request=UpdateCustomPhonemizerRequest(
@@ -48,7 +48,7 @@ class TestCustomPhonemizerServicer:
         request: CreateCustomPhonemizerRequest = CreateCustomPhonemizerRequest(
             maps=[Map(word='test_word', phoneme_groups='{T EH S T}')]
         )
-        phonemizer_id_proto: custom_phonemizer_pb2.PhonemizerId = \
+        phonemizer_id_proto: text_to_speech_pb2.PhonemizerId = \
             CustomPhonemizerServicer.handle_create_custom_phonemizer(request=request)
         list_response: ListCustomPhonemizerResponse = CustomPhonemizerServicer.handle_list_custom_phonemizer(
             ListCustomPhonemizerRequest())

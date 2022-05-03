@@ -5,8 +5,7 @@ from typing import List, Dict, Any
 import grpc
 from grpc_reflection.v1alpha import reflection
 from ondewo.logging.logger import logger_console as logger
-from ondewo.t2s import text_to_speech_pb2_grpc, text_to_speech_pb2, custom_phonemizer_pb2_grpc, \
-    custom_phonemizer_pb2
+from ondewo.t2s import text_to_speech_pb2_grpc, text_to_speech_pb2
 from ruamel.yaml import YAML
 
 from grpc_server.persistance_utils import get_or_create_custom_phonemizers_dir
@@ -31,11 +30,11 @@ class Server:
 
         self.server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
         text_to_speech_pb2_grpc.add_Text2SpeechServicer_to_server(Text2SpeechServicer(), self.server)
-        custom_phonemizer_pb2_grpc.add_CustomPhonemizersServicer_to_server(CustomPhonemizerServicer(),
-                                                                           self.server)
+        text_to_speech_pb2_grpc.add_CustomPhonemizersServicer_to_server(CustomPhonemizerServicer(),
+                                                                        self.server)
         SERVICE_NAMES = (
             text_to_speech_pb2.DESCRIPTOR.services_by_name['Text2Speech'].full_name,
-            custom_phonemizer_pb2.DESCRIPTOR.services_by_name['CustomPhonemizers'].full_name,
+            text_to_speech_pb2.DESCRIPTOR.services_by_name['CustomPhonemizers'].full_name,
             reflection.SERVICE_NAME,
         )
         reflection.enable_server_reflection(SERVICE_NAMES, self.server)

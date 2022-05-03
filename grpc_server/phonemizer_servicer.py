@@ -2,8 +2,8 @@ from typing import Dict, List, Tuple
 
 import grpc
 from google.protobuf.empty_pb2 import Empty
-from ondewo.t2s import custom_phonemizer_pb2_grpc, custom_phonemizer_pb2
-from ondewo.t2s.custom_phonemizer_pb2 import CustomPhonemizerProto, Map, \
+from ondewo.t2s import text_to_speech_pb2_grpc, text_to_speech_pb2
+from ondewo.t2s.text_to_speech_pb2 import CustomPhonemizerProto, Map, \
     UpdateCustomPhonemizerRequest
 from ruamel.yaml import YAML
 
@@ -14,33 +14,33 @@ yaml = YAML()
 yaml.default_flow_style = False
 
 
-class CustomPhonemizerServicer(custom_phonemizer_pb2_grpc.CustomPhonemizersServicer):
+class CustomPhonemizerServicer(text_to_speech_pb2_grpc.CustomPhonemizersServicer):
 
-    def GetCustomPhonemizer(self, request: custom_phonemizer_pb2.PhonemizerId,
-                            context: grpc.ServicerContext) -> custom_phonemizer_pb2.CustomPhonemizerProto:
+    def GetCustomPhonemizer(self, request: text_to_speech_pb2.PhonemizerId,
+                            context: grpc.ServicerContext) -> text_to_speech_pb2.CustomPhonemizerProto:
         return self.handle_get_custom_phonemizer(request)
 
-    def CreateCustomPhonemizer(self, request: custom_phonemizer_pb2.CreateCustomPhonemizerRequest,
-                               context: grpc.ServicerContext) -> custom_phonemizer_pb2.PhonemizerId:
+    def CreateCustomPhonemizer(self, request: text_to_speech_pb2.CreateCustomPhonemizerRequest,
+                               context: grpc.ServicerContext) -> text_to_speech_pb2.PhonemizerId:
         return self.handle_create_custom_phonemizer(request)
 
-    def DeleteCustomPhonemizer(self, request: custom_phonemizer_pb2.PhonemizerId,
+    def DeleteCustomPhonemizer(self, request: text_to_speech_pb2.PhonemizerId,
                                context: grpc.ServicerContext) -> Empty:
         return self.handle_delete_custom_phonemizer(request)
 
-    def UpdateCustomPhonemizer(self, request: custom_phonemizer_pb2.UpdateCustomPhonemizerRequest,
+    def UpdateCustomPhonemizer(self, request: text_to_speech_pb2.UpdateCustomPhonemizerRequest,
                                context: grpc.ServicerContext) -> CustomPhonemizerProto:
         return self.handle_update_custom_phonemizer(request)
 
     def ListCustomPhonemizer(
             self,
-            request: custom_phonemizer_pb2.ListCustomPhonemizerRequest,
-            context: grpc.ServicerContext) -> custom_phonemizer_pb2.ListCustomPhonemizerResponse:
+            request: text_to_speech_pb2.ListCustomPhonemizerRequest,
+            context: grpc.ServicerContext) -> text_to_speech_pb2.ListCustomPhonemizerResponse:
         return self.handle_list_custom_phonemizer(request)
 
     @classmethod
     def handle_get_custom_phonemizer(cls,
-                                     request: custom_phonemizer_pb2.PhonemizerId) -> CustomPhonemizerProto:
+                                     request: text_to_speech_pb2.PhonemizerId) -> CustomPhonemizerProto:
         phonemizer_dict: Dict[str, str] = CustomPhonemizerManager.get_phonemizer(request.id)
         return CustomPhonemizerProto(
             id=request.id,
@@ -49,7 +49,7 @@ class CustomPhonemizerServicer(custom_phonemizer_pb2_grpc.CustomPhonemizersServi
 
     @classmethod
     def handle_update_custom_phonemizer(
-            cls, request: custom_phonemizer_pb2.UpdateCustomPhonemizerRequest) -> CustomPhonemizerProto:
+            cls, request: text_to_speech_pb2.UpdateCustomPhonemizerRequest) -> CustomPhonemizerProto:
         new_phonemizer: Dict[str, str] = {map_.word: map_.phoneme_groups for map_ in request.maps}
         if request.update_method is UpdateCustomPhonemizerRequest.UpdateMethod.replace:
             phonemizer_dict: Dict[str, str] = CustomPhonemizerManager.update_phonemizer(
@@ -80,16 +80,16 @@ class CustomPhonemizerServicer(custom_phonemizer_pb2_grpc.CustomPhonemizersServi
 
     @classmethod
     def handle_create_custom_phonemizer(
-            cls, request: custom_phonemizer_pb2.CreateCustomPhonemizerRequest
-    ) -> custom_phonemizer_pb2.PhonemizerId:
+            cls, request: text_to_speech_pb2.CreateCustomPhonemizerRequest
+    ) -> text_to_speech_pb2.PhonemizerId:
         prefix: str = request.prefix
         new_dict: Dict[str, str] = {map_.word: map_.phoneme_groups for map_ in request.maps}
         phonemizer_id: str = CustomPhonemizerManager.create_phonemizer(
             phonemizer_dict=new_dict, prefix=prefix)
-        return custom_phonemizer_pb2.PhonemizerId(id=phonemizer_id)
+        return text_to_speech_pb2.PhonemizerId(id=phonemizer_id)
 
     @classmethod
-    def handle_delete_custom_phonemizer(cls, request: custom_phonemizer_pb2.PhonemizerId) -> Empty:
+    def handle_delete_custom_phonemizer(cls, request: text_to_speech_pb2.PhonemizerId) -> Empty:
         CustomPhonemizerManager.delete_custom_phonemizer(phonemizer_id=request.id)
         T2SPipelineManager.delete_custom_phonemizer_from_config(request.id)
         return Empty()
@@ -97,12 +97,12 @@ class CustomPhonemizerServicer(custom_phonemizer_pb2_grpc.CustomPhonemizersServi
     @classmethod
     def handle_list_custom_phonemizer(
             cls,
-            request: custom_phonemizer_pb2.ListCustomPhonemizerRequest
-    ) -> custom_phonemizer_pb2.ListCustomPhonemizerResponse:
+            request: text_to_speech_pb2.ListCustomPhonemizerRequest
+    ) -> text_to_speech_pb2.ListCustomPhonemizerResponse:
         id_list = list(request.pipeline_ids)
         phonemizers_list: List[Tuple[str, Dict[str, str]]] = CustomPhonemizerManager.list_phonemizers(
             id_list=id_list)
-        return custom_phonemizer_pb2.ListCustomPhonemizerResponse(
+        return text_to_speech_pb2.ListCustomPhonemizerResponse(
             phonemizers=[
                 cls._dict_to_proto(phonemizer_id=phonemizer_id, phonemizer_dict=phonemizer_dict)
                 for phonemizer_id, phonemizer_dict in phonemizers_list

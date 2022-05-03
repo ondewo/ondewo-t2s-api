@@ -141,21 +141,6 @@ install_dependencies_locally: generate_ondewo_protos
 	pip install -e ondewo-t2s-hifigan
 
 
-# GENERATE PYTHON FILES FROM PROTOS
-# copy from nlu-client, changed output directory to ./grpc_config_server/ and only exporting /audio/ directory of ondewoapis
-ONDEWO_PROTOS_DIR=ondewo-t2s-api/ondewo/t2s
-GOOGLE_APIS_DIR=ondewo-t2s-api/googleapis
-ONDEWO_APIS_DIR=ondewo-t2s-api
-PROTO_OUTPUT_FOLDER=ondewo_grpc
-
-generate_ondewo_protos:
-	mkdir -p ondewo_grpc
-	for f in $$(find ${ONDEWO_PROTOS_DIR} -name '*.proto'); do \
-		python -m grpc_tools.protoc -I ${ONDEWO_APIS_DIR} --python_out=${PROTO_OUTPUT_FOLDER} --mypy_out=${PROTO_OUTPUT_FOLDER} --grpc_python_out=${PROTO_OUTPUT_FOLDER} $$f; \
-	done
-	python utils/fix_imports.py -sp ${PROTO_OUTPUT_FOLDER} # fix imports into subdirectory
-
-
 # to generate image of the server with models inside you need to specify arguments of the models and config paths
 # do not forget to check .dockerignore file most likely the model dir is there you need to comment it out or delete
 # the models dir should contain all the models (glow-tts and hifi) in separate dirs
