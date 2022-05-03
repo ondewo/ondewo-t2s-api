@@ -88,40 +88,39 @@ message RequestConfig {
     // changing the speed or duration of an audio.
     // It should be much more than 1.0. O is not a valid number for this variable.
     // The default value is 1.
-    oneof _length_scale {
+    oneof oneof_length_scale {
         float length_scale = 2;
     }
-
 
     // Optional. Defines the noise in the generated audio.
     // It should be between 0.0 and 1.
     // The default value is 0.0
-    oneof  _noise_scale {
+    oneof  oneof_noise_scale {
         float noise_scale = 3;
     }
 
 
     // Optional. Defines the sample rate of the generated wav file.
     // The default value is 22050.
-    oneof _sample_rate {
+    oneof oneof_sample_rate {
         int32 sample_rate = 4;
     }
 
     // Optional. Defines the pulse-code modulation of the wav file.
     // The default value is PCM_16.
-    oneof _Pcm {
+    oneof oneof_Pcm {
         Pcm pcm = 5;
     }
 
     // Optional. Defines the format of the desired audio.
     // The default value is wav.
-    oneof _AudioFormat {
+    oneof oneof_AudioFormat {
         AudioFormat audio_format = 6;
     }
 
     // Optional. Define if cache should be used or not.
     // The default value is False.
-    oneof _use_cache {
+    oneof oneof_use_cache {
         bool use_cache = 7;
     }
 }
@@ -409,6 +408,7 @@ message T2SNormalization {
     string language = 1;
     repeated string pipeline = 2;
     string custom_phonemizer_id = 3;
+    string arpabet_mappping = 4;
 }
 
 message Postprocessing {
@@ -435,4 +435,60 @@ message Wiener {
 
 message Apodization {
     float apodization_secs = 1;
+}
+
+
+// endpoints of custom phonemizer
+service CustomPhonemizers{
+    rpc GetCustomPhonemizer (PhonemizerId) returns (CustomPhonemizerProto) {
+    };
+    rpc CreateCustomPhonemizer (CreateCustomPhonemizerRequest) returns (PhonemizerId) {
+    };
+    rpc DeleteCustomPhonemizer (PhonemizerId) returns (google.protobuf.Empty) {
+    };
+    rpc UpdateCustomPhonemizer (UpdateCustomPhonemizerRequest) returns (CustomPhonemizerProto) {
+    };
+    rpc ListCustomPhonemizer (ListCustomPhonemizerRequest) returns (ListCustomPhonemizerResponse) {
+    };
+}
+
+message PhonemizerId{
+    string id = 1;
+}
+
+message CustomPhonemizerProto {
+    string id = 1;
+    repeated Map maps = 2;
+}
+
+message Map{
+    string word = 1;
+    string phoneme_groups = 2;
+}
+
+message ListCustomPhonemizerResponse {
+    repeated CustomPhonemizerProto phonemizers = 1;
+}
+
+message ListCustomPhonemizerRequest{
+    repeated string pipeline_ids = 1;
+}
+
+message UpdateCustomPhonemizerRequest{
+    string id = 1;
+    // extend hard will add new words replacing those that are already in phonemizer
+    // extend soft will add new words only if they are not yet in phonemizer
+    // replace will clean all the words in the phonemizer and then add new ones
+    enum UpdateMethod{
+        extend_hard = 0;
+        extend_soft = 1;
+        replace = 2;
+    }
+    UpdateMethod update_method = 2;
+    repeated Map maps = 3;
+}
+
+message CreateCustomPhonemizerRequest {
+    string prefix = 1;
+    repeated Map maps = 2;
 }
