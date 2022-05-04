@@ -36,7 +36,6 @@ pipeline {
                 ssh_key_file = credentials('devops_ondewo_idrsa')
                 TRITON_CONTAINER = "ondewo-t2s-triton-${UNIQUE_BUILD_ID}"
                 GRPC_CONTAINER = "${IMAGE_NAME_GRPC}-${UNIQUE_BUILD_ID}"
-//                 MODEL_REPO = 'models.ondewo.com:/raid/jenkins/data/t2s/models/'
                 MODEL_DIR = '/mnt/disks/jenkins/data/t2s/models'
                 TRITON_GPU = 'device=0'
                 DOCKER_NETWORK = "${UNIQUE_BUILD_ID}"
@@ -48,7 +47,6 @@ pipeline {
                     steps {
                         sh(script: "docker login -u ${REGISTRYUSER} -p${REGISTRYPASSWORD} ${DOCKERREGISTRY}")
                         sh(script: "mkdir -p ${MODEL_DIR}", label: 'create local cache dir')
-//                         sh(script: "rsync -Pavz ${MODEL_REPO} ${MODEL_DIR}", label: 'sync model repo to local cache dir')
                         sh(script: '''for filename in $(ls ${PWD}/tests/resources | grep yaml)
                                     do
                                         full_fp=${PWD}/tests/resources/\$filename
