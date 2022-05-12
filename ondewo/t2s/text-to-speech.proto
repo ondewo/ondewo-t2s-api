@@ -170,6 +170,9 @@ message SynthesizeResponse {
 
     // Required. Configuration from which audio was generated.
     RequestConfig config = 6;
+
+    // Optional. Normalized text.
+    string normalized_text = 7;
 }
 
 
@@ -364,8 +367,7 @@ message GlowTTSTriton {
     repeated string cleaners = 4;
     int64 max_text_length = 5;
     string param_config_path = 6;
-    string triton_url = 7;
-    string triton_model_name = 8;
+    string triton_model_name = 7;
 }
 
 message Mel2Audio {
@@ -385,7 +387,6 @@ message HiFiGan {
 message HiFiGanTriton {
     string config_path = 1;
     string triton_model_name = 2;
-    string triton_url = 3;
 }
 
 message MbMelganTriton {
