@@ -1,6 +1,14 @@
 # Release History
 
 *****************
+## Release ONDEWO APIS 4.0.1
+
+### Features
+* [[OND232-348]] -
+Add field normalized_text to SynthesizeResponse.
+
+*****************
+
 ## Release ONDEWO APIS 4.0.0
 
 ### Breaking Changes

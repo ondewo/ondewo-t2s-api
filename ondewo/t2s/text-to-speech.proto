@@ -170,6 +170,9 @@ message SynthesizeResponse {
 
     // Required. Configuration from which audio was generated.
     RequestConfig config = 6;
+
+    // Optional. Normalized text.
+    string normalized_text = 7;
 }
 
 
