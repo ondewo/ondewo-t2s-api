@@ -183,7 +183,7 @@ message SynthesizeResponse {
 ///////////////
 
 message NormalizeTextRequest {
-    string id = 1;
+    string t2s_pipeline_id = 1;
     string text = 2;
 }
 
