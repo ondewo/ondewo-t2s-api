@@ -409,7 +409,8 @@ message T2SNormalization {
     string language = 1;
     repeated string pipeline = 2;
     string custom_phonemizer_id = 3;
-    string arpabet_mappping = 4;
+    T2SCustomLengthScales custom_length_scales = 4;
+    string arpabet_mapping = 5;
 }
 
 message Postprocessing {
@@ -436,6 +437,15 @@ message Wiener {
 
 message Apodization {
     float apodization_secs = 1;
+}
+
+message T2SCustomLengthScales {
+    float text = 1;
+    float email = 2;
+    float url = 3;
+    float phone = 4;
+    float spell = 5;
+    float spell_with_names = 6;
 }
 
 
