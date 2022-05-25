@@ -1,4 +1,9 @@
 # Release History
+*****************
+## Release ONDEWO APIS 4.0.3
+
+### Features
+* Add NormalizeText endpoint, that allows for text normalization without speech synthesis.
 
 *****************
 ## Release ONDEWO APIS 4.0.2
