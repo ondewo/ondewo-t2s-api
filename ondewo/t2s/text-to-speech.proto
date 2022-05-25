@@ -409,9 +409,8 @@ message T2SNormalization {
     string language = 1;
     repeated string pipeline = 2;
     string custom_phonemizer_id = 3;
-    string arpabet_mappping = 4;
     T2SCustomLengthScales custom_length_scales = 4;
-    string arpabet_mappping = 5;
+    string arpabet_mapping = 5;
 }
 
 message Postprocessing {
@@ -440,61 +439,6 @@ message Apodization {
     float apodization_secs = 1;
 }
 
-
-// endpoints of custom phonemizer
-service CustomPhonemizers{
-    rpc GetCustomPhonemizer (PhonemizerId) returns (CustomPhonemizerProto) {
-    };
-    rpc CreateCustomPhonemizer (CreateCustomPhonemizerRequest) returns (PhonemizerId) {
-    };
-    rpc DeleteCustomPhonemizer (PhonemizerId) returns (google.protobuf.Empty) {
-    };
-    rpc UpdateCustomPhonemizer (UpdateCustomPhonemizerRequest) returns (CustomPhonemizerProto) {
-    };
-    rpc ListCustomPhonemizer (ListCustomPhonemizerRequest) returns (ListCustomPhonemizerResponse) {
-    };
-}
-
-message PhonemizerId{
-    string id = 1;
-}
-
-message CustomPhonemizerProto {
-    string id = 1;
-    repeated Map maps = 2;
-}
-
-message Map{
-    string word = 1;
-    string phoneme_groups = 2;
-}
-
-message ListCustomPhonemizerResponse {
-    repeated CustomPhonemizerProto phonemizers = 1;
-}
-
-message ListCustomPhonemizerRequest{
-    repeated string pipeline_ids = 1;
-}
-
-message UpdateCustomPhonemizerRequest{
-    string id = 1;
-    // extend hard will add new words replacing those that are already in phonemizer
-    // extend soft will add new words only if they are not yet in phonemizer
-    // replace will clean all the words in the phonemizer and then add new ones
-    enum UpdateMethod{
-        extend_hard = 0;
-        extend_soft = 1;
-        replace = 2;
-    }
-    UpdateMethod update_method = 2;
-    repeated Map maps = 3;
-}
-
-message CreateCustomPhonemizerRequest {
-    string prefix = 1;
-    repeated Map maps = 2;
-}
 message T2SCustomLengthScales {
     float text = 1;
     float email = 2;
