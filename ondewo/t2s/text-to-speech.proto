@@ -27,6 +27,9 @@ service Text2Speech {
     // will this safe time when doing batch predict on the AI model?
     rpc BatchSynthesize (BatchSynthesizeRequest) returns (BatchSynthesizeResponse) {
     };
+    // Normalize a text according to a specific pipeline normalization rules.
+    rpc NormalizeText (NormalizeTextRequest) returns (NormalizeTextResponse) {
+    };
     // Retrieves the configuration of the specified pipeline.
     rpc GetT2sPipeline (T2sPipelineId) returns (Text2SpeechConfig) {
     };
@@ -175,6 +178,18 @@ message SynthesizeResponse {
     string normalized_text = 7;
 }
 
+///////////////
+// NORMALIZE //
+///////////////
+
+message NormalizeTextRequest {
+    string t2s_pipeline_id = 1;
+    string text = 2;
+}
+
+message NormalizeTextResponse {
+    string normalized_text = 1;
+}
 
 //////////////////////
 // GET SERVICE INFO //
@@ -410,7 +425,8 @@ message T2SNormalization {
     repeated string pipeline = 2;
     string custom_phonemizer_id = 3;
     T2SCustomLengthScales custom_length_scales = 4;
-    string arpabet_mapping = 5;
+    string arpabet_mappping = 5;
+    string numeric_mapping = 6;
 }
 
 message Postprocessing {
