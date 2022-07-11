@@ -425,7 +425,7 @@ message T2SNormalization {
     repeated string pipeline = 2;
     string custom_phonemizer_id = 3;
     T2SCustomLengthScales custom_length_scales = 4;
-    string arpabet_mappping = 5;
+    string arpabet_mapping = 5;
     string numeric_mapping = 6;
 }
 
@@ -462,6 +462,8 @@ message T2SCustomLengthScales {
     float phone = 4;
     float spell = 5;
     float spell_with_names = 6;
+    float callsign_long = 7;
+    float callsign_short = 8;
 }
 
 

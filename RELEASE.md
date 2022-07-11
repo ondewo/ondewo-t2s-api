@@ -1,5 +1,12 @@
 # Release History
 *****************
+## Release ONDEWO APIS 4.0.4
+### Features
+* Fix mapping type, added callsign long and short to configuration file api.
+
+
+# Release History
+*****************
 ## Release ONDEWO APIS 4.0.3
 
 ### Features
