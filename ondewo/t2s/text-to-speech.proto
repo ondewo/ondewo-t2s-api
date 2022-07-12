@@ -427,6 +427,7 @@ message T2SNormalization {
     T2SCustomLengthScales custom_length_scales = 4;
     string arpabet_mapping = 5;
     string numeric_mapping = 6;
+    string callsigns_mapping = 7;
 }
 
 message Postprocessing {
