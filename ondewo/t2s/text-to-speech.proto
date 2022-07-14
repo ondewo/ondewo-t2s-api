@@ -126,6 +126,12 @@ message RequestConfig {
     oneof oneof_use_cache {
         bool use_cache = 7;
     }
+
+    // Optional. Define normalization.
+    // The default value is the normalization of the language.
+    oneof oneof_use_cache {
+        string normalization = 8;
+    }
 }
 
 
@@ -425,8 +431,14 @@ message T2SNormalization {
     repeated string pipeline = 2;
     string custom_phonemizer_id = 3;
     T2SCustomLengthScales custom_length_scales = 4;
+<<<<<<< HEAD
     string arpabet_mappping = 5;
     string numeric_mapping = 6;
+=======
+    string arpabet_mapping = 5;
+    string numeric_mapping = 6;
+    string callsigns_mapping = 7;
+>>>>>>> release/4.1.0
 }
 
 message Postprocessing {
@@ -462,6 +474,8 @@ message T2SCustomLengthScales {
     float phone = 4;
     float spell = 5;
     float spell_with_names = 6;
+    float callsign_long = 7;
+    float callsign_short = 8;
 }
 
 
