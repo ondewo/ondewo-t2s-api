@@ -1,6 +1,11 @@
 # Release History
 
 *****************
+## Release ONDEWO APIS 4.1.0
+### Features
+* Added normalization to configuration message.
+
+*****************
 ## Release ONDEWO APIS 4.0.5
 ### Features
 * Added callsign mapping.

@@ -126,6 +126,12 @@ message RequestConfig {
     oneof oneof_use_cache {
         bool use_cache = 7;
     }
+
+    // Optional. Define normalization.
+    // The default value is the normalization of the language.
+    oneof oneof_normalization {
+        string normalization = 8;
+    }
 }
 
 
