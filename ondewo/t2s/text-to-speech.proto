@@ -127,10 +127,10 @@ message RequestConfig {
         bool use_cache = 7;
     }
 
-    // Optional. Define normalization.
-    // The default value is the normalization of the language.
-    oneof oneof_normalization {
-        string normalization = 8;
+    // Optional. Define what normalizer to synthesize the text with.
+    // The default value is the language of the pipeline.
+    oneof oneof_normalizer {
+        string normalizer = 8;
     }
 }
 
