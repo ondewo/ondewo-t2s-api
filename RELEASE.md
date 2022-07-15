@@ -1,4 +1,8 @@
 # Release History
+*****************
+## Release ONDEWO APIS 4.1.0
+### Features
+* Added normalizer to synthesize message.
 
 *****************
 ## Release ONDEWO APIS 4.0.5
