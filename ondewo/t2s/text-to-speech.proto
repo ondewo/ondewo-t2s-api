@@ -431,14 +431,9 @@ message T2SNormalization {
     repeated string pipeline = 2;
     string custom_phonemizer_id = 3;
     T2SCustomLengthScales custom_length_scales = 4;
-<<<<<<< HEAD
-    string arpabet_mappping = 5;
-    string numeric_mapping = 6;
-=======
     string arpabet_mapping = 5;
     string numeric_mapping = 6;
     string callsigns_mapping = 7;
->>>>>>> release/4.1.0
 }
 
 message Postprocessing {
