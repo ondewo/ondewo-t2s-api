@@ -30,59 +30,6 @@
 * Add field T2SCustomLengthScales to T2SNormalizePipeline.
 
 *****************
-## Release ONDEWO APIS 4.1.0
-### Features
-* Added normalization to configuration message.
-
-*****************
-## Release ONDEWO APIS 4.0.5
-### Features
-* Added callsign mapping.
-* 
-*****************
-<<<<<<< HEAD
-## Release ONDEWO APIS 4.0.3
-
-### Features
-* Add NormalizeText endpoint, that allows for text normalization without speech synthesis.
-
-*****************
-## Release ONDEWO APIS 4.1.0
-### Features
-* Added normalization to configuration message.
-
-*****************
-## Release ONDEWO APIS 4.0.5
-### Features
-* Added callsign mapping.
-
-
-*****************
-## Release ONDEWO APIS 4.0.4
-### Features
-* Fix mapping type, added callsign long and short to configuration file api.
-
-
-# Release History
-*****************
-## Release ONDEWO APIS 4.0.3
-
-### Features
-* Add NormalizeText endpoint, that allows for text normalization without speech synthesis.
-
-*****************
-## Release ONDEWO APIS 4.0.2
-
-### Features
-* Add field T2SCustomLengthScales to T2SNormalizePipeline.
-
-*****************
-## Release ONDEWO APIS 4.0.2
-
-### Features
-* Add field T2SCustomLengthScales to T2SNormalizePipeline.
-
-*****************
 ## Release ONDEWO APIS 4.0.1
 
 ### Features
