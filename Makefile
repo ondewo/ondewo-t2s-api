@@ -87,7 +87,5 @@ run_release_with_devops:
 spc: ## Checks if the Release Branch, Tag and Pypi version already exist
 	$(eval filtered_branches:= $(shell git branch --all | grep "release/${ONDEWO_T2S_API_VERSION}"))
 	$(eval filtered_tags:= $(shell git tag --list | grep "${ONDEWO_T2S_API_VERSION}"))
-	$(eval setuppy_version:= $(shell cat setup.py | grep "version"))
 	@if test "$(filtered_branches)" != ""; then echo "-- Test 1: Branch exists!!" & exit 1; else echo "-- Test 1: Branch is fine";fi
 	@if test "$(filtered_tags)" != ""; then echo "-- Test 2: Tag exists!!" & exit 1; else echo "-- Test 2: Tag is fine";fi
-	@if test "$(setuppy_version)" != "version='${ONDEWO_T2S_API_VERSION}',"; then echo "-- Test 3: Setup.py not updated!!" & exit 1; else echo "-- Test 3: Setup.py is fine";fi
