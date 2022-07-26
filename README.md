@@ -45,3 +45,39 @@ Please use the issue tracker in this repo for discussions about this API, or the
 ## Generate gRPC Source Code
 
 API client libraries can be built directly from files in this repo using [the proto compiler.](https://github.com/ondewo/ondewo-proto-compiler)
+
+Automatic Release Process
+------------------
+The entire process is automated to make development easier. The actual steps are simple:
+ 
+TODOs in Pull Request before the release:
+ 
+ - Update the Version number inside the Makefile
+ 
+ - Check if RELEASE.md is up-to-date
+
+TODOs after Pull Request was merged in:
+
+ - Checkout master:
+    ```bash
+    git checkout master
+    ```
+ - Pull the new stuff:
+    ```bash
+    git pull
+    ```
+ - Release:
+    ```bash
+    make ondewo_release
+    ```
+
+The   ``` make ondewo_release``` command can be divided into 5 steps: 
+
+- cloning the devops-accounts repository and extracting the credentials
+- creating and pushing the release branch
+- creating and pushing the release tag
+- creating the GitHub release
+
+The variable for the GitHub Access Token is inside the Makefile, 
+but the value is overwritten during ``` make ondewo_release```, because
+it is passed from the devops-accounts repo as an argument to the actual ```release``` command.
