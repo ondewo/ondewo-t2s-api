@@ -1,0 +1,269 @@
+body {
+    color: #000;
+    font-family: "Roboto", sans-serif;
+    margin: 0;
+}
+
+h1 {
+    border-bottom: 1px solid #aaa;
+    padding-bottom: 0.5ex;
+}
+
+h2 {
+    border-bottom: 1px solid #aaa;
+    padding-bottom: 0.5ex;
+    margin: 1.5em 0;
+}
+
+h3 {
+    border-bottom: 1px solid #aaa;
+    padding-bottom: 0.5ex;
+    margin: 2em 0 1em;
+}
+
+h4 {
+    border-bottom: 1px solid #aaa;
+    padding-bottom: 0.5ex;
+}
+
+a {
+    text-decoration: none;
+    color: #014c89;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+table {
+    width: 100%;
+    font-size: 80%;
+    border-collapse: collapse;
+}
+
+thead {
+    color: #004C87;
+    font-weight: 700;
+    background-color: #C5E3FC;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #fbfbfb;
+}
+
+td {
+    border: 1px solid #ccc;
+    padding: 0.5ex 2ex;
+}
+
+td p {
+    text-indent: 1em;
+    margin: 0;
+}
+
+td p:nth-child(1) {
+    text-indent: 0; /* No indent on first p in td */
+}
+
+  /* Table of fields */
+.field-table td:nth-child(1) { /* Field */
+    width: 10em;
+}
+.field-table td:nth-child(2) { /* Type */
+    width: 10em;
+}
+.field-table td:nth-child(3) { /* Label */
+    width: 6em;
+}
+.field-table td:nth-child(4) { /* Description */
+    width: auto;
+}
+
+  /* Table of extensions */
+.extension-table td:nth-child(1) { /* Extension */
+    width: 10em;
+}
+.extension-table td:nth-child(2) { /* Type */
+    width: 10em;
+}
+.extension-table td:nth-child(3) { /* Base */
+    width: 10em;
+}
+.extension-table td:nth-child(4) { /* Number */
+    width: 5em;
+}
+.extension-table td:nth-child(5) { /* Description */
+    width: auto;
+}
+
+  /* Table of enum values. */
+.enum-table td:nth-child(1) { /* Name */
+    width: 10em;
+}
+.enum-table td:nth-child(2) { /* Number */
+    width: 10em;
+}
+.enum-table td:nth-child(3) { /* Description */
+    width: auto;
+}
+
+  /* Table of scalar value types. */
+.scalar-value-types-table tr {
+    height: 3em;
+}
+
+  /* File heading div */
+.file-heading {
+    width: 100%;
+    display: table;
+    border-bottom: 1px solid #aaa;
+    margin: 4em 0 1.5em 0;
+}
+.file-heading h2 {
+    border: none;
+    display: table-cell;
+}
+.file-heading a {
+    text-align: right;
+    display: table-cell;
+}
+
+.nav-side {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 330px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    color: #fff;
+    background-color: #014c89;
+}
+
+#nav-header {
+    margin: 20px;
+}
+
+  /* Table of contents. */
+#toc-container h2 {
+    margin: 20px;
+}
+
+#toc {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+#toc > li > a {
+    color: #fff;
+    display: block;
+    padding: 1ex 1em;
+}
+
+#toc > li > a:hover {
+    text-decoration: none;
+    background-color: #236499;
+}
+
+#toc > li > a.active {
+    color: #000;
+    background-color: #fff;
+}
+
+#toc > li > a.active {
+    font-weight: bold;
+}
+
+.file-content {
+    color: #000;
+    background-color: #f2f2f2;
+    display: none;
+}
+
+.file-content > a {
+    color: #000;
+    display: block;
+    text-decoration: none;
+    font-size: 80%;
+    font-weight: normal;
+    margin: 0;
+    padding: 1ex 2em;
+    text-transform: uppercase;
+}
+
+.file-content > a:hover {
+    background-color: #e3e3e3;
+}
+
+.file-content ul {
+    list-style-type: none;
+    padding: 0 0 1ex 2em;
+}
+
+.file-content a {
+    display: block;
+    line-height: 1.6em;
+}
+
+.content-wrap {
+    margin-left: 330px;
+    max-width: 60em;
+    padding: 0 1em;
+}
+
+.object-category {
+    font-size: 120%;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin: 3em 0 1em 0;
+}
+
+.title-badge:before {
+    display: inline-block;
+    color: #fff;
+    width: 1.6em;
+    height: 1.6em;
+    line-height: 1.6em;
+    text-align: center;
+    vertical-align: middle;
+    border-radius: 1ex;
+    font-size: 0.6em;
+    font-weight: bold;
+    margin-right: .5em;
+}
+
+.title-badge.service:before {
+    content: "S";
+    background-color: #bf206b;
+}
+
+.title-badge.method:before {
+    content: "M";
+    background-color: #014c89;
+}
+
+.title-badge.message:before {
+    content: "M";
+    background-color: #bf206b;
+}
+
+.title-badge.enum:before {
+    content: "E";
+    background-color: #bf206b;
+}
+
+.service-methods {
+    font-weight: bold;
+    text-transform: uppercase;
+    margin: 2em 0 1em 0;
+}
+
+pre,
+samp {
+    display: block;
+    padding: 1em;
+    margin: 1em 0;
+    background-color: #f2f2f2;
+    white-space: pre;
+}

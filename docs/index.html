@@ -1,0 +1,2391 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>Protocol Documentation</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,700,400italic"/>
+    <link rel="stylesheet" type="text/css" href="style.css"/>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script>
+      $(function() {
+        $("#toc > li > a").click(function() {
+          $(this).toggleClass("active");
+          $(this).next(".file-content").toggle();
+        });
+      });
+    </script>
+  </head>
+
+  <body>
+
+    <nav class="nav-side">
+        <header id="nav-header">
+            <h1>Protocol Documentation</h1>
+        </header>
+
+        <div id="toc-container">
+          <h2>Table of Contents</h2>
+          <ul id="toc">
+            
+              
+              <li>
+                <a href="#ondewo/t2s/text-to-speech.proto">ondewo/t2s/text-to-speech.proto</a>
+                <div class="file-content">
+                  
+                  <a href="#ondewo/t2s/text-to-speech.proto-services">Services</a>
+                  <ul>
+                  
+                    
+                    <li>
+                      <a href="#ondewo.t2s.CustomPhonemizers" class="title-badge service">CustomPhonemizers</a>
+                      
+                      <ul>
+                      
+                        <li><a href="#ondewo.t2s.CustomPhonemizers.GetCustomPhonemizer" class="title-badge method">GetCustomPhonemizer</a></li>
+                      
+                        <li><a href="#ondewo.t2s.CustomPhonemizers.CreateCustomPhonemizer" class="title-badge method">CreateCustomPhonemizer</a></li>
+                      
+                        <li><a href="#ondewo.t2s.CustomPhonemizers.DeleteCustomPhonemizer" class="title-badge method">DeleteCustomPhonemizer</a></li>
+                      
+                        <li><a href="#ondewo.t2s.CustomPhonemizers.UpdateCustomPhonemizer" class="title-badge method">UpdateCustomPhonemizer</a></li>
+                      
+                        <li><a href="#ondewo.t2s.CustomPhonemizers.ListCustomPhonemizer" class="title-badge method">ListCustomPhonemizer</a></li>
+                      
+                      </ul>
+                      
+                    </li>
+                  
+                    
+                    <li>
+                      <a href="#ondewo.t2s.Text2Speech" class="title-badge service">Text2Speech</a>
+                      
+                      <ul>
+                      
+                        <li><a href="#ondewo.t2s.Text2Speech.Synthesize" class="title-badge method">Synthesize</a></li>
+                      
+                        <li><a href="#ondewo.t2s.Text2Speech.BatchSynthesize" class="title-badge method">BatchSynthesize</a></li>
+                      
+                        <li><a href="#ondewo.t2s.Text2Speech.NormalizeText" class="title-badge method">NormalizeText</a></li>
+                      
+                        <li><a href="#ondewo.t2s.Text2Speech.GetT2sPipeline" class="title-badge method">GetT2sPipeline</a></li>
+                      
+                        <li><a href="#ondewo.t2s.Text2Speech.CreateT2sPipeline" class="title-badge method">CreateT2sPipeline</a></li>
+                      
+                        <li><a href="#ondewo.t2s.Text2Speech.DeleteT2sPipeline" class="title-badge method">DeleteT2sPipeline</a></li>
+                      
+                        <li><a href="#ondewo.t2s.Text2Speech.UpdateT2sPipeline" class="title-badge method">UpdateT2sPipeline</a></li>
+                      
+                        <li><a href="#ondewo.t2s.Text2Speech.ListT2sPipelines" class="title-badge method">ListT2sPipelines</a></li>
+                      
+                        <li><a href="#ondewo.t2s.Text2Speech.ListT2sLanguages" class="title-badge method">ListT2sLanguages</a></li>
+                      
+                        <li><a href="#ondewo.t2s.Text2Speech.ListT2sDomains" class="title-badge method">ListT2sDomains</a></li>
+                      
+                        <li><a href="#ondewo.t2s.Text2Speech.GetServiceInfo" class="title-badge method">GetServiceInfo</a></li>
+                      
+                      </ul>
+                      
+                    </li>
+                  
+                  </ul>
+                  
+                  
+                  <a href="#ondewo/t2s/text-to-speech.proto-messages">Messages</a>
+                  <ul>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.Apodization" class="title-badge message">Apodization</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.BatchSynthesizeRequest" class="title-badge message">BatchSynthesizeRequest</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.BatchSynthesizeResponse" class="title-badge message">BatchSynthesizeResponse</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.Caching" class="title-badge message">Caching</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.CompositeInference" class="title-badge message">CompositeInference</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.CreateCustomPhonemizerRequest" class="title-badge message">CreateCustomPhonemizerRequest</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.CustomPhonemizerProto" class="title-badge message">CustomPhonemizerProto</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.GlowTTS" class="title-badge message">GlowTTS</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.GlowTTSTriton" class="title-badge message">GlowTTSTriton</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.HiFiGan" class="title-badge message">HiFiGan</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.HiFiGanTriton" class="title-badge message">HiFiGanTriton</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.ListCustomPhonemizerRequest" class="title-badge message">ListCustomPhonemizerRequest</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.ListCustomPhonemizerResponse" class="title-badge message">ListCustomPhonemizerResponse</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.ListT2sDomainsRequest" class="title-badge message">ListT2sDomainsRequest</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.ListT2sDomainsResponse" class="title-badge message">ListT2sDomainsResponse</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.ListT2sLanguagesRequest" class="title-badge message">ListT2sLanguagesRequest</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.ListT2sLanguagesResponse" class="title-badge message">ListT2sLanguagesResponse</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.ListT2sPipelinesRequest" class="title-badge message">ListT2sPipelinesRequest</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.ListT2sPipelinesResponse" class="title-badge message">ListT2sPipelinesResponse</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.Logmnse" class="title-badge message">Logmnse</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.Map" class="title-badge message">Map</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.MbMelganTriton" class="title-badge message">MbMelganTriton</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.Mel2Audio" class="title-badge message">Mel2Audio</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.NormalizeTextRequest" class="title-badge message">NormalizeTextRequest</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.NormalizeTextResponse" class="title-badge message">NormalizeTextResponse</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.PhonemizerId" class="title-badge message">PhonemizerId</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.Postprocessing" class="title-badge message">Postprocessing</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.RequestConfig" class="title-badge message">RequestConfig</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.SynthesizeRequest" class="title-badge message">SynthesizeRequest</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.SynthesizeResponse" class="title-badge message">SynthesizeResponse</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.T2SCustomLengthScales" class="title-badge message">T2SCustomLengthScales</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.T2SDescription" class="title-badge message">T2SDescription</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.T2SGetServiceInfoResponse" class="title-badge message">T2SGetServiceInfoResponse</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.T2SInference" class="title-badge message">T2SInference</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.T2SNormalization" class="title-badge message">T2SNormalization</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.T2sPipelineId" class="title-badge message">T2sPipelineId</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.Text2Mel" class="title-badge message">Text2Mel</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.Text2SpeechConfig" class="title-badge message">Text2SpeechConfig</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.UpdateCustomPhonemizerRequest" class="title-badge message">UpdateCustomPhonemizerRequest</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.Wiener" class="title-badge message">Wiener</a>
+                      </li>
+                    
+                  </ul>
+                  
+                  
+                  <a href="#ondewo/t2s/text-to-speech.proto-enums">Enums</a>
+                  <ul>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.AudioFormat" class="title-badge enum">AudioFormat</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.Pcm" class="title-badge enum">Pcm</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.UpdateCustomPhonemizerRequest.UpdateMethod" class="title-badge enum">UpdateCustomPhonemizerRequest.UpdateMethod</a>
+                      </li>
+                    
+                  </ul>
+                  
+                  
+                </div>
+              </li>
+            
+            <li><a href="#scalar-value-types">Scalar Value Types</a></li>
+          </ul>
+        </div>
+
+    </nav>
+
+    <section id="top" class="content-wrap">
+
+    
+      
+      <div class="file-heading">
+        <h2 id="ondewo/t2s/text-to-speech.proto">ondewo/t2s/text-to-speech.proto</h2><a href="#top">Top</a>
+      </div>
+      <p></p>
+
+      
+      <div id="ondewo/t2s/text-to-speech.proto-services" class="object-category">Services</div>
+      
+        
+        <h3 id="ondewo.t2s.CustomPhonemizers" class="title-badge service">CustomPhonemizers</h3>
+        <p>endpoints of custom phonemizer</p>
+
+        
+        <div id="ondewo.t2s.CustomPhonemizers-methods" class="service-methods">Service Methods</div>
+        
+          <h4 id="ondewo.t2s.CustomPhonemizers.GetCustomPhonemizer" class="title-badge method">GetCustomPhonemizer</h4>
+
+          <pre>rpc GetCustomPhonemizer (<a href="#ondewo.t2s.PhonemizerId">PhonemizerId</a>) returns (<a href="#ondewo.t2s.CustomPhonemizerProto">CustomPhonemizerProto)</a></pre>
+
+          
+        
+          <h4 id="ondewo.t2s.CustomPhonemizers.CreateCustomPhonemizer" class="title-badge method">CreateCustomPhonemizer</h4>
+
+          <pre>rpc CreateCustomPhonemizer (<a href="#ondewo.t2s.CreateCustomPhonemizerRequest">CreateCustomPhonemizerRequest</a>) returns (<a href="#ondewo.t2s.PhonemizerId">PhonemizerId)</a></pre>
+
+          
+        
+          <h4 id="ondewo.t2s.CustomPhonemizers.DeleteCustomPhonemizer" class="title-badge method">DeleteCustomPhonemizer</h4>
+
+          <pre>rpc DeleteCustomPhonemizer (<a href="#ondewo.t2s.PhonemizerId">PhonemizerId</a>) returns (<a href="#google.protobuf.Empty">.google.protobuf.Empty)</a></pre>
+
+          
+        
+          <h4 id="ondewo.t2s.CustomPhonemizers.UpdateCustomPhonemizer" class="title-badge method">UpdateCustomPhonemizer</h4>
+
+          <pre>rpc UpdateCustomPhonemizer (<a href="#ondewo.t2s.UpdateCustomPhonemizerRequest">UpdateCustomPhonemizerRequest</a>) returns (<a href="#ondewo.t2s.CustomPhonemizerProto">CustomPhonemizerProto)</a></pre>
+
+          
+        
+          <h4 id="ondewo.t2s.CustomPhonemizers.ListCustomPhonemizer" class="title-badge method">ListCustomPhonemizer</h4>
+
+          <pre>rpc ListCustomPhonemizer (<a href="#ondewo.t2s.ListCustomPhonemizerRequest">ListCustomPhonemizerRequest</a>) returns (<a href="#ondewo.t2s.ListCustomPhonemizerResponse">ListCustomPhonemizerResponse)</a></pre>
+
+          
+        
+
+        
+
+      
+        
+        <h3 id="ondewo.t2s.Text2Speech" class="title-badge service">Text2Speech</h3>
+        <p>endpoints of t2s generate service</p>
+
+        
+        <div id="ondewo.t2s.Text2Speech-methods" class="service-methods">Service Methods</div>
+        
+          <h4 id="ondewo.t2s.Text2Speech.Synthesize" class="title-badge method">Synthesize</h4>
+
+          <pre>rpc Synthesize (<a href="#ondewo.t2s.SynthesizeRequest">SynthesizeRequest</a>) returns (<a href="#ondewo.t2s.SynthesizeResponse">SynthesizeResponse)</a></pre>
+
+          Synthesizes an specific text sent in the request with the configuration requirements and retrieves a response
+that includes the synthesized text to audio and the configuration wanted.
+        
+          <h4 id="ondewo.t2s.Text2Speech.BatchSynthesize" class="title-badge method">BatchSynthesize</h4>
+
+          <pre>rpc BatchSynthesize (<a href="#ondewo.t2s.BatchSynthesizeRequest">BatchSynthesizeRequest</a>) returns (<a href="#ondewo.t2s.BatchSynthesizeResponse">BatchSynthesizeResponse)</a></pre>
+
+          will this safe time when doing batch predict on the AI model?
+        
+          <h4 id="ondewo.t2s.Text2Speech.NormalizeText" class="title-badge method">NormalizeText</h4>
+
+          <pre>rpc NormalizeText (<a href="#ondewo.t2s.NormalizeTextRequest">NormalizeTextRequest</a>) returns (<a href="#ondewo.t2s.NormalizeTextResponse">NormalizeTextResponse)</a></pre>
+
+          Normalize a text according to a specific pipeline normalization rules.
+        
+          <h4 id="ondewo.t2s.Text2Speech.GetT2sPipeline" class="title-badge method">GetT2sPipeline</h4>
+
+          <pre>rpc GetT2sPipeline (<a href="#ondewo.t2s.T2sPipelineId">T2sPipelineId</a>) returns (<a href="#ondewo.t2s.Text2SpeechConfig">Text2SpeechConfig)</a></pre>
+
+          Retrieves the configuration of the specified pipeline.
+        
+          <h4 id="ondewo.t2s.Text2Speech.CreateT2sPipeline" class="title-badge method">CreateT2sPipeline</h4>
+
+          <pre>rpc CreateT2sPipeline (<a href="#ondewo.t2s.Text2SpeechConfig">Text2SpeechConfig</a>) returns (<a href="#ondewo.t2s.T2sPipelineId">T2sPipelineId)</a></pre>
+
+          Creates a pipeline with the specified configuration and retrieves its id.
+        
+          <h4 id="ondewo.t2s.Text2Speech.DeleteT2sPipeline" class="title-badge method">DeleteT2sPipeline</h4>
+
+          <pre>rpc DeleteT2sPipeline (<a href="#ondewo.t2s.T2sPipelineId">T2sPipelineId</a>) returns (<a href="#google.protobuf.Empty">.google.protobuf.Empty)</a></pre>
+
+          Deletes the specified pipeline.
+        
+          <h4 id="ondewo.t2s.Text2Speech.UpdateT2sPipeline" class="title-badge method">UpdateT2sPipeline</h4>
+
+          <pre>rpc UpdateT2sPipeline (<a href="#ondewo.t2s.Text2SpeechConfig">Text2SpeechConfig</a>) returns (<a href="#google.protobuf.Empty">.google.protobuf.Empty)</a></pre>
+
+          Update a specified pipeline with certain configuration.
+        
+          <h4 id="ondewo.t2s.Text2Speech.ListT2sPipelines" class="title-badge method">ListT2sPipelines</h4>
+
+          <pre>rpc ListT2sPipelines (<a href="#ondewo.t2s.ListT2sPipelinesRequest">ListT2sPipelinesRequest</a>) returns (<a href="#ondewo.t2s.ListT2sPipelinesResponse">ListT2sPipelinesResponse)</a></pre>
+
+          Retrieve the list of pipelines with an specific requirement.
+        
+          <h4 id="ondewo.t2s.Text2Speech.ListT2sLanguages" class="title-badge method">ListT2sLanguages</h4>
+
+          <pre>rpc ListT2sLanguages (<a href="#ondewo.t2s.ListT2sLanguagesRequest">ListT2sLanguagesRequest</a>) returns (<a href="#ondewo.t2s.ListT2sLanguagesResponse">ListT2sLanguagesResponse)</a></pre>
+
+          Retrieve the list of languages given a specific config request.
+        
+          <h4 id="ondewo.t2s.Text2Speech.ListT2sDomains" class="title-badge method">ListT2sDomains</h4>
+
+          <pre>rpc ListT2sDomains (<a href="#ondewo.t2s.ListT2sDomainsRequest">ListT2sDomainsRequest</a>) returns (<a href="#ondewo.t2s.ListT2sDomainsResponse">ListT2sDomainsResponse)</a></pre>
+
+          Retrieve the list of domains given a specific config request.
+        
+          <h4 id="ondewo.t2s.Text2Speech.GetServiceInfo" class="title-badge method">GetServiceInfo</h4>
+
+          <pre>rpc GetServiceInfo (<a href="#google.protobuf.Empty">.google.protobuf.Empty</a>) returns (<a href="#ondewo.t2s.T2SGetServiceInfoResponse">T2SGetServiceInfoResponse)</a></pre>
+
+          Returns a message containing the version of the running text to speech server.
+        
+
+        
+
+      
+      
+
+      
+      <div id="ondewo/t2s/text-to-speech.proto-messages" class="object-category">Messages</div>
+      
+        <h3 id="ondewo.t2s.Apodization" class="title-badge message">Apodization</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>apodization_secs</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.BatchSynthesizeRequest" class="title-badge message">BatchSynthesizeRequest</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>batch_request</td>
+                  <td><a href="#ondewo.t2s.SynthesizeRequest">SynthesizeRequest</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.BatchSynthesizeResponse" class="title-badge message">BatchSynthesizeResponse</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>batch_response</td>
+                  <td><a href="#ondewo.t2s.SynthesizeResponse">SynthesizeResponse</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.Caching" class="title-badge message">Caching</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>active</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>memory_cache_max_size</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>sampling_rate</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>load_cache</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>save_cache</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>cache_save_dir</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.CompositeInference" class="title-badge message">CompositeInference</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>text2mel</td>
+                  <td><a href="#ondewo.t2s.Text2Mel">Text2Mel</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>mel2audio</td>
+                  <td><a href="#ondewo.t2s.Mel2Audio">Mel2Audio</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.CreateCustomPhonemizerRequest" class="title-badge message">CreateCustomPhonemizerRequest</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>prefix</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>maps</td>
+                  <td><a href="#ondewo.t2s.Map">Map</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.CustomPhonemizerProto" class="title-badge message">CustomPhonemizerProto</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>maps</td>
+                  <td><a href="#ondewo.t2s.Map">Map</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.GlowTTS" class="title-badge message">GlowTTS</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>batch_size</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>use_gpu</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>length_scale</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>noise_scale</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>path</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>cleaners</td>
+                  <td><a href="#string">string</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>param_config_path</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.GlowTTSTriton" class="title-badge message">GlowTTSTriton</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>batch_size</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>length_scale</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>noise_scale</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>cleaners</td>
+                  <td><a href="#string">string</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>max_text_length</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>param_config_path</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>triton_model_name</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.HiFiGan" class="title-badge message">HiFiGan</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>use_gpu</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>batch_size</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>config_path</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>model_path</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.HiFiGanTriton" class="title-badge message">HiFiGanTriton</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>config_path</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>triton_model_name</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.ListCustomPhonemizerRequest" class="title-badge message">ListCustomPhonemizerRequest</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>pipeline_ids</td>
+                  <td><a href="#string">string</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.ListCustomPhonemizerResponse" class="title-badge message">ListCustomPhonemizerResponse</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>phonemizers</td>
+                  <td><a href="#ondewo.t2s.CustomPhonemizerProto">CustomPhonemizerProto</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.ListT2sDomainsRequest" class="title-badge message">ListT2sDomainsRequest</h3>
+        <p>Domain Request representation.</p><p>The request message for ListT2sDomains.</p><p>Filter domains of pipelines by attributed in request.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>speaker_sexes</td>
+                  <td><a href="#string">string</a></td>
+                  <td>repeated</td>
+                  <td><p>Optional. Define the speaker sex. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>pipeline_owners</td>
+                  <td><a href="#string">string</a></td>
+                  <td>repeated</td>
+                  <td><p>Optional. Define the pipeline owner/ owners. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>speaker_names</td>
+                  <td><a href="#string">string</a></td>
+                  <td>repeated</td>
+                  <td><p>Optional. Define the speaker name/ names. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>languages</td>
+                  <td><a href="#string">string</a></td>
+                  <td>repeated</td>
+                  <td><p>Optional. Define the language/ languages. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.ListT2sDomainsResponse" class="title-badge message">ListT2sDomainsResponse</h3>
+        <p>Domains Response representation.</p><p>The response message for ListT2sDomains.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>domains</td>
+                  <td><a href="#string">string</a></td>
+                  <td>repeated</td>
+                  <td><p>Required. Define the domain/ domains that satisfy/ies
+the specifications in the ListT2sDomainsRequest. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.ListT2sLanguagesRequest" class="title-badge message">ListT2sLanguagesRequest</h3>
+        <p>Language Request representation.</p><p>The request message for ListT2sLanguages.</p><p>Filter languages of pipelines by attributed in request.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>speaker_sexes</td>
+                  <td><a href="#string">string</a></td>
+                  <td>repeated</td>
+                  <td><p>Optional. Define the speaker sex. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>pipeline_owners</td>
+                  <td><a href="#string">string</a></td>
+                  <td>repeated</td>
+                  <td><p>Optional. Define the pipeline owner/ owners. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>speaker_names</td>
+                  <td><a href="#string">string</a></td>
+                  <td>repeated</td>
+                  <td><p>Optional. Define the speaker name/ names. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>domains</td>
+                  <td><a href="#string">string</a></td>
+                  <td>repeated</td>
+                  <td><p>Optional. Define the domain/ domains. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.ListT2sLanguagesResponse" class="title-badge message">ListT2sLanguagesResponse</h3>
+        <p>Language Response representation.</p><p>The response message for ListT2sLanguages.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>languages</td>
+                  <td><a href="#string">string</a></td>
+                  <td>repeated</td>
+                  <td><p>Required. Define the language/ languages that satisfy/ies
+the specifications in the ListT2sLanguagesRequest. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.ListT2sPipelinesRequest" class="title-badge message">ListT2sPipelinesRequest</h3>
+        <p>Pipeline Request representation.</p><p>The request message for ListT2sPipelines.</p><p>Filter pipelines by attributed in request.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>languages</td>
+                  <td><a href="#string">string</a></td>
+                  <td>repeated</td>
+                  <td><p>Optional. Define the language/ languages. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>speaker_sexes</td>
+                  <td><a href="#string">string</a></td>
+                  <td>repeated</td>
+                  <td><p>Optional. Define the speaker sex. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>pipeline_owners</td>
+                  <td><a href="#string">string</a></td>
+                  <td>repeated</td>
+                  <td><p>Optional. Define the pipeline owner/ owners. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>speaker_names</td>
+                  <td><a href="#string">string</a></td>
+                  <td>repeated</td>
+                  <td><p>Optional. Define the speaker name/ names. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>domains</td>
+                  <td><a href="#string">string</a></td>
+                  <td>repeated</td>
+                  <td><p>Optional. Define the domain/ domains. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.ListT2sPipelinesResponse" class="title-badge message">ListT2sPipelinesResponse</h3>
+        <p>Pipeline Response representation.</p><p>The response message for ListT2sPipelines.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>pipelines</td>
+                  <td><a href="#ondewo.t2s.Text2SpeechConfig">Text2SpeechConfig</a></td>
+                  <td>repeated</td>
+                  <td><p>Required. Representation of a list of pipelines configurations.
+Retrieved by ListT2sPipelines, containing the configurations of
+pipelines with the specifications received in the ListT2sPipelinesRequest. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.Logmnse" class="title-badge message">Logmnse</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>initial_noise</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>window_size</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>noise_threshold</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.Map" class="title-badge message">Map</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>word</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>phoneme_groups</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.MbMelganTriton" class="title-badge message">MbMelganTriton</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>config_path</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>stats_path</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>triton_model_name</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>triton_url</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.Mel2Audio" class="title-badge message">Mel2Audio</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>type</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>mb_melgan_triton</td>
+                  <td><a href="#ondewo.t2s.MbMelganTriton">MbMelganTriton</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>hifi_gan</td>
+                  <td><a href="#ondewo.t2s.HiFiGan">HiFiGan</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>hifi_gan_triton</td>
+                  <td><a href="#ondewo.t2s.HiFiGanTriton">HiFiGanTriton</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.NormalizeTextRequest" class="title-badge message">NormalizeTextRequest</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>t2s_pipeline_id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>text</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.NormalizeTextResponse" class="title-badge message">NormalizeTextResponse</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>normalized_text</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.PhonemizerId" class="title-badge message">PhonemizerId</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.Postprocessing" class="title-badge message">Postprocessing</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>silence_secs</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>pipeline</td>
+                  <td><a href="#string">string</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>logmmse</td>
+                  <td><a href="#ondewo.t2s.Logmnse">Logmnse</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>wiener</td>
+                  <td><a href="#ondewo.t2s.Wiener">Wiener</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>apodization</td>
+                  <td><a href="#ondewo.t2s.Apodization">Apodization</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.RequestConfig" class="title-badge message">RequestConfig</h3>
+        <p>Represents a Configuration for the text to speech conversion.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>t2s_pipeline_id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Required. Represents the pipeline id of the model configuration that will be used. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>length_scale</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>noise_scale</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>sample_rate</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>pcm</td>
+                  <td><a href="#ondewo.t2s.Pcm">Pcm</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>audio_format</td>
+                  <td><a href="#ondewo.t2s.AudioFormat">AudioFormat</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>use_cache</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>normalizer</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.SynthesizeRequest" class="title-badge message">SynthesizeRequest</h3>
+        <p>Represents a Synthesize Request.</p><p>A Synthesize Request contains the information need to perform a text to speech conversion.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>text</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Required. Represents the text that will be transformed to speech. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>config</td>
+                  <td><a href="#ondewo.t2s.RequestConfig">RequestConfig</a></td>
+                  <td></td>
+                  <td><p>Required. Represents the specifications needed to do the text to speech transformation. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.SynthesizeResponse" class="title-badge message">SynthesizeResponse</h3>
+        <p>Represents a Synthesize Response.</p><p>A Synthesize Request contains the converted text to audio and the requested configuration.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>audio_uuid</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Required. Represents the pipeline id of the model configuration that will be used. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>audio</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>Required. Generated file with the parameters described in request. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>generation_time</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p>Required. Time to generate audio. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>audio_length</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p>Required. Audio length. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>text</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Required. Text from which audio was generated. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>config</td>
+                  <td><a href="#ondewo.t2s.RequestConfig">RequestConfig</a></td>
+                  <td></td>
+                  <td><p>Required. Configuration from which audio was generated. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>normalized_text</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Optional. Normalized text. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.T2SCustomLengthScales" class="title-badge message">T2SCustomLengthScales</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>text</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>email</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>url</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>phone</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>spell</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>spell_with_names</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>callsign_long</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>callsign_short</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.T2SDescription" class="title-badge message">T2SDescription</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>language</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>speaker_sex</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>pipeline_owner</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>comments</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>speaker_name</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>domain</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.T2SGetServiceInfoResponse" class="title-badge message">T2SGetServiceInfoResponse</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>version</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.T2SInference" class="title-badge message">T2SInference</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>type</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>composite_inference</td>
+                  <td><a href="#ondewo.t2s.CompositeInference">CompositeInference</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>caching</td>
+                  <td><a href="#ondewo.t2s.Caching">Caching</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.T2SNormalization" class="title-badge message">T2SNormalization</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>language</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>pipeline</td>
+                  <td><a href="#string">string</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>custom_phonemizer_id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>custom_length_scales</td>
+                  <td><a href="#ondewo.t2s.T2SCustomLengthScales">T2SCustomLengthScales</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>arpabet_mapping</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>numeric_mapping</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>callsigns_mapping</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.T2sPipelineId" class="title-badge message">T2sPipelineId</h3>
+        <p>Pipeline Id representation.</p><p>Used in the creation, deletion and getter of pipelines.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Required. Defines the id of the pipeline. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.Text2Mel" class="title-badge message">Text2Mel</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>type</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>glow_tts</td>
+                  <td><a href="#ondewo.t2s.GlowTTS">GlowTTS</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>glow_tts_triton</td>
+                  <td><a href="#ondewo.t2s.GlowTTSTriton">GlowTTSTriton</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.Text2SpeechConfig" class="title-badge message">Text2SpeechConfig</h3>
+        <p>Configuration of text-to-speech models representation.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Required. Defines the id of the pipeline. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>description</td>
+                  <td><a href="#ondewo.t2s.T2SDescription">T2SDescription</a></td>
+                  <td></td>
+                  <td><p>Required. Defines the description of the pipeline representation. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>active</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>Required. Defines if the pipeline is active or inactive. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>inference</td>
+                  <td><a href="#ondewo.t2s.T2SInference">T2SInference</a></td>
+                  <td></td>
+                  <td><p>Required. Defines he inference of the pipeline representation. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>normalization</td>
+                  <td><a href="#ondewo.t2s.T2SNormalization">T2SNormalization</a></td>
+                  <td></td>
+                  <td><p>Required. Defines the normalization process of the pipeline representation. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>postprocessing</td>
+                  <td><a href="#ondewo.t2s.Postprocessing">Postprocessing</a></td>
+                  <td></td>
+                  <td><p>Required. Defines the postprocessing process of the pipeline representation. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.UpdateCustomPhonemizerRequest" class="title-badge message">UpdateCustomPhonemizerRequest</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>update_method</td>
+                  <td><a href="#ondewo.t2s.UpdateCustomPhonemizerRequest.UpdateMethod">UpdateCustomPhonemizerRequest.UpdateMethod</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>maps</td>
+                  <td><a href="#ondewo.t2s.Map">Map</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.Wiener" class="title-badge message">Wiener</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>frame_len</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>lpc_order</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>iterations</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>alpha</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>thresh</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+      
+
+      
+      <div id="ondewo/t2s/text-to-speech.proto-enums" class="object-category">Enums</div>
+      
+        <h3 id="ondewo.t2s.AudioFormat" class="title-badge enum">AudioFormat</h3>
+        <p>Represents an audio file format, which is a file format for storing</p><p>digital audio data on a computer system.</p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>wav</td>
+                <td>0</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>flac</td>
+                <td>1</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>caf</td>
+                <td>2</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>mp3</td>
+                <td>3</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>aac</td>
+                <td>4</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>ogg</td>
+                <td>5</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>wma</td>
+                <td>6</td>
+                <td><p></p></td>
+              </tr>
+            
+          </tbody>
+        </table>
+      
+        <h3 id="ondewo.t2s.Pcm" class="title-badge enum">Pcm</h3>
+        <p>Represents a pulse-code modulation technique.</p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>PCM_16</td>
+                <td>0</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>PCM_24</td>
+                <td>1</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>PCM_32</td>
+                <td>2</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>PCM_S8</td>
+                <td>3</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>PCM_U8</td>
+                <td>4</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>FLOAT</td>
+                <td>5</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>DOUBLE</td>
+                <td>6</td>
+                <td><p></p></td>
+              </tr>
+            
+          </tbody>
+        </table>
+      
+        <h3 id="ondewo.t2s.UpdateCustomPhonemizerRequest.UpdateMethod" class="title-badge enum">UpdateCustomPhonemizerRequest.UpdateMethod</h3>
+        <p>extend hard will add new words replacing those that are already in phonemizer</p><p>extend soft will add new words only if they are not yet in phonemizer</p><p>replace will clean all the words in the phonemizer and then add new ones</p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>extend_hard</td>
+                <td>0</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>extend_soft</td>
+                <td>1</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>replace</td>
+                <td>2</td>
+                <td><p></p></td>
+              </tr>
+            
+          </tbody>
+        </table>
+      
+      
+
+      
+
+    
+
+        <h2 id="scalar-value-types">Scalar Value Types</h2>
+        <table class="scalar-value-types-table">
+          <thead>
+            <tr><td>.proto Type</td><td>Notes</td><td>C++</td><td>Java</td><td>Python</td><td>Go</td><td>C#</td><td>PHP</td><td>Ruby</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr id="double">
+                <td>double</td>
+                <td></td>
+                <td>double</td>
+                <td>double</td>
+                <td>float</td>
+                <td>float64</td>
+                <td>double</td>
+                <td>float</td>
+                <td>Float</td>
+              </tr>
+            
+              <tr id="float">
+                <td>float</td>
+                <td></td>
+                <td>float</td>
+                <td>float</td>
+                <td>float</td>
+                <td>float32</td>
+                <td>float</td>
+                <td>float</td>
+                <td>Float</td>
+              </tr>
+            
+              <tr id="int32">
+                <td>int32</td>
+                <td>Uses variable-length encoding. Inefficient for encoding negative numbers – if your field is likely to have negative values, use sint32 instead.</td>
+                <td>int32</td>
+                <td>int</td>
+                <td>int</td>
+                <td>int32</td>
+                <td>int</td>
+                <td>integer</td>
+                <td>Bignum or Fixnum (as required)</td>
+              </tr>
+            
+              <tr id="int64">
+                <td>int64</td>
+                <td>Uses variable-length encoding. Inefficient for encoding negative numbers – if your field is likely to have negative values, use sint64 instead.</td>
+                <td>int64</td>
+                <td>long</td>
+                <td>int/long</td>
+                <td>int64</td>
+                <td>long</td>
+                <td>integer/string</td>
+                <td>Bignum</td>
+              </tr>
+            
+              <tr id="uint32">
+                <td>uint32</td>
+                <td>Uses variable-length encoding.</td>
+                <td>uint32</td>
+                <td>int</td>
+                <td>int/long</td>
+                <td>uint32</td>
+                <td>uint</td>
+                <td>integer</td>
+                <td>Bignum or Fixnum (as required)</td>
+              </tr>
+            
+              <tr id="uint64">
+                <td>uint64</td>
+                <td>Uses variable-length encoding.</td>
+                <td>uint64</td>
+                <td>long</td>
+                <td>int/long</td>
+                <td>uint64</td>
+                <td>ulong</td>
+                <td>integer/string</td>
+                <td>Bignum or Fixnum (as required)</td>
+              </tr>
+            
+              <tr id="sint32">
+                <td>sint32</td>
+                <td>Uses variable-length encoding. Signed int value. These more efficiently encode negative numbers than regular int32s.</td>
+                <td>int32</td>
+                <td>int</td>
+                <td>int</td>
+                <td>int32</td>
+                <td>int</td>
+                <td>integer</td>
+                <td>Bignum or Fixnum (as required)</td>
+              </tr>
+            
+              <tr id="sint64">
+                <td>sint64</td>
+                <td>Uses variable-length encoding. Signed int value. These more efficiently encode negative numbers than regular int64s.</td>
+                <td>int64</td>
+                <td>long</td>
+                <td>int/long</td>
+                <td>int64</td>
+                <td>long</td>
+                <td>integer/string</td>
+                <td>Bignum</td>
+              </tr>
+            
+              <tr id="fixed32">
+                <td>fixed32</td>
+                <td>Always four bytes. More efficient than uint32 if values are often greater than 2^28.</td>
+                <td>uint32</td>
+                <td>int</td>
+                <td>int</td>
+                <td>uint32</td>
+                <td>uint</td>
+                <td>integer</td>
+                <td>Bignum or Fixnum (as required)</td>
+              </tr>
+            
+              <tr id="fixed64">
+                <td>fixed64</td>
+                <td>Always eight bytes. More efficient than uint64 if values are often greater than 2^56.</td>
+                <td>uint64</td>
+                <td>long</td>
+                <td>int/long</td>
+                <td>uint64</td>
+                <td>ulong</td>
+                <td>integer/string</td>
+                <td>Bignum</td>
+              </tr>
+            
+              <tr id="sfixed32">
+                <td>sfixed32</td>
+                <td>Always four bytes.</td>
+                <td>int32</td>
+                <td>int</td>
+                <td>int</td>
+                <td>int32</td>
+                <td>int</td>
+                <td>integer</td>
+                <td>Bignum or Fixnum (as required)</td>
+              </tr>
+            
+              <tr id="sfixed64">
+                <td>sfixed64</td>
+                <td>Always eight bytes.</td>
+                <td>int64</td>
+                <td>long</td>
+                <td>int/long</td>
+                <td>int64</td>
+                <td>long</td>
+                <td>integer/string</td>
+                <td>Bignum</td>
+              </tr>
+            
+              <tr id="bool">
+                <td>bool</td>
+                <td></td>
+                <td>bool</td>
+                <td>boolean</td>
+                <td>boolean</td>
+                <td>bool</td>
+                <td>bool</td>
+                <td>boolean</td>
+                <td>TrueClass/FalseClass</td>
+              </tr>
+            
+              <tr id="string">
+                <td>string</td>
+                <td>A string must always contain UTF-8 encoded or 7-bit ASCII text.</td>
+                <td>string</td>
+                <td>String</td>
+                <td>str/unicode</td>
+                <td>string</td>
+                <td>string</td>
+                <td>string</td>
+                <td>String (UTF-8)</td>
+              </tr>
+            
+              <tr id="bytes">
+                <td>bytes</td>
+                <td>May contain any arbitrary sequence of bytes.</td>
+                <td>string</td>
+                <td>ByteString</td>
+                <td>str</td>
+                <td>[]byte</td>
+                <td>ByteString</td>
+                <td>string</td>
+                <td>String (ASCII-8BIT)</td>
+              </tr>
+            
+          </tbody>
+        </table>
+
+    </section>
+
+  </body>
+</html>
