@@ -79,6 +79,93 @@ login_to_gh: ## Login to Github CLI with Access Token
 build_gh_release: ## Generate Github Release with CLI
 	gh release create --repo $(GH_REPO) "$(ONDEWO_T2S_API_VERSION)" -n "$(CURRENT_RELEASE_NOTES)" -t "Release ${ONDEWO_T2S_API_VERSION}"
 
+release_all_clients: ## Release all T2S Clients
+	@make release_python_client || (echo "Already released ${ONDEWO_T2S_API_VERSION} of Python Client")
+	@make release_nodejs_client || (echo "Already released ${ONDEWO_T2S_API_VERSION} of Nodejs Client")
+	@make release_typescript_client || (echo "Already released ${ONDEWO_T2S_API_VERSION} of Typescript Client")
+	@make release_angular_client || (echo "Already released ${ONDEWO_T2S_API_VERSION} of Angular Client")
+	@make release_js_client || (echo "Already released ${ONDEWO_T2S_API_VERSION} of JS Client")
+	@echo "End releasing all clients"
+
+GENERIC_CLIENT?=
+RELEASEMD?=
+GENERIC_RELEASE_NOTES="\n***************** \n\\\#\\\# Release ONDEWO T2S REPONAME Client ${ONDEWO_T2S_API_VERSION} \n \
+	\n\\\#\\\#\\\# Improvements \n \
+	* Tracking API Version ${ONDEWO_T2S_API_VERSION} \n"
+
+
+release_client:
+	$(eval REPO_NAME:= $(shell echo ${GENERIC_CLIENT} | cut -c 41- | cut -d '.' -f 1))
+	$(eval REPO_DIR:= $(shell echo "ondewo-t2s-client-${REPO_NAME}"))
+	$(eval UPPER_REPO_NAME:= $(shell echo ${REPO_NAME} | sed 's/.*/\u&/'))
+# Get newest Proto-Compiler Version
+	$(eval PROTO_COMPILER:= $(shell curl https://api.github.com/repos/ondewo/ondewo-proto-compiler/tags | grep "\"name\"" | head -1 | cut -d '"' -f 4))
+# Clone Repo
+	rm -rf ${REPO_DIR}
+	rm -f build_log_${REPO_NAME}.txt
+
+	@echo ${GENERIC_RELEASE_NOTES} > temp-notes && sed -i 's/\\//g' temp-notes && sed -i 's/REPONAME/${UPPER_REPO_NAME}/g' temp-notes
+	git clone ${GENERIC_CLIENT}
+# Check if Client is already uptodate with API Version
+	@! git -C ${REPO_DIR} branch -a | grep -q ${ONDEWO_T2S_API_VERSION} || (echo "Already Released ${ONDEWO_T2S_API_VERSION} \n\n\n"  && rm -rf ${REPO_DIR} && rm -f temp-notes && exit 1)
+
+# Change Version Number and RELEASE NOTES
+	cd ${REPO_DIR} && sed -i -e '/Release History/r ../temp-notes' ${RELEASEMD}
+	cd ${REPO_DIR} && head -20 ${RELEASEMD}
+	cd ${REPO_DIR} && sed -i -e 's/ONDEWO_T2S_VERSION.*=.*[0-9]*.[0-9]*.[0-9]/ONDEWO_T2S_VERSION = ${ONDEWO_T2S_API_VERSION}/' Makefile
+	cd ${REPO_DIR} && sed -i -e 's/ONDEWO_PROTO_COMPILER_GIT_BRANCH.*=.*tags\/[0-9]*.[0-9]*.[0-9]/ONDEWO_PROTO_COMPILER_GIT_BRANCH=tags\/${PROTO_COMPILER}/' Makefile
+	cd ${REPO_DIR} && sed -i -e 's/T2S_API_GIT_BRANCH=tags\/[0-9]*.[0-9]*.[0-9]/T2S_API_GIT_BRANCH=tags\/${ONDEWO_T2S_API_VERSION}/' Makefile && head -30 Makefile
+
+# Build new code
+	make -C ${REPO_DIR} build | tee build_log_${REPO_NAME}.txt
+	make -C ${REPO_DIR} check_build
+	git -C ${REPO_DIR} status >> build_log_${REPO_NAME}.txt
+	git -C ${REPO_DIR} add .
+	echo "AFTER GIT ADD" >> build_log_${REPO_NAME}.txt && git -C ${REPO_DIR} status >> build_log_${REPO_NAME}.txt
+	git -C ${REPO_DIR} commit -m "API-Release: Preparing for Release ${ONDEWO_T2S_API_VERSION}"
+	git -C ${REPO_DIR} push
+	make -C ${REPO_DIR} ondewo_release
+# Remove everything from Release
+	rm -rf ${REPO_DIR}
+	rm -f temp-notes
+
+
+PYTHON_CLIENT="git@github.com:ondewo/ondewo-t2s-client-python.git"
+
+release_python_client: ## Release Python Client
+	@echo "Start releasing Python Client"
+	make release_client GENERIC_CLIENT=${PYTHON_CLIENT} RELEASEMD="RELEASE.md"
+	@echo "End releasing Python Client \n \n \n"
+
+NODEJS_CLIENT="git@github.com:ondewo/ondewo-t2s-client-nodejs.git"
+
+release_nodejs_client: ## Release Nodejs Client
+	@echo "Start releasing Nodejs Client"
+	make release_client GENERIC_CLIENT=${NODEJS_CLIENT} RELEASEMD="src/RELEASE.md"
+	@echo "End releasing Nodejs Client \n \n \n"
+
+TYPESCRIPT_CLIENT="git@github.com:ondewo/ondewo-t2s-client-typescript.git"
+
+release_typescript_client: ## Release Typescript Client
+	@echo "Start releasing Typescript Client"
+	make release_client GENERIC_CLIENT=${TYPESCRIPT_CLIENT} RELEASEMD="src/RELEASE.md"
+	@echo "End releasing Typescript Client \n \n \n"
+
+ANGULAR_CLIENT="git@github.com:ondewo/ondewo-t2s-client-angular.git"
+
+release_angular_client: ## Release Angular Client
+	@echo "Start releasing Angular Client"
+	make release_client GENERIC_CLIENT=${ANGULAR_CLIENT} RELEASEMD="src/RELEASE.md"
+	@echo "End releasing Angular Client \n \n \n"
+
+JS_CLIENT="git@github.com:ondewo/ondewo-t2s-client-js.git"
+
+release_js_client: ## Release Js Client
+	@echo "Start releasing Js Client"
+	make release_client GENERIC_CLIENT=${JS_CLIENT} RELEASEMD="src/RELEASE.md"
+	@echo "End releasing Js Client \n \n \n"
+
+
 ########################################################
 #		GITHUB
 
