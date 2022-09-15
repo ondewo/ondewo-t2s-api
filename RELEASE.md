@@ -1,5 +1,12 @@
 # Release History
 *****************
+## Release ONDEWO T2S API 5.0.0
+
+### Improvements
+ * Synchronize all API Client Versions
+
+*****************
+
 ## Release ONDEWO T2S API 4.3.0
 
 ### Improvements
