@@ -56,6 +56,24 @@ TEST:
 	@echo ${GITHUB_GH_TOKEN}
 	@echo ${CURRENT_RELEASE_NOTES}
 
+githubio_wrapper:
+	$(eval REPO_NAME:= $(shell echo ${GH_REPO} | cut -d "-" -f 2 | sed -e 's/\(.*\)/\U\1/'))
+	@rm -rf ondewo.github.io
+	@git branch | grep "*" | grep -q "master" || (echo "Not on master branch"  & rm -rf ondewo.github.io && exit 1)
+	@echo "UPDATING API-TABLE VERSION FOR ${REPO_NAME}"
+	@git clone git@github.com:ondewo/ondewo.github.io.git
+	@! cat ondewo.github.io/index.html | grep "${REPO_NAME} API" | grep -q ${ONDEWO_T2S_API_VERSION} || (echo "Already updated ${REPO_NAME} to ${ONDEWO_T2S_API_VERSION}" & rm -rf ondewo.github.io && exit 1)
+	@sed -i "s/${REPO_NAME} API.*\</${REPO_NAME} API ${ONDEWO_T2S_API_VERSION}\<\//" ondewo.github.io/index.html
+	@cat ondewo.github.io/index.html | grep "${REPO_NAME} API"
+	@git -C ondewo.github.io add index.html
+	@git -C ondewo.github.io commit -m "Updated ${REPO_NAME} to ${ONDEWO_T2S_API_VERSION}"
+	@git -C ondewo.github.io push
+	@echo "FINISHED UPDATING API-TABLE VERSION FOR ${REPO_NAME}"
+	@rm -rf ondewo.github.io
+
+update_githubio:
+	make githubio_wrapper || (echo "Done")
+
 ########################################################
 #       Repo Specific Make Targets
 ########################################################
