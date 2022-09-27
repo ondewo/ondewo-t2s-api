@@ -56,23 +56,25 @@ TEST:
 	@echo ${GITHUB_GH_TOKEN}
 	@echo ${CURRENT_RELEASE_NOTES}
 
-githubio_wrapper:
+githubio_logic:
 	$(eval REPO_NAME:= $(shell echo ${GH_REPO} | cut -d "-" -f 2 | sed -e 's/\(.*\)/\U\1/'))
-	@rm -rf ondewo.github.io
 	@git branch | grep "*" | grep -q "master" || (echo "Not on master branch"  & rm -rf ondewo.github.io && exit 1)
-	@echo "UPDATING API-TABLE VERSION FOR ${REPO_NAME}"
-	@git clone git@github.com:ondewo/ondewo.github.io.git
-	@! cat ondewo.github.io/index.html | grep "${REPO_NAME} API" | grep -q ${ONDEWO_T2S_API_VERSION} || (echo "Already updated ${REPO_NAME} to ${ONDEWO_T2S_API_VERSION}" & rm -rf ondewo.github.io && exit 1)
-	@sed -i "s/${REPO_NAME} API.*\</${REPO_NAME} API ${ONDEWO_T2S_API_VERSION}\<\//" ondewo.github.io/index.html
-	@cat ondewo.github.io/index.html | grep "${REPO_NAME} API"
-	@git -C ondewo.github.io add index.html
-	@git -C ondewo.github.io commit -m "Updated ${REPO_NAME} to ${ONDEWO_T2S_API_VERSION}"
+	@! cat ondewo.github.io/data.js | sed -n "/name\: '${REPO_NAME}'/,/end\: ''/p" | grep -q "number: '${ONDEWO_T2S_API_VERSION}'" || (echo "Already Released" && exit 1)
+	$(eval VERSION_LINE:= $(shell cat -n ondewo.github.io/data.js | sed -n "/name\: '${REPO_NAME}'/,/end\: ''/p" | grep "versions: " -A 1 | tail -1 | grep -o -E '[0-9]+' | head -1 | sed -e 's/^0\+//'))
+	$(eval TEMP_TEXT:= $(shell cat ondewo.github.io/script_object.txt | sed -e "s/VERSION/${ONDEWO_T2S_API_VERSION}/g" -e "s/TECHNOLOGY/${REPO_NAME}/g"))
+	@sed -i "${VERSION_LINE} i ${TEMP_TEXT}" ondewo.github.io/data.js
+	@cd ondewo.github.io && npx prettier -w --single-quote data.js
+	@git -C ondewo.github.io status
+	@git -C ondewo.github.io add data.js
+	@git -C ondewo.github.io status
+	@git -C ondewo.github.io commit -m "Added ${REPO_NAME} Documentation for ${ONDEWO_T2S_API_VERSION}"
 	@git -C ondewo.github.io push
-	@echo "FINISHED UPDATING API-TABLE VERSION FOR ${REPO_NAME}"
-	@rm -rf ondewo.github.io
 
 update_githubio:
-	make githubio_wrapper || (echo "Done")
+	@rm -rf ondewo.github.io
+	@git clone git@github.com:ondewo/ondewo.github.io.git
+	@make githubio_logic || (echo "Done")
+	@rm -rf ondewo.github.io
 
 ########################################################
 #       Repo Specific Make Targets
