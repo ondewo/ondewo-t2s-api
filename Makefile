@@ -71,6 +71,13 @@ githubio_logic:
 	@mkdir "${DOCS_DIR}"
 	@cp docs/* ${DOCS_DIR}
 	@sed -i "s/h1>Protocol Documentation/h1>${REPO_NAME_UPPER} ${ONDEWO_T2S_API_VERSION} Documentation/" ${DOCS_DIR}/index.html
+
+	$(eval HEADER_LINE:= $(shell cat ${DOCS_DIR}/index.html | grep -n "${REPO_NAME_UPPER} ${ONDEWO_T2S_API_VERSION} Documentation" | grep -o -E '[0-9]+' | head -1 | sed -e 's/^0\+//'))
+	$(eval TEMP_IMG:= $(shell cat  ondewo.github.io/script_image.txt))
+	$(eval TEMP_CALC:= $(shell expr ${HEADER_LINE} - 1))
+
+	sed -i '${TEMP_CALC} i ${TEMP_IMG}' ${DOCS_DIR}/index.html
+
 	head -30 ${DOCS_DIR}/index.html
 	cat ondewo.github.io/data.js | sed -n "/name\: '${REPO_NAME_UPPER}'/,/end\: ''/p"
 
