@@ -35,7 +35,7 @@ IMAGE_UTILS_NAME=ondewo-t2s-api-utils:${ONDEWO_T2S_API_VERSION}
 #       ONDEWO Standard Make Targets
 ########################################################
 
-setup_developer_environment_locally: install_precommit_hooks install_nvm ## Sets up local development enviorenment !! Forcefully closes current terminal
+setup_developer_environment_locally: install_python_requirements install_precommit_hooks install_nvm ## Sets up local development environment !! Forcefully closes current terminal
 
 install_nvm: ## Install NVM, node and npm !! Forcefully closes current terminal
 	@curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
@@ -43,6 +43,13 @@ install_nvm: ## Install NVM, node and npm !! Forcefully closes current terminal
 	$(eval PID:=$(shell ps -ft $(ps | tail -1 | cut -c 8-13) | head -2 | tail -1 | cut -c 1-8))
 	@node --version & npm --version || (kill -KILL ${PID})
 
+install_python_requirements: ## Installs python requirements flak8 and mypy
+	wget -q https://raw.githubusercontent.com/ondewo/ondewo-t2s-client-python/master/requirements-dev.txt -O requirements-dev.txt
+	pip install -r requirements-dev.txt
+	wget -q https://raw.githubusercontent.com/ondewo/ondewo-t2s-client-python/master/requirements.txt -O requirements.txt
+	pip install -r requirements.txt
+	wget -q https://raw.githubusercontent.com/ondewo/ondewo-t2s-client-python/master/mypy.ini -O mypy.ini
+	wget -q https://raw.githubusercontent.com/ondewo/ondewo-t2s-client-python/master/.flake8 -O .flake8
 
 install_precommit_hooks: ## Installs pre-commit hooks and sets them up for the ondewo-vtsi-api repo
 	pip install pre-commit
