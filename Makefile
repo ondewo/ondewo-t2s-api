@@ -79,7 +79,7 @@ githubio_logic_pre:
 	@cp docs/* ${DOCS_DIR}
 	@sed -i "s/h1>Protocol Documentation/h1>${REPO_NAME_UPPER} ${ONDEWO_T2S_API_VERSION} Documentation/" ${DOCS_DIR}/index.html
 
-githubio_logic:
+githubio_logic: | githubio_logic_pre
 	$(eval REPO_NAME:= $(shell echo ${GH_REPO} | cut -d "-" -f 2 ))
 	$(eval REPO_NAME_UPPER:= $(shell echo ${GH_REPO} | cut -d "-" -f 2 | sed -e 's/\(.*\)/\U\1/'))
 	@git branch | grep "*" | grep -q "master" || (echo "Not on master branch"  & rm -rf ondewo.github.io && exit 1)
