@@ -1,5 +1,12 @@
 # Release History
 *****************
+## Release ONDEWO T2S API 5.1.0
+
+### Improvements
+ * Added documentation of the endpoints and messages
+ * Moved CustomerPhonemizer endpoints to TextToSpeech service
+
+*****************
 ## Release ONDEWO T2S API 5.0.0
 
 ### Improvements
