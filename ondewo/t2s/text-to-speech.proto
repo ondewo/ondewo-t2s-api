@@ -660,21 +660,29 @@ message Caching {
     string cache_save_dir = 6;
 
 }
-
-// T2SNormalization message contains settings for text normalization.
+// Represents the configuration for text-to-speech normalization.
 message T2SNormalization {
 
-    // The language for text normalization.
+    // The language for which the normalization is applied.
     string language = 1;
 
-    // Repeated field containing pipeline names.
+    // The pipeline(s) used for normalization.
     repeated string pipeline = 2;
 
-    // The ID of the custom phonemizer.
+    // The ID of the custom phonemizer, if used.
     string custom_phonemizer_id = 3;
 
-    // Custom length scales for text types.
-    T2SCustomLengthScales custom;
+    // Custom length scales for different text types.
+    T2SCustomLengthScales custom_length_scales = 4;
+
+    // The mapping for Arpabet phonemes.
+    string arpabet_mapping = 5;
+
+    // The mapping for numeric expressions.
+    string numeric_mapping = 6;
+
+    // The mapping for callsigns.
+    string callsigns_mapping = 7;
 
 }
 
