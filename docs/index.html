@@ -38,26 +38,6 @@
                   
                     
                     <li>
-                      <a href="#ondewo.t2s.CustomPhonemizers" class="title-badge service">CustomPhonemizers</a>
-                      
-                      <ul>
-                      
-                        <li><a href="#ondewo.t2s.CustomPhonemizers.GetCustomPhonemizer" class="title-badge method">GetCustomPhonemizer</a></li>
-                      
-                        <li><a href="#ondewo.t2s.CustomPhonemizers.CreateCustomPhonemizer" class="title-badge method">CreateCustomPhonemizer</a></li>
-                      
-                        <li><a href="#ondewo.t2s.CustomPhonemizers.DeleteCustomPhonemizer" class="title-badge method">DeleteCustomPhonemizer</a></li>
-                      
-                        <li><a href="#ondewo.t2s.CustomPhonemizers.UpdateCustomPhonemizer" class="title-badge method">UpdateCustomPhonemizer</a></li>
-                      
-                        <li><a href="#ondewo.t2s.CustomPhonemizers.ListCustomPhonemizer" class="title-badge method">ListCustomPhonemizer</a></li>
-                      
-                      </ul>
-                      
-                    </li>
-                  
-                    
-                    <li>
                       <a href="#ondewo.t2s.Text2Speech" class="title-badge service">Text2Speech</a>
                       
                       <ul>
@@ -83,6 +63,16 @@
                         <li><a href="#ondewo.t2s.Text2Speech.ListT2sDomains" class="title-badge method">ListT2sDomains</a></li>
                       
                         <li><a href="#ondewo.t2s.Text2Speech.GetServiceInfo" class="title-badge method">GetServiceInfo</a></li>
+                      
+                        <li><a href="#ondewo.t2s.Text2Speech.GetCustomPhonemizer" class="title-badge method">GetCustomPhonemizer</a></li>
+                      
+                        <li><a href="#ondewo.t2s.Text2Speech.CreateCustomPhonemizer" class="title-badge method">CreateCustomPhonemizer</a></li>
+                      
+                        <li><a href="#ondewo.t2s.Text2Speech.DeleteCustomPhonemizer" class="title-badge method">DeleteCustomPhonemizer</a></li>
+                      
+                        <li><a href="#ondewo.t2s.Text2Speech.UpdateCustomPhonemizer" class="title-badge method">UpdateCustomPhonemizer</a></li>
+                      
+                        <li><a href="#ondewo.t2s.Text2Speech.ListCustomPhonemizer" class="title-badge method">ListCustomPhonemizer</a></li>
                       
                       </ul>
                       
@@ -297,49 +287,8 @@
       <div id="ondewo/t2s/text-to-speech.proto-services" class="object-category">Services</div>
       
         
-        <h3 id="ondewo.t2s.CustomPhonemizers" class="title-badge service">CustomPhonemizers</h3>
-        <p>endpoints of custom phonemizer</p>
-
-        
-        <div id="ondewo.t2s.CustomPhonemizers-methods" class="service-methods">Service Methods</div>
-        
-          <h4 id="ondewo.t2s.CustomPhonemizers.GetCustomPhonemizer" class="title-badge method">GetCustomPhonemizer</h4>
-
-          <pre>rpc GetCustomPhonemizer (<a href="#ondewo.t2s.PhonemizerId">PhonemizerId</a>) returns (<a href="#ondewo.t2s.CustomPhonemizerProto">CustomPhonemizerProto)</a></pre>
-
-          
-        
-          <h4 id="ondewo.t2s.CustomPhonemizers.CreateCustomPhonemizer" class="title-badge method">CreateCustomPhonemizer</h4>
-
-          <pre>rpc CreateCustomPhonemizer (<a href="#ondewo.t2s.CreateCustomPhonemizerRequest">CreateCustomPhonemizerRequest</a>) returns (<a href="#ondewo.t2s.PhonemizerId">PhonemizerId)</a></pre>
-
-          
-        
-          <h4 id="ondewo.t2s.CustomPhonemizers.DeleteCustomPhonemizer" class="title-badge method">DeleteCustomPhonemizer</h4>
-
-          <pre>rpc DeleteCustomPhonemizer (<a href="#ondewo.t2s.PhonemizerId">PhonemizerId</a>) returns (<a href="#google.protobuf.Empty">.google.protobuf.Empty)</a></pre>
-
-          
-        
-          <h4 id="ondewo.t2s.CustomPhonemizers.UpdateCustomPhonemizer" class="title-badge method">UpdateCustomPhonemizer</h4>
-
-          <pre>rpc UpdateCustomPhonemizer (<a href="#ondewo.t2s.UpdateCustomPhonemizerRequest">UpdateCustomPhonemizerRequest</a>) returns (<a href="#ondewo.t2s.CustomPhonemizerProto">CustomPhonemizerProto)</a></pre>
-
-          
-        
-          <h4 id="ondewo.t2s.CustomPhonemizers.ListCustomPhonemizer" class="title-badge method">ListCustomPhonemizer</h4>
-
-          <pre>rpc ListCustomPhonemizer (<a href="#ondewo.t2s.ListCustomPhonemizerRequest">ListCustomPhonemizerRequest</a>) returns (<a href="#ondewo.t2s.ListCustomPhonemizerResponse">ListCustomPhonemizerResponse)</a></pre>
-
-          
-        
-
-        
-
-      
-        
         <h3 id="ondewo.t2s.Text2Speech" class="title-badge service">Text2Speech</h3>
-        <p>endpoints of t2s generate service</p>
+        <p>Text2Speech service provides endpoints for text-to-speech generation.</p>
 
         
         <div id="ondewo.t2s.Text2Speech-methods" class="service-methods">Service Methods</div>
@@ -348,68 +297,133 @@
 
           <pre>rpc Synthesize (<a href="#ondewo.t2s.SynthesizeRequest">SynthesizeRequest</a>) returns (<a href="#ondewo.t2s.SynthesizeResponse">SynthesizeResponse)</a></pre>
 
-          Synthesizes an specific text sent in the request with the configuration requirements and retrieves a response
-that includes the synthesized text to audio and the configuration wanted.
+          Synthesize RPC
+
+Synthesizes a specific text sent in the request with the provided configuration requirements
+and retrieves a response that includes the synthesized text as audio and the requested configuration.
         
           <h4 id="ondewo.t2s.Text2Speech.BatchSynthesize" class="title-badge method">BatchSynthesize</h4>
 
           <pre>rpc BatchSynthesize (<a href="#ondewo.t2s.BatchSynthesizeRequest">BatchSynthesizeRequest</a>) returns (<a href="#ondewo.t2s.BatchSynthesizeResponse">BatchSynthesizeResponse)</a></pre>
 
-          will this safe time when doing batch predict on the AI model?
+          BatchSynthesize RPC
+
+Performs batch synthesis by accepting a batch of synthesis requests and returning a batch response.
+This can be more efficient for generating predictions on the AI model in bulk.
         
           <h4 id="ondewo.t2s.Text2Speech.NormalizeText" class="title-badge method">NormalizeText</h4>
 
           <pre>rpc NormalizeText (<a href="#ondewo.t2s.NormalizeTextRequest">NormalizeTextRequest</a>) returns (<a href="#ondewo.t2s.NormalizeTextResponse">NormalizeTextResponse)</a></pre>
 
-          Normalize a text according to a specific pipeline normalization rules.
+          NormalizeText RPC
+
+Normalizes a text according to the specific pipeline's normalization rules.
         
           <h4 id="ondewo.t2s.Text2Speech.GetT2sPipeline" class="title-badge method">GetT2sPipeline</h4>
 
           <pre>rpc GetT2sPipeline (<a href="#ondewo.t2s.T2sPipelineId">T2sPipelineId</a>) returns (<a href="#ondewo.t2s.Text2SpeechConfig">Text2SpeechConfig)</a></pre>
 
-          Retrieves the configuration of the specified pipeline.
+          GetT2sPipeline RPC
+
+Retrieves the configuration of the specified text-to-speech pipeline.
         
           <h4 id="ondewo.t2s.Text2Speech.CreateT2sPipeline" class="title-badge method">CreateT2sPipeline</h4>
 
           <pre>rpc CreateT2sPipeline (<a href="#ondewo.t2s.Text2SpeechConfig">Text2SpeechConfig</a>) returns (<a href="#ondewo.t2s.T2sPipelineId">T2sPipelineId)</a></pre>
 
-          Creates a pipeline with the specified configuration and retrieves its id.
+          CreateT2sPipeline RPC
+
+Creates a new text-to-speech pipeline with the provided configuration and returns its pipeline ID.
         
           <h4 id="ondewo.t2s.Text2Speech.DeleteT2sPipeline" class="title-badge method">DeleteT2sPipeline</h4>
 
           <pre>rpc DeleteT2sPipeline (<a href="#ondewo.t2s.T2sPipelineId">T2sPipelineId</a>) returns (<a href="#google.protobuf.Empty">.google.protobuf.Empty)</a></pre>
 
-          Deletes the specified pipeline.
+          DeleteT2sPipeline RPC
+
+Deletes the specified text-to-speech pipeline.
         
           <h4 id="ondewo.t2s.Text2Speech.UpdateT2sPipeline" class="title-badge method">UpdateT2sPipeline</h4>
 
           <pre>rpc UpdateT2sPipeline (<a href="#ondewo.t2s.Text2SpeechConfig">Text2SpeechConfig</a>) returns (<a href="#google.protobuf.Empty">.google.protobuf.Empty)</a></pre>
 
-          Update a specified pipeline with certain configuration.
+          UpdateT2sPipeline RPC
+
+Updates the specified text-to-speech pipeline with the given configuration.
         
           <h4 id="ondewo.t2s.Text2Speech.ListT2sPipelines" class="title-badge method">ListT2sPipelines</h4>
 
           <pre>rpc ListT2sPipelines (<a href="#ondewo.t2s.ListT2sPipelinesRequest">ListT2sPipelinesRequest</a>) returns (<a href="#ondewo.t2s.ListT2sPipelinesResponse">ListT2sPipelinesResponse)</a></pre>
 
-          Retrieve the list of pipelines with an specific requirement.
+          ListT2sPipelines RPC
+
+Retrieves a list of text-to-speech pipelines based on specific requirements.
         
           <h4 id="ondewo.t2s.Text2Speech.ListT2sLanguages" class="title-badge method">ListT2sLanguages</h4>
 
           <pre>rpc ListT2sLanguages (<a href="#ondewo.t2s.ListT2sLanguagesRequest">ListT2sLanguagesRequest</a>) returns (<a href="#ondewo.t2s.ListT2sLanguagesResponse">ListT2sLanguagesResponse)</a></pre>
 
-          Retrieve the list of languages given a specific config request.
+          ListT2sLanguages RPC
+
+Retrieves a list of languages available based on specific configuration requirements.
         
           <h4 id="ondewo.t2s.Text2Speech.ListT2sDomains" class="title-badge method">ListT2sDomains</h4>
 
           <pre>rpc ListT2sDomains (<a href="#ondewo.t2s.ListT2sDomainsRequest">ListT2sDomainsRequest</a>) returns (<a href="#ondewo.t2s.ListT2sDomainsResponse">ListT2sDomainsResponse)</a></pre>
 
-          Retrieve the list of domains given a specific config request.
+          ListT2sDomains RPC
+
+Retrieves a list of domains available based on specific configuration requirements.
         
           <h4 id="ondewo.t2s.Text2Speech.GetServiceInfo" class="title-badge method">GetServiceInfo</h4>
 
           <pre>rpc GetServiceInfo (<a href="#google.protobuf.Empty">.google.protobuf.Empty</a>) returns (<a href="#ondewo.t2s.T2SGetServiceInfoResponse">T2SGetServiceInfoResponse)</a></pre>
 
-          Returns a message containing the version of the running text to speech server.
+          GetServiceInfo RPC
+
+Retrieves the version information of the running text-to-speech server.
+        
+          <h4 id="ondewo.t2s.Text2Speech.GetCustomPhonemizer" class="title-badge method">GetCustomPhonemizer</h4>
+
+          <pre>rpc GetCustomPhonemizer (<a href="#ondewo.t2s.PhonemizerId">PhonemizerId</a>) returns (<a href="#ondewo.t2s.CustomPhonemizerProto">CustomPhonemizerProto)</a></pre>
+
+          GetCustomPhonemizer RPC
+
+Retrieves a custom phonemizer based on the provided PhonemizerId.
+        
+          <h4 id="ondewo.t2s.Text2Speech.CreateCustomPhonemizer" class="title-badge method">CreateCustomPhonemizer</h4>
+
+          <pre>rpc CreateCustomPhonemizer (<a href="#ondewo.t2s.CreateCustomPhonemizerRequest">CreateCustomPhonemizerRequest</a>) returns (<a href="#ondewo.t2s.PhonemizerId">PhonemizerId)</a></pre>
+
+          CreateCustomPhonemizer RPC
+
+Creates a custom phonemizer based on the provided CreateCustomPhonemizerRequest.
+Returns the PhonemizerId associated with the created custom phonemizer.
+        
+          <h4 id="ondewo.t2s.Text2Speech.DeleteCustomPhonemizer" class="title-badge method">DeleteCustomPhonemizer</h4>
+
+          <pre>rpc DeleteCustomPhonemizer (<a href="#ondewo.t2s.PhonemizerId">PhonemizerId</a>) returns (<a href="#google.protobuf.Empty">.google.protobuf.Empty)</a></pre>
+
+          DeleteCustomPhonemizer RPC
+
+Deletes a custom phonemizer based on the provided PhonemizerId.
+Returns an Empty response upon successful deletion.
+        
+          <h4 id="ondewo.t2s.Text2Speech.UpdateCustomPhonemizer" class="title-badge method">UpdateCustomPhonemizer</h4>
+
+          <pre>rpc UpdateCustomPhonemizer (<a href="#ondewo.t2s.UpdateCustomPhonemizerRequest">UpdateCustomPhonemizerRequest</a>) returns (<a href="#ondewo.t2s.CustomPhonemizerProto">CustomPhonemizerProto)</a></pre>
+
+          UpdateCustomPhonemizer RPC
+
+Updates the specified custom phonemizer with the provided configuration.
+        
+          <h4 id="ondewo.t2s.Text2Speech.ListCustomPhonemizer" class="title-badge method">ListCustomPhonemizer</h4>
+
+          <pre>rpc ListCustomPhonemizer (<a href="#ondewo.t2s.ListCustomPhonemizerRequest">ListCustomPhonemizerRequest</a>) returns (<a href="#ondewo.t2s.ListCustomPhonemizerResponse">ListCustomPhonemizerResponse)</a></pre>
+
+          ListCustomPhonemizer RPC
+
+Retrieves a list of custom phonemizers based on specific requirements.
         
 
         
@@ -421,7 +435,7 @@ that includes the synthesized text to audio and the configuration wanted.
       <div id="ondewo/t2s/text-to-speech.proto-messages" class="object-category">Messages</div>
       
         <h3 id="ondewo.t2s.Apodization" class="title-badge message">Apodization</h3>
-        <p></p>
+        <p>Apodization message contains settings for apodization postprocessing.</p>
 
         
           <table class="field-table">
@@ -434,7 +448,7 @@ that includes the synthesized text to audio and the configuration wanted.
                   <td>apodization_secs</td>
                   <td><a href="#float">float</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The duration of apodization in seconds. </p></td>
                 </tr>
               
             </tbody>
@@ -445,7 +459,7 @@ that includes the synthesized text to audio and the configuration wanted.
         
       
         <h3 id="ondewo.t2s.BatchSynthesizeRequest" class="title-badge message">BatchSynthesizeRequest</h3>
-        <p></p>
+        <p>BatchSynthesizeRequest message is used to send a batch request for synthesis.</p>
 
         
           <table class="field-table">
@@ -458,7 +472,7 @@ that includes the synthesized text to audio and the configuration wanted.
                   <td>batch_request</td>
                   <td><a href="#ondewo.t2s.SynthesizeRequest">SynthesizeRequest</a></td>
                   <td>repeated</td>
-                  <td><p> </p></td>
+                  <td><p>Repeated field holding individual synthesis requests that make up the batch request. </p></td>
                 </tr>
               
             </tbody>
@@ -469,7 +483,7 @@ that includes the synthesized text to audio and the configuration wanted.
         
       
         <h3 id="ondewo.t2s.BatchSynthesizeResponse" class="title-badge message">BatchSynthesizeResponse</h3>
-        <p></p>
+        <p>BatchSynthesizeResponse message is used to store the responses for a batch synthesis request.</p>
 
         
           <table class="field-table">
@@ -482,7 +496,7 @@ that includes the synthesized text to audio and the configuration wanted.
                   <td>batch_response</td>
                   <td><a href="#ondewo.t2s.SynthesizeResponse">SynthesizeResponse</a></td>
                   <td>repeated</td>
-                  <td><p> </p></td>
+                  <td><p>Repeated field holding individual synthesis responses that correspond to the input requests in the batch. </p></td>
                 </tr>
               
             </tbody>
@@ -493,7 +507,7 @@ that includes the synthesized text to audio and the configuration wanted.
         
       
         <h3 id="ondewo.t2s.Caching" class="title-badge message">Caching</h3>
-        <p></p>
+        <p>Caching message contains settings for caching.</p>
 
         
           <table class="field-table">
@@ -506,42 +520,42 @@ that includes the synthesized text to audio and the configuration wanted.
                   <td>active</td>
                   <td><a href="#bool">bool</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Flag indicating whether caching is active. </p></td>
                 </tr>
               
                 <tr>
                   <td>memory_cache_max_size</td>
                   <td><a href="#int64">int64</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The maximum size of the memory cache. </p></td>
                 </tr>
               
                 <tr>
                   <td>sampling_rate</td>
                   <td><a href="#int64">int64</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The sampling rate for caching. </p></td>
                 </tr>
               
                 <tr>
                   <td>load_cache</td>
                   <td><a href="#bool">bool</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Flag indicating whether to load cache. </p></td>
                 </tr>
               
                 <tr>
                   <td>save_cache</td>
                   <td><a href="#bool">bool</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Flag indicating whether to save cache. </p></td>
                 </tr>
               
                 <tr>
                   <td>cache_save_dir</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The directory path to save the cache. </p></td>
                 </tr>
               
             </tbody>
@@ -552,7 +566,7 @@ that includes the synthesized text to audio and the configuration wanted.
         
       
         <h3 id="ondewo.t2s.CompositeInference" class="title-badge message">CompositeInference</h3>
-        <p></p>
+        <p>CompositeInference message combines text-to-mel and mel-to-audio inference settings.</p>
 
         
           <table class="field-table">
@@ -565,14 +579,14 @@ that includes the synthesized text to audio and the configuration wanted.
                   <td>text2mel</td>
                   <td><a href="#ondewo.t2s.Text2Mel">Text2Mel</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Text-to-mel inference settings. </p></td>
                 </tr>
               
                 <tr>
                   <td>mel2audio</td>
                   <td><a href="#ondewo.t2s.Mel2Audio">Mel2Audio</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Mel-to-audio inference settings. </p></td>
                 </tr>
               
             </tbody>
@@ -583,7 +597,7 @@ that includes the synthesized text to audio and the configuration wanted.
         
       
         <h3 id="ondewo.t2s.CreateCustomPhonemizerRequest" class="title-badge message">CreateCustomPhonemizerRequest</h3>
-        <p></p>
+        <p>CreateCustomPhonemizerRequest message represents the request for creating a custom phonemizer.</p>
 
         
           <table class="field-table">
@@ -596,14 +610,14 @@ that includes the synthesized text to audio and the configuration wanted.
                   <td>prefix</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The prefix for the custom phonemizer ID. </p></td>
                 </tr>
               
                 <tr>
                   <td>maps</td>
                   <td><a href="#ondewo.t2s.Map">Map</a></td>
                   <td>repeated</td>
-                  <td><p> </p></td>
+                  <td><p>Repeated field of Map messages representing word-to-phoneme mappings. </p></td>
                 </tr>
               
             </tbody>
@@ -614,7 +628,7 @@ that includes the synthesized text to audio and the configuration wanted.
         
       
         <h3 id="ondewo.t2s.CustomPhonemizerProto" class="title-badge message">CustomPhonemizerProto</h3>
-        <p></p>
+        <p>CustomPhonemizerProto message represents a custom phonemizer.</p>
 
         
           <table class="field-table">
@@ -627,14 +641,14 @@ that includes the synthesized text to audio and the configuration wanted.
                   <td>id</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The ID of the custom phonemizer. </p></td>
                 </tr>
               
                 <tr>
                   <td>maps</td>
                   <td><a href="#ondewo.t2s.Map">Map</a></td>
                   <td>repeated</td>
-                  <td><p> </p></td>
+                  <td><p>Repeated field of Map messages representing word-to-phoneme mappings. </p></td>
                 </tr>
               
             </tbody>
@@ -645,7 +659,7 @@ that includes the synthesized text to audio and the configuration wanted.
         
       
         <h3 id="ondewo.t2s.GlowTTS" class="title-badge message">GlowTTS</h3>
-        <p></p>
+        <p>GlowTTS message contains settings for the GlowTTS inference.</p>
 
         
           <table class="field-table">
@@ -658,49 +672,49 @@ that includes the synthesized text to audio and the configuration wanted.
                   <td>batch_size</td>
                   <td><a href="#int64">int64</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The batch size for inference. </p></td>
                 </tr>
               
                 <tr>
                   <td>use_gpu</td>
                   <td><a href="#bool">bool</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Flag indicating whether to use GPU for inference. </p></td>
                 </tr>
               
                 <tr>
                   <td>length_scale</td>
                   <td><a href="#float">float</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The length scale for inference. </p></td>
                 </tr>
               
                 <tr>
                   <td>noise_scale</td>
                   <td><a href="#float">float</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The noise scale for inference. </p></td>
                 </tr>
               
                 <tr>
                   <td>path</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The path to the GlowTTS model. </p></td>
                 </tr>
               
                 <tr>
                   <td>cleaners</td>
                   <td><a href="#string">string</a></td>
                   <td>repeated</td>
-                  <td><p> </p></td>
+                  <td><p>Repeated field containing the cleaners for text normalization. </p></td>
                 </tr>
               
                 <tr>
                   <td>param_config_path</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The path to the parameter configuration. </p></td>
                 </tr>
               
             </tbody>
@@ -711,7 +725,7 @@ that includes the synthesized text to audio and the configuration wanted.
         
       
         <h3 id="ondewo.t2s.GlowTTSTriton" class="title-badge message">GlowTTSTriton</h3>
-        <p></p>
+        <p>GlowTTSTriton message contains settings for the GlowTTS Triton inference.</p>
 
         
           <table class="field-table">
@@ -724,49 +738,49 @@ that includes the synthesized text to audio and the configuration wanted.
                   <td>batch_size</td>
                   <td><a href="#int64">int64</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The batch size for inference. </p></td>
                 </tr>
               
                 <tr>
                   <td>length_scale</td>
                   <td><a href="#float">float</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The length scale for inference. </p></td>
                 </tr>
               
                 <tr>
                   <td>noise_scale</td>
                   <td><a href="#float">float</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The noise scale for inference. </p></td>
                 </tr>
               
                 <tr>
                   <td>cleaners</td>
                   <td><a href="#string">string</a></td>
                   <td>repeated</td>
-                  <td><p> </p></td>
+                  <td><p>Repeated field containing the cleaners for text normalization. </p></td>
                 </tr>
               
                 <tr>
                   <td>max_text_length</td>
                   <td><a href="#int64">int64</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The maximum text length allowed. </p></td>
                 </tr>
               
                 <tr>
                   <td>param_config_path</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The path to the parameter configuration. </p></td>
                 </tr>
               
                 <tr>
                   <td>triton_model_name</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The name of the Triton model. </p></td>
                 </tr>
               
             </tbody>
@@ -777,7 +791,7 @@ that includes the synthesized text to audio and the configuration wanted.
         
       
         <h3 id="ondewo.t2s.HiFiGan" class="title-badge message">HiFiGan</h3>
-        <p></p>
+        <p>HiFiGan message contains settings for the HiFiGan inference.</p>
 
         
           <table class="field-table">
@@ -790,28 +804,28 @@ that includes the synthesized text to audio and the configuration wanted.
                   <td>use_gpu</td>
                   <td><a href="#bool">bool</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Flag indicating whether to use GPU for inference. </p></td>
                 </tr>
               
                 <tr>
                   <td>batch_size</td>
                   <td><a href="#int64">int64</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The batch size for inference. </p></td>
                 </tr>
               
                 <tr>
                   <td>config_path</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The path to the HiFiGan configuration. </p></td>
                 </tr>
               
                 <tr>
                   <td>model_path</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The path to the HiFiGan model. </p></td>
                 </tr>
               
             </tbody>
@@ -822,7 +836,7 @@ that includes the synthesized text to audio and the configuration wanted.
         
       
         <h3 id="ondewo.t2s.HiFiGanTriton" class="title-badge message">HiFiGanTriton</h3>
-        <p></p>
+        <p>HiFiGanTriton message contains settings for the HiFiGan Triton inference.</p>
 
         
           <table class="field-table">
@@ -835,14 +849,14 @@ that includes the synthesized text to audio and the configuration wanted.
                   <td>config_path</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The path to the HiFiGan Triton configuration. </p></td>
                 </tr>
               
                 <tr>
                   <td>triton_model_name</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The name of the Triton model. </p></td>
                 </tr>
               
             </tbody>
@@ -853,7 +867,7 @@ that includes the synthesized text to audio and the configuration wanted.
         
       
         <h3 id="ondewo.t2s.ListCustomPhonemizerRequest" class="title-badge message">ListCustomPhonemizerRequest</h3>
-        <p></p>
+        <p>ListCustomPhonemizerRequest message represents the request for listing custom phonemizers.</p>
 
         
           <table class="field-table">
@@ -866,7 +880,7 @@ that includes the synthesized text to audio and the configuration wanted.
                   <td>pipeline_ids</td>
                   <td><a href="#string">string</a></td>
                   <td>repeated</td>
-                  <td><p> </p></td>
+                  <td><p>Repeated field of pipeline IDs to filter the list of custom phonemizers. </p></td>
                 </tr>
               
             </tbody>
@@ -877,7 +891,7 @@ that includes the synthesized text to audio and the configuration wanted.
         
       
         <h3 id="ondewo.t2s.ListCustomPhonemizerResponse" class="title-badge message">ListCustomPhonemizerResponse</h3>
-        <p></p>
+        <p>ListCustomPhonemizerResponse message represents the response for listing custom phonemizers.</p>
 
         
           <table class="field-table">
@@ -890,7 +904,7 @@ that includes the synthesized text to audio and the configuration wanted.
                   <td>phonemizers</td>
                   <td><a href="#ondewo.t2s.CustomPhonemizerProto">CustomPhonemizerProto</a></td>
                   <td>repeated</td>
-                  <td><p> </p></td>
+                  <td><p>Repeated field of CustomPhonemizerProto messages representing the custom phonemizers. </p></td>
                 </tr>
               
             </tbody>
@@ -1119,7 +1133,7 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
         
       
         <h3 id="ondewo.t2s.Logmnse" class="title-badge message">Logmnse</h3>
-        <p></p>
+        <p>Logmnse message contains settings for Logmnse postprocessing.</p>
 
         
           <table class="field-table">
@@ -1132,21 +1146,21 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
                   <td>initial_noise</td>
                   <td><a href="#int64">int64</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The initial noise value. </p></td>
                 </tr>
               
                 <tr>
                   <td>window_size</td>
                   <td><a href="#int64">int64</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The window size. </p></td>
                 </tr>
               
                 <tr>
                   <td>noise_threshold</td>
                   <td><a href="#float">float</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The noise threshold. </p></td>
                 </tr>
               
             </tbody>
@@ -1157,7 +1171,7 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
         
       
         <h3 id="ondewo.t2s.Map" class="title-badge message">Map</h3>
-        <p></p>
+        <p>Map message represents a word-to-phoneme mapping in a custom phonemizer.</p>
 
         
           <table class="field-table">
@@ -1170,14 +1184,14 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
                   <td>word</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The word to be mapped. </p></td>
                 </tr>
               
                 <tr>
                   <td>phoneme_groups</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The phoneme groups associated with the word. </p></td>
                 </tr>
               
             </tbody>
@@ -1188,7 +1202,7 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
         
       
         <h3 id="ondewo.t2s.MbMelganTriton" class="title-badge message">MbMelganTriton</h3>
-        <p></p>
+        <p>MbMelganTriton message contains settings for the MbMelgan Triton inference.</p>
 
         
           <table class="field-table">
@@ -1201,28 +1215,28 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
                   <td>config_path</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The path to the MbMelgan Triton configuration. </p></td>
                 </tr>
               
                 <tr>
                   <td>stats_path</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The path to the MbMelgan statistics. </p></td>
                 </tr>
               
                 <tr>
                   <td>triton_model_name</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The name of the Triton model. </p></td>
                 </tr>
               
                 <tr>
                   <td>triton_url</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The URL of the Triton server. </p></td>
                 </tr>
               
             </tbody>
@@ -1233,7 +1247,7 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
         
       
         <h3 id="ondewo.t2s.Mel2Audio" class="title-badge message">Mel2Audio</h3>
-        <p></p>
+        <p>Mel2Audio message contains settings for mel-to-audio inference.</p>
 
         
           <table class="field-table">
@@ -1246,28 +1260,28 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
                   <td>type</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The type of mel-to-audio inference. </p></td>
                 </tr>
               
                 <tr>
                   <td>mb_melgan_triton</td>
                   <td><a href="#ondewo.t2s.MbMelganTriton">MbMelganTriton</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>MbMelgan Triton inference settings. </p></td>
                 </tr>
               
                 <tr>
                   <td>hifi_gan</td>
                   <td><a href="#ondewo.t2s.HiFiGan">HiFiGan</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>HiFiGan inference settings. </p></td>
                 </tr>
               
                 <tr>
                   <td>hifi_gan_triton</td>
                   <td><a href="#ondewo.t2s.HiFiGanTriton">HiFiGanTriton</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>HiFiGan Triton inference settings. </p></td>
                 </tr>
               
             </tbody>
@@ -1278,7 +1292,7 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
         
       
         <h3 id="ondewo.t2s.NormalizeTextRequest" class="title-badge message">NormalizeTextRequest</h3>
-        <p></p>
+        <p>NormalizeTextRequest message is used to request text normalization.</p>
 
         
           <table class="field-table">
@@ -1291,14 +1305,14 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
                   <td>t2s_pipeline_id</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The ID of the text-to-speech pipeline. </p></td>
                 </tr>
               
                 <tr>
                   <td>text</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The text to be normalized. </p></td>
                 </tr>
               
             </tbody>
@@ -1309,7 +1323,7 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
         
       
         <h3 id="ondewo.t2s.NormalizeTextResponse" class="title-badge message">NormalizeTextResponse</h3>
-        <p></p>
+        <p>NormalizeTextResponse message is used to store the normalized text response.</p>
 
         
           <table class="field-table">
@@ -1322,7 +1336,7 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
                   <td>normalized_text</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The normalized text. </p></td>
                 </tr>
               
             </tbody>
@@ -1333,7 +1347,7 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
         
       
         <h3 id="ondewo.t2s.PhonemizerId" class="title-badge message">PhonemizerId</h3>
-        <p></p>
+        <p>PhonemizerId message represents the ID of a phonemizer.</p>
 
         
           <table class="field-table">
@@ -1346,7 +1360,7 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
                   <td>id</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The ID of the phonemizer. </p></td>
                 </tr>
               
             </tbody>
@@ -1357,7 +1371,7 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
         
       
         <h3 id="ondewo.t2s.Postprocessing" class="title-badge message">Postprocessing</h3>
-        <p></p>
+        <p>Postprocessing message contains settings for postprocessing.</p>
 
         
           <table class="field-table">
@@ -1370,35 +1384,35 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
                   <td>silence_secs</td>
                   <td><a href="#float">float</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The duration of silence in seconds. </p></td>
                 </tr>
               
                 <tr>
                   <td>pipeline</td>
                   <td><a href="#string">string</a></td>
                   <td>repeated</td>
-                  <td><p> </p></td>
+                  <td><p>Repeated field containing pipeline names. </p></td>
                 </tr>
               
                 <tr>
                   <td>logmmse</td>
                   <td><a href="#ondewo.t2s.Logmnse">Logmnse</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Logmnse postprocessing settings. </p></td>
                 </tr>
               
                 <tr>
                   <td>wiener</td>
                   <td><a href="#ondewo.t2s.Wiener">Wiener</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Wiener postprocessing settings. </p></td>
                 </tr>
               
                 <tr>
                   <td>apodization</td>
                   <td><a href="#ondewo.t2s.Apodization">Apodization</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Apodization postprocessing settings. </p></td>
                 </tr>
               
             </tbody>
@@ -1429,49 +1443,59 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
                   <td>length_scale</td>
                   <td><a href="#float">float</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Optional. This parameter is used for time stretching which is the process of
+changing the speed or duration of an audio.
+It should be much more than 1.0. O is not a valid number for this variable.
+The default value is 1. </p></td>
                 </tr>
               
                 <tr>
                   <td>noise_scale</td>
                   <td><a href="#float">float</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Optional. Defines the noise in the generated audio.
+It should be between 0.0 and 1.
+The default value is 0.0 </p></td>
                 </tr>
               
                 <tr>
                   <td>sample_rate</td>
                   <td><a href="#int32">int32</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Optional. Defines the sample rate of the generated wav file.
+The default value is 22050. </p></td>
                 </tr>
               
                 <tr>
                   <td>pcm</td>
                   <td><a href="#ondewo.t2s.Pcm">Pcm</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Optional. Defines the pulse-code modulation of the wav file.
+The default value is PCM_16. </p></td>
                 </tr>
               
                 <tr>
                   <td>audio_format</td>
                   <td><a href="#ondewo.t2s.AudioFormat">AudioFormat</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Optional. Defines the format of the desired audio.
+The default value is wav. </p></td>
                 </tr>
               
                 <tr>
                   <td>use_cache</td>
                   <td><a href="#bool">bool</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Optional. Define if cache should be used or not.
+The default value is False. </p></td>
                 </tr>
               
                 <tr>
                   <td>normalizer</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Optional. Define what normalizer to synthesize the text with.
+The default value is the language of the pipeline. </p></td>
                 </tr>
               
             </tbody>
@@ -1495,7 +1519,28 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
                   <td>text</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>Required. Represents the text that will be transformed to speech. </p></td>
+                  <td><p>Required. Represents the text that will be transformed to speech.
+Example with simple text: "Hello, how are you?"
+
+Examples to modulate the voice based on SSML tags and Arphabet phonemes:
+
+- SSML Tag Phone: <pre><code>&lt;say-as interpret-as="phone">+12354321&lt;/say-as&gt;</code></pre>
+
+- SSML Tag Email: <pre><code>&lt;say-as interpret-as="email">voices@ondewo.com&lt;/say-as&gt;</code></pre>
+
+- SSML Tag URL: <pre><code>&lt;say-as interpret-as="url">ondewo.com/en/&lt;/say-as&gt;</code></pre>
+
+- SSML Tag Spell: <pre><code>&lt;say-as interpret-as="spell">AP732&lt;/say-as&gt;</code></pre>
+
+- SSML Tag Spell With Names: <pre><code>&lt;say-as interpret-as="spell-with-names">AHO32&lt;/say-as&gt;</code></pre>
+
+- SSML Tag Callsigns Short: <pre><code>&lt;say-as interpret-as="callsign-short">AUA439&lt;/say-as&gt;</code></pre>
+
+- SSML Tag Callsigns Long: <pre><code>&lt;say-as interpret-as="callsign-long">AAL439&lt;/say-as&gt;</code></pre>
+
+- SSML Tag Break Tag: <pre><code>I am going to take a 2 seconds break <break time="2.0"/> done</code></pre>
+
+- Arphabet Phonemes: "Hello I am {AE2 L EH0 G Z AE1 N D R AH0}" </p></td>
                 </tr>
               
                 <tr>
@@ -1579,7 +1624,7 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
         
       
         <h3 id="ondewo.t2s.T2SCustomLengthScales" class="title-badge message">T2SCustomLengthScales</h3>
-        <p></p>
+        <p>T2SCustomLengthScales message contains custom length scales for text types.</p>
 
         
           <table class="field-table">
@@ -1592,56 +1637,56 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
                   <td>text</td>
                   <td><a href="#float">float</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The custom length scale for general text. </p></td>
                 </tr>
               
                 <tr>
                   <td>email</td>
                   <td><a href="#float">float</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The custom length scale for email text. </p></td>
                 </tr>
               
                 <tr>
                   <td>url</td>
                   <td><a href="#float">float</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The custom length scale for URL text. </p></td>
                 </tr>
               
                 <tr>
                   <td>phone</td>
                   <td><a href="#float">float</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The custom length scale for phone number text. </p></td>
                 </tr>
               
                 <tr>
                   <td>spell</td>
                   <td><a href="#float">float</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The custom length scale for spelled-out text. </p></td>
                 </tr>
               
                 <tr>
                   <td>spell_with_names</td>
                   <td><a href="#float">float</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The custom length scale for spelled-out text with names. </p></td>
                 </tr>
               
                 <tr>
                   <td>callsign_long</td>
                   <td><a href="#float">float</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The custom length scale for long callsigns. </p></td>
                 </tr>
               
                 <tr>
                   <td>callsign_short</td>
                   <td><a href="#float">float</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The custom length scale for short callsigns. </p></td>
                 </tr>
               
             </tbody>
@@ -1652,7 +1697,7 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
         
       
         <h3 id="ondewo.t2s.T2SDescription" class="title-badge message">T2SDescription</h3>
-        <p></p>
+        <p>T2SDescription message is used to describe the text-to-speech service.</p>
 
         
           <table class="field-table">
@@ -1665,7 +1710,7 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
                   <td>language</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The language supported by the service. </p></td>
                 </tr>
               
                 <tr>
@@ -1679,28 +1724,28 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
                   <td>pipeline_owner</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The owner of the text-to-speech pipeline. </p></td>
                 </tr>
               
                 <tr>
                   <td>comments</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Additional comments or notes. </p></td>
                 </tr>
               
                 <tr>
                   <td>speaker_name</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The name of the speaker. </p></td>
                 </tr>
               
                 <tr>
                   <td>domain</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The domain or context of the service. </p></td>
                 </tr>
               
             </tbody>
@@ -1735,7 +1780,7 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
         
       
         <h3 id="ondewo.t2s.T2SInference" class="title-badge message">T2SInference</h3>
-        <p></p>
+        <p>T2SInference message is used to specify the text-to-speech inference settings.</p>
 
         
           <table class="field-table">
@@ -1748,21 +1793,21 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
                   <td>type</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The type of inference. </p></td>
                 </tr>
               
                 <tr>
                   <td>composite_inference</td>
                   <td><a href="#ondewo.t2s.CompositeInference">CompositeInference</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Composite inference settings. </p></td>
                 </tr>
               
                 <tr>
                   <td>caching</td>
                   <td><a href="#ondewo.t2s.Caching">Caching</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Caching settings. </p></td>
                 </tr>
               
             </tbody>
@@ -1773,7 +1818,7 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
         
       
         <h3 id="ondewo.t2s.T2SNormalization" class="title-badge message">T2SNormalization</h3>
-        <p></p>
+        <p>Represents the configuration for text-to-speech normalization.</p>
 
         
           <table class="field-table">
@@ -1786,49 +1831,49 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
                   <td>language</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The language for which the normalization is applied. </p></td>
                 </tr>
               
                 <tr>
                   <td>pipeline</td>
                   <td><a href="#string">string</a></td>
                   <td>repeated</td>
-                  <td><p> </p></td>
+                  <td><p>The pipeline(s) used for normalization. </p></td>
                 </tr>
               
                 <tr>
                   <td>custom_phonemizer_id</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The ID of the custom phonemizer, if used. </p></td>
                 </tr>
               
                 <tr>
                   <td>custom_length_scales</td>
                   <td><a href="#ondewo.t2s.T2SCustomLengthScales">T2SCustomLengthScales</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Custom length scales for different text types. </p></td>
                 </tr>
               
                 <tr>
                   <td>arpabet_mapping</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The mapping for Arpabet phonemes. </p></td>
                 </tr>
               
                 <tr>
                   <td>numeric_mapping</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The mapping for numeric expressions. </p></td>
                 </tr>
               
                 <tr>
                   <td>callsigns_mapping</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The mapping for callsigns. </p></td>
                 </tr>
               
             </tbody>
@@ -1863,7 +1908,7 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
         
       
         <h3 id="ondewo.t2s.Text2Mel" class="title-badge message">Text2Mel</h3>
-        <p></p>
+        <p>Text2Mel message contains settings for text-to-mel inference.</p>
 
         
           <table class="field-table">
@@ -1876,21 +1921,21 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
                   <td>type</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The type of text-to-mel inference. </p></td>
                 </tr>
               
                 <tr>
                   <td>glow_tts</td>
                   <td><a href="#ondewo.t2s.GlowTTS">GlowTTS</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>GlowTTS inference settings. </p></td>
                 </tr>
               
                 <tr>
                   <td>glow_tts_triton</td>
                   <td><a href="#ondewo.t2s.GlowTTSTriton">GlowTTSTriton</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>GlowTTS Triton inference settings. </p></td>
                 </tr>
               
             </tbody>
@@ -1960,7 +2005,7 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
         
       
         <h3 id="ondewo.t2s.UpdateCustomPhonemizerRequest" class="title-badge message">UpdateCustomPhonemizerRequest</h3>
-        <p></p>
+        <p>UpdateCustomPhonemizerRequest message represents the request for updating a custom phonemizer.</p>
 
         
           <table class="field-table">
@@ -1973,21 +2018,21 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
                   <td>id</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The ID of the custom phonemizer to be updated. </p></td>
                 </tr>
               
                 <tr>
                   <td>update_method</td>
                   <td><a href="#ondewo.t2s.UpdateCustomPhonemizerRequest.UpdateMethod">UpdateCustomPhonemizerRequest.UpdateMethod</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The update method. </p></td>
                 </tr>
               
                 <tr>
                   <td>maps</td>
                   <td><a href="#ondewo.t2s.Map">Map</a></td>
                   <td>repeated</td>
-                  <td><p> </p></td>
+                  <td><p>Repeated field of Map messages representing word-to-phoneme mappings. </p></td>
                 </tr>
               
             </tbody>
@@ -1998,7 +2043,7 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
         
       
         <h3 id="ondewo.t2s.Wiener" class="title-badge message">Wiener</h3>
-        <p></p>
+        <p>Wiener message contains settings for Wiener postprocessing.</p>
 
         
           <table class="field-table">
@@ -2011,35 +2056,35 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
                   <td>frame_len</td>
                   <td><a href="#int64">int64</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The frame length. </p></td>
                 </tr>
               
                 <tr>
                   <td>lpc_order</td>
                   <td><a href="#int64">int64</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The LPC order. </p></td>
                 </tr>
               
                 <tr>
                   <td>iterations</td>
                   <td><a href="#int64">int64</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The number of iterations. </p></td>
                 </tr>
               
                 <tr>
                   <td>alpha</td>
                   <td><a href="#float">float</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The alpha value. </p></td>
                 </tr>
               
                 <tr>
                   <td>thresh</td>
                   <td><a href="#float">float</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The threshold value. </p></td>
                 </tr>
               
             </tbody>
@@ -2055,7 +2100,7 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
       <div id="ondewo/t2s/text-to-speech.proto-enums" class="object-category">Enums</div>
       
         <h3 id="ondewo.t2s.AudioFormat" class="title-badge enum">AudioFormat</h3>
-        <p>Represents an audio file format, which is a file format for storing</p><p>digital audio data on a computer system.</p>
+        <p>AudioFormat enum represents various audio file formats for storing digital audio data.</p>
         <table class="enum-table">
           <thead>
             <tr><td>Name</td><td>Number</td><td>Description</td></tr>
@@ -2065,43 +2110,43 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
               <tr>
                 <td>wav</td>
                 <td>0</td>
-                <td><p></p></td>
+                <td><p>Waveform Audio File Format (WAV)</p></td>
               </tr>
             
               <tr>
                 <td>flac</td>
                 <td>1</td>
-                <td><p></p></td>
+                <td><p>Free Lossless Audio Codec (FLAC)</p></td>
               </tr>
             
               <tr>
                 <td>caf</td>
                 <td>2</td>
-                <td><p></p></td>
+                <td><p>Core Audio Format (CAF)</p></td>
               </tr>
             
               <tr>
                 <td>mp3</td>
                 <td>3</td>
-                <td><p></p></td>
+                <td><p>MPEG Audio Layer III (MP3)</p></td>
               </tr>
             
               <tr>
                 <td>aac</td>
                 <td>4</td>
-                <td><p></p></td>
+                <td><p>Advanced Audio Coding (AAC)</p></td>
               </tr>
             
               <tr>
                 <td>ogg</td>
                 <td>5</td>
-                <td><p></p></td>
+                <td><p>Ogg Vorbis (OGG)</p></td>
               </tr>
             
               <tr>
                 <td>wma</td>
                 <td>6</td>
-                <td><p></p></td>
+                <td><p>Windows Media Audio (WMA)</p></td>
               </tr>
             
           </tbody>
@@ -2118,50 +2163,50 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
               <tr>
                 <td>PCM_16</td>
                 <td>0</td>
-                <td><p></p></td>
+                <td><p>16-bit pulse-code modulation.</p></td>
               </tr>
             
               <tr>
                 <td>PCM_24</td>
                 <td>1</td>
-                <td><p></p></td>
+                <td><p>24-bit pulse-code modulation.</p></td>
               </tr>
             
               <tr>
                 <td>PCM_32</td>
                 <td>2</td>
-                <td><p></p></td>
+                <td><p>32-bit pulse-code modulation.</p></td>
               </tr>
             
               <tr>
                 <td>PCM_S8</td>
                 <td>3</td>
-                <td><p></p></td>
+                <td><p>Signed 8-bit pulse-code modulation.</p></td>
               </tr>
             
               <tr>
                 <td>PCM_U8</td>
                 <td>4</td>
-                <td><p></p></td>
+                <td><p>Unsigned 8-bit pulse-code modulation.</p></td>
               </tr>
             
               <tr>
                 <td>FLOAT</td>
                 <td>5</td>
-                <td><p></p></td>
+                <td><p>Floating-point (32-bit) pulse-code modulation.</p></td>
               </tr>
             
               <tr>
                 <td>DOUBLE</td>
                 <td>6</td>
-                <td><p></p></td>
+                <td><p>Floating-point (64-bit) pulse-code modulation.</p></td>
               </tr>
             
           </tbody>
         </table>
       
         <h3 id="ondewo.t2s.UpdateCustomPhonemizerRequest.UpdateMethod" class="title-badge enum">UpdateCustomPhonemizerRequest.UpdateMethod</h3>
-        <p>extend hard will add new words replacing those that are already in phonemizer</p><p>extend soft will add new words only if they are not yet in phonemizer</p><p>replace will clean all the words in the phonemizer and then add new ones</p>
+        <p>The update method to be used.</p>
         <table class="enum-table">
           <thead>
             <tr><td>Name</td><td>Number</td><td>Description</td></tr>
@@ -2171,19 +2216,19 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
               <tr>
                 <td>extend_hard</td>
                 <td>0</td>
-                <td><p></p></td>
+                <td><p>Add new words, replacing existing ones.</p></td>
               </tr>
             
               <tr>
                 <td>extend_soft</td>
                 <td>1</td>
-                <td><p></p></td>
+                <td><p>Add new words if they are not already present.</p></td>
               </tr>
             
               <tr>
                 <td>replace</td>
                 <td>2</td>
-                <td><p></p></td>
+                <td><p>Replace all words in the phonemizer with new ones.</p></td>
               </tr>
             
           </tbody>
