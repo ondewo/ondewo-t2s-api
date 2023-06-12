@@ -555,9 +555,13 @@ A Synthesize Request contains the information need to perform a text to speech c
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| text | [string](#string) |  | Required. Represents the text that will be transformed to speech. Example with simple text: "Hello, how are you?"
+| text | [string](#string) |  | Required. Represents the text that will be transformed to speech.
 
-Examples to modulate the voice based on SSML tags and Arphabet phonemes:
+<p> Synthesize text: </p>
+
+- Simple text: <pre><code>Hello, how are you?</code></pre>
+
+<p>Examples to modulate the voice based on SSML tags and Arphabet phonemes:</p>
 
 - SSML Tag Phone: <pre><code>&lt;say-as interpret-as="phone">+12354321&lt;/say-as&gt;</code></pre>
 
@@ -575,7 +579,7 @@ Examples to modulate the voice based on SSML tags and Arphabet phonemes:
 
 - SSML Tag Break Tag: <pre><code>I am going to take a 2 seconds break <break time="2.0"/> done</code></pre>
 
-- Arphabet Phonemes: "Hello I am {AE2 L EH0 G Z AE1 N D R AH0}" |
+- Arphabet Phonemes: <pre><code>Hello I am {AE2 L EH0 G Z AE1 N D R AH0}</code></pre> |
 | config | [RequestConfig](#ondewo.t2s.RequestConfig) |  | Required. Represents the specifications needed to do the text to speech transformation. |
 
 
