@@ -561,7 +561,7 @@ A Synthesize Request contains the information need to perform a text to speech c
 
 - Simple text: <pre><code>Hello, how are you?</code></pre>
 
-<p>Examples to modulate the voice based on SSML tags and Arphabet phonemes:</p>
+<p>Examples to modulate the voice based on SSML tags and Arpabet phonemes:</p>
 
 - SSML Tag Phone: <pre><code>&lt;say-as interpret-as="phone">+12354321&lt;/say-as&gt;</code></pre>
 
@@ -579,7 +579,7 @@ A Synthesize Request contains the information need to perform a text to speech c
 
 - SSML Tag Break Tag: <pre><code>I am going to take a 2 seconds break <break time="2.0"/> done</code></pre>
 
-- Arphabet Phonemes: <pre><code>Hello I am {AE2 L EH0 G Z AE1 N D R AH0}</code></pre> |
+- Arpabet Phonemes: <pre><code>Hello I am {AE2 L EH0 G Z AE1 N D R AH0}</code></pre> |
 | config | [RequestConfig](#ondewo.t2s.RequestConfig) |  | Required. Represents the specifications needed to do the text to speech transformation. |
 
 
@@ -654,12 +654,12 @@ T2SDescription message is used to describe the text-to-speech service.
 <a name="ondewo.t2s.T2SGetServiceInfoResponse"></a>
 
 ### T2SGetServiceInfoResponse
-
+Version information of the service
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| version | [string](#string) |  |  |
+| version | [string](#string) |  | version number |
 
 
 
