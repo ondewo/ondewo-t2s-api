@@ -115,7 +115,7 @@ message SynthesizeRequest {
     //
     // - Simple text: <pre><code>Hello, how are you?</code></pre>
     //
-    // <p>Examples to modulate the voice based on SSML tags and Arphabet phonemes:</p>
+    // <p>Examples to modulate the voice based on SSML tags and Arpabet phonemes:</p>
     //
     // - SSML Tag Phone: <pre><code>&lt;say-as interpret-as="phone">+12354321&lt;/say-as&gt;</code></pre>
     //
@@ -133,7 +133,7 @@ message SynthesizeRequest {
     //
     // - SSML Tag Break Tag: <pre><code>I am going to take a 2 seconds break <break time="2.0"/> done</code></pre>
     //
-    // - Arphabet Phonemes: <pre><code>Hello I am {AE2 L EH0 G Z AE1 N D R AH0}</code></pre>
+    // - Arpabet Phonemes: <pre><code>Hello I am {AE2 L EH0 G Z AE1 N D R AH0}</code></pre>
     //
     string text = 1;
 
@@ -313,7 +313,10 @@ message NormalizeTextResponse {
 // GET SERVICE INFO //
 //////////////////////
 
+// Version information of the service
 message T2SGetServiceInfoResponse {
+
+    // version number
     string version = 1;
 }
 
