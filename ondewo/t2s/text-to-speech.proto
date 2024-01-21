@@ -580,6 +580,12 @@ message GlowTTSTriton {
     // The name of the Triton model.
     string triton_model_name = 7;
 
+    // The host of the Triton inference server which servers the model.
+    string triton_server_host = 8;
+
+    // The port of the Triton inference server which servers the model.
+    int64 triton_server_port = 9;
+
 }
 
 // Mel2Audio message contains settings for mel-to-audio inference.
@@ -625,6 +631,12 @@ message HiFiGanTriton {
     // The name of the Triton model.
     string triton_model_name = 2;
 
+    // The host of the Triton inference server which servers the model.
+    string triton_server_host = 3;
+
+    // The port of the Triton inference server which servers the model.
+    int64 triton_server_port = 4;
+
 }
 
 // MbMelganTriton message contains settings for the MbMelgan Triton inference.
@@ -639,8 +651,11 @@ message MbMelganTriton {
     // The name of the Triton model.
     string triton_model_name = 3;
 
-    // The URL of the Triton server.
-    string triton_url = 4;
+    // The host of the Triton inference server which servers the model.
+    string triton_server_host = 4;
+
+    // The port of the Triton inference server which servers the model.
+    int64 triton_server_port = 5;
 
 }
 
