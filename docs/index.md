@@ -211,6 +211,8 @@ GlowTTSTriton message contains settings for the GlowTTS Triton inference.
 | max_text_length | [int64](#int64) |  | The maximum text length allowed. |
 | param_config_path | [string](#string) |  | The path to the parameter configuration. |
 | triton_model_name | [string](#string) |  | The name of the Triton model. |
+| triton_server_host | [string](#string) |  | The host of the Triton inference server which servers the model. |
+| triton_server_port | [int64](#int64) |  | The port of the Triton inference server which servers the model. |
 
 
 
@@ -245,6 +247,8 @@ HiFiGanTriton message contains settings for the HiFiGan Triton inference.
 | ----- | ---- | ----- | ----------- |
 | config_path | [string](#string) |  | The path to the HiFiGan Triton configuration. |
 | triton_model_name | [string](#string) |  | The name of the Triton model. |
+| triton_server_host | [string](#string) |  | The host of the Triton inference server which servers the model. |
+| triton_server_port | [int64](#int64) |  | The port of the Triton inference server which servers the model. |
 
 
 
@@ -434,7 +438,8 @@ MbMelganTriton message contains settings for the MbMelgan Triton inference.
 | config_path | [string](#string) |  | The path to the MbMelgan Triton configuration. |
 | stats_path | [string](#string) |  | The path to the MbMelgan statistics. |
 | triton_model_name | [string](#string) |  | The name of the Triton model. |
-| triton_url | [string](#string) |  | The URL of the Triton server. |
+| triton_server_host | [string](#string) |  | The host of the Triton inference server which servers the model. |
+| triton_server_port | [int64](#int64) |  | The port of the Triton inference server which servers the model. |
 
 
 
