@@ -2,12 +2,22 @@
 
 *****************
 
+## Release ONDEWO T2S API 5.2.0
+
+### Improvements
+
+* Cleaned up API description
+* Upgraded pre-commit hook libraries
+
+*****************
+
 ## Release ONDEWO T2S API 5.1.0
 
 ### Improvements
 
+* [OND232-438](https://ondewo.atlassian.net/browse/OND232-438) Moved CustomerPhonemizer endpoints to TextToSpeech
+  service
 * Added documentation of the endpoints and messages
-* Moved CustomerPhonemizer endpoints to TextToSpeech service
 
 *****************
 
