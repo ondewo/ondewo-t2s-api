@@ -501,8 +501,11 @@ message T2SInference {
     // Composite inference settings.
     CompositeInference composite_inference = 2;
 
+    // Single inference settings.
+    SingleInference single_inference = 3;
+
     // Caching settings.
-    Caching caching = 3;
+    Caching caching = 4;
 }
 
 // CompositeInference message combines text-to-mel and mel-to-audio inference settings.
@@ -513,6 +516,14 @@ message CompositeInference {
 
     // Mel-to-audio inference settings.
     Mel2Audio mel2audio = 2;
+
+}
+
+// SingleInference message inference settings of text2audio models.
+message SingleInference {
+
+    // Text-to-audio inference settings.
+    Text2Audio text2audio = 1;
 
 }
 
@@ -527,6 +538,20 @@ message Text2Mel {
 
     // GlowTTS Triton inference settings.
     GlowTTSTriton glow_tts_triton = 3;
+
+}
+
+// Text2Audio message contains settings for text-to-audio inference.
+message Text2Audio {
+
+    // The type of text-to-audio inference.
+    string type = 1;
+
+    // Vits inference settings.
+    Vits vits = 2;
+
+    // Vits Triton inference settings.
+    VitsTriton vits_triton = 3;
 
 }
 
@@ -558,6 +583,63 @@ message GlowTTS {
 
 // GlowTTSTriton message contains settings for the GlowTTS Triton inference.
 message GlowTTSTriton {
+
+    // The batch size for inference.
+    int64 batch_size = 1;
+
+    // The length scale for inference.
+    float length_scale = 2;
+
+    // The noise scale for inference.
+    float noise_scale = 3;
+
+    // Repeated field containing the cleaners for text normalization.
+    repeated string cleaners = 4;
+
+    // The maximum text length allowed.
+    int64 max_text_length = 5;
+
+    // The path to the parameter configuration.
+    string param_config_path = 6;
+
+    // The name of the Triton model.
+    string triton_model_name = 7;
+
+    // The host of the Triton inference server which servers the model.
+    string triton_server_host = 8;
+
+    // The port of the Triton inference server which servers the model.
+    int64 triton_server_port = 9;
+
+}
+
+message Vits {
+
+    // The batch size for inference.
+    int64 batch_size = 1;
+
+    // Flag indicating whether to use GPU for inference.
+    bool use_gpu = 2;
+
+    // The length scale for inference.
+    float length_scale = 3;
+
+    // The noise scale for inference.
+    float noise_scale = 4;
+
+    // The path to the Vits model.
+    string path = 5;
+
+    // Repeated field containing the cleaners for text normalization.
+    repeated string cleaners = 6;
+
+    // The path to the parameter configuration.
+    string param_config_path = 7;
+
+}
+
+// VitsTriton message contains settings for the Vits Triton inference.
+message VitsTriton {
 
     // The batch size for inference.
     int64 batch_size = 1;
