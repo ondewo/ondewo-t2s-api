@@ -197,6 +197,10 @@
                       </li>
                     
                       <li>
+                        <a href="#ondewo.t2s.SingleInference" class="title-badge message">SingleInference</a>
+                      </li>
+                    
+                      <li>
                         <a href="#ondewo.t2s.SynthesizeRequest" class="title-badge message">SynthesizeRequest</a>
                       </li>
                     
@@ -229,6 +233,10 @@
                       </li>
                     
                       <li>
+                        <a href="#ondewo.t2s.Text2Audio" class="title-badge message">Text2Audio</a>
+                      </li>
+                    
+                      <li>
                         <a href="#ondewo.t2s.Text2Mel" class="title-badge message">Text2Mel</a>
                       </li>
                     
@@ -238,6 +246,14 @@
                     
                       <li>
                         <a href="#ondewo.t2s.UpdateCustomPhonemizerRequest" class="title-badge message">UpdateCustomPhonemizerRequest</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.VITS" class="title-badge message">VITS</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.VITSTriton" class="title-badge message">VITSTriton</a>
                       </li>
                     
                       <li>
@@ -1540,6 +1556,30 @@ The default value is the language of the pipeline. </p></td>
 
         
       
+        <h3 id="ondewo.t2s.SingleInference" class="title-badge message">SingleInference</h3>
+        <p>SingleInference message inference settings of text2audio models.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>text2audio</td>
+                  <td><a href="#ondewo.t2s.Text2Audio">Text2Audio</a></td>
+                  <td></td>
+                  <td><p>Text-to-audio inference settings. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
         <h3 id="ondewo.t2s.SynthesizeRequest" class="title-badge message">SynthesizeRequest</h3>
         <p>Represents a Synthesize Request.</p><p>A Synthesize Request contains the information need to perform a text to speech conversion.</p>
 
@@ -1842,6 +1882,13 @@ The default value is the language of the pipeline. </p></td>
                 </tr>
               
                 <tr>
+                  <td>single_inference</td>
+                  <td><a href="#ondewo.t2s.SingleInference">SingleInference</a></td>
+                  <td></td>
+                  <td><p>Single inference settings. </p></td>
+                </tr>
+              
+                <tr>
                   <td>caching</td>
                   <td><a href="#ondewo.t2s.Caching">Caching</a></td>
                   <td></td>
@@ -1936,6 +1983,44 @@ The default value is the language of the pipeline. </p></td>
                   <td><a href="#string">string</a></td>
                   <td></td>
                   <td><p>Required. Defines the id of the pipeline. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.Text2Audio" class="title-badge message">Text2Audio</h3>
+        <p>Text2Audio message contains settings for text-to-audio inference.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>type</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>The type of text-to-audio inference. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>vits</td>
+                  <td><a href="#ondewo.t2s.VITS">VITS</a></td>
+                  <td></td>
+                  <td><p>VITS inference settings. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>vits_triton</td>
+                  <td><a href="#ondewo.t2s.VITSTriton">VITSTriton</a></td>
+                  <td></td>
+                  <td><p>VITS Triton inference settings. </p></td>
                 </tr>
               
             </tbody>
@@ -2071,6 +2156,152 @@ The default value is the language of the pipeline. </p></td>
                   <td><a href="#ondewo.t2s.Map">Map</a></td>
                   <td>repeated</td>
                   <td><p>Repeated field of Map messages representing word-to-phoneme mappings. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.VITS" class="title-badge message">VITS</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>batch_size</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>The batch size for inference. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>use_gpu</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>Flag indicating whether to use GPU for inference. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>length_scale</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p>The length scale for inference. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>noise_scale</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p>The noise scale for inference. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>path</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>The path to the VITS model. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>cleaners</td>
+                  <td><a href="#string">string</a></td>
+                  <td>repeated</td>
+                  <td><p>Repeated field containing the cleaners for text normalization. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>param_config_path</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>The path to the parameter configuration. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.VITSTriton" class="title-badge message">VITSTriton</h3>
+        <p>VITSTriton message contains settings for the VITS Triton inference.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>batch_size</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>The batch size for inference. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>length_scale</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p>The length scale for inference. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>noise_scale</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p>The noise scale for inference. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>cleaners</td>
+                  <td><a href="#string">string</a></td>
+                  <td>repeated</td>
+                  <td><p>Repeated field containing the cleaners for text normalization. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>max_text_length</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>The maximum text length allowed. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>param_config_path</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>The path to the parameter configuration. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>triton_model_name</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>The name of the Triton model. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>triton_server_host</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>The host of the Triton inference server which servers the model. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>triton_server_port</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>The port of the Triton inference server which servers the model. </p></td>
                 </tr>
               
             </tbody>

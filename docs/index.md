@@ -32,6 +32,7 @@
     - [PhonemizerId](#ondewo.t2s.PhonemizerId)
     - [Postprocessing](#ondewo.t2s.Postprocessing)
     - [RequestConfig](#ondewo.t2s.RequestConfig)
+    - [SingleInference](#ondewo.t2s.SingleInference)
     - [SynthesizeRequest](#ondewo.t2s.SynthesizeRequest)
     - [SynthesizeResponse](#ondewo.t2s.SynthesizeResponse)
     - [T2SCustomLengthScales](#ondewo.t2s.T2SCustomLengthScales)
@@ -40,9 +41,12 @@
     - [T2SInference](#ondewo.t2s.T2SInference)
     - [T2SNormalization](#ondewo.t2s.T2SNormalization)
     - [T2sPipelineId](#ondewo.t2s.T2sPipelineId)
+    - [Text2Audio](#ondewo.t2s.Text2Audio)
     - [Text2Mel](#ondewo.t2s.Text2Mel)
     - [Text2SpeechConfig](#ondewo.t2s.Text2SpeechConfig)
     - [UpdateCustomPhonemizerRequest](#ondewo.t2s.UpdateCustomPhonemizerRequest)
+    - [VITS](#ondewo.t2s.VITS)
+    - [VITSTriton](#ondewo.t2s.VITSTriton)
     - [Wiener](#ondewo.t2s.Wiener)
   
     - [AudioFormat](#ondewo.t2s.AudioFormat)
@@ -551,6 +555,21 @@ Represents a Configuration for the text to speech conversion.
 
 
 
+<a name="ondewo.t2s.SingleInference"></a>
+
+### SingleInference
+SingleInference message inference settings of text2audio models.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| text2audio | [Text2Audio](#ondewo.t2s.Text2Audio) |  | Text-to-audio inference settings. |
+
+
+
+
+
+
 <a name="ondewo.t2s.SynthesizeRequest"></a>
 
 ### SynthesizeRequest
@@ -681,6 +700,7 @@ T2SInference message is used to specify the text-to-speech inference settings.
 | ----- | ---- | ----- | ----------- |
 | type | [string](#string) |  | The type of inference. |
 | composite_inference | [CompositeInference](#ondewo.t2s.CompositeInference) |  | Composite inference settings. |
+| single_inference | [SingleInference](#ondewo.t2s.SingleInference) |  | Single inference settings. |
 | caching | [Caching](#ondewo.t2s.Caching) |  | Caching settings. |
 
 
@@ -719,6 +739,23 @@ Used in the creation, deletion and getter of pipelines.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | id | [string](#string) |  | Required. Defines the id of the pipeline. |
+
+
+
+
+
+
+<a name="ondewo.t2s.Text2Audio"></a>
+
+### Text2Audio
+Text2Audio message contains settings for text-to-audio inference.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| type | [string](#string) |  | The type of text-to-audio inference. |
+| vits | [VITS](#ondewo.t2s.VITS) |  | VITS inference settings. |
+| vits_triton | [VITSTriton](#ondewo.t2s.VITSTriton) |  | VITS Triton inference settings. |
 
 
 
@@ -773,6 +810,50 @@ UpdateCustomPhonemizerRequest message represents the request for updating a cust
 | id | [string](#string) |  | The ID of the custom phonemizer to be updated. |
 | update_method | [UpdateCustomPhonemizerRequest.UpdateMethod](#ondewo.t2s.UpdateCustomPhonemizerRequest.UpdateMethod) |  | The update method. |
 | maps | [Map](#ondewo.t2s.Map) | repeated | Repeated field of Map messages representing word-to-phoneme mappings. |
+
+
+
+
+
+
+<a name="ondewo.t2s.VITS"></a>
+
+### VITS
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| batch_size | [int64](#int64) |  | The batch size for inference. |
+| use_gpu | [bool](#bool) |  | Flag indicating whether to use GPU for inference. |
+| length_scale | [float](#float) |  | The length scale for inference. |
+| noise_scale | [float](#float) |  | The noise scale for inference. |
+| path | [string](#string) |  | The path to the VITS model. |
+| cleaners | [string](#string) | repeated | Repeated field containing the cleaners for text normalization. |
+| param_config_path | [string](#string) |  | The path to the parameter configuration. |
+
+
+
+
+
+
+<a name="ondewo.t2s.VITSTriton"></a>
+
+### VITSTriton
+VITSTriton message contains settings for the VITS Triton inference.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| batch_size | [int64](#int64) |  | The batch size for inference. |
+| length_scale | [float](#float) |  | The length scale for inference. |
+| noise_scale | [float](#float) |  | The noise scale for inference. |
+| cleaners | [string](#string) | repeated | Repeated field containing the cleaners for text normalization. |
+| max_text_length | [int64](#int64) |  | The maximum text length allowed. |
+| param_config_path | [string](#string) |  | The path to the parameter configuration. |
+| triton_model_name | [string](#string) |  | The name of the Triton model. |
+| triton_server_host | [string](#string) |  | The host of the Triton inference server which servers the model. |
+| triton_server_port | [int64](#int64) |  | The port of the Triton inference server which servers the model. |
 
 
 
