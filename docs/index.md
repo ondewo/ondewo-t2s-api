@@ -45,8 +45,8 @@
     - [Text2Mel](#ondewo.t2s.Text2Mel)
     - [Text2SpeechConfig](#ondewo.t2s.Text2SpeechConfig)
     - [UpdateCustomPhonemizerRequest](#ondewo.t2s.UpdateCustomPhonemizerRequest)
-    - [VITS](#ondewo.t2s.VITS)
-    - [VITSTriton](#ondewo.t2s.VITSTriton)
+    - [Vits](#ondewo.t2s.Vits)
+    - [VitsTriton](#ondewo.t2s.VitsTriton)
     - [Wiener](#ondewo.t2s.Wiener)
   
     - [AudioFormat](#ondewo.t2s.AudioFormat)
@@ -754,8 +754,8 @@ Text2Audio message contains settings for text-to-audio inference.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | type | [string](#string) |  | The type of text-to-audio inference. |
-| vits | [VITS](#ondewo.t2s.VITS) |  | VITS inference settings. |
-| vits_triton | [VITSTriton](#ondewo.t2s.VITSTriton) |  | VITS Triton inference settings. |
+| vits | [Vits](#ondewo.t2s.Vits) |  | Vits inference settings. |
+| vits_triton | [VitsTriton](#ondewo.t2s.VitsTriton) |  | Vits Triton inference settings. |
 
 
 
@@ -816,9 +816,9 @@ UpdateCustomPhonemizerRequest message represents the request for updating a cust
 
 
 
-<a name="ondewo.t2s.VITS"></a>
+<a name="ondewo.t2s.Vits"></a>
 
-### VITS
+### Vits
 
 
 
@@ -828,7 +828,7 @@ UpdateCustomPhonemizerRequest message represents the request for updating a cust
 | use_gpu | [bool](#bool) |  | Flag indicating whether to use GPU for inference. |
 | length_scale | [float](#float) |  | The length scale for inference. |
 | noise_scale | [float](#float) |  | The noise scale for inference. |
-| path | [string](#string) |  | The path to the VITS model. |
+| path | [string](#string) |  | The path to the Vits model. |
 | cleaners | [string](#string) | repeated | Repeated field containing the cleaners for text normalization. |
 | param_config_path | [string](#string) |  | The path to the parameter configuration. |
 
@@ -837,10 +837,10 @@ UpdateCustomPhonemizerRequest message represents the request for updating a cust
 
 
 
-<a name="ondewo.t2s.VITSTriton"></a>
+<a name="ondewo.t2s.VitsTriton"></a>
 
-### VITSTriton
-VITSTriton message contains settings for the VITS Triton inference.
+### VitsTriton
+VitsTriton message contains settings for the Vits Triton inference.
 
 
 | Field | Type | Label | Description |
