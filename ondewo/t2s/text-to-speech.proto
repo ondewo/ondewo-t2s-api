@@ -547,11 +547,11 @@ message Text2Audio {
     // The type of text-to-audio inference.
     string type = 1;
 
-    // VITS inference settings.
-    VITS vits = 2;
+    // Vits inference settings.
+    Vits vits = 2;
 
-    // VITS Triton inference settings.
-    VITSTriton vits_triton = 3;
+    // Vits Triton inference settings.
+    VitsTriton vits_triton = 3;
 
 }
 
@@ -613,7 +613,7 @@ message GlowTTSTriton {
 
 }
 
-message VITS {
+message Vits {
 
     // The batch size for inference.
     int64 batch_size = 1;
@@ -627,7 +627,7 @@ message VITS {
     // The noise scale for inference.
     float noise_scale = 4;
 
-    // The path to the VITS model.
+    // The path to the Vits model.
     string path = 5;
 
     // Repeated field containing the cleaners for text normalization.
@@ -638,8 +638,8 @@ message VITS {
 
 }
 
-// VITSTriton message contains settings for the VITS Triton inference.
-message VITSTriton {
+// VitsTriton message contains settings for the Vits Triton inference.
+message VitsTriton {
 
     // The batch size for inference.
     int64 batch_size = 1;
