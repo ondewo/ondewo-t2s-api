@@ -2,6 +2,15 @@
 
 *****************
 
+## Release ONDEWO T2S API 5.3.0
+
+### Improvements
+
+* Add single inference as a new type of inference
+* Add vits model
+
+*****************
+
 ## Release ONDEWO T2S API 5.2.0
 
 ### Improvements
