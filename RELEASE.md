@@ -6,8 +6,8 @@
 
 ### Improvements
 
-* Add single inference as a new type of inference
-* Add vits and vits_triton model
+* [OND232-495](https://ondewo.atlassian.net/browse/OND232-495) Add single inference as a new type of inference
+* [OND232-495](https://ondewo.atlassian.net/browse/OND232-495) Add vits and vits_triton model
 
 *****************
 
