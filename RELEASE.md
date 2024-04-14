@@ -2,6 +2,15 @@
 
 *****************
 
+## Release ONDEWO T2S API 5.3.0
+
+### Improvements
+
+* [OND232-495](https://ondewo.atlassian.net/browse/OND232-495) Add single inference as a new type of inference.
+* [OND232-495](https://ondewo.atlassian.net/browse/OND232-495) Add vits and vits_triton model.
+
+*****************
+
 ## Release ONDEWO T2S API 5.2.0
 
 ### Improvements
