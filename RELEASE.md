@@ -7,7 +7,7 @@
 ### Improvements
 
 * Add single inference as a new type of inference
-* Add vits model
+* Add vits and vits_triton model
 
 *****************
 
