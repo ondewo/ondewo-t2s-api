@@ -723,6 +723,7 @@ Represents the configuration for text-to-speech normalization.
 | arpabet_mapping | [string](#string) |  | The mapping for Arpabet phonemes. |
 | numeric_mapping | [string](#string) |  | The mapping for numeric expressions. |
 | callsigns_mapping | [string](#string) |  | The mapping for callsigns. |
+| phoneme_correction_mapping | [string](#string) |  | The mapping for phoneme correction. |
 
 
 
