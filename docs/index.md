@@ -48,13 +48,13 @@
     - [Vits](#ondewo.t2s.Vits)
     - [VitsTriton](#ondewo.t2s.VitsTriton)
     - [Wiener](#ondewo.t2s.Wiener)
-  
+
     - [AudioFormat](#ondewo.t2s.AudioFormat)
     - [Pcm](#ondewo.t2s.Pcm)
     - [UpdateCustomPhonemizerRequest.UpdateMethod](#ondewo.t2s.UpdateCustomPhonemizerRequest.UpdateMethod)
-  
+
     - [Text2Speech](#ondewo.t2s.Text2Speech)
-  
+
 - [Scalar Value Types](#scalar-value-types)
 
 
