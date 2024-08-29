@@ -44,10 +44,10 @@ install_nvm: ## Install NVM, node and npm !! Forcefully closes current terminal
 	@node --version & npm --version || (kill -KILL ${PID})
 
 install_python_requirements: ## Installs python requirements flak8 and mypy
-	wget -q https://raw.githubusercontent.com/ondewo/ondewo-t2s-client-python/master/requirements-dev.txt -O requirements-dev.txt
-	pip install -r requirements-dev.txt
 	wget -q https://raw.githubusercontent.com/ondewo/ondewo-t2s-client-python/master/requirements.txt -O requirements.txt
 	pip install -r requirements.txt
+	wget -q https://raw.githubusercontent.com/ondewo/ondewo-t2s-client-python/master/requirements-dev.txt -O requirements-dev.txt
+	pip install -r requirements-dev.txt
 	wget -q https://raw.githubusercontent.com/ondewo/ondewo-t2s-client-python/master/mypy.ini -O mypy.ini
 	wget -q https://raw.githubusercontent.com/ondewo/ondewo-t2s-client-python/master/.flake8 -O .flake8
 
