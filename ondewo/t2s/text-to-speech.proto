@@ -787,6 +787,9 @@ message T2SNormalization {
     // The mapping for callsigns.
     string callsigns_mapping = 7;
 
+    // The mapping for phoneme correction.
+    string phoneme_correction_mapping = 8;
+
 }
 
 // Postprocessing message contains settings for postprocessing.
