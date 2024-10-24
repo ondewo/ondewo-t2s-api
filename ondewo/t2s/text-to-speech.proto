@@ -558,7 +558,7 @@ message Text2Audio {
     VitsTriton vits_triton = 3;
 
     // ElevenLabs inference settings.
-    ElevenLabsCloudAPI eleven_labs = 4;
+    ElevenLabsCloud elevenlabs_cloud = 4;
 
 }
 
@@ -677,8 +677,8 @@ message VitsTriton {
 
 }
 
-// ElevenLabsCloudAPI message contains settings for the ElevenLabsCloudAPI inference.
-message ElevenLabsCloudAPI {
+// ElevenLabsCloud message contains settings for the ElevenLabsCloud inference.
+message ElevenLabsCloud {
 
     // The length scale for inference.
     float length_scale = 1;
