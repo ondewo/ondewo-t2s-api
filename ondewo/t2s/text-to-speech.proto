@@ -16,6 +16,7 @@ syntax = "proto3";
 
 package ondewo.t2s;
 import "google/protobuf/empty.proto";
+import "google/protobuf/struct.proto";
 
 // Text2Speech service provides endpoints for text-to-speech generation.
 service Text2Speech {
@@ -789,6 +790,9 @@ message T2SNormalization {
 
     // The mapping for phoneme correction.
     string phoneme_correction_mapping = 8;
+
+    // t2s_service_config for cloud api services.
+    google.protobuf.Struct t2s_service_config = 9;
 
 }
 
