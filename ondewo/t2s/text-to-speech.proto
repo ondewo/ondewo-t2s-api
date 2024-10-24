@@ -557,6 +557,9 @@ message Text2Audio {
     // Vits Triton inference settings.
     VitsTriton vits_triton = 3;
 
+    // ElevenLabs inference settings.
+    ElevenLabsCloudAPI eleven_labs = 4;
+
 }
 
 // GlowTTS message contains settings for the GlowTTS inference.
@@ -672,6 +675,16 @@ message VitsTriton {
     // The port of the Triton inference server which servers the model.
     int64 triton_server_port = 9;
 
+}
+
+// ElevenLabsCloudAPI message contains settings for the ElevenLabsCloudAPI inference.
+message ElevenLabsCloudAPI {
+
+    // The length scale for inference.
+    float length_scale = 1;
+
+    // The noise scale for inference.
+    float noise_scale = 2;
 }
 
 // Mel2Audio message contains settings for mel-to-audio inference.
