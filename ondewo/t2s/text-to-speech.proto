@@ -140,6 +140,9 @@ message SynthesizeRequest {
 
     // Required. Represents the specifications needed to do the text to speech transformation.
     RequestConfig config = 2;
+
+    // t2s_service_config for cloud api services.
+    google.protobuf.Struct t2s_service_config = 3;
 }
 
 // BatchSynthesizeRequest message is used to send a batch request for synthesis.
@@ -790,9 +793,6 @@ message T2SNormalization {
 
     // The mapping for phoneme correction.
     string phoneme_correction_mapping = 8;
-
-    // t2s_service_config for cloud api services.
-    google.protobuf.Struct t2s_service_config = 9;
 
 }
 
