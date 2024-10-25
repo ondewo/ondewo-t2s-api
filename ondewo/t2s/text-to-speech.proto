@@ -558,7 +558,7 @@ message Text2Audio {
     VitsTriton vits_triton = 3;
 
     // ElevenLabs cloud service inference settings.
-    CloudServiceElevenLabsT2S cloud_service_eleven_labs_t2s = 4;
+    CloudServiceElevenLabsT2s cloud_service_eleven_labs_t2s = 4;
 
 }
 
@@ -677,8 +677,8 @@ message VitsTriton {
 
 }
 
-// CloudServiceElevenLabsT2S message contains settings for the ElevenLabs Cloud service inference.
-message CloudServiceElevenLabsT2S {
+// CloudServiceElevenLabsT2s message contains settings for the ElevenLabs Cloud service inference.
+message CloudServiceElevenLabsT2s {
 
     // The length scale for inference.
     float length_scale = 1;
