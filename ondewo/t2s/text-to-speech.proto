@@ -680,11 +680,37 @@ message VitsTriton {
 // CloudServiceElevenLabsT2s message contains settings for the ElevenLabs Cloud service inference.
 message CloudServiceElevenLabsT2s {
 
-    // The length scale for inference.
-    float length_scale = 1;
+    // Voice ID indicating the speaker
+    string voice_id = 1;
 
-    // The noise scale for inference.
-    float noise_scale = 2;
+    // Voice setting of the inference
+    VoiceSettings voice_settings = 2;
+
+    // Flag to indicate speaker boost
+    bool use_speaker_boost = 3;
+
+    // Seed value for inference
+    int32 seed = 4;
+
+    // Flag to indicate using pvc_as_ivc
+    bool use_pvc_as_ivc = 5;
+
+    // Flag to indicate applying text normalization
+    string apply_text_normalization = 6;
+
+}
+
+// VoiceSettings message contains settings for ElevenLabs inference.
+message VoiceSettings{
+
+    // stability value for elevenlabs inference
+    float stability = 1;
+
+    // similarity boost value for ElevenLabs inference.
+    float similarity_boost = 2;
+
+    // style boost value for ElevenLabs inference.
+    float style = 3;
 }
 
 // Mel2Audio message contains settings for mel-to-audio inference.
