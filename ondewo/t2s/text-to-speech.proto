@@ -560,6 +560,15 @@ message Text2Audio {
     // ElevenLabs cloud service inference settings.
     CloudServiceElevenLabsT2s cloud_service_eleven_labs_t2s = 4;
 
+    // Amazon Aws cloud service inference settings.
+    CloudServiceAmazonAwsT2s cloud_service_amazon_aws_t2s = 5;
+
+    // Google cloud service inference settings.
+    CloudServiceGoogleT2s cloud_service_google_t2s = 6;
+
+    // Microsoft cloud service inference settings.
+    CloudServiceMicrosoftT2s cloud_service_microsoft_t2s = 7;
+
 }
 
 // GlowTTS message contains settings for the GlowTTS inference.
@@ -686,23 +695,14 @@ message CloudServiceElevenLabsT2s {
     // Voice setting of the inference
     VoiceSettings voice_settings = 2;
 
-    // Flag to indicate speaker boost
-    bool use_speaker_boost = 3;
-
-    // Seed value for inference
-    int32 seed = 4;
-
-    // Flag to indicate using pvc_as_ivc
-    bool use_pvc_as_ivc = 5;
-
     // Flag to indicate applying text normalization
-    string apply_text_normalization = 6;
+    string apply_text_normalization = 4;
 
     // The length scale for inference.
-    float length_scale = 7;
+    float length_scale = 5;
 
     // The noise scale for inference.
-    float noise_scale = 8;
+    float noise_scale = 6;
 
 }
 
@@ -717,6 +717,45 @@ message VoiceSettings{
 
     // style boost value for ElevenLabs inference.
     float style = 3;
+
+    // Flag to indicate speaker boost
+    bool use_speaker_boost = 4;
+}
+
+// CloudServiceAmazonAwsT2s message contains settings for the Amazon AWS Cloud service inference.
+message CloudServiceAmazonAwsT2s {
+
+    // Voice ID indicating the speaker
+    string voice_id = 1;
+
+    // Model id for the inference server.
+    string model_id = 2;
+
+}
+
+// CloudServiceGoogleT2s message contains settings for the Google Cloud service inference.
+message CloudServiceGoogleT2s {
+
+    // Speaking rate to control the speed of audio.
+    float speaking_rate = 1;
+
+    // Volume gain in db to control volume of the audio.
+    float volume_gain_db = 2;
+
+    // pitch value of the audio
+    float pitch = 3;
+
+}
+
+// CloudServiceMicrosoftT2s message contains settings for the Microsoft Cloud service inference.
+message CloudServiceMicrosoftT2s {
+
+    // Voice ID indicating the speaker.
+    string voice_id = 1;
+
+    // Flag to indicate using the default speaker.
+    bool use_default_speaker = 2;
+
 }
 
 // Mel2Audio message contains settings for mel-to-audio inference.
