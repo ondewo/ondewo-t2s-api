@@ -736,14 +736,17 @@ message CloudServiceAmazonAwsT2s {
 // CloudServiceGoogleT2s message contains settings for the Google Cloud service inference.
 message CloudServiceGoogleT2s {
 
+    // Voice ID indicating the speaker
+    string voice_id = 1;
+
     // Speaking rate to control the speed of audio.
-    float speaking_rate = 1;
+    float speaking_rate = 2;
 
     // Volume gain in db to control volume of the audio.
-    float volume_gain_db = 2;
+    float volume_gain_db = 3;
 
     // pitch value of the audio
-    float pitch = 3;
+    float pitch = 4;
 
 }
 
