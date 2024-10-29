@@ -567,7 +567,7 @@ message Text2Audio {
     CloudServiceGoogleT2s cloud_service_google_t2s = 6;
 
     // Microsoft cloud service inference settings.
-    CloudServiceMicrosoftT2s cloud_service_microsoft_t2s = 7;
+    CloudServiceMicrosoftAzureT2s cloud_service_microsoft_t2s = 7;
 
 }
 
@@ -747,8 +747,8 @@ message CloudServiceGoogleT2s {
 
 }
 
-// CloudServiceMicrosoftT2s message contains settings for the Microsoft Cloud service inference.
-message CloudServiceMicrosoftT2s {
+// CloudServiceMicrosoftAzureT2s message contains settings for the Microsoft Azure Cloud service inference.
+message CloudServiceMicrosoftAzureT2s {
 
     // Voice ID indicating the speaker.
     string voice_id = 1;
