@@ -763,12 +763,6 @@ message CloudServiceElevenLabsT2s {
     // Flag to indicate applying text normalization
     string apply_text_normalization = 4;
 
-    // The length scale for inference.
-    float length_scale = 5;
-
-    // The noise scale for inference.
-    float noise_scale = 6;
-
 }
 
 // VoiceSettings message contains settings for ElevenLabs inference.
