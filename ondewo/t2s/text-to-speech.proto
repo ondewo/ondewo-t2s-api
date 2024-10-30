@@ -231,7 +231,7 @@ message T2sCloudProviderConfig {
     T2sCloudProviderConfigGoogle t2s_cloud_provider_config_google = 2;
 
     // Configuration for Microsoft Azure text-to-speech provider.
-    T2sCloudProviderConfigMicrosoft t2s_cloud_provider_config_microsoft = 3;
+    T2sCloudProviderConfigMicrosoftAzure t2s_cloud_provider_config_microsoft_azure = 3;
 
 }
 
@@ -256,7 +256,7 @@ message T2sCloudProviderConfigElevenLabs {
 }
 
 // Configuration details specific to the Microsoft Azure text-to-speech provider.
-message T2sCloudProviderConfigMicrosoft {
+message T2sCloudProviderConfigMicrosoftAzure {
 
     // Determines whether to use the default speaker voice.
     bool use_default_speaker = 1;
@@ -631,7 +631,7 @@ message Text2Audio {
     // Google cloud service inference settings.
     T2sCloudServiceGoogle t2s_cloud_service_google = 6;
 
-    // Microsoft cloud service inference settings.
+    // Microsoft Azure cloud service inference settings.
     T2sCloudServiceMicrosoftAzure t2s_cloud_service_microsoft_azure = 7;
 
 }
