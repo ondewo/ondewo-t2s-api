@@ -623,16 +623,16 @@ message Text2Audio {
     VitsTriton vits_triton = 3;
 
     // ElevenLabs cloud service inference settings.
-    CloudServiceElevenLabsT2s cloud_service_eleven_labs_t2s = 4;
+    T2sCloudServiceElevenLabs t2s_cloud_service_eleven_labs = 4;
 
     // Amazon Aws cloud service inference settings.
-    CloudServiceAmazonAwsT2s cloud_service_amazon_aws_t2s = 5;
+    T2sCloudServiceAmazonAws t2s_cloud_service_amazon_aws = 5;
 
     // Google cloud service inference settings.
-    CloudServiceGoogleT2s cloud_service_google_t2s = 6;
+    T2sCloudServiceGoogle t2s_cloud_service_google = 6;
 
     // Microsoft cloud service inference settings.
-    CloudServiceMicrosoftAzureT2s cloud_service_microsoft_t2s = 7;
+    T2sCloudServiceMicrosoftAzure t2s_cloud_service_microsoft_azure = 7;
 
 }
 
@@ -751,8 +751,8 @@ message VitsTriton {
 
 }
 
-// CloudServiceElevenLabsT2s message contains settings for the ElevenLabs Cloud service inference.
-message CloudServiceElevenLabsT2s {
+// T2sCloudServiceElevenLabs message contains settings for the ElevenLabs Cloud service inference.
+message T2sCloudServiceElevenLabs {
 
     // Voice ID indicating the speaker
     string voice_id = 1;
@@ -781,8 +781,8 @@ message VoiceSettings{
     bool use_speaker_boost = 4;
 }
 
-// CloudServiceAmazonAwsT2s message contains settings for the Amazon AWS Cloud service inference.
-message CloudServiceAmazonAwsT2s {
+// T2sCloudServiceAmazonAws message contains settings for the Amazon AWS Cloud service inference.
+message T2sCloudServiceAmazonAws {
 
     // Voice ID indicating the speaker
     string voice_id = 1;
@@ -792,8 +792,8 @@ message CloudServiceAmazonAwsT2s {
 
 }
 
-// CloudServiceGoogleT2s message contains settings for the Google Cloud service inference.
-message CloudServiceGoogleT2s {
+// T2sCloudServiceGoogle message contains settings for the Google Cloud service inference.
+message T2sCloudServiceGoogle {
 
     // Voice ID indicating the speaker
     string voice_id = 1;
@@ -809,8 +809,8 @@ message CloudServiceGoogleT2s {
 
 }
 
-// CloudServiceMicrosoftAzureT2s message contains settings for the Microsoft Azure Cloud service inference.
-message CloudServiceMicrosoftAzureT2s {
+// T2sCloudServiceMicrosoftAzure message contains settings for the Microsoft Azure Cloud service inference.
+message T2sCloudServiceMicrosoftAzure {
 
     // Voice ID indicating the speaker.
     string voice_id = 1;
