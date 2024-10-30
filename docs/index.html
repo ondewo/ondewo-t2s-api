@@ -229,6 +229,38 @@
                       </li>
                     
                       <li>
+                        <a href="#ondewo.t2s.T2sCloudProviderConfig" class="title-badge message">T2sCloudProviderConfig</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.T2sCloudProviderConfigElevenLabs" class="title-badge message">T2sCloudProviderConfigElevenLabs</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.T2sCloudProviderConfigGoogle" class="title-badge message">T2sCloudProviderConfigGoogle</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.T2sCloudProviderConfigMicrosoftAzure" class="title-badge message">T2sCloudProviderConfigMicrosoftAzure</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.T2sCloudServiceAmazonAws" class="title-badge message">T2sCloudServiceAmazonAws</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.T2sCloudServiceElevenLabs" class="title-badge message">T2sCloudServiceElevenLabs</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.T2sCloudServiceGoogle" class="title-badge message">T2sCloudServiceGoogle</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.T2sCloudServiceMicrosoftAzure" class="title-badge message">T2sCloudServiceMicrosoftAzure</a>
+                      </li>
+                    
+                      <li>
                         <a href="#ondewo.t2s.T2sPipelineId" class="title-badge message">T2sPipelineId</a>
                       </li>
                     
@@ -254,6 +286,10 @@
                     
                       <li>
                         <a href="#ondewo.t2s.VitsTriton" class="title-badge message">VitsTriton</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.VoiceSettings" class="title-badge message">VoiceSettings</a>
                       </li>
                     
                       <li>
@@ -1549,6 +1585,22 @@ The default value is False. </p></td>
 The default value is the language of the pipeline. </p></td>
                 </tr>
               
+                <tr>
+                  <td>t2s_service_config</td>
+                  <td><a href="#google.protobuf.Struct">google.protobuf.Struct</a></td>
+                  <td>optional</td>
+                  <td><p>t2s_service_config provides the configuration of the service such as API key, bearer tokens, JWT,
+and other header information as key value pairs, e.g., <pre><code>MY_API_KEY='LKJDIFe244LKJOI'</code></pre> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>t2s_cloud_provider_config</td>
+                  <td><a href="#ondewo.t2s.T2sCloudProviderConfig">T2sCloudProviderConfig</a></td>
+                  <td></td>
+                  <td><p>Optional. Defines the cloud provider's specific configuration for using text to speech cloud services
+The default value is None. </p></td>
+                </tr>
+              
             </tbody>
           </table>
 
@@ -1975,6 +2027,303 @@ The default value is the language of the pipeline. </p></td>
 
         
       
+        <h3 id="ondewo.t2s.T2sCloudProviderConfig" class="title-badge message">T2sCloudProviderConfig</h3>
+        <p>Configuration for cloud provider settings for Text-to-Speech (T2S).</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>t2s_cloud_provider_config_eleven_labs</td>
+                  <td><a href="#ondewo.t2s.T2sCloudProviderConfigElevenLabs">T2sCloudProviderConfigElevenLabs</a></td>
+                  <td></td>
+                  <td><p>Configuration for Eleven Labs text-to-speech provider. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>t2s_cloud_provider_config_google</td>
+                  <td><a href="#ondewo.t2s.T2sCloudProviderConfigGoogle">T2sCloudProviderConfigGoogle</a></td>
+                  <td></td>
+                  <td><p>Configuration for Google text-to-speech provider. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>t2s_cloud_provider_config_microsoft_azure</td>
+                  <td><a href="#ondewo.t2s.T2sCloudProviderConfigMicrosoftAzure">T2sCloudProviderConfigMicrosoftAzure</a></td>
+                  <td></td>
+                  <td><p>Configuration for Microsoft Azure text-to-speech provider. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.T2sCloudProviderConfigElevenLabs" class="title-badge message">T2sCloudProviderConfigElevenLabs</h3>
+        <p>Configuration details specific to the Eleven Labs text-to-speech provider.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>stability</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p>Stability level for inference, influencing consistency of generated speech. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>similarity_boost</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p>Boost value for similarity to enhance the similarity of the generated voice to a target voice. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>style</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p>Style parameter to control the expression or emotion in speech. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>use_speaker_boost</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>Enables or disables speaker boost for emphasis on clarity and loudness. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>apply_text_normalization</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Specifies type of text normalization to apply during processing. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.T2sCloudProviderConfigGoogle" class="title-badge message">T2sCloudProviderConfigGoogle</h3>
+        <p>Configuration details specific to the Google text-to-speech provider.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>speaking_rate</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p>Speaking rate for inference, controlling the speed of generated speech. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>volume_gain_db</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p>Volume gain in dB applied to the generated speech. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>pitch</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p>Pitch adjustment for inference, allowing control over voice pitch. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.T2sCloudProviderConfigMicrosoftAzure" class="title-badge message">T2sCloudProviderConfigMicrosoftAzure</h3>
+        <p>Configuration details specific to the Microsoft Azure text-to-speech provider.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>use_default_speaker</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>Determines whether to use the default speaker voice. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.T2sCloudServiceAmazonAws" class="title-badge message">T2sCloudServiceAmazonAws</h3>
+        <p>T2sCloudServiceAmazonAws message contains settings for the Amazon AWS Cloud service inference.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>voice_id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Voice ID indicating the speaker </p></td>
+                </tr>
+              
+                <tr>
+                  <td>model_id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Model id for the inference server. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.T2sCloudServiceElevenLabs" class="title-badge message">T2sCloudServiceElevenLabs</h3>
+        <p>T2sCloudServiceElevenLabs message contains settings for the ElevenLabs Cloud service inference.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>voice_id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Voice ID indicating the speaker </p></td>
+                </tr>
+              
+                <tr>
+                  <td>voice_settings</td>
+                  <td><a href="#ondewo.t2s.VoiceSettings">VoiceSettings</a></td>
+                  <td></td>
+                  <td><p>Voice setting of the inference </p></td>
+                </tr>
+              
+                <tr>
+                  <td>apply_text_normalization</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Flag to indicate applying text normalization </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.T2sCloudServiceGoogle" class="title-badge message">T2sCloudServiceGoogle</h3>
+        <p>T2sCloudServiceGoogle message contains settings for the Google Cloud service inference.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>voice_id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Voice ID indicating the speaker </p></td>
+                </tr>
+              
+                <tr>
+                  <td>speaking_rate</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p>Speaking rate to control the speed of audio. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>volume_gain_db</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p>Volume gain in db to control volume of the audio. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>pitch</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p>pitch value of the audio </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.T2sCloudServiceMicrosoftAzure" class="title-badge message">T2sCloudServiceMicrosoftAzure</h3>
+        <p>T2sCloudServiceMicrosoftAzure message contains settings for the Microsoft Azure Cloud service inference.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>voice_id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Voice ID indicating the speaker. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>use_default_speaker</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>Flag to indicate using the default speaker. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
         <h3 id="ondewo.t2s.T2sPipelineId" class="title-badge message">T2sPipelineId</h3>
         <p>Pipeline Id representation.</p><p>Used in the creation, deletion and getter of pipelines.</p>
 
@@ -2028,6 +2377,34 @@ The default value is the language of the pipeline. </p></td>
                   <td><a href="#ondewo.t2s.VitsTriton">VitsTriton</a></td>
                   <td></td>
                   <td><p>Vits Triton inference settings. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>t2s_cloud_service_eleven_labs</td>
+                  <td><a href="#ondewo.t2s.T2sCloudServiceElevenLabs">T2sCloudServiceElevenLabs</a></td>
+                  <td></td>
+                  <td><p>ElevenLabs cloud service inference settings. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>t2s_cloud_service_amazon_aws</td>
+                  <td><a href="#ondewo.t2s.T2sCloudServiceAmazonAws">T2sCloudServiceAmazonAws</a></td>
+                  <td></td>
+                  <td><p>Amazon Aws cloud service inference settings. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>t2s_cloud_service_google</td>
+                  <td><a href="#ondewo.t2s.T2sCloudServiceGoogle">T2sCloudServiceGoogle</a></td>
+                  <td></td>
+                  <td><p>Google cloud service inference settings. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>t2s_cloud_service_microsoft_azure</td>
+                  <td><a href="#ondewo.t2s.T2sCloudServiceMicrosoftAzure">T2sCloudServiceMicrosoftAzure</a></td>
+                  <td></td>
+                  <td><p>Microsoft Azure cloud service inference settings. </p></td>
                 </tr>
               
             </tbody>
@@ -2309,6 +2686,51 @@ The default value is the language of the pipeline. </p></td>
                   <td><a href="#int64">int64</a></td>
                   <td></td>
                   <td><p>The port of the Triton inference server which servers the model. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.VoiceSettings" class="title-badge message">VoiceSettings</h3>
+        <p>VoiceSettings message contains settings for ElevenLabs inference.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>stability</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p>stability value for elevenlabs inference </p></td>
+                </tr>
+              
+                <tr>
+                  <td>similarity_boost</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p>similarity boost value for ElevenLabs inference. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>style</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p>style boost value for ElevenLabs inference. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>use_speaker_boost</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>Flag to indicate speaker boost </p></td>
                 </tr>
               
             </tbody>
