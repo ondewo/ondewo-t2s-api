@@ -216,7 +216,7 @@ message RequestConfig {
 
         // Optional. Defines the cloud provider's specific configuration for using text to speech cloud services
         // The default value is None.
-        T2sCloudProviderConfig cloud_provider_config = 10;
+        T2sCloudProviderConfig t2s_cloud_provider_config = 10;
     }
 
 }
@@ -225,13 +225,13 @@ message RequestConfig {
 message T2sCloudProviderConfig {
 
     // Configuration for Eleven Labs text-to-speech provider.
-    T2sCloudProviderConfigElevenLabs eleven_labs_config = 1;
+    T2sCloudProviderConfigElevenLabs t2s_cloud_provider_config_eleven_labs = 1;
 
     // Configuration for Google text-to-speech provider.
-    T2sCloudProviderConfigGoogle google_config = 2;
+    T2sCloudProviderConfigGoogle t2s_cloud_provider_config_google = 2;
 
     // Configuration for Microsoft Azure text-to-speech provider.
-    T2sCloudProviderConfigMicrosoft microsoft_azure_config = 3;
+    T2sCloudProviderConfigMicrosoft t2s_cloud_provider_config_microsoft = 3;
 
 }
 
