@@ -833,6 +833,7 @@ T2sCloudServiceElevenLabs message contains settings for the ElevenLabs Cloud ser
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| model_id | [string](#string) |  | Model ID indicating the name of the model |
 | voice_id | [string](#string) |  | Voice ID indicating the speaker |
 | voice_settings | [VoiceSettings](#ondewo.t2s.VoiceSettings) |  | Voice setting of the inference |
 | apply_text_normalization | [string](#string) |  | Flag to indicate applying text normalization |
