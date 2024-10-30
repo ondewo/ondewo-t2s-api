@@ -208,61 +208,71 @@ message RequestConfig {
         string normalizer = 8;
     }
 
-    oneof oneof_t2s_service_config {
-        // Optional. Define t2s_service_config for cloud api services.
+    // t2s_service_config provides the configuration of the service such as API key, bearer tokens, JWT,
+    // and other header information as key value pairs, e.g., <pre><code>MY_API_KEY='LKJDIFe244LKJOI'</code></pre>
+    optional google.protobuf.Struct t2s_service_config = 9;
+
+    oneof oneof_t2s_cloud_provider_config {
+
+        // Optional. Defines the cloud provider's specific configuration for using text to speech cloud services
         // The default value is None.
-        google.protobuf.Struct t2s_service_config = 9;
+        T2sCloudProviderConfig cloud_provider_config = 10;
     }
 
-    oneof oneof_cloud_provider_config {
-        // Optional. Define t2s_service_config for cloud api services.
-        // The default value is None.
-        CloudProviderConfig cloud_provider_config = 10;
-    }
 }
 
-message CloudProviderConfig {
+// Configuration for cloud provider settings for Text-to-Speech (T2S).
+message T2sCloudProviderConfig {
 
-    ElevenLabsConfig eleven_labs_config = 1;
-    MicrosoftAzureConfig microsoft_azure_config = 2;
-    GoogleConfig google_config = 3;
+    // Configuration for Eleven Labs text-to-speech provider.
+    T2sCloudProviderConfigElevenLabs eleven_labs_config = 1;
+
+    // Configuration for Google text-to-speech provider.
+    T2sCloudProviderConfigGoogle google_config = 2;
+
+    // Configuration for Microsoft Azure text-to-speech provider.
+    T2sCloudProviderConfigMicrosoft microsoft_azure_config = 3;
+
 }
 
-message ElevenLabsConfig {
+// Configuration details specific to the Eleven Labs text-to-speech provider.
+message T2sCloudProviderConfigElevenLabs {
 
-    // Stability value for inference
+    // Stability level for inference, influencing consistency of generated speech.
     float stability = 1;
 
-    // Similarity boost value for inference
+    // Boost value for similarity to enhance the similarity of the generated voice to a target voice.
     float similarity_boost = 2;
 
-    // Style value for inference
+    // Style parameter to control the expression or emotion in speech.
     float style = 3;
 
-    // Flag to set speaker boost
+    // Enables or disables speaker boost for emphasis on clarity and loudness.
     bool use_speaker_boost = 4;
 
-    // Define type text normalization
+    // Specifies type of text normalization to apply during processing.
     string apply_text_normalization = 5;
 
 }
 
-message MicrosoftAzureConfig {
+// Configuration details specific to the Microsoft Azure text-to-speech provider.
+message T2sCloudProviderConfigMicrosoft {
 
-    // Flag to set default speaker or not
+    // Determines whether to use the default speaker voice.
     bool use_default_speaker = 1;
 
 }
 
-message GoogleConfig {
+// Configuration details specific to the Google text-to-speech provider.
+message T2sCloudProviderConfigGoogle {
 
-    // Speaking speed value for inference
+    // Speaking rate for inference, controlling the speed of generated speech.
     float speaking_rate = 1;
 
-    // volume gain value in dB for inference
+    // Volume gain in dB applied to the generated speech.
     float volume_gain_db = 2;
 
-    // Pitch value for inference
+    // Pitch adjustment for inference, allowing control over voice pitch.
     float pitch = 3;
 
 }
