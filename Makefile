@@ -134,7 +134,6 @@ create_release_tag: ## Create Release Tag and push it to origin
 	git tag -a ${ONDEWO_T2S_API_VERSION} -m "release/${ONDEWO_T2S_API_VERSION}"
 	git push origin ${ONDEWO_T2S_API_VERSION}
 
-
 login_to_gh: ## Login to Github CLI with Access Token
 	echo $(GITHUB_GH_TOKEN) | gh auth login -p ssh --with-token
 
