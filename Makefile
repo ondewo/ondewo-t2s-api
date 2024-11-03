@@ -17,7 +17,7 @@ export
 
 # MUST BE THE SAME AS API in Mayor and Minor Version Number
 # example: API 2.9.0 --> Client 2.9.X
-ONDEWO_T2S_API_VERSION=5.4.0
+ONDEWO_T2S_API_VERSION=6.0.0
 
 # You need to setup an access token at https://github.com/settings/tokens - permissions are important
 GITHUB_GH_TOKEN?=ENTER_YOUR_TOKEN_HERE
@@ -51,13 +51,19 @@ install_python_requirements: ## Installs python requirements flak8 and mypy
 	wget -q https://raw.githubusercontent.com/ondewo/ondewo-t2s-client-python/master/mypy.ini -O mypy.ini
 	wget -q https://raw.githubusercontent.com/ondewo/ondewo-t2s-client-python/master/.flake8 -O .flake8
 
-install_precommit_hooks: ## Installs pre-commit hooks and sets them up for the ondewo-vtsi-api repo
+install_precommit_hooks: ## Installs pre-commit hooks and sets them up for the repo
 	pip install pre-commit
 	pre-commit install
 	pre-commit install --hook-type commit-msg
 
 precommit_hooks_run_all_files: ## Runs all pre-commit hooks on all files and not just the changed ones
 	pre-commit run --all-file
+
+mypy:
+	mypy
+
+flake8:
+	flake8
 
 help: ## Print usage info about help targets
 	# (first comment after target starting with double hashes ##)
@@ -67,8 +73,8 @@ makefile_chapters: ## Shows all sections of Makefile
 	@echo `cat Makefile| grep "########################################################" -A 1 | grep -v "########################################################"`
 
 TEST:
-	@echo ${GITHUB_GH_TOKEN}
-	@echo ${CURRENT_RELEASE_NOTES}
+	@echo "----------------------------------------------\nGITHUB_GH_TOKEN\n----------------------------------------------\n{GITHUB_GH_TOKEN}\n"
+	@echo "----------------------------------------------\nCURRENT_RELEASE_NOTES\n----------------------------------------------\n${CURRENT_RELEASE_NOTES}\n"
 
 githubio_logic_pre:
 	$(eval REPO_NAME:= $(shell echo ${GH_REPO} | cut -d "-" -f 2 ))
@@ -149,8 +155,6 @@ GENERIC_RELEASE_NOTES="\n***************** \n\\\#\\\# Release ONDEWO T2S REPONAM
 	\n\\\#\\\#\\\# Improvements \n \
 	* Tracking API Version [${ONDEWO_T2S_API_VERSION}](https://github.com/ondewo/ondewo-t2s-api/releases/tag/${ONDEWO_T2S_API_VERSION}) ( [Documentation](https://ondewo.github.io/ondewo-t2s-api/) ) \n"
 
-
-
 release_client:
 	$(eval REPO_NAME:= $(shell echo ${GENERIC_CLIENT} | cut -c 41- | cut -d '.' -f 1))
 	$(eval REPO_DIR:= $(shell echo "ondewo-t2s-client-${REPO_NAME}"))
@@ -179,7 +183,6 @@ release_client:
 # Remove everything from Release
 	sudo rm -rf ${REPO_DIR}
 	rm -f temp-notes
-
 
 PYTHON_CLIENT="git@github.com:ondewo/ondewo-t2s-client-python.git"
 
@@ -216,7 +219,6 @@ release_js_client: ## Release Js Client
 	make release_client GENERIC_CLIENT=${JS_CLIENT} RELEASEMD="src/RELEASE.md"
 	@echo "End releasing Js Client \n \n \n"
 
-
 ########################################################
 #		GITHUB
 
@@ -225,7 +227,7 @@ build_and_release_to_github_via_docker: build_utils_docker_image release_to_gith
 build_utils_docker_image:  ## Build utils docker image
 	docker build -f Dockerfile.utils -t ${IMAGE_UTILS_NAME} .
 
-push_to_gh: login_to_gh build_gh_release
+push_to_gh: login_to_gh build_gh_release ## Logs into GitHub CLI and Releases
 	@echo 'Released to Github'
 
 release_to_github_via_docker_image:  ## Release to Github via docker
@@ -240,11 +242,11 @@ ondewo_release: spc clone_devops_accounts run_release_with_devops ## Release wit
 	@rm -rf ${DEVOPS_ACCOUNT_GIT}
 
 clone_devops_accounts: ## Clones devops-accounts repo
-	if [ -d $(DEVOPS_ACCOUNT_GIT) ]; then rm -Rf $(DEVOPS_ACCOUNT_GIT); fi
+	@if [ -d $(DEVOPS_ACCOUNT_GIT) ]; then rm -Rf $(DEVOPS_ACCOUNT_GIT); fi
 	git clone git@bitbucket.org:ondewo/${DEVOPS_ACCOUNT_GIT}.git
 
-run_release_with_devops:
-	$(eval info:= $(shell cat ${DEVOPS_ACCOUNT_DIR}/account_github.env | grep GITHUB_GH & cat ${DEVOPS_ACCOUNT_DIR}/account_pypi.env | grep PYPI_USERNAME & cat ${DEVOPS_ACCOUNT_DIR}/account_pypi.env | grep PYPI_PASSWORD))
+run_release_with_devops: ## Gets Credentials from devops-repo and runs release with them
+	$(eval info:= $(shell cat ${DEVOPS_ACCOUNT_DIR}/account_github.env | grep GITHUB_GH))
 	make release $(info)
 
 spc: ## Checks if the Release Branch, Tag and Pypi version already exist
