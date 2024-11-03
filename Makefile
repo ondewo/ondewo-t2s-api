@@ -59,11 +59,19 @@ install_precommit_hooks: ## Installs pre-commit hooks and sets them up for the r
 precommit_hooks_run_all_files: ## Runs all pre-commit hooks on all files and not just the changed ones
 	pre-commit run --all-file
 
-mypy:
-	mypy
+flake8: ## Runs flake8
+	flake8 --config .flake8 .
 
-flake8:
-	flake8
+mypy: ## Run mypy static code checking
+	@echo "---------------------------------------------"
+	@echo "START: Run mypy in pre-commit hook ..."
+	pre-commit run mypy --all-files
+	@echo "DONE: Run mypy in pre-commit hook."
+	@echo "---------------------------------------------"
+	@echo "START: Run mypy directly ..."
+	mypy --config-file=mypy.ini .
+	@echo "DONE: Run mypy directly"
+	@echo "---------------------------------------------"
 
 help: ## Print usage info about help targets
 	# (first comment after target starting with double hashes ##)
