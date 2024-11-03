@@ -15,7 +15,7 @@ fail_fast: false
 
 repos:
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.11.2
+    rev: v1.13.0
     hooks:
       - id: mypy  # Run mypy type checker; note: runs with flag --missing-imports
         args: [ --config-file=mypy.ini ]
@@ -41,7 +41,7 @@ repos:
         args: [ --max-line-length=120, --in-place ]
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v5.0.0
     hooks:
       - id: check-added-large-files  # Prevent giant files from being committed
         args: [ maxkb=1024 ]
