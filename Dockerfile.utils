@@ -25,7 +25,11 @@ WORKDIR /home/ondewo/
 
 COPY Makefile .
 
+COPY README.md .
+
 COPY RELEASE.md .
+
+COPY ondewo ondewo
 
 # run the container forever
 CMD tail -f /dev/null
