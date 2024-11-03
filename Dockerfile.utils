@@ -25,6 +25,8 @@ WORKDIR /home/ondewo/
 
 COPY Makefile .
 
+COPY LICENSE .
+
 COPY README.md .
 
 COPY RELEASE.md .
