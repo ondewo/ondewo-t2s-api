@@ -121,7 +121,10 @@ githubio_logic: | githubio_logic_pre
 	@git -C ondewo.github.io push
 
 update_githubio:
-	@rm -rf ondewo.github.io
+	@if [ -d "ondewo.github.io" ]; then \
+		echo "Removing existing directory ondewo.github.io"; \
+		rm -rf ondewo.github.io; sleep 3s; \
+	fi
 	@git clone git@github.com:ondewo/ondewo.github.io.git
 	@make githubio_logic || (echo "Done")
 	@rm -rf ondewo.github.io
