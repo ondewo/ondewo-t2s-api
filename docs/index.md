@@ -749,7 +749,7 @@ Configuration for cloud provider settings for Text-to-Speech (T2S).
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| t2s_cloud_provider_config_eleven_labs | [T2sCloudProviderConfigElevenLabs](#ondewo.t2s.T2sCloudProviderConfigElevenLabs) |  | Configuration for Eleven Labs text-to-speech provider. |
+| t2s_cloud_provider_config_elevenlabs | [T2sCloudProviderConfigElevenLabs](#ondewo.t2s.T2sCloudProviderConfigElevenLabs) |  | Configuration for Eleven Labs text-to-speech provider. |
 | t2s_cloud_provider_config_google | [T2sCloudProviderConfigGoogle](#ondewo.t2s.T2sCloudProviderConfigGoogle) |  | Configuration for Google text-to-speech provider. |
 | t2s_cloud_provider_config_microsoft | [T2sCloudProviderConfigMicrosoft](#ondewo.t2s.T2sCloudProviderConfigMicrosoft) |  | Configuration for Microsoft text-to-speech provider. |
 
@@ -904,7 +904,7 @@ Text2Audio message contains settings for text-to-audio inference.
 | type | [string](#string) |  | The type of text-to-audio inference. |
 | vits | [Vits](#ondewo.t2s.Vits) |  | Vits inference settings. |
 | vits_triton | [VitsTriton](#ondewo.t2s.VitsTriton) |  | Vits Triton inference settings. |
-| t2s_cloud_service_eleven_labs | [T2sCloudServiceElevenLabs](#ondewo.t2s.T2sCloudServiceElevenLabs) |  | ElevenLabs cloud service inference settings. |
+| t2s_cloud_service_elevenlabs | [T2sCloudServiceElevenLabs](#ondewo.t2s.T2sCloudServiceElevenLabs) |  | ElevenLabs cloud service inference settings. |
 | t2s_cloud_service_amazon | [T2sCloudServiceAmazon](#ondewo.t2s.T2sCloudServiceAmazon) |  | Amazon cloud service inference settings. |
 | t2s_cloud_service_google | [T2sCloudServiceGoogle](#ondewo.t2s.T2sCloudServiceGoogle) |  | Google cloud service inference settings. |
 | t2s_cloud_service_microsoft | [T2sCloudServiceMicrosoft](#ondewo.t2s.T2sCloudServiceMicrosoft) |  | Microsoft cloud service inference settings. |
