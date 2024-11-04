@@ -40,6 +40,14 @@
     - [T2SGetServiceInfoResponse](#ondewo.t2s.T2SGetServiceInfoResponse)
     - [T2SInference](#ondewo.t2s.T2SInference)
     - [T2SNormalization](#ondewo.t2s.T2SNormalization)
+    - [T2sCloudProviderConfig](#ondewo.t2s.T2sCloudProviderConfig)
+    - [T2sCloudProviderConfigElevenLabs](#ondewo.t2s.T2sCloudProviderConfigElevenLabs)
+    - [T2sCloudProviderConfigGoogle](#ondewo.t2s.T2sCloudProviderConfigGoogle)
+    - [T2sCloudProviderConfigMicrosoft](#ondewo.t2s.T2sCloudProviderConfigMicrosoft)
+    - [T2sCloudServiceAmazon](#ondewo.t2s.T2sCloudServiceAmazon)
+    - [T2sCloudServiceElevenLabs](#ondewo.t2s.T2sCloudServiceElevenLabs)
+    - [T2sCloudServiceGoogle](#ondewo.t2s.T2sCloudServiceGoogle)
+    - [T2sCloudServiceMicrosoft](#ondewo.t2s.T2sCloudServiceMicrosoft)
     - [T2sPipelineId](#ondewo.t2s.T2sPipelineId)
     - [Text2Audio](#ondewo.t2s.Text2Audio)
     - [Text2Mel](#ondewo.t2s.Text2Mel)
@@ -47,6 +55,7 @@
     - [UpdateCustomPhonemizerRequest](#ondewo.t2s.UpdateCustomPhonemizerRequest)
     - [Vits](#ondewo.t2s.Vits)
     - [VitsTriton](#ondewo.t2s.VitsTriton)
+    - [VoiceSettings](#ondewo.t2s.VoiceSettings)
     - [Wiener](#ondewo.t2s.Wiener)
   
     - [AudioFormat](#ondewo.t2s.AudioFormat)
@@ -549,6 +558,8 @@ Represents a Configuration for the text to speech conversion.
 | audio_format | [AudioFormat](#ondewo.t2s.AudioFormat) |  | Optional. Defines the format of the desired audio. The default value is wav. |
 | use_cache | [bool](#bool) |  | Optional. Define if cache should be used or not. The default value is False. |
 | normalizer | [string](#string) |  | Optional. Define what normalizer to synthesize the text with. The default value is the language of the pipeline. |
+| t2s_service_config | [google.protobuf.Struct](#google.protobuf.Struct) | optional | t2s_service_config provides the configuration of the service such as API key, bearer tokens, JWT, and other header information as key value pairs, e.g., <pre><code>MY_API_KEY='LKJDIFe244LKJOI'</code></pre> |
+| t2s_cloud_provider_config | [T2sCloudProviderConfig](#ondewo.t2s.T2sCloudProviderConfig) |  | Optional. Defines the cloud provider's specific configuration for using text to speech cloud services The default value is None. |
 
 
 
@@ -730,6 +741,142 @@ Represents the configuration for text-to-speech normalization.
 
 
 
+<a name="ondewo.t2s.T2sCloudProviderConfig"></a>
+
+### T2sCloudProviderConfig
+Configuration for cloud provider settings for Text-to-Speech (T2S).
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| t2s_cloud_provider_config_eleven_labs | [T2sCloudProviderConfigElevenLabs](#ondewo.t2s.T2sCloudProviderConfigElevenLabs) |  | Configuration for Eleven Labs text-to-speech provider. |
+| t2s_cloud_provider_config_google | [T2sCloudProviderConfigGoogle](#ondewo.t2s.T2sCloudProviderConfigGoogle) |  | Configuration for Google text-to-speech provider. |
+| t2s_cloud_provider_config_microsoft | [T2sCloudProviderConfigMicrosoft](#ondewo.t2s.T2sCloudProviderConfigMicrosoft) |  | Configuration for Microsoft text-to-speech provider. |
+
+
+
+
+
+
+<a name="ondewo.t2s.T2sCloudProviderConfigElevenLabs"></a>
+
+### T2sCloudProviderConfigElevenLabs
+Configuration details specific to the Eleven Labs text-to-speech provider.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| stability | [float](#float) |  | Stability level for inference, influencing consistency of generated speech. |
+| similarity_boost | [float](#float) |  | Boost value for similarity to enhance the similarity of the generated voice to a target voice. |
+| style | [float](#float) |  | Style parameter to control the expression or emotion in speech. |
+| use_speaker_boost | [bool](#bool) |  | Enables or disables speaker boost for emphasis on clarity and loudness. |
+| apply_text_normalization | [string](#string) |  | Specifies type of text normalization to apply during processing. |
+
+
+
+
+
+
+<a name="ondewo.t2s.T2sCloudProviderConfigGoogle"></a>
+
+### T2sCloudProviderConfigGoogle
+Configuration details specific to the Google text-to-speech provider.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| speaking_rate | [float](#float) |  | Speaking rate for inference, controlling the speed of generated speech. |
+| volume_gain_db | [float](#float) |  | Volume gain in dB applied to the generated speech. |
+| pitch | [float](#float) |  | Pitch adjustment for inference, allowing control over voice pitch. |
+
+
+
+
+
+
+<a name="ondewo.t2s.T2sCloudProviderConfigMicrosoft"></a>
+
+### T2sCloudProviderConfigMicrosoft
+Configuration details specific to the Microsoft text-to-speech provider.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| use_default_speaker | [bool](#bool) |  | Determines whether to use the default speaker voice. |
+
+
+
+
+
+
+<a name="ondewo.t2s.T2sCloudServiceAmazon"></a>
+
+### T2sCloudServiceAmazon
+T2sCloudServiceAmazon message contains settings for the Amazon Cloud service inference.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| voice_id | [string](#string) |  | Voice ID indicating the speaker |
+| model_id | [string](#string) |  | Model id for the inference server. |
+
+
+
+
+
+
+<a name="ondewo.t2s.T2sCloudServiceElevenLabs"></a>
+
+### T2sCloudServiceElevenLabs
+T2sCloudServiceElevenLabs message contains settings for the ElevenLabs Cloud service inference.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| model_id | [string](#string) |  | Model ID indicating the name of the model |
+| voice_id | [string](#string) |  | Voice ID indicating the speaker |
+| voice_settings | [VoiceSettings](#ondewo.t2s.VoiceSettings) |  | Voice setting of the inference |
+| apply_text_normalization | [string](#string) |  | Flag to indicate applying text normalization |
+
+
+
+
+
+
+<a name="ondewo.t2s.T2sCloudServiceGoogle"></a>
+
+### T2sCloudServiceGoogle
+T2sCloudServiceGoogle message contains settings for the Google Cloud service inference.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| voice_id | [string](#string) |  | Voice ID indicating the speaker |
+| speaking_rate | [float](#float) |  | Speaking rate to control the speed of audio. |
+| volume_gain_db | [float](#float) |  | Volume gain in db to control volume of the audio. |
+| pitch | [float](#float) |  | pitch value of the audio |
+
+
+
+
+
+
+<a name="ondewo.t2s.T2sCloudServiceMicrosoft"></a>
+
+### T2sCloudServiceMicrosoft
+T2sCloudServiceMicrosoft message contains settings for the Microsoft Cloud service inference.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| voice_id | [string](#string) |  | Voice ID indicating the speaker. |
+| use_default_speaker | [bool](#bool) |  | Flag to indicate using the default speaker. |
+
+
+
+
+
+
 <a name="ondewo.t2s.T2sPipelineId"></a>
 
 ### T2sPipelineId
@@ -757,6 +904,10 @@ Text2Audio message contains settings for text-to-audio inference.
 | type | [string](#string) |  | The type of text-to-audio inference. |
 | vits | [Vits](#ondewo.t2s.Vits) |  | Vits inference settings. |
 | vits_triton | [VitsTriton](#ondewo.t2s.VitsTriton) |  | Vits Triton inference settings. |
+| t2s_cloud_service_eleven_labs | [T2sCloudServiceElevenLabs](#ondewo.t2s.T2sCloudServiceElevenLabs) |  | ElevenLabs cloud service inference settings. |
+| t2s_cloud_service_amazon | [T2sCloudServiceAmazon](#ondewo.t2s.T2sCloudServiceAmazon) |  | Amazon cloud service inference settings. |
+| t2s_cloud_service_google | [T2sCloudServiceGoogle](#ondewo.t2s.T2sCloudServiceGoogle) |  | Google cloud service inference settings. |
+| t2s_cloud_service_microsoft | [T2sCloudServiceMicrosoft](#ondewo.t2s.T2sCloudServiceMicrosoft) |  | Microsoft cloud service inference settings. |
 
 
 
@@ -855,6 +1006,24 @@ VitsTriton message contains settings for the Vits Triton inference.
 | triton_model_name | [string](#string) |  | The name of the Triton model. |
 | triton_server_host | [string](#string) |  | The host of the Triton inference server which servers the model. |
 | triton_server_port | [int64](#int64) |  | The port of the Triton inference server which servers the model. |
+
+
+
+
+
+
+<a name="ondewo.t2s.VoiceSettings"></a>
+
+### VoiceSettings
+VoiceSettings message contains settings for ElevenLabs inference.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| stability | [float](#float) |  | stability value for elevenlabs inference |
+| similarity_boost | [float](#float) |  | similarity boost value for ElevenLabs inference. |
+| style | [float](#float) |  | style boost value for ElevenLabs inference. |
+| use_speaker_boost | [bool](#bool) |  | Flag to indicate speaker boost |
 
 
 
