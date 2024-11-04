@@ -225,7 +225,7 @@ message RequestConfig {
 message T2sCloudProviderConfig {
 
     // Configuration for Eleven Labs text-to-speech provider.
-    T2sCloudProviderConfigElevenLabs t2s_cloud_provider_config_eleven_labs = 1;
+    T2sCloudProviderConfigElevenLabs t2s_cloud_provider_config_elevenlabs = 1;
 
     // Configuration for Google text-to-speech provider.
     T2sCloudProviderConfigGoogle t2s_cloud_provider_config_google = 2;
@@ -623,7 +623,7 @@ message Text2Audio {
     VitsTriton vits_triton = 3;
 
     // ElevenLabs cloud service inference settings.
-    T2sCloudServiceElevenLabs t2s_cloud_service_eleven_labs = 4;
+    T2sCloudServiceElevenLabs t2s_cloud_service_elevenlabs = 4;
 
     // Amazon cloud service inference settings.
     T2sCloudServiceAmazon t2s_cloud_service_amazon = 5;
