@@ -230,8 +230,8 @@ message T2sCloudProviderConfig {
     // Configuration for Google text-to-speech provider.
     T2sCloudProviderConfigGoogle t2s_cloud_provider_config_google = 2;
 
-    // Configuration for Microsoft Azure text-to-speech provider.
-    T2sCloudProviderConfigMicrosoftAzure t2s_cloud_provider_config_microsoft_azure = 3;
+    // Configuration for Microsoft text-to-speech provider.
+    T2sCloudProviderConfigMicrosoft t2s_cloud_provider_config_microsoft = 3;
 
 }
 
@@ -255,8 +255,8 @@ message T2sCloudProviderConfigElevenLabs {
 
 }
 
-// Configuration details specific to the Microsoft Azure text-to-speech provider.
-message T2sCloudProviderConfigMicrosoftAzure {
+// Configuration details specific to the Microsoft text-to-speech provider.
+message T2sCloudProviderConfigMicrosoft {
 
     // Determines whether to use the default speaker voice.
     bool use_default_speaker = 1;
@@ -625,14 +625,14 @@ message Text2Audio {
     // ElevenLabs cloud service inference settings.
     T2sCloudServiceElevenLabs t2s_cloud_service_eleven_labs = 4;
 
-    // Amazon Aws cloud service inference settings.
-    T2sCloudServiceAmazonAws t2s_cloud_service_amazon_aws = 5;
+    // Amazon cloud service inference settings.
+    T2sCloudServiceAmazon t2s_cloud_service_amazon = 5;
 
     // Google cloud service inference settings.
     T2sCloudServiceGoogle t2s_cloud_service_google = 6;
 
-    // Microsoft Azure cloud service inference settings.
-    T2sCloudServiceMicrosoftAzure t2s_cloud_service_microsoft_azure = 7;
+    // Microsoft cloud service inference settings.
+    T2sCloudServiceMicrosoft t2s_cloud_service_microsoft = 7;
 
 }
 
@@ -784,8 +784,8 @@ message VoiceSettings{
     bool use_speaker_boost = 4;
 }
 
-// T2sCloudServiceAmazonAws message contains settings for the Amazon AWS Cloud service inference.
-message T2sCloudServiceAmazonAws {
+// T2sCloudServiceAmazon message contains settings for the Amazon Cloud service inference.
+message T2sCloudServiceAmazon {
 
     // Voice ID indicating the speaker
     string voice_id = 1;
@@ -812,8 +812,8 @@ message T2sCloudServiceGoogle {
 
 }
 
-// T2sCloudServiceMicrosoftAzure message contains settings for the Microsoft Azure Cloud service inference.
-message T2sCloudServiceMicrosoftAzure {
+// T2sCloudServiceMicrosoft message contains settings for the Microsoft Cloud service inference.
+message T2sCloudServiceMicrosoft {
 
     // Voice ID indicating the speaker.
     string voice_id = 1;
