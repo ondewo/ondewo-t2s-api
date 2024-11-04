@@ -43,11 +43,11 @@
     - [T2sCloudProviderConfig](#ondewo.t2s.T2sCloudProviderConfig)
     - [T2sCloudProviderConfigElevenLabs](#ondewo.t2s.T2sCloudProviderConfigElevenLabs)
     - [T2sCloudProviderConfigGoogle](#ondewo.t2s.T2sCloudProviderConfigGoogle)
-    - [T2sCloudProviderConfigMicrosoftAzure](#ondewo.t2s.T2sCloudProviderConfigMicrosoftAzure)
-    - [T2sCloudServiceAmazonAws](#ondewo.t2s.T2sCloudServiceAmazonAws)
+    - [T2sCloudProviderConfigMicrosoft](#ondewo.t2s.T2sCloudProviderConfigMicrosoft)
+    - [T2sCloudServiceAmazon](#ondewo.t2s.T2sCloudServiceAmazon)
     - [T2sCloudServiceElevenLabs](#ondewo.t2s.T2sCloudServiceElevenLabs)
     - [T2sCloudServiceGoogle](#ondewo.t2s.T2sCloudServiceGoogle)
-    - [T2sCloudServiceMicrosoftAzure](#ondewo.t2s.T2sCloudServiceMicrosoftAzure)
+    - [T2sCloudServiceMicrosoft](#ondewo.t2s.T2sCloudServiceMicrosoft)
     - [T2sPipelineId](#ondewo.t2s.T2sPipelineId)
     - [Text2Audio](#ondewo.t2s.Text2Audio)
     - [Text2Mel](#ondewo.t2s.Text2Mel)
@@ -751,7 +751,7 @@ Configuration for cloud provider settings for Text-to-Speech (T2S).
 | ----- | ---- | ----- | ----------- |
 | t2s_cloud_provider_config_eleven_labs | [T2sCloudProviderConfigElevenLabs](#ondewo.t2s.T2sCloudProviderConfigElevenLabs) |  | Configuration for Eleven Labs text-to-speech provider. |
 | t2s_cloud_provider_config_google | [T2sCloudProviderConfigGoogle](#ondewo.t2s.T2sCloudProviderConfigGoogle) |  | Configuration for Google text-to-speech provider. |
-| t2s_cloud_provider_config_microsoft_azure | [T2sCloudProviderConfigMicrosoftAzure](#ondewo.t2s.T2sCloudProviderConfigMicrosoftAzure) |  | Configuration for Microsoft Azure text-to-speech provider. |
+| t2s_cloud_provider_config_microsoft | [T2sCloudProviderConfigMicrosoft](#ondewo.t2s.T2sCloudProviderConfigMicrosoft) |  | Configuration for Microsoft text-to-speech provider. |
 
 
 
@@ -794,10 +794,10 @@ Configuration details specific to the Google text-to-speech provider.
 
 
 
-<a name="ondewo.t2s.T2sCloudProviderConfigMicrosoftAzure"></a>
+<a name="ondewo.t2s.T2sCloudProviderConfigMicrosoft"></a>
 
-### T2sCloudProviderConfigMicrosoftAzure
-Configuration details specific to the Microsoft Azure text-to-speech provider.
+### T2sCloudProviderConfigMicrosoft
+Configuration details specific to the Microsoft text-to-speech provider.
 
 
 | Field | Type | Label | Description |
@@ -809,10 +809,10 @@ Configuration details specific to the Microsoft Azure text-to-speech provider.
 
 
 
-<a name="ondewo.t2s.T2sCloudServiceAmazonAws"></a>
+<a name="ondewo.t2s.T2sCloudServiceAmazon"></a>
 
-### T2sCloudServiceAmazonAws
-T2sCloudServiceAmazonAws message contains settings for the Amazon AWS Cloud service inference.
+### T2sCloudServiceAmazon
+T2sCloudServiceAmazon message contains settings for the Amazon Cloud service inference.
 
 
 | Field | Type | Label | Description |
@@ -861,10 +861,10 @@ T2sCloudServiceGoogle message contains settings for the Google Cloud service inf
 
 
 
-<a name="ondewo.t2s.T2sCloudServiceMicrosoftAzure"></a>
+<a name="ondewo.t2s.T2sCloudServiceMicrosoft"></a>
 
-### T2sCloudServiceMicrosoftAzure
-T2sCloudServiceMicrosoftAzure message contains settings for the Microsoft Azure Cloud service inference.
+### T2sCloudServiceMicrosoft
+T2sCloudServiceMicrosoft message contains settings for the Microsoft Cloud service inference.
 
 
 | Field | Type | Label | Description |
@@ -905,9 +905,9 @@ Text2Audio message contains settings for text-to-audio inference.
 | vits | [Vits](#ondewo.t2s.Vits) |  | Vits inference settings. |
 | vits_triton | [VitsTriton](#ondewo.t2s.VitsTriton) |  | Vits Triton inference settings. |
 | t2s_cloud_service_eleven_labs | [T2sCloudServiceElevenLabs](#ondewo.t2s.T2sCloudServiceElevenLabs) |  | ElevenLabs cloud service inference settings. |
-| t2s_cloud_service_amazon_aws | [T2sCloudServiceAmazonAws](#ondewo.t2s.T2sCloudServiceAmazonAws) |  | Amazon Aws cloud service inference settings. |
+| t2s_cloud_service_amazon | [T2sCloudServiceAmazon](#ondewo.t2s.T2sCloudServiceAmazon) |  | Amazon cloud service inference settings. |
 | t2s_cloud_service_google | [T2sCloudServiceGoogle](#ondewo.t2s.T2sCloudServiceGoogle) |  | Google cloud service inference settings. |
-| t2s_cloud_service_microsoft_azure | [T2sCloudServiceMicrosoftAzure](#ondewo.t2s.T2sCloudServiceMicrosoftAzure) |  | Microsoft Azure cloud service inference settings. |
+| t2s_cloud_service_microsoft | [T2sCloudServiceMicrosoft](#ondewo.t2s.T2sCloudServiceMicrosoft) |  | Microsoft cloud service inference settings. |
 
 
 
