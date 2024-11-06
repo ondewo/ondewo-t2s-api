@@ -82,6 +82,6 @@ repos:
     hooks:
       - id: githubio-version
         name: githubio-version
-        # only on branches matching "release/*"
-        entry: bash -c '[ "$(git rev-parse --abbrev-ref HEAD)" =~ ^release/.*$ ] && make update_githubio || true'
+        # only on branches matching "master"
+        entry: sh -c '[ "$(git rev-parse --abbrev-ref HEAD)" = "master" ] && make update_githubio || true'
         language: system
