@@ -2,6 +2,9 @@
 ondewo.github.io
 ondewo-devops-accounts
 build_log_*.txt
+node_modules
+package.json
+package-lock.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
