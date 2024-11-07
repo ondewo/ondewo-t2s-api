@@ -212,12 +212,9 @@ message RequestConfig {
     // and other header information as key value pairs, e.g., <pre><code>MY_API_KEY='LKJDIFe244LKJOI'</code></pre>
     optional google.protobuf.Struct t2s_service_config = 9;
 
-    oneof oneof_t2s_cloud_provider_config {
-
-        // Optional. Defines the cloud provider's specific configuration for using text to speech cloud services
-        // The default value is None.
-        T2sCloudProviderConfig t2s_cloud_provider_config = 10;
-    }
+    // Optional. Defines the cloud provider's specific configuration for using text to speech cloud services
+    // The default value is None.
+    optional T2sCloudProviderConfig t2s_cloud_provider_config = 10;
 
 }
 
