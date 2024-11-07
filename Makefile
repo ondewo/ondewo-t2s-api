@@ -45,11 +45,11 @@ install_nvm: ## Install NVM, node and npm !! Forcefully closes current terminal
 
 install_python_requirements: ## Installs python requirements flak8 and mypy
 	wget -q https://raw.githubusercontent.com/ondewo/ondewo-t2s-client-python/master/requirements.txt -O requirements.txt
-	pip install -r requirements.txt
 	wget -q https://raw.githubusercontent.com/ondewo/ondewo-t2s-client-python/master/requirements-dev.txt -O requirements-dev.txt
-	pip install -r requirements-dev.txt
-	wget -q https://raw.githubusercontent.com/ondewo/ondewo-t2s-client-python/master/mypy.ini -O mypy.ini
 	wget -q https://raw.githubusercontent.com/ondewo/ondewo-t2s-client-python/master/.flake8 -O .flake8
+	wget -q https://raw.githubusercontent.com/ondewo/ondewo-t2s-client-python/master/mypy.ini -O mypy.ini
+	pip install -r requirements.txt
+	pip install -r requirements-dev.txt
 
 install_precommit_hooks: ## Installs pre-commit hooks and sets them up for the repo
 	pip install pre-commit
@@ -88,6 +88,7 @@ githubio_logic_pre:
 	$(eval REPO_NAME:= $(shell echo ${GH_REPO} | cut -d "-" -f 2 ))
 	$(eval REPO_NAME_UPPER:= $(shell echo ${GH_REPO} | cut -d "-" -f 2 | sed -e 's/\(.*\)/\U\1/'))
 	$(eval DOCS_DIR:=ondewo.github.io/docs/ondewo-${REPO_NAME}-api/${ONDEWO_T2S_API_VERSION})
+	@sed -i "/{ number: '${ONDEWO_T2S_API_VERSION}', link: 'ondewo-${REPO_NAME}-api\/${ONDEWO_T2S_API_VERSION}\/' },/d" ondewo.github.io/data.js
 	@rm -rf ${DOCS_DIR}
 	@mkdir "${DOCS_DIR}"
 	@cp docs/* ${DOCS_DIR}
@@ -101,7 +102,7 @@ githubio_logic: | githubio_logic_pre
 	$(eval VERSION_LINE:= $(shell cat -n ondewo.github.io/data.js | sed -n "/name\: '${REPO_NAME_UPPER}'/,/end\: ''/p" | grep "versions: " -A 1 | tail -1 | grep -o -E '[0-9]+' | head -1 | sed -e 's/^0\+//'))
 	$(eval TEMP_TEXT:= $(shell cat ondewo.github.io/script_object.txt | sed -e "s/VERSION/${ONDEWO_T2S_API_VERSION}/g" -e "s/TECHNOLOGY/${REPO_NAME}/g"))
 	@sed -i "${VERSION_LINE} i ${TEMP_TEXT}" ondewo.github.io/data.js
-	@cd ondewo.github.io && npx prettier -w --single-quote data.js
+	@npm install prettier && cd ondewo.github.io && npx prettier -w --single-quote data.js
 	$(eval DOCS_DIR:=ondewo.github.io/docs/ondewo-${REPO_NAME}-api/${ONDEWO_T2S_API_VERSION})
 	@rm -rf ${DOCS_DIR}
 	@mkdir "${DOCS_DIR}"
@@ -126,7 +127,7 @@ update_githubio:
 		rm -rf ondewo.github.io; sleep 3s; \
 	fi
 	@git clone git@github.com:ondewo/ondewo.github.io.git
-	@make githubio_logic || (echo "Done")
+	. ~/.nvm/nvm.sh && make githubio_logic || (echo "Done")
 	@rm -rf ondewo.github.io
 
 ########################################################
