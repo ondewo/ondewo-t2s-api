@@ -754,17 +754,20 @@ message VitsTriton {
 // T2sCloudServiceElevenLabs message contains settings for the ElevenLabs Cloud service inference.
 message T2sCloudServiceElevenLabs {
 
+    // Language of the generated audio. It should be 4-Letter language code.
+    string language_code = 1;
+
     // Model ID indicating the name of the model
-    string model_id = 1;
+    string model_id = 2;
 
     // Voice ID indicating the speaker
-    string voice_id = 2;
+    string voice_id = 3;
 
     // Voice setting of the inference
-    VoiceSettings voice_settings = 3;
+    VoiceSettings voice_settings = 4;
 
     // Flag to indicate applying text normalization
-    string apply_text_normalization = 4;
+    string apply_text_normalization = 5;
 
 }
 
