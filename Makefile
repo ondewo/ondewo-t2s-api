@@ -17,7 +17,7 @@ export
 
 # MUST BE THE SAME AS API in Mayor and Minor Version Number
 # example: API 2.9.0 --> Client 2.9.X
-ONDEWO_T2S_API_VERSION=5.4.0
+ONDEWO_T2S_API_VERSION=6.0.0
 
 # You need to setup an access token at https://github.com/settings/tokens - permissions are important
 GITHUB_GH_TOKEN?=ENTER_YOUR_TOKEN_HERE
@@ -45,19 +45,33 @@ install_nvm: ## Install NVM, node and npm !! Forcefully closes current terminal
 
 install_python_requirements: ## Installs python requirements flak8 and mypy
 	wget -q https://raw.githubusercontent.com/ondewo/ondewo-t2s-client-python/master/requirements.txt -O requirements.txt
-	pip install -r requirements.txt
 	wget -q https://raw.githubusercontent.com/ondewo/ondewo-t2s-client-python/master/requirements-dev.txt -O requirements-dev.txt
-	pip install -r requirements-dev.txt
-	wget -q https://raw.githubusercontent.com/ondewo/ondewo-t2s-client-python/master/mypy.ini -O mypy.ini
 	wget -q https://raw.githubusercontent.com/ondewo/ondewo-t2s-client-python/master/.flake8 -O .flake8
+	wget -q https://raw.githubusercontent.com/ondewo/ondewo-t2s-client-python/master/mypy.ini -O mypy.ini
+	pip install -r requirements.txt
+	pip install -r requirements-dev.txt
 
-install_precommit_hooks: ## Installs pre-commit hooks and sets them up for the ondewo-vtsi-api repo
+install_precommit_hooks: ## Installs pre-commit hooks and sets them up for the repo
 	pip install pre-commit
 	pre-commit install
 	pre-commit install --hook-type commit-msg
 
 precommit_hooks_run_all_files: ## Runs all pre-commit hooks on all files and not just the changed ones
 	pre-commit run --all-file
+
+flake8: ## Runs flake8
+	flake8 --config .flake8 .
+
+mypy: ## Run mypy static code checking
+	@echo "---------------------------------------------"
+	@echo "START: Run mypy in pre-commit hook ..."
+	pre-commit run mypy --all-files
+	@echo "DONE: Run mypy in pre-commit hook."
+	@echo "---------------------------------------------"
+	@echo "START: Run mypy directly ..."
+	mypy --config-file=mypy.ini .
+	@echo "DONE: Run mypy directly"
+	@echo "---------------------------------------------"
 
 help: ## Print usage info about help targets
 	# (first comment after target starting with double hashes ##)
@@ -67,13 +81,14 @@ makefile_chapters: ## Shows all sections of Makefile
 	@echo `cat Makefile| grep "########################################################" -A 1 | grep -v "########################################################"`
 
 TEST:
-	@echo ${GITHUB_GH_TOKEN}
-	@echo ${CURRENT_RELEASE_NOTES}
+	@echo "----------------------------------------------\nGITHUB_GH_TOKEN\n----------------------------------------------\n{GITHUB_GH_TOKEN}\n"
+	@echo "----------------------------------------------\nCURRENT_RELEASE_NOTES\n----------------------------------------------\n${CURRENT_RELEASE_NOTES}\n"
 
 githubio_logic_pre:
 	$(eval REPO_NAME:= $(shell echo ${GH_REPO} | cut -d "-" -f 2 ))
 	$(eval REPO_NAME_UPPER:= $(shell echo ${GH_REPO} | cut -d "-" -f 2 | sed -e 's/\(.*\)/\U\1/'))
 	$(eval DOCS_DIR:=ondewo.github.io/docs/ondewo-${REPO_NAME}-api/${ONDEWO_T2S_API_VERSION})
+	@sed -i "/{ number: '${ONDEWO_T2S_API_VERSION}', link: 'ondewo-${REPO_NAME}-api\/${ONDEWO_T2S_API_VERSION}\/' },/d" ondewo.github.io/data.js
 	@rm -rf ${DOCS_DIR}
 	@mkdir "${DOCS_DIR}"
 	@cp docs/* ${DOCS_DIR}
@@ -87,7 +102,7 @@ githubio_logic: | githubio_logic_pre
 	$(eval VERSION_LINE:= $(shell cat -n ondewo.github.io/data.js | sed -n "/name\: '${REPO_NAME_UPPER}'/,/end\: ''/p" | grep "versions: " -A 1 | tail -1 | grep -o -E '[0-9]+' | head -1 | sed -e 's/^0\+//'))
 	$(eval TEMP_TEXT:= $(shell cat ondewo.github.io/script_object.txt | sed -e "s/VERSION/${ONDEWO_T2S_API_VERSION}/g" -e "s/TECHNOLOGY/${REPO_NAME}/g"))
 	@sed -i "${VERSION_LINE} i ${TEMP_TEXT}" ondewo.github.io/data.js
-	@cd ondewo.github.io && npx prettier -w --single-quote data.js
+	@npm install prettier && cd ondewo.github.io && npx prettier -w --single-quote data.js
 	$(eval DOCS_DIR:=ondewo.github.io/docs/ondewo-${REPO_NAME}-api/${ONDEWO_T2S_API_VERSION})
 	@rm -rf ${DOCS_DIR}
 	@mkdir "${DOCS_DIR}"
@@ -107,9 +122,12 @@ githubio_logic: | githubio_logic_pre
 	@git -C ondewo.github.io push
 
 update_githubio:
-	@rm -rf ondewo.github.io
+	@if [ -d "ondewo.github.io" ]; then \
+		echo "Removing existing directory ondewo.github.io"; \
+		rm -rf ondewo.github.io; sleep 3s; \
+	fi
 	@git clone git@github.com:ondewo/ondewo.github.io.git
-	@make githubio_logic || (echo "Done")
+	. ~/.nvm/nvm.sh && make githubio_logic || (echo "Done")
 	@rm -rf ondewo.github.io
 
 ########################################################
@@ -127,7 +145,6 @@ create_release_branch: ## Create Release Branch and push it to origin
 create_release_tag: ## Create Release Tag and push it to origin
 	git tag -a ${ONDEWO_T2S_API_VERSION} -m "release/${ONDEWO_T2S_API_VERSION}"
 	git push origin ${ONDEWO_T2S_API_VERSION}
-
 
 login_to_gh: ## Login to Github CLI with Access Token
 	echo $(GITHUB_GH_TOKEN) | gh auth login -p ssh --with-token
@@ -149,8 +166,6 @@ GENERIC_RELEASE_NOTES="\n***************** \n\\\#\\\# Release ONDEWO T2S REPONAM
 	\n\\\#\\\#\\\# Improvements \n \
 	* Tracking API Version [${ONDEWO_T2S_API_VERSION}](https://github.com/ondewo/ondewo-t2s-api/releases/tag/${ONDEWO_T2S_API_VERSION}) ( [Documentation](https://ondewo.github.io/ondewo-t2s-api/) ) \n"
 
-
-
 release_client:
 	$(eval REPO_NAME:= $(shell echo ${GENERIC_CLIENT} | cut -c 41- | cut -d '.' -f 1))
 	$(eval REPO_DIR:= $(shell echo "ondewo-t2s-client-${REPO_NAME}"))
@@ -169,9 +184,9 @@ release_client:
 # Change Version Number and RELEASE NOTES
 	cd ${REPO_DIR} && sed -i -e '/Release History/r ../temp-notes' ${RELEASEMD}
 	cd ${REPO_DIR} && head -20 ${RELEASEMD}
-	cd ${REPO_DIR} && sed -i -e 's/ONDEWO_T2S_VERSION.*=.*[0-9]*.[0-9]*.[0-9]/ONDEWO_T2S_VERSION = ${ONDEWO_T2S_API_VERSION}/' Makefile
-	cd ${REPO_DIR} && sed -i -e 's/ONDEWO_PROTO_COMPILER_GIT_BRANCH.*=.*tags\/[0-9]*.[0-9]*.[0-9]/ONDEWO_PROTO_COMPILER_GIT_BRANCH=tags\/${PROTO_COMPILER}/' Makefile
-	cd ${REPO_DIR} && sed -i -e 's/T2S_API_GIT_BRANCH=tags\/[0-9]*.[0-9]*.[0-9]/T2S_API_GIT_BRANCH=tags\/${ONDEWO_T2S_API_VERSION}/' Makefile && head -30 Makefile
+	cd ${REPO_DIR} && sed -i -e 's/ONDEWO_T2S_VERSION.*=.*/ONDEWO_T2S_VERSION = ${ONDEWO_T2S_API_VERSION}/' Makefile
+	cd ${REPO_DIR} && sed -i -e 's/ONDEWO_PROTO_COMPILER_GIT_BRANCH.*=.*/ONDEWO_PROTO_COMPILER_GIT_BRANCH=tags\/${PROTO_COMPILER}/' Makefile
+	cd ${REPO_DIR} && sed -i -e 's/T2S_API_GIT_BRANCH.*=.*/T2S_API_GIT_BRANCH=tags\/${ONDEWO_T2S_API_VERSION}/' Makefile && head -30 Makefile
 
 # Build new code
 	make -C ${REPO_DIR} ondewo_release | tee build_log_${REPO_NAME}.txt
@@ -179,7 +194,6 @@ release_client:
 # Remove everything from Release
 	sudo rm -rf ${REPO_DIR}
 	rm -f temp-notes
-
 
 PYTHON_CLIENT="git@github.com:ondewo/ondewo-t2s-client-python.git"
 
@@ -216,7 +230,6 @@ release_js_client: ## Release Js Client
 	make release_client GENERIC_CLIENT=${JS_CLIENT} RELEASEMD="src/RELEASE.md"
 	@echo "End releasing Js Client \n \n \n"
 
-
 ########################################################
 #		GITHUB
 
@@ -225,7 +238,7 @@ build_and_release_to_github_via_docker: build_utils_docker_image release_to_gith
 build_utils_docker_image:  ## Build utils docker image
 	docker build -f Dockerfile.utils -t ${IMAGE_UTILS_NAME} .
 
-push_to_gh: login_to_gh build_gh_release
+push_to_gh: login_to_gh build_gh_release ## Logs into GitHub CLI and Releases
 	@echo 'Released to Github'
 
 release_to_github_via_docker_image:  ## Release to Github via docker
@@ -240,11 +253,11 @@ ondewo_release: spc clone_devops_accounts run_release_with_devops ## Release wit
 	@rm -rf ${DEVOPS_ACCOUNT_GIT}
 
 clone_devops_accounts: ## Clones devops-accounts repo
-	if [ -d $(DEVOPS_ACCOUNT_GIT) ]; then rm -Rf $(DEVOPS_ACCOUNT_GIT); fi
+	@if [ -d $(DEVOPS_ACCOUNT_GIT) ]; then rm -Rf $(DEVOPS_ACCOUNT_GIT); fi
 	git clone git@bitbucket.org:ondewo/${DEVOPS_ACCOUNT_GIT}.git
 
-run_release_with_devops:
-	$(eval info:= $(shell cat ${DEVOPS_ACCOUNT_DIR}/account_github.env | grep GITHUB_GH & cat ${DEVOPS_ACCOUNT_DIR}/account_pypi.env | grep PYPI_USERNAME & cat ${DEVOPS_ACCOUNT_DIR}/account_pypi.env | grep PYPI_PASSWORD))
+run_release_with_devops: ## Gets Credentials from devops-repo and runs release with them
+	$(eval info:= $(shell cat ${DEVOPS_ACCOUNT_DIR}/account_github.env | grep GITHUB_GH))
 	make release $(info)
 
 spc: ## Checks if the Release Branch, Tag and Pypi version already exist

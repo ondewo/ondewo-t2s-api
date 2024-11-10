@@ -2,6 +2,14 @@
 
 *****************
 
+## Release ONDEWO T2S API 6.0.0
+
+### New Features
+
+* [OND232-749](https://ondewo.atlassian.net/browse/OND232-749) Added cloud providers
+
+*****************
+
 ## Release ONDEWO T2S API 5.4.0
 
 ### Improvements
@@ -57,7 +65,7 @@
 
 ## Release ONDEWO T2S API 4.2.0
 
-### Features
+### New Features
 
 * [[OND211-2039]](https://ondewo.atlassian.net/browse/OND211-2039) - Automated Release Process
 
@@ -65,7 +73,7 @@
 
 ## Release ONDEWO T2S API 4.1.0
 
-### Features
+### New Features
 
 * Added normalizer to synthesize message.
 
@@ -73,7 +81,7 @@
 
 ## Release ONDEWO T2S API 4.0.5
 
-### Features
+### New Features
 
 * Added callsign mapping.
 
@@ -81,7 +89,7 @@
 
 ## Release ONDEWO T2S API 4.0.4
 
-### Features
+### New Features
 
 * Fix mapping type, added callsign long and short to configuration file api.
 
@@ -89,7 +97,7 @@
 
 ## Release ONDEWO T2S API 4.0.3
 
-### Features
+### New Features
 
 * Add NormalizeText endpoint, that allows for text normalization without speech synthesis.
 
@@ -97,7 +105,7 @@
 
 ## Release ONDEWO T2S API 4.0.2
 
-### Features
+### New Features
 
 * Add field T2SCustomLengthScales to T2SNormalizePipeline.
 
@@ -105,7 +113,7 @@
 
 ## Release ONDEWO T2S API 4.0.1
 
-### Features
+### New Features
 
 * [[OND232-348]](https://ondewo.atlassian.net/browse/OND232-348) - Add field normalized_text to SynthesizeResponse.
 
@@ -133,7 +141,7 @@
 
 ### Breaking Changes
 
-`RequestConfig` implemented in SynthesizeRequest.
+* `RequestConfig` implemented in SynthesizeRequest.
 
 *****************
 
@@ -141,7 +149,7 @@
 
 ### Improvements
 
-Updated README.
+* Updated README.
 
 *****************
 
@@ -149,7 +157,7 @@ Updated README.
 
 ### Bug fixes
 
-Updated licenses.
+* Updated licenses.
 
 *****************
 
@@ -157,21 +165,15 @@ Updated licenses.
 
 ### New Features
 
-Move to GitHub!
+* Move to GitHub!
 
 ### Improvements
 
-No longer closed source.
-
-### Bug fixes
-
-### Breaking Changes
-
-### Known issues not covered in this release
+* No longer closed source.
 
 ### Migration Guide
 
-[Replace submodule](https://stackoverflow.com/a/1260982/7756727) in the client.
+* [Replace submodule](https://stackoverflow.com/a/1260982/7756727) in the client.
 
 *****************
 
@@ -179,22 +181,18 @@ No longer closed source.
 
 ### New Features
 
-Refactored individual project APIs into seperate repos.
+* Refactored individual project APIs into separate repos.
 
 ### Improvements
 
-Easier to develop independently.
-
-### Bug fixes
-
-### Breaking Changes
+* Easier to develop independently.
 
 ### Known issues not covered in this release
 
-Harder to install apis under one heading-- this will be addressed at a later date.
+* Harder to install apis under one heading-- this will be addressed at a later date.
 
 ### Migration Guide
 
-[Replace submodule](https://stackoverflow.com/a/1260982/7756727) in the client.
+* [Replace submodule](https://stackoverflow.com/a/1260982/7756727) in the client.
 
 *****************

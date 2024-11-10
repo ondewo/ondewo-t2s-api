@@ -16,6 +16,7 @@ syntax = "proto3";
 
 package ondewo.t2s;
 import "google/protobuf/empty.proto";
+import "google/protobuf/struct.proto";
 
 // Text2Speech service provides endpoints for text-to-speech generation.
 service Text2Speech {
@@ -139,6 +140,7 @@ message SynthesizeRequest {
 
     // Required. Represents the specifications needed to do the text to speech transformation.
     RequestConfig config = 2;
+
 }
 
 // BatchSynthesizeRequest message is used to send a batch request for synthesis.
@@ -205,8 +207,72 @@ message RequestConfig {
         // The default value is the language of the pipeline.
         string normalizer = 8;
     }
+
+    // t2s_service_config provides the configuration of the service such as API key, bearer tokens, JWT,
+    // and other header information as key value pairs, e.g., <pre><code>MY_API_KEY='LKJDIFe244LKJOI'</code></pre>
+    optional google.protobuf.Struct t2s_service_config = 9;
+
+    // Optional. Defines the cloud provider's specific configuration for using text to speech cloud services
+    // The default value is None.
+    optional T2sCloudProviderConfig t2s_cloud_provider_config = 10;
+
 }
 
+// Configuration for cloud provider settings for Text-to-Speech (T2S).
+message T2sCloudProviderConfig {
+
+    // Configuration for Eleven Labs text-to-speech provider.
+    T2sCloudProviderConfigElevenLabs t2s_cloud_provider_config_elevenlabs = 1;
+
+    // Configuration for Google text-to-speech provider.
+    T2sCloudProviderConfigGoogle t2s_cloud_provider_config_google = 2;
+
+    // Configuration for Microsoft text-to-speech provider.
+    T2sCloudProviderConfigMicrosoft t2s_cloud_provider_config_microsoft = 3;
+
+}
+
+// Configuration details specific to the Eleven Labs text-to-speech provider.
+message T2sCloudProviderConfigElevenLabs {
+
+    // Stability level for inference, influencing consistency of generated speech.
+    float stability = 1;
+
+    // Boost value for similarity to enhance the similarity of the generated voice to a target voice.
+    float similarity_boost = 2;
+
+    // Style parameter to control the expression or emotion in speech.
+    float style = 3;
+
+    // Enables or disables speaker boost for emphasis on clarity and loudness.
+    bool use_speaker_boost = 4;
+
+    // Specifies type of text normalization to apply during processing.
+    string apply_text_normalization = 5;
+
+}
+
+// Configuration details specific to the Microsoft text-to-speech provider.
+message T2sCloudProviderConfigMicrosoft {
+
+    // Determines whether to use the default speaker voice.
+    bool use_default_speaker = 1;
+
+}
+
+// Configuration details specific to the Google text-to-speech provider.
+message T2sCloudProviderConfigGoogle {
+
+    // Speaking rate for inference, controlling the speed of generated speech.
+    float speaking_rate = 1;
+
+    // Volume gain in dB applied to the generated speech.
+    float volume_gain_db = 2;
+
+    // Pitch adjustment for inference, allowing control over voice pitch.
+    float pitch = 3;
+
+}
 
 // Represents a pulse-code modulation technique.
 enum Pcm {
@@ -553,6 +619,18 @@ message Text2Audio {
     // Vits Triton inference settings.
     VitsTriton vits_triton = 3;
 
+    // ElevenLabs cloud service inference settings.
+    T2sCloudServiceElevenLabs t2s_cloud_service_elevenlabs = 4;
+
+    // Amazon cloud service inference settings.
+    T2sCloudServiceAmazon t2s_cloud_service_amazon = 5;
+
+    // Google cloud service inference settings.
+    T2sCloudServiceGoogle t2s_cloud_service_google = 6;
+
+    // Microsoft cloud service inference settings.
+    T2sCloudServiceMicrosoft t2s_cloud_service_microsoft = 7;
+
 }
 
 // GlowTTS message contains settings for the GlowTTS inference.
@@ -667,6 +745,81 @@ message VitsTriton {
 
     // The port of the Triton inference server which servers the model.
     int64 triton_server_port = 9;
+
+}
+
+// T2sCloudServiceElevenLabs message contains settings for the ElevenLabs Cloud service inference.
+message T2sCloudServiceElevenLabs {
+
+    // Language of the generated audio. It should be 4-Letter language code.
+    string language_code = 1;
+
+    // Model ID indicating the name of the model
+    string model_id = 2;
+
+    // Voice ID indicating the speaker
+    string voice_id = 3;
+
+    // Voice setting of the inference
+    VoiceSettings voice_settings = 4;
+
+    // Flag to indicate applying text normalization
+    string apply_text_normalization = 5;
+
+}
+
+// VoiceSettings message contains settings for ElevenLabs inference.
+message VoiceSettings{
+
+    // stability value for elevenlabs inference
+    float stability = 1;
+
+    // similarity boost value for ElevenLabs inference.
+    float similarity_boost = 2;
+
+    // style boost value for ElevenLabs inference.
+    float style = 3;
+
+    // Flag to indicate speaker boost
+    bool use_speaker_boost = 4;
+}
+
+// T2sCloudServiceAmazon message contains settings for the Amazon Cloud service inference.
+message T2sCloudServiceAmazon {
+
+    // Voice ID indicating the speaker
+    string voice_id = 1;
+
+    // Model id for the inference server.
+    string model_id = 2;
+
+}
+
+// T2sCloudServiceGoogle message contains settings for the Google Cloud service inference.
+message T2sCloudServiceGoogle {
+
+    // Voice ID indicating the speaker
+    string voice_id = 1;
+
+    // Speaking rate to control the speed of audio.
+    float speaking_rate = 2;
+
+    // Volume gain in db to control volume of the audio.
+    float volume_gain_db = 3;
+
+    // pitch value of the audio
+    float pitch = 4;
+
+}
+
+// T2sCloudServiceMicrosoft message contains settings for the Microsoft Cloud service inference.
+message T2sCloudServiceMicrosoft {
+
+    // Voice ID indicating the speaker.
+    string voice_id = 1;
+
+    // Flag to indicate using the default speaker.
+    bool use_default_speaker = 2;
 
 }
 
