@@ -6,7 +6,8 @@
 
 ### New Features
 
-* [OND232-749](https://ondewo.atlassian.net/browse/OND232-749) Added cloud providers
+* [OND232-749](https://ondewo.atlassian.net/browse/OND232-749) Added cloud service providers amazon, google, microsoft
+  and elevenlabs as ondewo-t2s models.
 
 *****************
 
