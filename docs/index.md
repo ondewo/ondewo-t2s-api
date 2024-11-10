@@ -559,7 +559,7 @@ Represents a Configuration for the text to speech conversion.
 | use_cache | [bool](#bool) |  | Optional. Define if cache should be used or not. The default value is False. |
 | normalizer | [string](#string) |  | Optional. Define what normalizer to synthesize the text with. The default value is the language of the pipeline. |
 | t2s_service_config | [google.protobuf.Struct](#google.protobuf.Struct) | optional | t2s_service_config provides the configuration of the service such as API key, bearer tokens, JWT, and other header information as key value pairs, e.g., <pre><code>MY_API_KEY='LKJDIFe244LKJOI'</code></pre> |
-| t2s_cloud_provider_config | [T2sCloudProviderConfig](#ondewo.t2s.T2sCloudProviderConfig) |  | Optional. Defines the cloud provider's specific configuration for using text to speech cloud services The default value is None. |
+| t2s_cloud_provider_config | [T2sCloudProviderConfig](#ondewo.t2s.T2sCloudProviderConfig) | optional | Optional. Defines the cloud provider's specific configuration for using text to speech cloud services The default value is None. |
 
 
 
@@ -833,6 +833,7 @@ T2sCloudServiceElevenLabs message contains settings for the ElevenLabs Cloud ser
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| language_code | [string](#string) |  | Language of the generated audio. It should be 4-Letter language code. |
 | model_id | [string](#string) |  | Model ID indicating the name of the model |
 | voice_id | [string](#string) |  | Voice ID indicating the speaker |
 | voice_settings | [VoiceSettings](#ondewo.t2s.VoiceSettings) |  | Voice setting of the inference |

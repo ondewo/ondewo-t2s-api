@@ -1596,7 +1596,7 @@ and other header information as key value pairs, e.g., <pre><code>MY_API_KEY='LK
                 <tr>
                   <td>t2s_cloud_provider_config</td>
                   <td><a href="#ondewo.t2s.T2sCloudProviderConfig">T2sCloudProviderConfig</a></td>
-                  <td></td>
+                  <td>optional</td>
                   <td><p>Optional. Defines the cloud provider's specific configuration for using text to speech cloud services
 The default value is None. </p></td>
                 </tr>
@@ -2219,6 +2219,13 @@ The default value is None. </p></td>
               <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
             </thead>
             <tbody>
+              
+                <tr>
+                  <td>language_code</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Language of the generated audio. It should be 4-Letter language code. </p></td>
+                </tr>
               
                 <tr>
                   <td>model_id</td>
