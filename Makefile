@@ -81,7 +81,7 @@ makefile_chapters: ## Shows all sections of Makefile
 	@echo `cat Makefile| grep "########################################################" -A 1 | grep -v "########################################################"`
 
 TEST:
-	@echo "----------------------------------------------\nGITHUB_GH_TOKEN\n----------------------------------------------\n{GITHUB_GH_TOKEN}\n"
+	@echo "----------------------------------------------\nGITHUB_GH_TOKEN\n----------------------------------------------\n${GITHUB_GH_TOKEN}\n"
 	@echo "----------------------------------------------\nCURRENT_RELEASE_NOTES\n----------------------------------------------\n${CURRENT_RELEASE_NOTES}\n"
 
 githubio_logic_pre:
