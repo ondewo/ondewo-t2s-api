@@ -210,6 +210,19 @@ message RequestConfig {
 
     // t2s_service_config provides the configuration of the service such as API key, bearer tokens, JWT,
     // and other header information as key value pairs, e.g., <pre><code>MY_API_KEY='LKJDIFe244LKJOI'</code></pre>
+    // For Amazon T2S service, the following arguments should be passed:
+    //   __aws_access_key_id__ (required) Access key id to access Amazon WEB Service.
+    //   __aws_secret_access_key__ (required) Secret access key to access Amazon WEB Service.
+    //   __region__ (required) Region name of Amazon Server.
+    // For Google cloud T2S service, the following arguments should be passed:
+    //   __api_key__ (required) API key of Google cloud provider to access its T2S service.
+    //   __api_endpoint__ (optional) Regional API endpoint of Google cloud T2S service.
+    //     (Defaults to 'eu-texttospeech.googleapis.com')
+    // For Microsoft Azure T2s service, the following arguments should be passed:
+    //   __subscription_key__ (required) Subscription key to access Microsoft Azure Service.
+    //   __region__ (required) Region name of Microsoft Azure Server.
+    // For ElevenLabs T2s service, the following arguments should be passed:
+    //   __api_key__ (required) API key of ElevenLabs cloud provider to access its T2S service.
     optional google.protobuf.Struct t2s_service_config = 9;
 
     // Optional. Defines the cloud provider's specific configuration for using text to speech cloud services
