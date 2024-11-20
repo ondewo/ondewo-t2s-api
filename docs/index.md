@@ -766,11 +766,11 @@ Configuration details specific to the Eleven Labs text-to-speech provider.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| stability | [float](#float) |  | Stability level for inference, influencing consistency of generated speech. |
-| similarity_boost | [float](#float) |  | Boost value for similarity to enhance the similarity of the generated voice to a target voice. |
-| style | [float](#float) |  | Style parameter to control the expression or emotion in speech. |
+| stability | [float](#float) |  | Stability level for inference, influencing consistency of generated speech. It is in the range [0.0, 1.0]. |
+| similarity_boost | [float](#float) |  | Boost value for similarity to enhance the similarity of the generated voice to a target voice. It is in the range [0.0, 1.0]. |
+| style | [float](#float) |  | Style parameter to control the expression or emotion in speech. It is in the range [0.0, 1.0]. |
 | use_speaker_boost | [bool](#bool) |  | Enables or disables speaker boost for emphasis on clarity and loudness. |
-| apply_text_normalization | [string](#string) |  | Specifies type of text normalization to apply during processing. |
+| apply_text_normalization | [string](#string) |  | Specifies type of text normalization to apply during processing. Available options are 'auto', 'on', and 'off'. |
 
 
 
@@ -785,9 +785,9 @@ Configuration details specific to the Google text-to-speech provider.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| speaking_rate | [float](#float) |  | Speaking rate for inference, controlling the speed of generated speech. |
-| volume_gain_db | [float](#float) |  | Volume gain in dB applied to the generated speech. |
-| pitch | [float](#float) |  | Pitch adjustment for inference, allowing control over voice pitch. |
+| speaking_rate | [float](#float) |  | Speaking rate for inference, controlling the speed of generated speech. It is in the range [0.25, 4.0]. |
+| volume_gain_db | [float](#float) |  | Volume gain in dB applied to the generated speech. It is in the range [-96.0, 16.0]. |
+| pitch | [float](#float) |  | Pitch adjustment for inference, allowing control over voice pitch. It is in the range in the range [-20.0, 20.0]. |
 
 
 

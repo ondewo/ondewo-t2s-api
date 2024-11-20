@@ -2103,21 +2103,22 @@ The default value is None. </p></td>
                   <td>stability</td>
                   <td><a href="#float">float</a></td>
                   <td></td>
-                  <td><p>Stability level for inference, influencing consistency of generated speech. </p></td>
+                  <td><p>Stability level for inference, influencing consistency of generated speech. It is in the range [0.0, 1.0]. </p></td>
                 </tr>
               
                 <tr>
                   <td>similarity_boost</td>
                   <td><a href="#float">float</a></td>
                   <td></td>
-                  <td><p>Boost value for similarity to enhance the similarity of the generated voice to a target voice. </p></td>
+                  <td><p>Boost value for similarity to enhance the similarity of the generated voice to a target voice.
+It is in the range [0.0, 1.0]. </p></td>
                 </tr>
               
                 <tr>
                   <td>style</td>
                   <td><a href="#float">float</a></td>
                   <td></td>
-                  <td><p>Style parameter to control the expression or emotion in speech. </p></td>
+                  <td><p>Style parameter to control the expression or emotion in speech. It is in the range [0.0, 1.0]. </p></td>
                 </tr>
               
                 <tr>
@@ -2131,7 +2132,7 @@ The default value is None. </p></td>
                   <td>apply_text_normalization</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>Specifies type of text normalization to apply during processing. </p></td>
+                  <td><p>Specifies type of text normalization to apply during processing. Available options are 'auto', 'on', and 'off'. </p></td>
                 </tr>
               
             </tbody>
@@ -2155,21 +2156,21 @@ The default value is None. </p></td>
                   <td>speaking_rate</td>
                   <td><a href="#float">float</a></td>
                   <td></td>
-                  <td><p>Speaking rate for inference, controlling the speed of generated speech. </p></td>
+                  <td><p>Speaking rate for inference, controlling the speed of generated speech. It is in the range [0.25, 4.0]. </p></td>
                 </tr>
               
                 <tr>
                   <td>volume_gain_db</td>
                   <td><a href="#float">float</a></td>
                   <td></td>
-                  <td><p>Volume gain in dB applied to the generated speech. </p></td>
+                  <td><p>Volume gain in dB applied to the generated speech. It is in the range [-96.0, 16.0]. </p></td>
                 </tr>
               
                 <tr>
                   <td>pitch</td>
                   <td><a href="#float">float</a></td>
                   <td></td>
-                  <td><p>Pitch adjustment for inference, allowing control over voice pitch. </p></td>
+                  <td><p>Pitch adjustment for inference, allowing control over voice pitch. It is in the range in the range [-20.0, 20.0]. </p></td>
                 </tr>
               
             </tbody>
