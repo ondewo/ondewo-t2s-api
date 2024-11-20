@@ -259,19 +259,20 @@ message T2sCloudProviderConfig {
 // Configuration details specific to the Eleven Labs text-to-speech provider.
 message T2sCloudProviderConfigElevenLabs {
 
-    // Stability level for inference, influencing consistency of generated speech.
+    // Stability level for inference, influencing consistency of generated speech. It is in the range [0.0, 1.0].
     float stability = 1;
 
     // Boost value for similarity to enhance the similarity of the generated voice to a target voice.
+    // It is in the range [0.0, 1.0].
     float similarity_boost = 2;
 
-    // Style parameter to control the expression or emotion in speech.
+    // Style parameter to control the expression or emotion in speech. It is in the range [0.0, 1.0].
     float style = 3;
 
     // Enables or disables speaker boost for emphasis on clarity and loudness.
     bool use_speaker_boost = 4;
 
-    // Specifies type of text normalization to apply during processing.
+    // Specifies type of text normalization to apply during processing. Available options are 'auto', 'on', and 'off'.
     string apply_text_normalization = 5;
 
 }
@@ -287,13 +288,13 @@ message T2sCloudProviderConfigMicrosoft {
 // Configuration details specific to the Google text-to-speech provider.
 message T2sCloudProviderConfigGoogle {
 
-    // Speaking rate for inference, controlling the speed of generated speech.
+    // Speaking rate for inference, controlling the speed of generated speech. It is in the range [0.25, 4.0].
     float speaking_rate = 1;
 
-    // Volume gain in dB applied to the generated speech.
+    // Volume gain in dB applied to the generated speech. It is in the range [-96.0, 16.0].
     float volume_gain_db = 2;
 
-    // Pitch adjustment for inference, allowing control over voice pitch.
+    // Pitch adjustment for inference, allowing control over voice pitch. It is in the range in the range [-20.0, 20.0].
     float pitch = 3;
 
 }
