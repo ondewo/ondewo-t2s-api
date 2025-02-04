@@ -1578,11 +1578,19 @@ The default value is False. </p></td>
                 </tr>
               
                 <tr>
-                  <td>normalizer</td>
-                  <td><a href="#string">string</a></td>
+                  <td>t2s_normalization</td>
+                  <td><a href="#ondewo.t2s.T2SNormalization">T2SNormalization</a></td>
                   <td></td>
-                  <td><p>Optional. Define what normalizer to synthesize the text with.
-The default value is the language of the pipeline. </p></td>
+                  <td><p>Optional. Define t2s_normalization config parameters for this specific request.
+The default values are set in the config file and the values set via RequestConfig are set just for
+this specific request and will not update the pipeline. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>word_to_phoneme_mapping</td>
+                  <td><a href="#google.protobuf.Struct">google.protobuf.Struct</a></td>
+                  <td>optional</td>
+                  <td><p>Optional. Define a dict which specifies the phonemes for a special word. </p></td>
                 </tr>
               
                 <tr>
