@@ -216,7 +216,7 @@ message RequestConfig {
     }
 
     // Optional. Define a dict which specifies the phonemes for a special word.
-    optional google.protobuf.Struct char_mapping = 10;
+    optional google.protobuf.Struct word_to_phoneme_mapping = 10;
 
     // Optional. t2s_service_config provides the configuration of the service such as API key, bearer tokens, JWT,
     // and other header information as key value pairs, e.g., <pre><code>MY_API_KEY='LKJDIFe244LKJOI'</code></pre>
