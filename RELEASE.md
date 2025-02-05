@@ -2,6 +2,15 @@
 
 *****************
 
+## Release ONDEWO T2S API 6.1.0
+
+### New Features
+
+* [OND232-788](https://ondewo.atlassian.net/browse/OND232-788) Add T2SNormalization and word_to_phoneme_mapping to
+  RequestConfig in SynthesizeRequest or BatchSynthesize
+
+*****************
+
 ## Release ONDEWO T2S API 6.0.0
 
 ### New Features

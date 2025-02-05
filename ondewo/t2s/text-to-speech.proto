@@ -202,11 +202,8 @@ message RequestConfig {
         bool use_cache = 7;
     }
 
-    oneof oneof_normalizer {
-        // Optional. Define what normalizer to synthesize the text with.
-        // The default value is the language of the pipeline.
-        string normalizer = 8;
-    }
+    reserved 8;
+    reserved "normalizer";
 
     // Optional. t2s_service_config provides the configuration of the service such as API key, bearer tokens, JWT,
     // and other header information as key value pairs, e.g., <pre><code>MY_API_KEY='LKJDIFe244LKJOI'</code></pre>
@@ -239,6 +236,16 @@ message RequestConfig {
     // Optional. Defines the cloud provider's specific configuration for using text to speech cloud services
     // The default value is None.
     optional T2sCloudProviderConfig t2s_cloud_provider_config = 10;
+
+    oneof oneof_t2s_normalization {
+        // Optional. Define t2s_normalization config parameters for this specific request.
+        // The default values are set in the config file and the values set via RequestConfig are set just for
+        // this specific request and will not update the pipeline.
+        T2SNormalization t2s_normalization = 11;
+    }
+
+    // Optional. Define a dict which specifies the phonemes for a special word.
+    optional google.protobuf.Struct word_to_phoneme_mapping = 12;
 
 }
 
