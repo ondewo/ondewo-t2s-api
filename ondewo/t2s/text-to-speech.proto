@@ -33,6 +33,9 @@ service Text2Speech {
     // This can be more efficient for generating predictions on the AI model in bulk.
     rpc BatchSynthesize(BatchSynthesizeRequest) returns (BatchSynthesizeResponse);
 
+    // Performs streaming synthesis by accepting stream of input text and returning a stream of generated audio.
+    rpc StreamingSynthesize(stream StreamingSynthesizeRequest) returns (stream StreamingSynthesizeResponse)
+
     // NormalizeText RPC
     //
     // Normalizes a text according to the specific pipeline's normalization rules.
@@ -148,6 +151,18 @@ message BatchSynthesizeRequest {
 
     // Repeated field holding individual synthesis requests that make up the batch request.
     repeated SynthesizeRequest batch_request = 1;
+}
+
+// StreamingSynthesizeRequest is used to perform streaming synthesize.
+message StreamingSynthesizeRequest {
+
+    // Required. Represents the text that will be transformed to speech.
+    // All the properties according to the input text in SynthesizeRequest can be also applied here.
+    string text = 1;
+
+    // Required. Represents the specifications needed to do the text to speech transformation.
+    RequestConfig config = 2;
+
 }
 
 // BatchSynthesizeResponse message is used to store the responses for a batch synthesis request.
@@ -351,8 +366,36 @@ enum AudioFormat {
 }
 
 // Represents a Synthesize Response.
-// A Synthesize Request contains the converted text to audio and the requested configuration.
+// A Synthesize Response contains the generated audio, requested text and all other properties of this generated audio.
 message SynthesizeResponse {
+
+    // Required. Represents the pipeline id of the model configuration that will be used.
+    string audio_uuid = 1;
+
+    // Required. Generated file with the parameters described in request.
+    bytes audio = 2;
+
+    // Required. Time to generate audio.
+    float generation_time = 3;
+
+    // Required. Audio length.
+    float audio_length = 4;
+
+    // Required. Text from which audio was generated.
+    string text = 5;
+
+    // Required. Configuration from which audio was generated.
+    RequestConfig config = 6;
+
+    // Optional. Normalized text.
+    string normalized_text = 7;
+
+}
+
+// Represents a Streaming Synthesize Response.
+// A Streaming Synthesize Response contains the generated audio, requested text and and
+// all other properties of this generated audio.
+message StreamingSynthesizeResponse {
 
     // Required. Represents the pipeline id of the model configuration that will be used.
     string audio_uuid = 1;
