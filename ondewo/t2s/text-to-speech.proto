@@ -34,7 +34,7 @@ service Text2Speech {
     rpc BatchSynthesize(BatchSynthesizeRequest) returns (BatchSynthesizeResponse);
 
     // Performs streaming synthesis by accepting stream of input text and returning a stream of generated audio.
-    rpc StreamingSynthesize(stream StreamingSynthesizeRequest) returns (stream StreamingSynthesizeResponse)
+    rpc StreamingSynthesize(stream StreamingSynthesizeRequest) returns (stream StreamingSynthesizeResponse);
 
     // NormalizeText RPC
     //
