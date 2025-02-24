@@ -397,6 +397,9 @@ message SynthesizeResponse {
     // Optional. Normalized text.
     string normalized_text = 7;
 
+    // Optional. Value of sampling rate
+    float sample_rate = 8;
+
 }
 
 // Represents a Streaming Synthesize Response.
@@ -424,6 +427,9 @@ message StreamingSynthesizeResponse {
 
     // Optional. Normalized text.
     string normalized_text = 7;
+
+    // Optional. Value of sampling rate
+    float sample_rate = 8;
 
 }
 
