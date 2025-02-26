@@ -46,6 +46,8 @@
                       
                         <li><a href="#ondewo.t2s.Text2Speech.BatchSynthesize" class="title-badge method">BatchSynthesize</a></li>
                       
+                        <li><a href="#ondewo.t2s.Text2Speech.StreamingSynthesize" class="title-badge method">StreamingSynthesize</a></li>
+                      
                         <li><a href="#ondewo.t2s.Text2Speech.NormalizeText" class="title-badge method">NormalizeText</a></li>
                       
                         <li><a href="#ondewo.t2s.Text2Speech.GetT2sPipeline" class="title-badge method">GetT2sPipeline</a></li>
@@ -198,6 +200,14 @@
                     
                       <li>
                         <a href="#ondewo.t2s.SingleInference" class="title-badge message">SingleInference</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.StreamingSynthesizeRequest" class="title-badge message">StreamingSynthesizeRequest</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.StreamingSynthesizeResponse" class="title-badge message">StreamingSynthesizeResponse</a>
                       </li>
                     
                       <li>
@@ -362,6 +372,12 @@ and retrieves a response that includes the synthesized text as audio and the req
 
 Performs batch synthesis by accepting a batch of synthesis requests and returning a batch response.
 This can be more efficient for generating predictions on the AI model in bulk.
+        
+          <h4 id="ondewo.t2s.Text2Speech.StreamingSynthesize" class="title-badge method">StreamingSynthesize</h4>
+
+          <pre>rpc StreamingSynthesize (stream <a href="#ondewo.t2s.StreamingSynthesizeRequest">StreamingSynthesizeRequest</a>) returns (stream <a href="#ondewo.t2s.StreamingSynthesizeResponse">StreamingSynthesizeResponse)</a></pre>
+
+          Performs streaming synthesis by accepting stream of input text and returning a stream of generated audio.
         
           <h4 id="ondewo.t2s.Text2Speech.NormalizeText" class="title-badge method">NormalizeText</h4>
 
@@ -1664,6 +1680,111 @@ this specific request and will not update the pipeline. </p></td>
 
         
       
+        <h3 id="ondewo.t2s.StreamingSynthesizeRequest" class="title-badge message">StreamingSynthesizeRequest</h3>
+        <p>StreamingSynthesizeRequest is used to perform streaming synthesize.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>text</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Required. Represents the text that will be transformed to speech.
+All the properties according to the input text in SynthesizeRequest can be also applied here. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>config</td>
+                  <td><a href="#ondewo.t2s.RequestConfig">RequestConfig</a></td>
+                  <td></td>
+                  <td><p>Required. Represents the specifications needed to do the text to speech transformation. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.StreamingSynthesizeResponse" class="title-badge message">StreamingSynthesizeResponse</h3>
+        <p>Represents a Streaming Synthesize Response.</p><p>A Streaming Synthesize Response contains the generated audio, requested text and and</p><p>all other properties of this generated audio.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>audio_uuid</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Required. Represents the pipeline id of the model configuration that will be used. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>audio</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>Required. Generated file with the parameters described in request. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>generation_time</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p>Required. Time to generate audio. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>audio_length</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p>Required. Audio length. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>text</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Required. Text from which audio was generated. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>config</td>
+                  <td><a href="#ondewo.t2s.RequestConfig">RequestConfig</a></td>
+                  <td></td>
+                  <td><p>Required. Configuration from which audio was generated. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>normalized_text</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Optional. Normalized text. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>sample_rate</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p>Optional. Value of sampling rate </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
         <h3 id="ondewo.t2s.SynthesizeRequest" class="title-badge message">SynthesizeRequest</h3>
         <p>Represents a Synthesize Request.</p><p>A Synthesize Request contains the information need to perform a text to speech conversion.</p>
 
@@ -1720,7 +1841,7 @@ this specific request and will not update the pipeline. </p></td>
         
       
         <h3 id="ondewo.t2s.SynthesizeResponse" class="title-badge message">SynthesizeResponse</h3>
-        <p>Represents a Synthesize Response.</p><p>A Synthesize Request contains the converted text to audio and the requested configuration.</p>
+        <p>Represents a Synthesize Response.</p><p>A Synthesize Response contains the generated audio, requested text and all other properties of this generated audio.</p>
 
         
           <table class="field-table">
@@ -1776,6 +1897,13 @@ this specific request and will not update the pipeline. </p></td>
                   <td><a href="#string">string</a></td>
                   <td></td>
                   <td><p>Optional. Normalized text. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>sample_rate</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p>Optional. Value of sampling rate </p></td>
                 </tr>
               
             </tbody>

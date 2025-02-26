@@ -33,6 +33,8 @@
     - [Postprocessing](#ondewo.t2s.Postprocessing)
     - [RequestConfig](#ondewo.t2s.RequestConfig)
     - [SingleInference](#ondewo.t2s.SingleInference)
+    - [StreamingSynthesizeRequest](#ondewo.t2s.StreamingSynthesizeRequest)
+    - [StreamingSynthesizeResponse](#ondewo.t2s.StreamingSynthesizeResponse)
     - [SynthesizeRequest](#ondewo.t2s.SynthesizeRequest)
     - [SynthesizeResponse](#ondewo.t2s.SynthesizeResponse)
     - [T2SCustomLengthScales](#ondewo.t2s.T2SCustomLengthScales)
@@ -582,6 +584,46 @@ SingleInference message inference settings of text2audio models.
 
 
 
+<a name="ondewo.t2s.StreamingSynthesizeRequest"></a>
+
+### StreamingSynthesizeRequest
+StreamingSynthesizeRequest is used to perform streaming synthesize.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| text | [string](#string) |  | Required. Represents the text that will be transformed to speech. All the properties according to the input text in SynthesizeRequest can be also applied here. |
+| config | [RequestConfig](#ondewo.t2s.RequestConfig) |  | Required. Represents the specifications needed to do the text to speech transformation. |
+
+
+
+
+
+
+<a name="ondewo.t2s.StreamingSynthesizeResponse"></a>
+
+### StreamingSynthesizeResponse
+Represents a Streaming Synthesize Response.
+A Streaming Synthesize Response contains the generated audio, requested text and and
+all other properties of this generated audio.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| audio_uuid | [string](#string) |  | Required. Represents the pipeline id of the model configuration that will be used. |
+| audio | [bytes](#bytes) |  | Required. Generated file with the parameters described in request. |
+| generation_time | [float](#float) |  | Required. Time to generate audio. |
+| audio_length | [float](#float) |  | Required. Audio length. |
+| text | [string](#string) |  | Required. Text from which audio was generated. |
+| config | [RequestConfig](#ondewo.t2s.RequestConfig) |  | Required. Configuration from which audio was generated. |
+| normalized_text | [string](#string) |  | Optional. Normalized text. |
+| sample_rate | [float](#float) |  | Optional. Value of sampling rate |
+
+
+
+
+
+
 <a name="ondewo.t2s.SynthesizeRequest"></a>
 
 ### SynthesizeRequest
@@ -627,7 +669,7 @@ A Synthesize Request contains the information need to perform a text to speech c
 
 ### SynthesizeResponse
 Represents a Synthesize Response.
-A Synthesize Request contains the converted text to audio and the requested configuration.
+A Synthesize Response contains the generated audio, requested text and all other properties of this generated audio.
 
 
 | Field | Type | Label | Description |
@@ -639,6 +681,7 @@ A Synthesize Request contains the converted text to audio and the requested conf
 | text | [string](#string) |  | Required. Text from which audio was generated. |
 | config | [RequestConfig](#ondewo.t2s.RequestConfig) |  | Required. Configuration from which audio was generated. |
 | normalized_text | [string](#string) |  | Optional. Normalized text. |
+| sample_rate | [float](#float) |  | Optional. Value of sampling rate |
 
 
 
@@ -1117,6 +1160,7 @@ Synthesizes a specific text sent in the request with the provided configuration 
 | BatchSynthesize | [BatchSynthesizeRequest](#ondewo.t2s.BatchSynthesizeRequest) | [BatchSynthesizeResponse](#ondewo.t2s.BatchSynthesizeResponse) | BatchSynthesize RPC
 
 Performs batch synthesis by accepting a batch of synthesis requests and returning a batch response. This can be more efficient for generating predictions on the AI model in bulk. |
+| StreamingSynthesize | [StreamingSynthesizeRequest](#ondewo.t2s.StreamingSynthesizeRequest) stream | [StreamingSynthesizeResponse](#ondewo.t2s.StreamingSynthesizeResponse) stream | Performs streaming synthesis by accepting stream of input text and returning a stream of generated audio. |
 | NormalizeText | [NormalizeTextRequest](#ondewo.t2s.NormalizeTextRequest) | [NormalizeTextResponse](#ondewo.t2s.NormalizeTextResponse) | NormalizeText RPC
 
 Normalizes a text according to the specific pipeline's normalization rules. |
