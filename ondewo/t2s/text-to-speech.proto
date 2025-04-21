@@ -586,8 +586,8 @@ message ListT2sDomainsResponse {
 // Filter pipelines by attributed in request.
 message ListT2sNormalizationPipelinesRequest {
 
-    // Optional. Define the language/ languages.
-    repeated string languages = 1;
+    // Optional. Define the language.
+    string language = 1;
 
 }
 
