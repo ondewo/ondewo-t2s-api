@@ -76,6 +76,11 @@ service Text2Speech {
     // Retrieves a list of domains available based on specific configuration requirements.
     rpc ListT2sDomains(ListT2sDomainsRequest) returns (ListT2sDomainsResponse);
 
+    // ListT2sNormalizationPipelines RPC
+    //
+    // Retrieves a list of normalization pipelines based on specific requirements.
+    rpc ListT2sNormalizationPipelines(ListT2sNormalizationPipelinesRequest) returns (ListT2sNormalizationPipelinesResponse);
+
     // GetServiceInfo RPC
     //
     // Retrieves the version information of the running text-to-speech server.
@@ -570,6 +575,30 @@ message ListT2sDomainsResponse {
     // Required. Define the domain/ domains that satisfy/ies
     // the specifications in the ListT2sDomainsRequest.
     repeated string domains = 1;
+
+}
+
+////////////////////////
+// LIST T2S NORMALIZATION PIPELINES //
+////////////////////////
+
+// The request message for ListT2sNormalizationPipelines.
+// Filter pipelines by attributed in request.
+message ListT2sNormalizationPipelinesRequest {
+
+    // Optional. Define the language/ languages.
+    repeated string languages = 1;
+
+}
+
+// Pipeline Response representation.
+// The response message for ListT2sNormalizationPipelines.
+message ListT2sNormalizationPipelinesResponse {
+
+    // Required. Representation of a list of normalization pipelines configurations.
+    // Retrieved by ListT2sNormalizationPipelines, containing the configurations of
+    // normalization pipelines with the specifications received in the ListT2sNormalizationPipelinesRequest.
+    repeated string t2s_normalization_pipelines = 1;
 
 }
 
