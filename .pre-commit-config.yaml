@@ -43,6 +43,8 @@ repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
+      - id: no-commit-to-branch  # Protect specific branches from direct checkins
+        args: [ --branch, master ]
       - id: check-added-large-files  # Prevent giant files from being committed
         args: [ maxkb=1024 ]
       - id: check-ast  # Check whether files parse as valid python
