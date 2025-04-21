@@ -21,6 +21,8 @@
     - [ListT2sDomainsResponse](#ondewo.t2s.ListT2sDomainsResponse)
     - [ListT2sLanguagesRequest](#ondewo.t2s.ListT2sLanguagesRequest)
     - [ListT2sLanguagesResponse](#ondewo.t2s.ListT2sLanguagesResponse)
+    - [ListT2sNormalizationPipelinesRequest](#ondewo.t2s.ListT2sNormalizationPipelinesRequest)
+    - [ListT2sNormalizationPipelinesResponse](#ondewo.t2s.ListT2sNormalizationPipelinesResponse)
     - [ListT2sPipelinesRequest](#ondewo.t2s.ListT2sPipelinesRequest)
     - [ListT2sPipelinesResponse](#ondewo.t2s.ListT2sPipelinesResponse)
     - [Logmnse](#ondewo.t2s.Logmnse)
@@ -366,6 +368,38 @@ The response message for ListT2sLanguages.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | languages | [string](#string) | repeated | Required. Define the language/ languages that satisfy/ies the specifications in the ListT2sLanguagesRequest. |
+
+
+
+
+
+
+<a name="ondewo.t2s.ListT2sNormalizationPipelinesRequest"></a>
+
+### ListT2sNormalizationPipelinesRequest
+The request message for ListT2sNormalizationPipelines.
+Filter pipelines by attributed in request.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| languages | [string](#string) | repeated | Optional. Define the language/ languages. |
+
+
+
+
+
+
+<a name="ondewo.t2s.ListT2sNormalizationPipelinesResponse"></a>
+
+### ListT2sNormalizationPipelinesResponse
+Pipeline Response representation.
+The response message for ListT2sNormalizationPipelines.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| t2s_normalization_pipelines | [string](#string) | repeated | Required. Representation of a list of normalization pipelines configurations. Retrieved by ListT2sNormalizationPipelines, containing the configurations of normalization pipelines with the specifications received in the ListT2sNormalizationPipelinesRequest. |
 
 
 
@@ -1185,6 +1219,9 @@ Retrieves a list of languages available based on specific configuration requirem
 | ListT2sDomains | [ListT2sDomainsRequest](#ondewo.t2s.ListT2sDomainsRequest) | [ListT2sDomainsResponse](#ondewo.t2s.ListT2sDomainsResponse) | ListT2sDomains RPC
 
 Retrieves a list of domains available based on specific configuration requirements. |
+| ListT2sNormalizationPipelines | [ListT2sNormalizationPipelinesRequest](#ondewo.t2s.ListT2sNormalizationPipelinesRequest) | [ListT2sNormalizationPipelinesResponse](#ondewo.t2s.ListT2sNormalizationPipelinesResponse) | ListT2sNormalizationPipelines RPC
+
+Retrieves a list of normalization pipelines based on specific requirements. |
 | GetServiceInfo | [.google.protobuf.Empty](#google.protobuf.Empty) | [T2SGetServiceInfoResponse](#ondewo.t2s.T2SGetServiceInfoResponse) | GetServiceInfo RPC
 
 Retrieves the version information of the running text-to-speech server. |
