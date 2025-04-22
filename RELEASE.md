@@ -10,6 +10,8 @@
   RequestConfig in SynthesizeRequest or BatchSynthesize
 * [OND232-799](https://ondewo.atlassian.net/browse/OND232-799) Add StreamingSynthesize endpoint so text can be streamed
   to T2S and audio is streamed back
+* [OND232-812](https://ondewo.atlassian.net/browse/OND232-812) Add ListT2sNormalizationPipelines to list all
+  normalization pipelines
 
 *****************
 
