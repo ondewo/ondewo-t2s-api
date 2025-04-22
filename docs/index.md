@@ -383,7 +383,7 @@ Filter pipelines by attributed in request.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| languages | [string](#string) | repeated | Optional. Define the language/ languages. |
+| language | [string](#string) |  | Optional. Define the language. |
 
 
 
