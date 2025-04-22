@@ -15,7 +15,7 @@ fail_fast: false
 
 repos:
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.13.0
+    rev: v1.15.0
     hooks:
       - id: mypy  # Run mypy type checker; note: runs with flag --missing-imports
         args: [ --config-file=mypy.ini ]
@@ -35,7 +35,7 @@ repos:
         types: [ python ]
 
   - repo: https://github.com/hhatto/autopep8
-    rev: v2.3.1
+    rev: v2.3.2
     hooks:
       - id: autopep8  # Perform pep8 auto-formatting
         args: [ --max-line-length=120, --in-place ]
@@ -66,7 +66,7 @@ repos:
         files: 'requirements/requirements.*\.txt$'
 
   - repo: https://github.com/pycqa/flake8
-    rev: 7.1.1
+    rev: 7.2.0
     hooks:
       - id: flake8
 
