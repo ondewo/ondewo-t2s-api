@@ -64,6 +64,8 @@
                       
                         <li><a href="#ondewo.t2s.Text2Speech.ListT2sDomains" class="title-badge method">ListT2sDomains</a></li>
                       
+                        <li><a href="#ondewo.t2s.Text2Speech.ListT2sNormalizationPipelines" class="title-badge method">ListT2sNormalizationPipelines</a></li>
+                      
                         <li><a href="#ondewo.t2s.Text2Speech.GetServiceInfo" class="title-badge method">GetServiceInfo</a></li>
                       
                         <li><a href="#ondewo.t2s.Text2Speech.GetCustomPhonemizer" class="title-badge method">GetCustomPhonemizer</a></li>
@@ -152,6 +154,14 @@
                     
                       <li>
                         <a href="#ondewo.t2s.ListT2sLanguagesResponse" class="title-badge message">ListT2sLanguagesResponse</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.ListT2sNormalizationPipelinesRequest" class="title-badge message">ListT2sNormalizationPipelinesRequest</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.ListT2sNormalizationPipelinesResponse" class="title-badge message">ListT2sNormalizationPipelinesResponse</a>
                       </li>
                     
                       <li>
@@ -442,6 +452,14 @@ Retrieves a list of languages available based on specific configuration requirem
           ListT2sDomains RPC
 
 Retrieves a list of domains available based on specific configuration requirements.
+        
+          <h4 id="ondewo.t2s.Text2Speech.ListT2sNormalizationPipelines" class="title-badge method">ListT2sNormalizationPipelines</h4>
+
+          <pre>rpc ListT2sNormalizationPipelines (<a href="#ondewo.t2s.ListT2sNormalizationPipelinesRequest">ListT2sNormalizationPipelinesRequest</a>) returns (<a href="#ondewo.t2s.ListT2sNormalizationPipelinesResponse">ListT2sNormalizationPipelinesResponse)</a></pre>
+
+          ListT2sNormalizationPipelines RPC
+
+Retrieves a list of normalization pipelines based on specific requirements.
         
           <h4 id="ondewo.t2s.Text2Speech.GetServiceInfo" class="title-badge method">GetServiceInfo</h4>
 
@@ -1141,6 +1159,56 @@ the specifications in the ListT2sDomainsRequest. </p></td>
                   <td>repeated</td>
                   <td><p>Required. Define the language/ languages that satisfy/ies
 the specifications in the ListT2sLanguagesRequest. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.ListT2sNormalizationPipelinesRequest" class="title-badge message">ListT2sNormalizationPipelinesRequest</h3>
+        <p>The request message for ListT2sNormalizationPipelines.</p><p>Filter pipelines by attributed in request.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>languages</td>
+                  <td><a href="#string">string</a></td>
+                  <td>repeated</td>
+                  <td><p>Optional. Define the language/ languages. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.ListT2sNormalizationPipelinesResponse" class="title-badge message">ListT2sNormalizationPipelinesResponse</h3>
+        <p>Pipeline Response representation.</p><p>The response message for ListT2sNormalizationPipelines.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>t2s_normalization_pipelines</td>
+                  <td><a href="#string">string</a></td>
+                  <td>repeated</td>
+                  <td><p>Required. Representation of a list of normalization pipelines configurations.
+Retrieved by ListT2sNormalizationPipelines, containing the configurations of
+normalization pipelines with the specifications received in the ListT2sNormalizationPipelinesRequest. </p></td>
                 </tr>
               
             </tbody>
