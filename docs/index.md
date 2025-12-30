@@ -82,7 +82,7 @@
 <a name="ondewo.t2s.Apodization"></a>
 
 ### Apodization
-Apodization message contains settings for apodization postprocessing.
+<p>Apodization message contains settings for apodization postprocessing.</p>
 
 
 | Field | Type | Label | Description |
@@ -97,7 +97,7 @@ Apodization message contains settings for apodization postprocessing.
 <a name="ondewo.t2s.BatchSynthesizeRequest"></a>
 
 ### BatchSynthesizeRequest
-BatchSynthesizeRequest message is used to send a batch request for synthesis.
+<p>BatchSynthesizeRequest message is used to send a batch request for synthesis.</p>
 
 
 | Field | Type | Label | Description |
@@ -112,7 +112,7 @@ BatchSynthesizeRequest message is used to send a batch request for synthesis.
 <a name="ondewo.t2s.BatchSynthesizeResponse"></a>
 
 ### BatchSynthesizeResponse
-BatchSynthesizeResponse message is used to store the responses for a batch synthesis request.
+<p>BatchSynthesizeResponse message is used to store the responses for a batch synthesis request.</p>
 
 
 | Field | Type | Label | Description |
@@ -127,7 +127,7 @@ BatchSynthesizeResponse message is used to store the responses for a batch synth
 <a name="ondewo.t2s.Caching"></a>
 
 ### Caching
-Caching message contains settings for caching.
+<p>Caching message contains settings for caching.</p>
 
 
 | Field | Type | Label | Description |
@@ -147,7 +147,7 @@ Caching message contains settings for caching.
 <a name="ondewo.t2s.CompositeInference"></a>
 
 ### CompositeInference
-CompositeInference message combines text-to-mel and mel-to-audio inference settings.
+<p>CompositeInference message combines text-to-mel and mel-to-audio inference settings.</p>
 
 
 | Field | Type | Label | Description |
@@ -163,7 +163,7 @@ CompositeInference message combines text-to-mel and mel-to-audio inference setti
 <a name="ondewo.t2s.CreateCustomPhonemizerRequest"></a>
 
 ### CreateCustomPhonemizerRequest
-CreateCustomPhonemizerRequest message represents the request for creating a custom phonemizer.
+<p>CreateCustomPhonemizerRequest message represents the request for creating a custom phonemizer.</p>
 
 
 | Field | Type | Label | Description |
@@ -179,7 +179,7 @@ CreateCustomPhonemizerRequest message represents the request for creating a cust
 <a name="ondewo.t2s.CustomPhonemizerProto"></a>
 
 ### CustomPhonemizerProto
-CustomPhonemizerProto message represents a custom phonemizer.
+<p>CustomPhonemizerProto message represents a custom phonemizer.</p>
 
 
 | Field | Type | Label | Description |
@@ -195,7 +195,7 @@ CustomPhonemizerProto message represents a custom phonemizer.
 <a name="ondewo.t2s.GlowTTS"></a>
 
 ### GlowTTS
-GlowTTS message contains settings for the GlowTTS inference.
+<p>GlowTTS message contains settings for the GlowTTS inference.</p>
 
 
 | Field | Type | Label | Description |
@@ -216,7 +216,7 @@ GlowTTS message contains settings for the GlowTTS inference.
 <a name="ondewo.t2s.GlowTTSTriton"></a>
 
 ### GlowTTSTriton
-GlowTTSTriton message contains settings for the GlowTTS Triton inference.
+<p>GlowTTSTriton message contains settings for the GlowTTS Triton inference.</p>
 
 
 | Field | Type | Label | Description |
@@ -239,7 +239,7 @@ GlowTTSTriton message contains settings for the GlowTTS Triton inference.
 <a name="ondewo.t2s.HiFiGan"></a>
 
 ### HiFiGan
-HiFiGan message contains settings for the HiFiGan inference.
+<p>HiFiGan message contains settings for the HiFiGan inference.</p>
 
 
 | Field | Type | Label | Description |
@@ -257,7 +257,7 @@ HiFiGan message contains settings for the HiFiGan inference.
 <a name="ondewo.t2s.HiFiGanTriton"></a>
 
 ### HiFiGanTriton
-HiFiGanTriton message contains settings for the HiFiGan Triton inference.
+<p>HiFiGanTriton message contains settings for the HiFiGan Triton inference.</p>
 
 
 | Field | Type | Label | Description |
@@ -275,7 +275,7 @@ HiFiGanTriton message contains settings for the HiFiGan Triton inference.
 <a name="ondewo.t2s.ListCustomPhonemizerRequest"></a>
 
 ### ListCustomPhonemizerRequest
-ListCustomPhonemizerRequest message represents the request for listing custom phonemizers.
+<p>ListCustomPhonemizerRequest message represents the request for listing custom phonemizers.</p>
 
 
 | Field | Type | Label | Description |
@@ -290,7 +290,7 @@ ListCustomPhonemizerRequest message represents the request for listing custom ph
 <a name="ondewo.t2s.ListCustomPhonemizerResponse"></a>
 
 ### ListCustomPhonemizerResponse
-ListCustomPhonemizerResponse message represents the response for listing custom phonemizers.
+<p>ListCustomPhonemizerResponse message represents the response for listing custom phonemizers.</p>
 
 
 | Field | Type | Label | Description |
@@ -305,9 +305,9 @@ ListCustomPhonemizerResponse message represents the response for listing custom 
 <a name="ondewo.t2s.ListT2sDomainsRequest"></a>
 
 ### ListT2sDomainsRequest
-Domain Request representation.
-The request message for ListT2sDomains.
-Filter domains of pipelines by attributed in request.
+<p>Domain Request representation.</p>
+<p>The request message for ListT2sDomains.</p>
+<p>Filter domains of pipelines by attributed in request.</p>
 
 
 | Field | Type | Label | Description |
@@ -325,8 +325,8 @@ Filter domains of pipelines by attributed in request.
 <a name="ondewo.t2s.ListT2sDomainsResponse"></a>
 
 ### ListT2sDomainsResponse
-Domains Response representation.
-The response message for ListT2sDomains.
+<p>Domains Response representation.</p>
+<p>The response message for ListT2sDomains.</p>
 
 
 | Field | Type | Label | Description |
@@ -341,9 +341,9 @@ The response message for ListT2sDomains.
 <a name="ondewo.t2s.ListT2sLanguagesRequest"></a>
 
 ### ListT2sLanguagesRequest
-Language Request representation.
-The request message for ListT2sLanguages.
-Filter languages of pipelines by attributed in request.
+<p>Language Request representation.</p>
+<p>The request message for ListT2sLanguages.</p>
+<p>Filter languages of pipelines by attributed in request.</p>
 
 
 | Field | Type | Label | Description |
@@ -361,8 +361,8 @@ Filter languages of pipelines by attributed in request.
 <a name="ondewo.t2s.ListT2sLanguagesResponse"></a>
 
 ### ListT2sLanguagesResponse
-Language Response representation.
-The response message for ListT2sLanguages.
+<p>Language Response representation.</p>
+<p>The response message for ListT2sLanguages.</p>
 
 
 | Field | Type | Label | Description |
@@ -377,8 +377,8 @@ The response message for ListT2sLanguages.
 <a name="ondewo.t2s.ListT2sNormalizationPipelinesRequest"></a>
 
 ### ListT2sNormalizationPipelinesRequest
-The request message for ListT2sNormalizationPipelines.
-Filter pipelines by attributed in request.
+<p>The request message for ListT2sNormalizationPipelines.</p>
+<p>Filter pipelines by attributed in request.</p>
 
 
 | Field | Type | Label | Description |
@@ -393,8 +393,8 @@ Filter pipelines by attributed in request.
 <a name="ondewo.t2s.ListT2sNormalizationPipelinesResponse"></a>
 
 ### ListT2sNormalizationPipelinesResponse
-Pipeline Response representation.
-The response message for ListT2sNormalizationPipelines.
+<p>Pipeline Response representation.</p>
+<p>The response message for ListT2sNormalizationPipelines.</p>
 
 
 | Field | Type | Label | Description |
@@ -409,9 +409,9 @@ The response message for ListT2sNormalizationPipelines.
 <a name="ondewo.t2s.ListT2sPipelinesRequest"></a>
 
 ### ListT2sPipelinesRequest
-Pipeline Request representation.
-The request message for ListT2sPipelines.
-Filter pipelines by attributed in request.
+<p>Pipeline Request representation.</p>
+<p>The request message for ListT2sPipelines.</p>
+<p>Filter pipelines by attributed in request.</p>
 
 
 | Field | Type | Label | Description |
@@ -430,8 +430,8 @@ Filter pipelines by attributed in request.
 <a name="ondewo.t2s.ListT2sPipelinesResponse"></a>
 
 ### ListT2sPipelinesResponse
-Pipeline Response representation.
-The response message for ListT2sPipelines.
+<p>Pipeline Response representation.</p>
+<p>The response message for ListT2sPipelines.</p>
 
 
 | Field | Type | Label | Description |
@@ -446,7 +446,7 @@ The response message for ListT2sPipelines.
 <a name="ondewo.t2s.Logmnse"></a>
 
 ### Logmnse
-Logmnse message contains settings for Logmnse postprocessing.
+<p>Logmnse message contains settings for Logmnse postprocessing.</p>
 
 
 | Field | Type | Label | Description |
@@ -463,7 +463,7 @@ Logmnse message contains settings for Logmnse postprocessing.
 <a name="ondewo.t2s.Map"></a>
 
 ### Map
-Map message represents a word-to-phoneme mapping in a custom phonemizer.
+<p>Map message represents a word-to-phoneme mapping in a custom phonemizer.</p>
 
 
 | Field | Type | Label | Description |
@@ -479,7 +479,7 @@ Map message represents a word-to-phoneme mapping in a custom phonemizer.
 <a name="ondewo.t2s.MbMelganTriton"></a>
 
 ### MbMelganTriton
-MbMelganTriton message contains settings for the MbMelgan Triton inference.
+<p>MbMelganTriton message contains settings for the MbMelgan Triton inference.</p>
 
 
 | Field | Type | Label | Description |
@@ -498,7 +498,7 @@ MbMelganTriton message contains settings for the MbMelgan Triton inference.
 <a name="ondewo.t2s.Mel2Audio"></a>
 
 ### Mel2Audio
-Mel2Audio message contains settings for mel-to-audio inference.
+<p>Mel2Audio message contains settings for mel-to-audio inference.</p>
 
 
 | Field | Type | Label | Description |
@@ -516,7 +516,7 @@ Mel2Audio message contains settings for mel-to-audio inference.
 <a name="ondewo.t2s.NormalizeTextRequest"></a>
 
 ### NormalizeTextRequest
-NormalizeTextRequest message is used to request text normalization.
+<p>NormalizeTextRequest message is used to request text normalization.</p>
 
 
 | Field | Type | Label | Description |
@@ -532,7 +532,7 @@ NormalizeTextRequest message is used to request text normalization.
 <a name="ondewo.t2s.NormalizeTextResponse"></a>
 
 ### NormalizeTextResponse
-NormalizeTextResponse message is used to store the normalized text response.
+<p>NormalizeTextResponse message is used to store the normalized text response.</p>
 
 
 | Field | Type | Label | Description |
@@ -547,7 +547,7 @@ NormalizeTextResponse message is used to store the normalized text response.
 <a name="ondewo.t2s.PhonemizerId"></a>
 
 ### PhonemizerId
-PhonemizerId message represents the ID of a phonemizer.
+<p>PhonemizerId message represents the ID of a phonemizer.</p>
 
 
 | Field | Type | Label | Description |
@@ -562,7 +562,7 @@ PhonemizerId message represents the ID of a phonemizer.
 <a name="ondewo.t2s.Postprocessing"></a>
 
 ### Postprocessing
-Postprocessing message contains settings for postprocessing.
+<p>Postprocessing message contains settings for postprocessing.</p>
 
 
 | Field | Type | Label | Description |
@@ -581,7 +581,7 @@ Postprocessing message contains settings for postprocessing.
 <a name="ondewo.t2s.RequestConfig"></a>
 
 ### RequestConfig
-Represents a Configuration for the text to speech conversion.
+<p>Represents a Configuration for the text to speech conversion.</p>
 
 
 | Field | Type | Label | Description |
@@ -593,7 +593,17 @@ Represents a Configuration for the text to speech conversion.
 | pcm | [Pcm](#ondewo.t2s.Pcm) |  | Optional. Defines the pulse-code modulation of the wav file. The default value is PCM_16. |
 | audio_format | [AudioFormat](#ondewo.t2s.AudioFormat) |  | Optional. Defines the format of the desired audio. The default value is wav. |
 | use_cache | [bool](#bool) |  | Optional. Define if cache should be used or not. The default value is False. |
-| t2s_service_config | [google.protobuf.Struct](#google.protobuf.Struct) | optional | Optional. t2s_service_config provides the configuration of the service such as API key, bearer tokens, JWT, and other header information as key value pairs, e.g., <pre><code>MY_API_KEY='LKJDIFe244LKJOI'</code></pre> A. For Amazon T2S service, the following arguments should be passed: A1. aws_access_key_id (required) Access key id to access Amazon WEB Service. A2. aws_secret_access_key (required) Secret access key to access Amazon WEB Service. A3. region (required) Region name of Amazon Server. Example: t2s_config_service={'aws_access_key_id': 'YOUR_AWS_ACCESS_KEY_ID', 'aws_secret_access_key': 'YOUR_AWS_SECRET_ACCESS_KEY', 'region': 'YOUR_AMAZON_SERVER_REGION_NAME'} B. For ElevenLabs T2s service, the following arguments should be passed: B1. api_key (required) API key of ElevenLabs cloud provider to access its T2S service. Example: t2s_config_service={'api_key': 'YOUR_ELEVENLABS_API_KEY'} C. For Google cloud T2S service, the following arguments should be passed: C1. api_key (required) API key of Google cloud provider to access its T2S service. C2. api_endpoint (optional) Regional API endpoint of Google cloud T2S service. (Defaults to 'eu-texttospeech.googleapis.com') Example: t2s_config_service={'api_key': 'YOUR_GOOGLE_CLOUD_API_KEY', 'api_endpoint': 'YOUR_GOOGLE_CLOUD_API_ENDPOINT'} D. For Microsoft Azure T2s service, the following arguments should be passed: D1. subscription_key (required) Subscription key to access Microsoft Azure Service. D2. region (required) Region name of Microsoft Azure Server. Example: t2s_config_service={'subscription_key': 'YOUR_MICROSOFT_AZURE_SUBSCRIPTION_KEY', 'region': 'YOUR_MICROSOFT_AZURE_SERVER_REGION_NAME'} Note: ondewo-t2s will raise an error if you don't pass any of the required arguments above. |
+| t2s_service_config | [google.protobuf.Struct](#google.protobuf.Struct) | optional | Optional. t2s_service_config provides the configuration of the service such as API key, bearer tokens, JWT, and other header information as key value pairs, e.g., <pre><code>MY_API_KEY=&apos;LKJDIFe244LKJOI&apos;</code></pre>
+
+A. For Amazon T2S service, the following arguments should be passed: <ul> <li>A1. <code>aws_access_key_id</code> (required) Access key id to access Amazon WEB Service.</li> <li>A2. <code>aws_secret_access_key</code> (required) Secret access key to access Amazon WEB Service.</li> <li>A3. <code>region</code> (required) Region name of Amazon Server.</li> </ul> Example: <pre><code>t2s_config_service={&apos;aws_access_key_id&apos;: &apos;YOUR_AWS_ACCESS_KEY_ID&apos;, &apos;aws_secret_access_key&apos;: &apos;YOUR_AWS_SECRET_ACCESS_KEY&apos;, &apos;region&apos;: &apos;YOUR_AMAZON_SERVER_REGION_NAME&apos;}</code></pre>
+
+B. For ElevenLabs T2s service, the following arguments should be passed: <ul> <li>B1. <code>api_key</code> (required) API key of ElevenLabs cloud provider to access its T2S service.</li> </ul> Example: <pre><code>t2s_config_service={&apos;api_key&apos;: &apos;YOUR_ELEVENLABS_API_KEY&apos;}</code></pre>
+
+C. For Google cloud T2S service, the following arguments should be passed: <ul> <li>C1. <code>api_key</code> (required) API key of Google cloud provider to access its T2S service.</li> <li>C2. <code>api_endpoint</code> (optional) Regional API endpoint of Google cloud T2S service. (Defaults to &apos;eu-texttospeech.googleapis.com&apos;)</li> </ul> Example: <pre><code>t2s_config_service={&apos;api_key&apos;: &apos;YOUR_GOOGLE_CLOUD_API_KEY&apos;, &apos;api_endpoint&apos;: &apos;YOUR_GOOGLE_CLOUD_API_ENDPOINT&apos;}</code></pre>
+
+D. For Microsoft Azure T2s service, the following arguments should be passed: <ul> <li>D1. <code>subscription_key</code> (required) Subscription key to access Microsoft Azure Service.</li> <li>D2. <code>region</code> (required) Region name of Microsoft Azure Server.</li> </ul> Example: <pre><code>t2s_config_service={&apos;subscription_key&apos;: &apos;YOUR_MICROSOFT_AZURE_SUBSCRIPTION_KEY&apos;, &apos;region&apos;: &apos;YOUR_MICROSOFT_AZURE_SERVER_REGION_NAME&apos;}</code></pre>
+
+Note: ondewo-t2s will raise an error if you don&apos;t pass any of the required arguments above. |
 | t2s_cloud_provider_config | [T2sCloudProviderConfig](#ondewo.t2s.T2sCloudProviderConfig) | optional | Optional. Defines the cloud provider's specific configuration for using text to speech cloud services The default value is None. |
 | t2s_normalization | [T2SNormalization](#ondewo.t2s.T2SNormalization) |  | Optional. Define t2s_normalization config parameters for this specific request. The default values are set in the config file and the values set via RequestConfig are set just for this specific request and will not update the pipeline. |
 | word_to_phoneme_mapping | [google.protobuf.Struct](#google.protobuf.Struct) | optional | Optional. Define a dict which specifies the phonemes for a special word. |
@@ -606,7 +616,7 @@ Represents a Configuration for the text to speech conversion.
 <a name="ondewo.t2s.SingleInference"></a>
 
 ### SingleInference
-SingleInference message inference settings of text2audio models.
+<p>SingleInference message inference settings of text2audio models.</p>
 
 
 | Field | Type | Label | Description |
@@ -621,7 +631,7 @@ SingleInference message inference settings of text2audio models.
 <a name="ondewo.t2s.StreamingSynthesizeRequest"></a>
 
 ### StreamingSynthesizeRequest
-StreamingSynthesizeRequest is used to perform streaming synthesize.
+<p>StreamingSynthesizeRequest is used to perform streaming synthesize.</p>
 
 
 | Field | Type | Label | Description |
@@ -637,9 +647,9 @@ StreamingSynthesizeRequest is used to perform streaming synthesize.
 <a name="ondewo.t2s.StreamingSynthesizeResponse"></a>
 
 ### StreamingSynthesizeResponse
-Represents a Streaming Synthesize Response.
-A Streaming Synthesize Response contains the generated audio, requested text and and
-all other properties of this generated audio.
+<p>Represents a Streaming Synthesize Response.</p>
+<p>A Streaming Synthesize Response contains the generated audio, requested text and and
+all other properties of this generated audio.</p>
 
 
 | Field | Type | Label | Description |
@@ -661,37 +671,13 @@ all other properties of this generated audio.
 <a name="ondewo.t2s.SynthesizeRequest"></a>
 
 ### SynthesizeRequest
-Represents a Synthesize Request.
-A Synthesize Request contains the information need to perform a text to speech conversion.
+<p>Represents a Synthesize Request.</p>
+<p>A Synthesize Request contains the information need to perform a text to speech conversion.</p>
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| text | [string](#string) |  | Required. Represents the text that will be transformed to speech.
-
-<p> Synthesize text: </p>
-
-- Simple text: <pre><code>Hello, how are you?</code></pre>
-
-<p>Examples to modulate the voice based on SSML tags and Arpabet phonemes:</p>
-
-- SSML Tag Phone: <pre><code>&lt;say-as interpret-as="phone">+12354321&lt;/say-as&gt;</code></pre>
-
-- SSML Tag Email: <pre><code>&lt;say-as interpret-as="email">voices@ondewo.com&lt;/say-as&gt;</code></pre>
-
-- SSML Tag URL: <pre><code>&lt;say-as interpret-as="url">ondewo.com/en/&lt;/say-as&gt;</code></pre>
-
-- SSML Tag Spell: <pre><code>&lt;say-as interpret-as="spell">AP732&lt;/say-as&gt;</code></pre>
-
-- SSML Tag Spell With Names: <pre><code>&lt;say-as interpret-as="spell-with-names">AHO32&lt;/say-as&gt;</code></pre>
-
-- SSML Tag Callsigns Short: <pre><code>&lt;say-as interpret-as="callsign-short">AUA439&lt;/say-as&gt;</code></pre>
-
-- SSML Tag Callsigns Long: <pre><code>&lt;say-as interpret-as="callsign-long">AAL439&lt;/say-as&gt;</code></pre>
-
-- SSML Tag Break Tag: <pre><code>I am going to take a 2 seconds break <break time="2.0"/> done</code></pre>
-
-- Arpabet Phonemes: <pre><code>Hello I am {AE2 L EH0 G Z AE1 N D R AH0}</code></pre> |
+| text | [string](#string) |  | Required. Represents the text that will be transformed to speech. Synthesize text: <ul> <li>Simple text: <pre><code>Hello, how are you?</code></pre></li> </ul> Examples to modulate the voice based on SSML tags and Arpabet phonemes: <ul> <li>SSML Tag Phone: <pre><code>&lt;say-as interpret-as=&quot;phone&quot;&gt;+12354321&lt;/say-as&gt;</code></pre></li> <li>SSML Tag Email: <pre><code>&lt;say-as interpret-as=&quot;email&quot;&gt;voices@ondewo.com&lt;/say-as&gt;</code></pre></li> <li>SSML Tag URL: <pre><code>&lt;say-as interpret-as=&quot;url&quot;&gt;ondewo.com/en/&lt;/say-as&gt;</code></pre></li> <li>SSML Tag Spell: <pre><code>&lt;say-as interpret-as=&quot;spell&quot;&gt;AP732&lt;/say-as&gt;</code></pre></li> <li>SSML Tag Spell With Names: <pre><code>&lt;say-as interpret-as=&quot;spell-with-names&quot;&gt;AHO32&lt;/say-as&gt;</code></pre></li> <li>SSML Tag Callsigns Short: <pre><code>&lt;say-as interpret-as=&quot;callsign-short&quot;&gt;AUA439&lt;/say-as&gt;</code></pre></li> <li>SSML Tag Callsigns Long: <pre><code>&lt;say-as interpret-as=&quot;callsign-long&quot;&gt;AAL439&lt;/say-as&gt;</code></pre></li> <li>SSML Tag Break Tag: <pre><code>I am going to take a 2 seconds break &lt;break time=&quot;2.0&quot;/&gt; done</code></pre></li> <li>Arpabet Phonemes: <pre><code>Hello I am {AE2 L EH0 G Z AE1 N D R AH0}</code></pre></li> </ul> |
 | config | [RequestConfig](#ondewo.t2s.RequestConfig) |  | Required. Represents the specifications needed to do the text to speech transformation. |
 
 
@@ -702,8 +688,8 @@ A Synthesize Request contains the information need to perform a text to speech c
 <a name="ondewo.t2s.SynthesizeResponse"></a>
 
 ### SynthesizeResponse
-Represents a Synthesize Response.
-A Synthesize Response contains the generated audio, requested text and all other properties of this generated audio.
+<p>Represents a Synthesize Response.</p>
+<p>A Synthesize Response contains the generated audio, requested text and all other properties of this generated audio.</p>
 
 
 | Field | Type | Label | Description |
@@ -725,7 +711,7 @@ A Synthesize Response contains the generated audio, requested text and all other
 <a name="ondewo.t2s.T2SCustomLengthScales"></a>
 
 ### T2SCustomLengthScales
-T2SCustomLengthScales message contains custom length scales for text types.
+<p>T2SCustomLengthScales message contains custom length scales for text types.</p>
 
 
 | Field | Type | Label | Description |
@@ -747,7 +733,7 @@ T2SCustomLengthScales message contains custom length scales for text types.
 <a name="ondewo.t2s.T2SDescription"></a>
 
 ### T2SDescription
-T2SDescription message is used to describe the text-to-speech service.
+<p>T2SDescription message is used to describe the text-to-speech service.</p>
 
 
 | Field | Type | Label | Description |
@@ -767,7 +753,7 @@ T2SDescription message is used to describe the text-to-speech service.
 <a name="ondewo.t2s.T2SGetServiceInfoResponse"></a>
 
 ### T2SGetServiceInfoResponse
-Version information of the service
+<p>Version information of the service</p>
 
 
 | Field | Type | Label | Description |
@@ -782,7 +768,7 @@ Version information of the service
 <a name="ondewo.t2s.T2SInference"></a>
 
 ### T2SInference
-T2SInference message is used to specify the text-to-speech inference settings.
+<p>T2SInference message is used to specify the text-to-speech inference settings.</p>
 
 
 | Field | Type | Label | Description |
@@ -800,7 +786,7 @@ T2SInference message is used to specify the text-to-speech inference settings.
 <a name="ondewo.t2s.T2SNormalization"></a>
 
 ### T2SNormalization
-Represents the configuration for text-to-speech normalization.
+<p>Represents the configuration for text-to-speech normalization.</p>
 
 
 | Field | Type | Label | Description |
@@ -822,7 +808,7 @@ Represents the configuration for text-to-speech normalization.
 <a name="ondewo.t2s.T2sCloudProviderConfig"></a>
 
 ### T2sCloudProviderConfig
-Configuration for cloud provider settings for Text-to-Speech (T2S).
+<p>Configuration for cloud provider settings for Text-to-Speech (T2S).</p>
 
 
 | Field | Type | Label | Description |
@@ -839,7 +825,7 @@ Configuration for cloud provider settings for Text-to-Speech (T2S).
 <a name="ondewo.t2s.T2sCloudProviderConfigElevenLabs"></a>
 
 ### T2sCloudProviderConfigElevenLabs
-Configuration details specific to the Eleven Labs text-to-speech provider.
+<p>Configuration details specific to the Eleven Labs text-to-speech provider.</p>
 
 
 | Field | Type | Label | Description |
@@ -858,7 +844,7 @@ Configuration details specific to the Eleven Labs text-to-speech provider.
 <a name="ondewo.t2s.T2sCloudProviderConfigGoogle"></a>
 
 ### T2sCloudProviderConfigGoogle
-Configuration details specific to the Google text-to-speech provider.
+<p>Configuration details specific to the Google text-to-speech provider.</p>
 
 
 | Field | Type | Label | Description |
@@ -875,7 +861,7 @@ Configuration details specific to the Google text-to-speech provider.
 <a name="ondewo.t2s.T2sCloudProviderConfigMicrosoft"></a>
 
 ### T2sCloudProviderConfigMicrosoft
-Configuration details specific to the Microsoft text-to-speech provider.
+<p>Configuration details specific to the Microsoft text-to-speech provider.</p>
 
 
 | Field | Type | Label | Description |
@@ -890,7 +876,7 @@ Configuration details specific to the Microsoft text-to-speech provider.
 <a name="ondewo.t2s.T2sCloudServiceAmazon"></a>
 
 ### T2sCloudServiceAmazon
-T2sCloudServiceAmazon message contains settings for the Amazon Cloud service inference.
+<p>T2sCloudServiceAmazon message contains settings for the Amazon Cloud service inference.</p>
 
 
 | Field | Type | Label | Description |
@@ -906,7 +892,7 @@ T2sCloudServiceAmazon message contains settings for the Amazon Cloud service inf
 <a name="ondewo.t2s.T2sCloudServiceElevenLabs"></a>
 
 ### T2sCloudServiceElevenLabs
-T2sCloudServiceElevenLabs message contains settings for the ElevenLabs Cloud service inference.
+<p>T2sCloudServiceElevenLabs message contains settings for the ElevenLabs Cloud service inference.</p>
 
 
 | Field | Type | Label | Description |
@@ -925,7 +911,7 @@ T2sCloudServiceElevenLabs message contains settings for the ElevenLabs Cloud ser
 <a name="ondewo.t2s.T2sCloudServiceGoogle"></a>
 
 ### T2sCloudServiceGoogle
-T2sCloudServiceGoogle message contains settings for the Google Cloud service inference.
+<p>T2sCloudServiceGoogle message contains settings for the Google Cloud service inference.</p>
 
 
 | Field | Type | Label | Description |
@@ -943,7 +929,7 @@ T2sCloudServiceGoogle message contains settings for the Google Cloud service inf
 <a name="ondewo.t2s.T2sCloudServiceMicrosoft"></a>
 
 ### T2sCloudServiceMicrosoft
-T2sCloudServiceMicrosoft message contains settings for the Microsoft Cloud service inference.
+<p>T2sCloudServiceMicrosoft message contains settings for the Microsoft Cloud service inference.</p>
 
 
 | Field | Type | Label | Description |
@@ -959,8 +945,8 @@ T2sCloudServiceMicrosoft message contains settings for the Microsoft Cloud servi
 <a name="ondewo.t2s.T2sPipelineId"></a>
 
 ### T2sPipelineId
-Pipeline Id representation.
-Used in the creation, deletion and getter of pipelines.
+<p>Pipeline Id representation.</p>
+<p>Used in the creation, deletion and getter of pipelines.</p>
 
 
 | Field | Type | Label | Description |
@@ -975,7 +961,7 @@ Used in the creation, deletion and getter of pipelines.
 <a name="ondewo.t2s.Text2Audio"></a>
 
 ### Text2Audio
-Text2Audio message contains settings for text-to-audio inference.
+<p>Text2Audio message contains settings for text-to-audio inference.</p>
 
 
 | Field | Type | Label | Description |
@@ -996,7 +982,7 @@ Text2Audio message contains settings for text-to-audio inference.
 <a name="ondewo.t2s.Text2Mel"></a>
 
 ### Text2Mel
-Text2Mel message contains settings for text-to-mel inference.
+<p>Text2Mel message contains settings for text-to-mel inference.</p>
 
 
 | Field | Type | Label | Description |
@@ -1013,7 +999,7 @@ Text2Mel message contains settings for text-to-mel inference.
 <a name="ondewo.t2s.Text2SpeechConfig"></a>
 
 ### Text2SpeechConfig
-Configuration of text-to-speech models representation.
+<p>Configuration of text-to-speech models representation.</p>
 
 
 | Field | Type | Label | Description |
@@ -1033,7 +1019,7 @@ Configuration of text-to-speech models representation.
 <a name="ondewo.t2s.UpdateCustomPhonemizerRequest"></a>
 
 ### UpdateCustomPhonemizerRequest
-UpdateCustomPhonemizerRequest message represents the request for updating a custom phonemizer.
+<p>UpdateCustomPhonemizerRequest message represents the request for updating a custom phonemizer.</p>
 
 
 | Field | Type | Label | Description |
@@ -1050,7 +1036,7 @@ UpdateCustomPhonemizerRequest message represents the request for updating a cust
 <a name="ondewo.t2s.Vits"></a>
 
 ### Vits
-
+<p>Vits message contains settings for the Vits inference.</p>
 
 
 | Field | Type | Label | Description |
@@ -1071,7 +1057,7 @@ UpdateCustomPhonemizerRequest message represents the request for updating a cust
 <a name="ondewo.t2s.VitsTriton"></a>
 
 ### VitsTriton
-VitsTriton message contains settings for the Vits Triton inference.
+<p>VitsTriton message contains settings for the Vits Triton inference.</p>
 
 
 | Field | Type | Label | Description |
@@ -1094,7 +1080,7 @@ VitsTriton message contains settings for the Vits Triton inference.
 <a name="ondewo.t2s.VoiceSettings"></a>
 
 ### VoiceSettings
-VoiceSettings message contains settings for ElevenLabs inference.
+<p>VoiceSettings message contains settings for ElevenLabs inference.</p>
 
 
 | Field | Type | Label | Description |
@@ -1112,7 +1098,7 @@ VoiceSettings message contains settings for ElevenLabs inference.
 <a name="ondewo.t2s.Wiener"></a>
 
 ### Wiener
-Wiener message contains settings for Wiener postprocessing.
+<p>Wiener message contains settings for Wiener postprocessing.</p>
 
 
 | Field | Type | Label | Description |
@@ -1133,7 +1119,7 @@ Wiener message contains settings for Wiener postprocessing.
 <a name="ondewo.t2s.AudioFormat"></a>
 
 ### AudioFormat
-AudioFormat enum represents various audio file formats for storing digital audio data.
+<p>AudioFormat enum represents various audio file formats for storing digital audio data.</p>
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
@@ -1150,7 +1136,7 @@ AudioFormat enum represents various audio file formats for storing digital audio
 <a name="ondewo.t2s.Pcm"></a>
 
 ### Pcm
-Represents a pulse-code modulation technique.
+<p>Represents a pulse-code modulation technique.</p>
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
@@ -1184,62 +1170,28 @@ The update method to be used.
 <a name="ondewo.t2s.Text2Speech"></a>
 
 ### Text2Speech
-Text2Speech service provides endpoints for text-to-speech generation.
+<p>Text2Speech service provides endpoints for text-to-speech generation.</p>
 
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
-| Synthesize | [SynthesizeRequest](#ondewo.t2s.SynthesizeRequest) | [SynthesizeResponse](#ondewo.t2s.SynthesizeResponse) | Synthesize RPC
-
-Synthesizes a specific text sent in the request with the provided configuration requirements and retrieves a response that includes the synthesized text as audio and the requested configuration. |
-| BatchSynthesize | [BatchSynthesizeRequest](#ondewo.t2s.BatchSynthesizeRequest) | [BatchSynthesizeResponse](#ondewo.t2s.BatchSynthesizeResponse) | BatchSynthesize RPC
-
-Performs batch synthesis by accepting a batch of synthesis requests and returning a batch response. This can be more efficient for generating predictions on the AI model in bulk. |
-| StreamingSynthesize | [StreamingSynthesizeRequest](#ondewo.t2s.StreamingSynthesizeRequest) stream | [StreamingSynthesizeResponse](#ondewo.t2s.StreamingSynthesizeResponse) stream | Performs streaming synthesis by accepting stream of input text and returning a stream of generated audio. |
-| NormalizeText | [NormalizeTextRequest](#ondewo.t2s.NormalizeTextRequest) | [NormalizeTextResponse](#ondewo.t2s.NormalizeTextResponse) | NormalizeText RPC
-
-Normalizes a text according to the specific pipeline's normalization rules. |
-| GetT2sPipeline | [T2sPipelineId](#ondewo.t2s.T2sPipelineId) | [Text2SpeechConfig](#ondewo.t2s.Text2SpeechConfig) | GetT2sPipeline RPC
-
-Retrieves the configuration of the specified text-to-speech pipeline. |
-| CreateT2sPipeline | [Text2SpeechConfig](#ondewo.t2s.Text2SpeechConfig) | [T2sPipelineId](#ondewo.t2s.T2sPipelineId) | CreateT2sPipeline RPC
-
-Creates a new text-to-speech pipeline with the provided configuration and returns its pipeline ID. |
-| DeleteT2sPipeline | [T2sPipelineId](#ondewo.t2s.T2sPipelineId) | [.google.protobuf.Empty](#google.protobuf.Empty) | DeleteT2sPipeline RPC
-
-Deletes the specified text-to-speech pipeline. |
-| UpdateT2sPipeline | [Text2SpeechConfig](#ondewo.t2s.Text2SpeechConfig) | [.google.protobuf.Empty](#google.protobuf.Empty) | UpdateT2sPipeline RPC
-
-Updates the specified text-to-speech pipeline with the given configuration. |
-| ListT2sPipelines | [ListT2sPipelinesRequest](#ondewo.t2s.ListT2sPipelinesRequest) | [ListT2sPipelinesResponse](#ondewo.t2s.ListT2sPipelinesResponse) | ListT2sPipelines RPC
-
-Retrieves a list of text-to-speech pipelines based on specific requirements. |
-| ListT2sLanguages | [ListT2sLanguagesRequest](#ondewo.t2s.ListT2sLanguagesRequest) | [ListT2sLanguagesResponse](#ondewo.t2s.ListT2sLanguagesResponse) | ListT2sLanguages RPC
-
-Retrieves a list of languages available based on specific configuration requirements. |
-| ListT2sDomains | [ListT2sDomainsRequest](#ondewo.t2s.ListT2sDomainsRequest) | [ListT2sDomainsResponse](#ondewo.t2s.ListT2sDomainsResponse) | ListT2sDomains RPC
-
-Retrieves a list of domains available based on specific configuration requirements. |
-| ListT2sNormalizationPipelines | [ListT2sNormalizationPipelinesRequest](#ondewo.t2s.ListT2sNormalizationPipelinesRequest) | [ListT2sNormalizationPipelinesResponse](#ondewo.t2s.ListT2sNormalizationPipelinesResponse) | ListT2sNormalizationPipelines RPC
-
-Retrieves a list of normalization pipelines based on specific requirements. |
-| GetServiceInfo | [.google.protobuf.Empty](#google.protobuf.Empty) | [T2SGetServiceInfoResponse](#ondewo.t2s.T2SGetServiceInfoResponse) | GetServiceInfo RPC
-
-Retrieves the version information of the running text-to-speech server. |
-| GetCustomPhonemizer | [PhonemizerId](#ondewo.t2s.PhonemizerId) | [CustomPhonemizerProto](#ondewo.t2s.CustomPhonemizerProto) | GetCustomPhonemizer RPC
-
-Retrieves a custom phonemizer based on the provided PhonemizerId. |
-| CreateCustomPhonemizer | [CreateCustomPhonemizerRequest](#ondewo.t2s.CreateCustomPhonemizerRequest) | [PhonemizerId](#ondewo.t2s.PhonemizerId) | CreateCustomPhonemizer RPC
-
-Creates a custom phonemizer based on the provided CreateCustomPhonemizerRequest. Returns the PhonemizerId associated with the created custom phonemizer. |
-| DeleteCustomPhonemizer | [PhonemizerId](#ondewo.t2s.PhonemizerId) | [.google.protobuf.Empty](#google.protobuf.Empty) | DeleteCustomPhonemizer RPC
-
-Deletes a custom phonemizer based on the provided PhonemizerId. Returns an Empty response upon successful deletion. |
-| UpdateCustomPhonemizer | [UpdateCustomPhonemizerRequest](#ondewo.t2s.UpdateCustomPhonemizerRequest) | [CustomPhonemizerProto](#ondewo.t2s.CustomPhonemizerProto) | UpdateCustomPhonemizer RPC
-
-Updates the specified custom phonemizer with the provided configuration. |
-| ListCustomPhonemizer | [ListCustomPhonemizerRequest](#ondewo.t2s.ListCustomPhonemizerRequest) | [ListCustomPhonemizerResponse](#ondewo.t2s.ListCustomPhonemizerResponse) | ListCustomPhonemizer RPC
-
-Retrieves a list of custom phonemizers based on specific requirements. |
+| Synthesize | [SynthesizeRequest](#ondewo.t2s.SynthesizeRequest) | [SynthesizeResponse](#ondewo.t2s.SynthesizeResponse) | <p>Synthesizes a specific text sent in the request with the provided configuration requirements and retrieves a response that includes the synthesized text as audio and the requested configuration.</p> |
+| BatchSynthesize | [BatchSynthesizeRequest](#ondewo.t2s.BatchSynthesizeRequest) | [BatchSynthesizeResponse](#ondewo.t2s.BatchSynthesizeResponse) | <p>Performs batch synthesis by accepting a batch of synthesis requests and returning a batch response. This can be more efficient for generating predictions on the AI model in bulk.</p> |
+| StreamingSynthesize | [StreamingSynthesizeRequest](#ondewo.t2s.StreamingSynthesizeRequest) stream | [StreamingSynthesizeResponse](#ondewo.t2s.StreamingSynthesizeResponse) stream | <p>Performs streaming synthesis by accepting stream of input text and returning a stream of generated audio.</p> |
+| NormalizeText | [NormalizeTextRequest](#ondewo.t2s.NormalizeTextRequest) | [NormalizeTextResponse](#ondewo.t2s.NormalizeTextResponse) | <p>Normalizes a text according to the specific pipeline&apos;s normalization rules.</p> |
+| GetT2sPipeline | [T2sPipelineId](#ondewo.t2s.T2sPipelineId) | [Text2SpeechConfig](#ondewo.t2s.Text2SpeechConfig) | <p>Retrieves the configuration of the specified text-to-speech pipeline.</p> |
+| CreateT2sPipeline | [Text2SpeechConfig](#ondewo.t2s.Text2SpeechConfig) | [T2sPipelineId](#ondewo.t2s.T2sPipelineId) | <p>Creates a new text-to-speech pipeline with the provided configuration and returns its pipeline ID.</p> |
+| DeleteT2sPipeline | [T2sPipelineId](#ondewo.t2s.T2sPipelineId) | [.google.protobuf.Empty](#google.protobuf.Empty) | <p>Deletes the specified text-to-speech pipeline.</p> |
+| UpdateT2sPipeline | [Text2SpeechConfig](#ondewo.t2s.Text2SpeechConfig) | [.google.protobuf.Empty](#google.protobuf.Empty) | <p>Updates the specified text-to-speech pipeline with the given configuration.</p> |
+| ListT2sPipelines | [ListT2sPipelinesRequest](#ondewo.t2s.ListT2sPipelinesRequest) | [ListT2sPipelinesResponse](#ondewo.t2s.ListT2sPipelinesResponse) | <p>Retrieves a list of text-to-speech pipelines based on specific requirements.</p> |
+| ListT2sLanguages | [ListT2sLanguagesRequest](#ondewo.t2s.ListT2sLanguagesRequest) | [ListT2sLanguagesResponse](#ondewo.t2s.ListT2sLanguagesResponse) | <p>Retrieves a list of languages available based on specific configuration requirements.</p> |
+| ListT2sDomains | [ListT2sDomainsRequest](#ondewo.t2s.ListT2sDomainsRequest) | [ListT2sDomainsResponse](#ondewo.t2s.ListT2sDomainsResponse) | <p>Retrieves a list of domains available based on specific configuration requirements.</p> |
+| ListT2sNormalizationPipelines | [ListT2sNormalizationPipelinesRequest](#ondewo.t2s.ListT2sNormalizationPipelinesRequest) | [ListT2sNormalizationPipelinesResponse](#ondewo.t2s.ListT2sNormalizationPipelinesResponse) | <p>Retrieves a list of normalization pipelines based on specific requirements.</p> |
+| GetServiceInfo | [.google.protobuf.Empty](#google.protobuf.Empty) | [T2SGetServiceInfoResponse](#ondewo.t2s.T2SGetServiceInfoResponse) | <p>Retrieves the version information of the running text-to-speech server.</p> |
+| GetCustomPhonemizer | [PhonemizerId](#ondewo.t2s.PhonemizerId) | [CustomPhonemizerProto](#ondewo.t2s.CustomPhonemizerProto) | <p>Retrieves a custom phonemizer based on the provided PhonemizerId.</p> |
+| CreateCustomPhonemizer | [CreateCustomPhonemizerRequest](#ondewo.t2s.CreateCustomPhonemizerRequest) | [PhonemizerId](#ondewo.t2s.PhonemizerId) | <p>Creates a custom phonemizer based on the provided CreateCustomPhonemizerRequest. Returns the PhonemizerId associated with the created custom phonemizer.</p> |
+| DeleteCustomPhonemizer | [PhonemizerId](#ondewo.t2s.PhonemizerId) | [.google.protobuf.Empty](#google.protobuf.Empty) | <p>Deletes a custom phonemizer based on the provided PhonemizerId. Returns an Empty response upon successful deletion.</p> |
+| UpdateCustomPhonemizer | [UpdateCustomPhonemizerRequest](#ondewo.t2s.UpdateCustomPhonemizerRequest) | [CustomPhonemizerProto](#ondewo.t2s.CustomPhonemizerProto) | <p>Updates the specified custom phonemizer with the provided configuration.</p> |
+| ListCustomPhonemizer | [ListCustomPhonemizerRequest](#ondewo.t2s.ListCustomPhonemizerRequest) | [ListCustomPhonemizerResponse](#ondewo.t2s.ListCustomPhonemizerResponse) | <p>Retrieves a list of custom phonemizers based on specific requirements.</p> |
 
  <!-- end services -->
 
