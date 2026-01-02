@@ -1168,6 +1168,7 @@ message UpdateCustomPhonemizerRequest {
     string id = 1;
 
     // The update method to be used.
+    // UpdateMethod enum defines the method for updating custom phonemizers.
     enum UpdateMethod {
 
         // Add new words, replacing existing ones.
