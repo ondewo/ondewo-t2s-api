@@ -1154,6 +1154,7 @@ all other properties of this generated audio.</p>
 
 ### UpdateCustomPhonemizerRequest.UpdateMethod
 The update method to be used.
+UpdateMethod enum defines the method for updating custom phonemizers.
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |

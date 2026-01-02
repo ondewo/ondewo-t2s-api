@@ -80,6 +80,30 @@ help: ## Print usage info about help targets
 makefile_chapters: ## Shows all sections of Makefile
 	@echo `cat Makefile| grep "########################################################" -A 1 | grep -v "########################################################"`
 
+build_docs: ## Build documentation locally using the same Docker image as CI/CD
+	@echo "Building documentation using ondewo-protoc-gen-doc-action..."
+	@if [ ! -d ".tmp-protoc-gen-doc-action" ]; then \
+		echo "Cloning ondewo-protoc-gen-doc-action..."; \
+		git clone --depth 1 https://github.com/ondewo/ondewo-protoc-gen-doc-action.git .tmp-protoc-gen-doc-action; \
+	fi
+	@echo "Building Docker image with ONDEWO templates..."
+	@docker build -t ondewo-protoc-gen-doc:local .tmp-protoc-gen-doc-action
+	@echo "Generating documentation..."
+	@docker run --rm \
+		--user "$(shell id -u):$(shell id -g)" \
+		-v "$(shell pwd):/workspace" \
+		-w /workspace \
+		ondewo-protoc-gen-doc:local \
+		html,md index
+	@echo "✓ Documentation generated in docs/ directory"
+	@echo "  Open docs/index.html in your browser to view"
+
+clean_docs_builder: ## Remove the cloned protoc-gen-doc-action repo and Docker image
+	@echo "Cleaning up documentation builder..."
+	@rm -rf .tmp-protoc-gen-doc-action
+	@docker rmi ondewo-protoc-gen-doc:local 2>/dev/null || true
+	@echo "✓ Cleanup complete"
+
 TEST:
 	@echo "----------------------------------------------\nGITHUB_GH_TOKEN\n----------------------------------------------\n${GITHUB_GH_TOKEN}\n"
 	@echo "----------------------------------------------\nCURRENT_RELEASE_NOTES\n----------------------------------------------\n${CURRENT_RELEASE_NOTES}\n"
