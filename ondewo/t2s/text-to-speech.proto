@@ -235,6 +235,9 @@ message RequestConfig {
     // Optional. Define a dict which specifies the phonemes for a special word.
     optional google.protobuf.Struct word_to_phoneme_mapping = 12;
 
+    // Optional. Define a dict which specifies the phonemes for a special word.
+    optional string instruction = 13;
+
 }
 
 // <p>Configuration for cloud provider settings for Text-to-Speech (T2S).</p>
@@ -709,6 +712,9 @@ message Text2Audio {
     // Microsoft cloud service inference settings.
     T2sCloudServiceMicrosoft t2s_cloud_service_microsoft = 7;
 
+    // Qwen3-TTS inference settings.
+    Qwen3Tts qwen3_tts = 8;
+
 }
 
 // <p>GlowTTS message contains settings for the GlowTTS inference.</p>
@@ -899,6 +905,29 @@ message T2sCloudServiceMicrosoft {
 
     // Flag to indicate using the default speaker.
     bool use_default_speaker = 2;
+
+}
+
+// <p>Qwen3Tts message contains settings for inference of qwen3-TTS model.</p>
+message Qwen3Tts {
+
+    // Voice name indicating the speaker
+    string voice_name = 1;
+
+    // Model name for the inference server.
+    string model_name = 2;
+
+    // Language for inference server
+    string language = 3;
+
+    // Host name for the inference server
+    string qwen3_tts_server_host = 4;
+
+    // Port of the inference server
+    string qwen3_tts_server_port = 5;
+
+    // Authorization key for the inference server
+    string qwen3_tts_server_key = 6;
 
 }
 
