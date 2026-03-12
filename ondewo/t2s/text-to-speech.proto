@@ -712,8 +712,11 @@ message Text2Audio {
     // Microsoft cloud service inference settings.
     T2sCloudServiceMicrosoft t2s_cloud_service_microsoft = 7;
 
-    // Qwen3-TTS inference settings.
-    Qwen3Tts qwen3_tts = 8;
+    // Qwen3-TTS-custom-voice inference settings.
+    Qwen3TtsCustomVoice qwen3_tts_custom_voice = 8;
+
+    // Qwen3-TTS-base inference settings for voice cloning.
+    Qwen3TtsBase qwen3_tts_base = 9;
 
 }
 
@@ -908,8 +911,31 @@ message T2sCloudServiceMicrosoft {
 
 }
 
-// <p>Qwen3Tts message contains settings for inference of qwen3-TTS model.</p>
-message Qwen3Tts {
+// <p>Qwen3TtsCustomVoice message contains settings for inference of qwen3-TTS-CustomVoice model.</p>
+message Qwen3TtsCustomVoice {
+
+    // Voice name indicating the speaker
+    string voice_name = 1;
+
+    // Model name for the inference server.
+    string model_name = 2;
+
+    // Language for inference server
+    string language = 3;
+
+    // Host name for the inference server
+    string qwen3_tts_server_host = 4;
+
+    // Port of the inference server
+    string qwen3_tts_server_port = 5;
+
+    // Authorization key for the inference server
+    string qwen3_tts_server_key = 6;
+
+}
+
+// <p>Qwen3TtsBase message contains settings for inference of qwen3-TTS-Base model.</p>
+message Qwen3TtsBase {
 
     // Voice name indicating the speaker
     string voice_name = 1;
