@@ -914,8 +914,8 @@ message T2sCloudServiceMicrosoft {
 // <p>Qwen3TtsCustomVoice message contains settings for inference of qwen3-TTS-CustomVoice model.</p>
 message Qwen3TtsCustomVoice {
 
-    // Voice name indicating the speaker
-    string voice_name = 1;
+    // Voice id indicating the speaker name
+    string voice_id = 1;
 
     // Model name for the inference server.
     string model_name = 2;
@@ -937,8 +937,8 @@ message Qwen3TtsCustomVoice {
 // <p>Qwen3TtsBase message contains settings for inference of qwen3-TTS-Base model.</p>
 message Qwen3TtsBase {
 
-    // Voice name indicating the speaker
-    string voice_name = 1;
+    // Voice id indicating the speaker name
+    string voice_id = 1;
 
     // Model name for the inference server.
     string model_name = 2;
