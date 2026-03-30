@@ -937,23 +937,20 @@ message Qwen3TtsCustomVoice {
 // <p>Qwen3TtsBase message contains settings for inference of qwen3-TTS-Base model.</p>
 message Qwen3TtsBase {
 
-    // Voice id indicating the speaker name
-    string voice_id = 1;
-
     // Model name for the inference server.
-    string model_name = 2;
+    string model_name = 1;
 
     // Language for inference server
-    string language = 3;
+    string language = 2;
 
     // Host name for the inference server
-    string qwen3_tts_server_host = 4;
+    string qwen3_tts_server_host = 3;
 
     // Port of the inference server
-    string qwen3_tts_server_port = 5;
+    string qwen3_tts_server_port = 4;
 
     // Authorization key for the inference server
-//    optional google.protobuf.Struct qwen3_tts_server_headers = 6;
+//    optional google.protobuf.Struct qwen3_tts_server_headers = 5;
 
 }
 
