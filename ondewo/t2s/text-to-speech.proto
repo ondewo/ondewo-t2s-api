@@ -943,11 +943,14 @@ message Qwen3TtsBase {
     // Language for inference server
     string language = 2;
 
+    // Path of the embedding file
+    string embedding_path = 3;
+
     // Host name for the inference server
-    string qwen3_tts_server_host = 3;
+    string qwen3_tts_server_host = 4;
 
     // Port of the inference server
-    string qwen3_tts_server_port = 4;
+    string qwen3_tts_server_port = 5;
 
     // Authorization key for the inference server
 //    optional google.protobuf.Struct qwen3_tts_server_headers = 5;
