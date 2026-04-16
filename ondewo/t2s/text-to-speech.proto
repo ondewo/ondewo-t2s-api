@@ -930,7 +930,7 @@ message Qwen3TtsCustomVoice {
     string qwen3_tts_server_port = 5;
 
     // Authorization headers for the inference server
-//    optional google.protobuf.Struct qwen3_tts_server_headers = 6;
+    optional google.protobuf.Struct qwen3_tts_server_headers = 6;
 
 }
 
@@ -953,7 +953,7 @@ message Qwen3TtsBase {
     string qwen3_tts_server_port = 5;
 
     // Authorization key for the inference server
-//    optional google.protobuf.Struct qwen3_tts_server_headers = 5;
+    optional google.protobuf.Struct qwen3_tts_server_headers = 5;
 
 }
 
