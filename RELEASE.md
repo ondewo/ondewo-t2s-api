@@ -2,6 +2,20 @@
 
 *****************
 
+## Release ONDEWO T2S API 6.2.0
+
+### New Features
+
+* [OND232-823](https://ondewo.atlassian.net/browse/OND232-823) Add Qwen3-TTS as a new LLM-based text-to-speech model,
+  supporting both base and custom voice configurations
+
+### Improvements
+
+* [OND232-823](https://ondewo.atlassian.net/browse/OND232-823) Add local documentation build make targets and improve
+  proto file documentation with HTML formatting for better readability
+
+*****************
+
 ## Release ONDEWO T2S API 6.1.0
 
 ### New Features
