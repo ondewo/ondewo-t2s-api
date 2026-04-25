@@ -33,6 +33,8 @@
     - [NormalizeTextResponse](#ondewo.t2s.NormalizeTextResponse)
     - [PhonemizerId](#ondewo.t2s.PhonemizerId)
     - [Postprocessing](#ondewo.t2s.Postprocessing)
+    - [Qwen3TtsBase](#ondewo.t2s.Qwen3TtsBase)
+    - [Qwen3TtsCustomVoice](#ondewo.t2s.Qwen3TtsCustomVoice)
     - [RequestConfig](#ondewo.t2s.RequestConfig)
     - [SingleInference](#ondewo.t2s.SingleInference)
     - [StreamingSynthesizeRequest](#ondewo.t2s.StreamingSynthesizeRequest)
@@ -578,6 +580,46 @@
 
 
 
+<a name="ondewo.t2s.Qwen3TtsBase"></a>
+
+### Qwen3TtsBase
+<p>Qwen3TtsBase message contains settings for inference of qwen3-TTS-Base model.</p>
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| model_name | [string](#string) |  | Model name for the inference server. |
+| language | [string](#string) |  | Language for inference server |
+| embedding_path | [string](#string) |  | Path of the embedding file |
+| qwen3_tts_server_host | [string](#string) |  | Host name for the inference server |
+| qwen3_tts_server_port | [string](#string) |  | Port of the inference server |
+| qwen3_tts_server_header | [google.protobuf.Struct](#google.protobuf.Struct) | optional | Authorization key for the inference server |
+
+
+
+
+
+
+<a name="ondewo.t2s.Qwen3TtsCustomVoice"></a>
+
+### Qwen3TtsCustomVoice
+<p>Qwen3TtsCustomVoice message contains settings for inference of qwen3-TTS-CustomVoice model.</p>
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| voice_id | [string](#string) |  | Voice id indicating the speaker name |
+| model_name | [string](#string) |  | Model name for the inference server. |
+| language | [string](#string) |  | Language for inference server |
+| qwen3_tts_server_host | [string](#string) |  | Host name for the inference server |
+| qwen3_tts_server_port | [string](#string) |  | Port of the inference server |
+| qwen3_tts_server_header | [google.protobuf.Struct](#google.protobuf.Struct) | optional | Authorization headers for the inference server |
+
+
+
+
+
+
 <a name="ondewo.t2s.RequestConfig"></a>
 
 ### RequestConfig
@@ -607,6 +649,7 @@ Note: ondewo-t2s will raise an error if you don&apos;t pass any of the required 
 | t2s_cloud_provider_config | [T2sCloudProviderConfig](#ondewo.t2s.T2sCloudProviderConfig) | optional | Optional. Defines the cloud provider's specific configuration for using text to speech cloud services The default value is None. |
 | t2s_normalization | [T2SNormalization](#ondewo.t2s.T2SNormalization) |  | Optional. Define t2s_normalization config parameters for this specific request. The default values are set in the config file and the values set via RequestConfig are set just for this specific request and will not update the pipeline. |
 | word_to_phoneme_mapping | [google.protobuf.Struct](#google.protobuf.Struct) | optional | Optional. Define a dict which specifies the phonemes for a special word. |
+| instruction | [string](#string) | optional | Optional. Define a dict which specifies the phonemes for a special word. |
 
 
 
@@ -973,6 +1016,8 @@ all other properties of this generated audio.</p>
 | t2s_cloud_service_amazon | [T2sCloudServiceAmazon](#ondewo.t2s.T2sCloudServiceAmazon) |  | Amazon cloud service inference settings. |
 | t2s_cloud_service_google | [T2sCloudServiceGoogle](#ondewo.t2s.T2sCloudServiceGoogle) |  | Google cloud service inference settings. |
 | t2s_cloud_service_microsoft | [T2sCloudServiceMicrosoft](#ondewo.t2s.T2sCloudServiceMicrosoft) |  | Microsoft cloud service inference settings. |
+| qwen3_tts_custom_voice | [Qwen3TtsCustomVoice](#ondewo.t2s.Qwen3TtsCustomVoice) |  | Qwen3-TTS-custom-voice inference settings. |
+| qwen3_tts_base | [Qwen3TtsBase](#ondewo.t2s.Qwen3TtsBase) |  | Qwen3-TTS-base inference settings for voice cloning. |
 
 
 

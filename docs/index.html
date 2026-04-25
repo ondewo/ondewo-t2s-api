@@ -205,6 +205,14 @@
                       </li>
                     
                       <li>
+                        <a href="#ondewo.t2s.Qwen3TtsBase" class="title-badge message">Qwen3TtsBase</a>
+                      </li>
+                    
+                      <li>
+                        <a href="#ondewo.t2s.Qwen3TtsCustomVoice" class="title-badge message">Qwen3TtsCustomVoice</a>
+                      </li>
+                    
+                      <li>
                         <a href="#ondewo.t2s.RequestConfig" class="title-badge message">RequestConfig</a>
                       </li>
                     
@@ -1559,6 +1567,124 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
 
         
       
+        <h3 id="ondewo.t2s.Qwen3TtsBase" class="title-badge message">Qwen3TtsBase</h3>
+        <p><p>Qwen3TtsBase message contains settings for inference of qwen3-TTS-Base model.</p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>model_name</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Model name for the inference server. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>language</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Language for inference server </p></td>
+                </tr>
+              
+                <tr>
+                  <td>embedding_path</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Path of the embedding file </p></td>
+                </tr>
+              
+                <tr>
+                  <td>qwen3_tts_server_host</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Host name for the inference server </p></td>
+                </tr>
+              
+                <tr>
+                  <td>qwen3_tts_server_port</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Port of the inference server </p></td>
+                </tr>
+              
+                <tr>
+                  <td>qwen3_tts_server_header</td>
+                  <td><a href="#google.protobuf.Struct">google.protobuf.Struct</a></td>
+                  <td>optional</td>
+                  <td><p>Authorization key for the inference server </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.Qwen3TtsCustomVoice" class="title-badge message">Qwen3TtsCustomVoice</h3>
+        <p><p>Qwen3TtsCustomVoice message contains settings for inference of qwen3-TTS-CustomVoice model.</p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>voice_id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Voice id indicating the speaker name </p></td>
+                </tr>
+              
+                <tr>
+                  <td>model_name</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Model name for the inference server. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>language</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Language for inference server </p></td>
+                </tr>
+              
+                <tr>
+                  <td>qwen3_tts_server_host</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Host name for the inference server </p></td>
+                </tr>
+              
+                <tr>
+                  <td>qwen3_tts_server_port</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Port of the inference server </p></td>
+                </tr>
+              
+                <tr>
+                  <td>qwen3_tts_server_header</td>
+                  <td><a href="#google.protobuf.Struct">google.protobuf.Struct</a></td>
+                  <td>optional</td>
+                  <td><p>Authorization headers for the inference server </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
         <h3 id="ondewo.t2s.RequestConfig" class="title-badge message">RequestConfig</h3>
         <p><p>Represents a Configuration for the text to speech conversion.</p></p>
 
@@ -1690,6 +1816,13 @@ this specific request and will not update the pipeline. </p></td>
                 <tr>
                   <td>word_to_phoneme_mapping</td>
                   <td><a href="#google.protobuf.Struct">google.protobuf.Struct</a></td>
+                  <td>optional</td>
+                  <td><p>Optional. Define a dict which specifies the phonemes for a special word. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>instruction</td>
+                  <td><a href="#string">string</a></td>
                   <td>optional</td>
                   <td><p>Optional. Define a dict which specifies the phonemes for a special word. </p></td>
                 </tr>
@@ -2617,6 +2750,20 @@ It is in the range [0.0, 1.0]. </p></td>
                   <td><a href="#ondewo.t2s.T2sCloudServiceMicrosoft">T2sCloudServiceMicrosoft</a></td>
                   <td></td>
                   <td><p>Microsoft cloud service inference settings. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>qwen3_tts_custom_voice</td>
+                  <td><a href="#ondewo.t2s.Qwen3TtsCustomVoice">Qwen3TtsCustomVoice</a></td>
+                  <td></td>
+                  <td><p>Qwen3-TTS-custom-voice inference settings. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>qwen3_tts_base</td>
+                  <td><a href="#ondewo.t2s.Qwen3TtsBase">Qwen3TtsBase</a></td>
+                  <td></td>
+                  <td><p>Qwen3-TTS-base inference settings for voice cloning. </p></td>
                 </tr>
               
             </tbody>
