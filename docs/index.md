@@ -593,7 +593,7 @@
 | embedding_path | [string](#string) |  | Path of the embedding file |
 | qwen3_tts_server_host | [string](#string) |  | Host name for the inference server |
 | qwen3_tts_server_port | [string](#string) |  | Port of the inference server |
-| qwen3_tts_server_header | [google.protobuf.Struct](#google.protobuf.Struct) | optional | Authorization key for the inference server |
+| qwen3_tts_server_header | [google.protobuf.Struct](#google.protobuf.Struct) | optional | Authorization headers for the inference server |
 
 
 
