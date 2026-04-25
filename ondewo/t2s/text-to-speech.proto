@@ -235,7 +235,7 @@ message RequestConfig {
     // Optional. Define a dict which specifies the phonemes for a special word.
     optional google.protobuf.Struct word_to_phoneme_mapping = 12;
 
-    // Optional. Define a dict which specifies the phonemes for a special word.
+    // Optional. Define an instruction or prompt to be passed to the TTS/LLM backend for this request.
     optional string instruction = 13;
 
 }
