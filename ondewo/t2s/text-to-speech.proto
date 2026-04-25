@@ -927,7 +927,7 @@ message Qwen3TtsCustomVoice {
     string qwen3_tts_server_host = 4;
 
     // Port of the inference server
-    string qwen3_tts_server_port = 5;
+    int64 qwen3_tts_server_port = 5;
 
     // Authorization headers for the inference server
     optional google.protobuf.Struct qwen3_tts_server_header = 6;
@@ -950,7 +950,7 @@ message Qwen3TtsBase {
     string qwen3_tts_server_host = 4;
 
     // Port of the inference server
-    string qwen3_tts_server_port = 5;
+    int64 qwen3_tts_server_port = 5;
 
     // Authorization headers for the inference server
     optional google.protobuf.Struct qwen3_tts_server_header = 6;
