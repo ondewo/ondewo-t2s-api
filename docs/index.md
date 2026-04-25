@@ -592,7 +592,7 @@
 | language | [string](#string) |  | Language for inference server |
 | embedding_path | [string](#string) |  | Path of the embedding file |
 | qwen3_tts_server_host | [string](#string) |  | Host name for the inference server |
-| qwen3_tts_server_port | [string](#string) |  | Port of the inference server |
+| qwen3_tts_server_port | [int64](#int64) |  | Port of the inference server |
 | qwen3_tts_server_header | [google.protobuf.Struct](#google.protobuf.Struct) | optional | Authorization headers for the inference server |
 
 
@@ -612,7 +612,7 @@
 | model_name | [string](#string) |  | Model name for the inference server. |
 | language | [string](#string) |  | Language for inference server |
 | qwen3_tts_server_host | [string](#string) |  | Host name for the inference server |
-| qwen3_tts_server_port | [string](#string) |  | Port of the inference server |
+| qwen3_tts_server_port | [int64](#int64) |  | Port of the inference server |
 | qwen3_tts_server_header | [google.protobuf.Struct](#google.protobuf.Struct) | optional | Authorization headers for the inference server |
 
 
