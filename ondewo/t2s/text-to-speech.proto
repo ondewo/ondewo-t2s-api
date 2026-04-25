@@ -952,7 +952,7 @@ message Qwen3TtsBase {
     // Port of the inference server
     string qwen3_tts_server_port = 5;
 
-    // Authorization key for the inference server
+    // Authorization headers for the inference server
     optional google.protobuf.Struct qwen3_tts_server_header = 6;
 
 }
