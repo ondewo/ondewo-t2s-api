@@ -17,13 +17,13 @@ export
 
 # MUST BE THE SAME AS API in Mayor and Minor Version Number
 # example: API 2.9.0 --> Client 2.9.X
-ONDEWO_T2S_API_VERSION=6.1.0
+ONDEWO_T2S_API_VERSION=6.2.0
 
 # You need to setup an access token at https://github.com/settings/tokens - permissions are important
 GITHUB_GH_TOKEN?=ENTER_YOUR_TOKEN_HERE
 
 CURRENT_RELEASE_NOTES=`cat RELEASE.md \
-	| sed -n '/Release ONDEWO T2S API ${ONDEWO_T2S_API_VERSION}/,/\*\*/p'`
+	| perl -ne 'print if /Release ONDEWO T2S API ${ONDEWO_T2S_API_VERSION}/../\*\*/'`
 
 GH_REPO="https://github.com/ondewo/ondewo-t2s-api"
 DEVOPS_ACCOUNT_GIT="ondewo-devops-accounts"
@@ -110,34 +110,34 @@ TEST:
 
 githubio_logic_pre:
 	$(eval REPO_NAME:= $(shell echo ${GH_REPO} | cut -d "-" -f 2 ))
-	$(eval REPO_NAME_UPPER:= $(shell echo ${GH_REPO} | cut -d "-" -f 2 | sed -e 's/\(.*\)/\U\1/'))
+	$(eval REPO_NAME_UPPER:= $(shell echo ${GH_REPO} | cut -d "-" -f 2 | perl -pe 's/(.*)/\U$$1/'))
 	$(eval DOCS_DIR:=ondewo.github.io/docs/ondewo-${REPO_NAME}-api/${ONDEWO_T2S_API_VERSION})
-	@sed -i "/{ number: '${ONDEWO_T2S_API_VERSION}', link: 'ondewo-${REPO_NAME}-api\/${ONDEWO_T2S_API_VERSION}\/' },/d" ondewo.github.io/data.js
+	@perl -i -ne "print unless /\{ number: '${ONDEWO_T2S_API_VERSION}', link: 'ondewo-${REPO_NAME}-api\/${ONDEWO_T2S_API_VERSION}\/' \},/" ondewo.github.io/data.js
 	@rm -rf ${DOCS_DIR}
 	@mkdir "${DOCS_DIR}"
 	@cp docs/* ${DOCS_DIR}
-	@sed -i "s/h1>Protocol Documentation/h1>${REPO_NAME_UPPER} ${ONDEWO_T2S_API_VERSION} Documentation/" ${DOCS_DIR}/index.html
+	@perl -i -pe "s/h1>Protocol Documentation/h1>${REPO_NAME_UPPER} ${ONDEWO_T2S_API_VERSION} Documentation/" ${DOCS_DIR}/index.html
 
 githubio_logic: | githubio_logic_pre
 	$(eval REPO_NAME:= $(shell echo ${GH_REPO} | cut -d "-" -f 2 ))
-	$(eval REPO_NAME_UPPER:= $(shell echo ${GH_REPO} | cut -d "-" -f 2 | sed -e 's/\(.*\)/\U\1/'))
+	$(eval REPO_NAME_UPPER:= $(shell echo ${GH_REPO} | cut -d "-" -f 2 | perl -pe 's/(.*)/\U$$1/'))
 	@git branch | grep "*" | grep -q "master" || (echo "Not on master branch"  & rm -rf ondewo.github.io && exit 1)
-	@! cat ondewo.github.io/data.js | sed -n "/name\: '${REPO_NAME_UPPER}'/,/end\: ''/p" | grep -q "number: '${ONDEWO_T2S_API_VERSION}'" || (echo "Already Released" && exit 1)
-	$(eval VERSION_LINE:= $(shell cat -n ondewo.github.io/data.js | sed -n "/name\: '${REPO_NAME_UPPER}'/,/end\: ''/p" | grep "versions: " -A 1 | tail -1 | grep -o -E '[0-9]+' | head -1 | sed -e 's/^0\+//'))
-	$(eval TEMP_TEXT:= $(shell cat ondewo.github.io/script_object.txt | sed -e "s/VERSION/${ONDEWO_T2S_API_VERSION}/g" -e "s/TECHNOLOGY/${REPO_NAME}/g"))
-	@sed -i "${VERSION_LINE} i ${TEMP_TEXT}" ondewo.github.io/data.js
+	@! cat ondewo.github.io/data.js | perl -ne "print if /name: '${REPO_NAME_UPPER}'/../end: ''/" | grep -q "number: '${ONDEWO_T2S_API_VERSION}'" || (echo "Already Released" && exit 1)
+	$(eval VERSION_LINE:= $(shell cat -n ondewo.github.io/data.js | perl -ne "print if /name: '${REPO_NAME_UPPER}'/../end: ''/" | grep "versions: " -A 1 | tail -1 | grep -o -E '[0-9]+' | head -1 | perl -pe 's/^0+//'))
+	$(eval TEMP_TEXT:= $(shell cat ondewo.github.io/script_object.txt | perl -pe "s/VERSION/${ONDEWO_T2S_API_VERSION}/g; s/TECHNOLOGY/${REPO_NAME}/g"))
+	@perl -i -pe 'print "${TEMP_TEXT}\n" if $$. == ${VERSION_LINE}' ondewo.github.io/data.js
 	@npm install prettier && cd ondewo.github.io && npx prettier -w --single-quote data.js
 	$(eval DOCS_DIR:=ondewo.github.io/docs/ondewo-${REPO_NAME}-api/${ONDEWO_T2S_API_VERSION})
 	@rm -rf ${DOCS_DIR}
 	@mkdir "${DOCS_DIR}"
 	@cp docs/* ${DOCS_DIR}
-	@sed -i "s/h1>Protocol Documentation/h1>${REPO_NAME_UPPER} ${ONDEWO_T2S_API_VERSION} Documentation/" ${DOCS_DIR}/index.html
-	$(eval HEADER_LINE:= $(shell cat ${DOCS_DIR}/index.html | grep -n "${REPO_NAME_UPPER} ${ONDEWO_T2S_API_VERSION} Documentation" | grep -o -E '[0-9]+' | head -1 | sed -e 's/^0\+//'))
+	@perl -i -pe "s/h1>Protocol Documentation/h1>${REPO_NAME_UPPER} ${ONDEWO_T2S_API_VERSION} Documentation/" ${DOCS_DIR}/index.html
+	$(eval HEADER_LINE:= $(shell cat ${DOCS_DIR}/index.html | grep -n "${REPO_NAME_UPPER} ${ONDEWO_T2S_API_VERSION} Documentation" | grep -o -E '[0-9]+' | head -1 | perl -pe 's/^0+//'))
 	$(eval TEMP_IMG:= $(shell cat  ondewo.github.io/script_image.txt))
 	$(eval TEMP_CALC:= $(shell expr ${HEADER_LINE} ))
-	sed -i '${TEMP_CALC} i ${TEMP_IMG}' ${DOCS_DIR}/index.html
+	perl -i -pe 'print "${TEMP_IMG}\n" if $$. == ${TEMP_CALC}' ${DOCS_DIR}/index.html
 	head -30 ${DOCS_DIR}/index.html
-	cat ondewo.github.io/data.js | sed -n "/name\: '${REPO_NAME_UPPER}'/,/end\: ''/p"
+	cat ondewo.github.io/data.js | perl -ne "print if /name: '${REPO_NAME_UPPER}'/../end: ''/"
 	@git -C ondewo.github.io status
 	@git -C ondewo.github.io add data.js
 	@git -C ondewo.github.io add docs
@@ -176,6 +176,22 @@ login_to_gh: ## Login to Github CLI with Access Token
 build_gh_release: ## Generate Github Release with CLI
 	gh release create --repo $(GH_REPO) "$(ONDEWO_T2S_API_VERSION)" -n "$(CURRENT_RELEASE_NOTES)" -t "Release ${ONDEWO_T2S_API_VERSION}"
 
+delete_gh_release: ## Delete GitHub Release, release branch and release tag via gh CLI
+	-gh release delete --repo $(GH_REPO) "$(ONDEWO_T2S_API_VERSION)" --yes
+	-gh api repos/ondewo/ondewo-t2s-api/git/refs/heads/release/${ONDEWO_T2S_API_VERSION} -X DELETE
+	-gh api repos/ondewo/ondewo-t2s-api/git/refs/tags/${ONDEWO_T2S_API_VERSION} -X DELETE
+
+unrelease_to_github_via_docker_image: ## Unrelease from Github via docker
+	docker run --rm \
+		-e GITHUB_GH_TOKEN=${GITHUB_GH_TOKEN} \
+		${IMAGE_UTILS_NAME} make login_to_gh delete_gh_release
+
+unrelease: build_utils_docker_image unrelease_to_github_via_docker_image ## Undo a release: delete the GitHub release, release branch, and release tag
+	-git branch -d "release/${ONDEWO_T2S_API_VERSION}"
+	-git tag -d "${ONDEWO_T2S_API_VERSION}"
+	-git fetch --prune
+	@echo "Unrelease of ${ONDEWO_T2S_API_VERSION} complete"
+
 release_all_clients: ## Release all T2S Clients
 	@make release_python_client || (echo "Already released ${ONDEWO_T2S_API_VERSION} of Python Client")
 	@make release_nodejs_client || (echo "Already released ${ONDEWO_T2S_API_VERSION} of Nodejs Client")
@@ -193,24 +209,24 @@ GENERIC_RELEASE_NOTES="\n***************** \n\\\#\\\# Release ONDEWO T2S REPONAM
 release_client:
 	$(eval REPO_NAME:= $(shell echo ${GENERIC_CLIENT} | cut -c 41- | cut -d '.' -f 1))
 	$(eval REPO_DIR:= $(shell echo "ondewo-t2s-client-${REPO_NAME}"))
-	$(eval UPPER_REPO_NAME:= $(shell echo ${REPO_NAME} | sed 's/.*/\u&/'))
+	$(eval UPPER_REPO_NAME:= $(shell echo ${REPO_NAME} | perl -pe 's/.*/\u$$&/'))
 # Get newest Proto-Compiler Version
 	$(eval PROTO_COMPILER:= $(shell curl https://api.github.com/repos/ondewo/ondewo-proto-compiler/tags | grep "\"name\"" | head -1 | cut -d '"' -f 4))
 # Clone Repo
 	rm -rf ${REPO_DIR}
 	rm -f build_log_${REPO_NAME}.txt
 
-	@echo ${GENERIC_RELEASE_NOTES} > temp-notes && sed -i 's/\\//g' temp-notes && sed -i 's/REPONAME/${UPPER_REPO_NAME}/g' temp-notes
+	@echo ${GENERIC_RELEASE_NOTES} > temp-notes && perl -i -pe 's/\\//g' temp-notes && perl -i -pe 's/REPONAME/${UPPER_REPO_NAME}/g' temp-notes
 	git clone ${GENERIC_CLIENT}
 # Check if Client is already uptodate with API Version
 	@! git -C ${REPO_DIR} branch -a | grep -q ${ONDEWO_T2S_API_VERSION} || (echo "Already Released ${ONDEWO_T2S_API_VERSION} \n\n\n"  && rm -rf ${REPO_DIR} && rm -f temp-notes && exit 1)
 
 # Change Version Number and RELEASE NOTES
-	cd ${REPO_DIR} && sed -i -e '/Release History/r ../temp-notes' ${RELEASEMD}
+	cd ${REPO_DIR} && perl -i -ne 'print; if(/Release History/){open(F,"../temp-notes");print <F>;close F}' ${RELEASEMD}
 	cd ${REPO_DIR} && head -20 ${RELEASEMD}
-	cd ${REPO_DIR} && sed -i -e 's/ONDEWO_T2S_VERSION.*=.*/ONDEWO_T2S_VERSION = ${ONDEWO_T2S_API_VERSION}/' Makefile
-	cd ${REPO_DIR} && sed -i -e 's/ONDEWO_PROTO_COMPILER_GIT_BRANCH.*=.*/ONDEWO_PROTO_COMPILER_GIT_BRANCH=tags\/${PROTO_COMPILER}/' Makefile
-	cd ${REPO_DIR} && sed -i -e 's/T2S_API_GIT_BRANCH.*=.*/T2S_API_GIT_BRANCH=tags\/${ONDEWO_T2S_API_VERSION}/' Makefile && head -30 Makefile
+	cd ${REPO_DIR} && perl -i -pe 's/ONDEWO_T2S_VERSION.*=.*/ONDEWO_T2S_VERSION = ${ONDEWO_T2S_API_VERSION}/' Makefile
+	cd ${REPO_DIR} && perl -i -pe 's|ONDEWO_PROTO_COMPILER_GIT_BRANCH.*=.*|ONDEWO_PROTO_COMPILER_GIT_BRANCH=tags/${PROTO_COMPILER}|' Makefile
+	cd ${REPO_DIR} && perl -i -pe 's|T2S_API_GIT_BRANCH.*=.*|T2S_API_GIT_BRANCH=tags/${ONDEWO_T2S_API_VERSION}|' Makefile && head -30 Makefile
 
 # Build new code
 	make -C ${REPO_DIR} ondewo_release | tee build_log_${REPO_NAME}.txt
@@ -274,6 +290,9 @@ release_to_github_via_docker_image:  ## Release to Github via docker
 #		DEVOPS-ACCOUNTS
 
 ondewo_release: spc clone_devops_accounts run_release_with_devops ## Release with credentials from devops-accounts repo
+	@rm -rf ${DEVOPS_ACCOUNT_GIT}
+
+ondewo_unrelease: clone_devops_accounts run_unrelease_with_devops ## Unrelease with credentials from devops-accounts repo
 	@rm -rf ${DEVOPS_ACCOUNT_GIT}
 
 clone_devops_accounts: ## Clones devops-accounts repo
