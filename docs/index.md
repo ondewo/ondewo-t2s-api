@@ -649,7 +649,7 @@ Note: ondewo-t2s will raise an error if you don&apos;t pass any of the required 
 | t2s_cloud_provider_config | [T2sCloudProviderConfig](#ondewo.t2s.T2sCloudProviderConfig) | optional | Optional. Defines the cloud provider's specific configuration for using text to speech cloud services The default value is None. |
 | t2s_normalization | [T2SNormalization](#ondewo.t2s.T2SNormalization) |  | Optional. Define t2s_normalization config parameters for this specific request. The default values are set in the config file and the values set via RequestConfig are set just for this specific request and will not update the pipeline. |
 | word_to_phoneme_mapping | [google.protobuf.Struct](#google.protobuf.Struct) | optional | Optional. Define a dict which specifies the phonemes for a special word. |
-| instruction | [string](#string) | optional | Optional. Define a dict which specifies the phonemes for a special word. |
+| instruction | [string](#string) | optional | Optional. Define an instruction or prompt to be passed to the TTS/LLM backend for this request. |
 
 
 
