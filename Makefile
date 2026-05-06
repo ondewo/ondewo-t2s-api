@@ -303,6 +303,10 @@ run_release_with_devops: ## Gets Credentials from devops-repo and runs release w
 	$(eval info:= $(shell cat ${DEVOPS_ACCOUNT_DIR}/account_github.env | grep GITHUB_GH))
 	make release $(info)
 
+run_unrelease_with_devops: ## Gets Credentials from devops-repo and runs unrelease with them
+	$(eval info:= $(shell cat ${DEVOPS_ACCOUNT_DIR}/account_github.env | grep GITHUB_GH))
+	make unrelease $(info)
+
 spc: ## Checks if the Release Branch, Tag and Pypi version already exist
 	$(eval filtered_branches:= $(shell git branch --all | grep "release/${ONDEWO_T2S_API_VERSION}"))
 	$(eval filtered_tags:= $(shell git tag --list | grep "${ONDEWO_T2S_API_VERSION}"))
