@@ -2,6 +2,14 @@
 
 *****************
 
+## Release ONDEWO T2S API 6.2.1
+
+### New Features
+
+* [OND232-826](https://ondewo.atlassian.net/browse/OND232-826) Resolve the issue with English google voices.
+
+*****************
+
 ## Release ONDEWO T2S API 6.2.0
 
 ### New Features
