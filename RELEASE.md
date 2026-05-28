@@ -6,7 +6,8 @@
 
 ### Bug Fixes
 
-* [OND232-826](https://ondewo.atlassian.net/browse/OND232-826) Resolve the issue with English google voices.
+* [OND232-826](https://ondewo.atlassian.net/browse/OND232-826) Resolve the issue with English voices of Google Cloud
+  provider.
 
 *****************
 
