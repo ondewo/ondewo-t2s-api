@@ -963,6 +963,7 @@ all other properties of this generated audio.</p>
 | speaking_rate | [float](#float) |  | Speaking rate to control the speed of audio. |
 | volume_gain_db | [float](#float) |  | Volume gain in db to control volume of the audio. |
 | pitch | [float](#float) |  | pitch value of the audio |
+| speaker_language | [string](#string) |  | speaker_language indicating the speaker language code |
 
 
 
