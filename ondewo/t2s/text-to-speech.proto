@@ -898,6 +898,9 @@ message T2sCloudServiceGoogle {
     // pitch value of the audio
     float pitch = 4;
 
+    // speaker_language indicating the speaker language code
+    string speaker_language = 5;
+
 }
 
 // <p>T2sCloudServiceMicrosoft message contains settings for the Microsoft Cloud service inference.</p>
