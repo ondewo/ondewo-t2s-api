@@ -85,21 +85,86 @@ service Text2Speech {
 message SynthesizeRequest {
 
     // Required. Represents the text that will be transformed to speech.
-    // Synthesize text:
+    //
+    // <p>The text may be plain text, or it may embed SSML markup, phonemes and voice-control tags to
+    // shape how it is spoken. The sections below list every supported form with a copy-paste example.
+    // Which forms take effect depends on the pipeline (model) selected via
+    // <code>RequestConfig.t2s_pipeline_id</code>; unsupported tags are stripped and the plain text is
+    // still spoken.</p>
+    //
+    // <p><b>1. Plain text</b></p>
     // <ul>
     //   <li>Simple text: <pre><code>Hello, how are you?</code></pre></li>
     // </ul>
-    // Examples to modulate the voice based on SSML tags and Arpabet phonemes:
+    //
+    // <p><b>2. SSML <code>&lt;say-as&gt;</code> tags (local vits / qwen3-tts and cloud providers)</b></p>
+    // <p>Rewrites the enclosed text into its spoken form (spelled out letters, digits, symbols, ...).
+    // Supported by the local normalization pipeline and forwarded to the cloud providers.</p>
     // <ul>
-    //   <li>SSML Tag Phone: <pre><code>&lt;say-as interpret-as=&quot;phone&quot;&gt;+12354321&lt;/say-as&gt;</code></pre></li>
-    //   <li>SSML Tag Email: <pre><code>&lt;say-as interpret-as=&quot;email&quot;&gt;voices@ondewo.com&lt;/say-as&gt;</code></pre></li>
-    //   <li>SSML Tag URL: <pre><code>&lt;say-as interpret-as=&quot;url&quot;&gt;ondewo.com/en/&lt;/say-as&gt;</code></pre></li>
-    //   <li>SSML Tag Spell: <pre><code>&lt;say-as interpret-as=&quot;spell&quot;&gt;AP732&lt;/say-as&gt;</code></pre></li>
-    //   <li>SSML Tag Spell With Names: <pre><code>&lt;say-as interpret-as=&quot;spell-with-names&quot;&gt;AHO32&lt;/say-as&gt;</code></pre></li>
-    //   <li>SSML Tag Callsigns Short: <pre><code>&lt;say-as interpret-as=&quot;callsign-short&quot;&gt;AUA439&lt;/say-as&gt;</code></pre></li>
-    //   <li>SSML Tag Callsigns Long: <pre><code>&lt;say-as interpret-as=&quot;callsign-long&quot;&gt;AAL439&lt;/say-as&gt;</code></pre></li>
-    //   <li>SSML Tag Break Tag: <pre><code>I am going to take a 2 seconds break &lt;break time=&quot;2.0&quot;/&gt; done</code></pre></li>
-    //   <li>Arpabet Phonemes: <pre><code>Hello I am {AE2 L EH0 G Z AE1 N D R AH0}</code></pre></li>
+    //   <li>Phone: <pre><code>&lt;say-as interpret-as=&quot;phone&quot;&gt;+12354321&lt;/say-as&gt;</code></pre></li>
+    //   <li>Email: <pre><code>&lt;say-as interpret-as=&quot;email&quot;&gt;voices@ondewo.com&lt;/say-as&gt;</code></pre></li>
+    //   <li>URL: <pre><code>&lt;say-as interpret-as=&quot;url&quot;&gt;ondewo.com/en/&lt;/say-as&gt;</code></pre></li>
+    //   <li>Spell (spell out each character): <pre><code>&lt;say-as interpret-as=&quot;spell&quot;&gt;AP732&lt;/say-as&gt;</code></pre></li>
+    //   <li>Spell with names (e.g. &quot;A like Anton&quot;): <pre><code>&lt;say-as interpret-as=&quot;spell-with-names&quot;&gt;AHO32&lt;/say-as&gt;</code></pre></li>
+    //   <li>Callsigns short: <pre><code>&lt;say-as interpret-as=&quot;callsign-short&quot;&gt;AUA439&lt;/say-as&gt;</code></pre></li>
+    //   <li>Callsigns long: <pre><code>&lt;say-as interpret-as=&quot;callsign-long&quot;&gt;AAL439&lt;/say-as&gt;</code></pre></li>
+    // </ul>
+    //
+    // <p><b>3. Pauses / breaks</b></p>
+    // <ul>
+    //   <li>Break tag (seconds): <pre><code>I am going to take a 2 seconds break &lt;break time=&quot;2.0&quot;/&gt; done</code></pre></li>
+    //   <li>Break tag (milliseconds, cloud providers): <pre><code>please wait &lt;break time=&quot;500ms&quot;/&gt; done</code></pre></li>
+    // </ul>
+    //
+    // <p><b>4. Phonemes (control pronunciation)</b></p>
+    // <p>Pronunciation is controlled with the SSML <code>&lt;phoneme&gt;</code> element using the IPA
+    // alphabet (<code>alphabet=&quot;ipa&quot;</code>). This is the format used by the local models
+    // (vits, glow-tts, qwen3-tts) as well as the cloud providers (Amazon Polly, Microsoft Azure and
+    // Google Cloud TTS all document <code>alphabet=&quot;ipa&quot;</code>). The IPA string goes in the
+    // <code>ph</code> attribute and the written word between the tags;
+    // <ul>
+    //   <li>English: <pre><code>I would like a &lt;phoneme alphabet=&quot;ipa&quot; ph=&quot;t&#601;&#712;me&#618;to&#650;&quot;&gt;tomato&lt;/phoneme&gt; please</code></pre></li>
+    //   <li>German: <pre><code>Ich h&auml;tte gerne ein &lt;phoneme alphabet=&quot;ipa&quot; ph=&quot;&#712;ba&#618;&#643;pi&#720;l&quot;&gt;Beispiel&lt;/phoneme&gt; bitte</code></pre></li>
+    // </ul>
+    //
+    // <p><b>5. Voice control for qwen3-tts (emotion / style / prosody)</b></p>
+    // <p>These ONDEWO-namespaced tags are compiled into the model instruction and stripped from the
+    // spoken text, so the transcription stays the plain sentence while the delivery changes. They only
+    // take effect on the qwen3-tts <b>CustomVoice</b> model; on the base and voicedesign models they are
+    // stripped and a warning is logged.</p>
+    // <ul>
+    //   <li>Style - one of <code>apologetic</code>, <code>calm</code>, <code>empathetic</code>,
+    //     <code>firm</code>, <code>lively</code>:
+    //     <pre><code>&lt;ondewo:style name=&quot;calm&quot;&gt;please stay calm everything will be fine&lt;/ondewo:style&gt;</code></pre></li>
+    //   <li>Emphasis - selects the intensity tier (<code>reduced</code> / <code>moderate</code> /
+    //     <code>strong</code>) of the chosen style:
+    //     <pre><code>&lt;ondewo:style name=&quot;firm&quot;&gt;&lt;emphasis level=&quot;strong&quot;&gt;listen carefully&lt;/emphasis&gt;&lt;/ondewo:style&gt;</code></pre></li>
+    //   <li>Prosody - <code>rate</code> (<code>x-slow</code>/<code>slow</code>/<code>fast</code>/<code>x-fast</code>),
+    //     <code>pitch</code> (<code>x-low</code>/<code>low</code>/<code>high</code>/<code>x-high</code> or a
+    //     semitone offset such as <code>+4st</code>/<code>-4st</code>) and
+    //     <code>volume</code> (<code>x-soft</code>/<code>soft</code>/<code>loud</code>/<code>x-loud</code>):
+    //     <pre><code>&lt;prosody rate=&quot;slow&quot; pitch=&quot;+4st&quot; volume=&quot;loud&quot;&gt;hello there&lt;/prosody&gt;</code></pre></li>
+    //   <li>Nested combination (style + emphasis + prosody):
+    //     <pre><code>&lt;ondewo:style name=&quot;calm&quot;&gt;&lt;emphasis level=&quot;moderate&quot;&gt;&lt;prosody rate=&quot;slow&quot; pitch=&quot;low&quot; volume=&quot;soft&quot;&gt;hello there&lt;/prosody&gt;&lt;/emphasis&gt;&lt;/ondewo:style&gt;</code></pre></li>
+    //   <li>Free-form instruction (CustomVoice only) - describe the delivery in natural language:
+    //     <pre><code>&lt;ondewo:instruct&gt;speak slowly in a warm and reassuring tone&lt;/ondewo:instruct&gt;hello there</code></pre></li>
+    //   <li>Inline audio tags (CustomVoice only) - emotional expressions / sound effects in square
+    //     brackets, e.g. <code>[whispers]</code>, <code>[laughs]</code>. They are compiled into the
+    //     instruction and stripped from the spoken text:
+    //     <pre><code>[whispers] hello there</code></pre></li>
+    // </ul>
+    // <p>See also <code>RequestConfig.instruction</code> for supplying the instruction / voice
+    // description directly instead of embedding it in the text.</p>
+    //
+    // <p><b>6. Provider-specific SSML (cloud pipelines only)</b></p>
+    // <p>Each cloud provider documents its own SSML vocabulary; use the elements matching the provider
+    // behind the selected pipeline. Standard <code>&lt;prosody&gt;</code>, <code>&lt;emphasis&gt;</code>
+    // and <code>&lt;break&gt;</code> are common to all three.</p>
+    // <ul>
+    //   <li>Google Cloud TTS: <pre><code>&lt;google:style name=&quot;calm&quot;&gt;please stay calm everything will be fine&lt;/google:style&gt;</code></pre></li>
+    //   <li>Microsoft Azure: <pre><code>&lt;mstts:express-as style=&quot;cheerful&quot;&gt;please stay calm everything will be fine&lt;/mstts:express-as&gt;</code></pre></li>
+    //   <li>Amazon Polly (whispered): <pre><code>&lt;amazon:effect name=&quot;whispered&quot;&gt;please stay calm everything will be fine&lt;/amazon:effect&gt;</code></pre></li>
+    //   <li>Amazon Polly (soft phonation): <pre><code>&lt;amazon:effect phonation=&quot;soft&quot;&gt;please stay calm everything will be fine&lt;/amazon:effect&gt;</code></pre></li>
     // </ul>
     string text = 1;
 
@@ -236,6 +301,14 @@ message RequestConfig {
     optional google.protobuf.Struct word_to_phoneme_mapping = 12;
 
     // Optional. Define an instruction or prompt to be passed to the TTS/LLM backend for this request.
+    //
+    // <p>This field is only honored by the <b>qwen3-tts-voicedesign</b> model, where it is a
+    // natural-language description of the target voice to design, e.g.
+    // <pre><code>a calm female voice with a slight British accent</code></pre></p>
+    // <p>It is ignored by every other pipeline, including the qwen3-tts CustomVoice and base models and
+    // the local vits / glow-tts models. To control the delivery / emotion of the qwen3-tts CustomVoice
+    // model, embed the control tags in the request text instead (see <code>SynthesizeRequest.text</code>),
+    // not via this field.</p>
     optional string instruction = 13;
 
 }
