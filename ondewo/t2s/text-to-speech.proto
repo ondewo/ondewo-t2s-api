@@ -116,15 +116,34 @@ message SynthesizeRequest {
     //   <li>Break tag (milliseconds, cloud providers): <pre><code>please wait &lt;break time=&quot;500ms&quot;/&gt; done</code></pre></li>
     // </ul>
     //
-    // <p><b>4. Phonemes (control pronunciation)</b></p>
-    // <p>Pronunciation is controlled with the SSML <code>&lt;phoneme&gt;</code> element using the IPA
-    // alphabet (<code>alphabet=&quot;ipa&quot;</code>). This is the format used by the local models
-    // (vits, glow-tts, qwen3-tts) as well as the cloud providers (Amazon Polly, Microsoft Azure and
-    // Google Cloud TTS all document <code>alphabet=&quot;ipa&quot;</code>). The IPA string goes in the
-    // <code>ph</code> attribute and the written word between the tags;
+    // <p><b>4. Phonemes / pronunciation control</b></p>
+    // <p>The phoneme alphabet depends exclusively on the model type:</p>
+    // <p><b>4a. IPA phonemes (vits and cloud providers only)</b> - the vits models and the cloud
+    // providers (Amazon Polly, Microsoft Azure and Google Cloud TTS) control pronunciation with the SSML
+    // <code>&lt;phoneme&gt;</code> element using the IPA alphabet (<code>alphabet=&quot;ipa&quot;</code>).
+    // The IPA string goes in the <code>ph</code> attribute and the written word between the tags:</p>
     // <ul>
     //   <li>English: <pre><code>I would like a &lt;phoneme alphabet=&quot;ipa&quot; ph=&quot;t&#601;&#712;me&#618;to&#650;&quot;&gt;tomato&lt;/phoneme&gt; please</code></pre></li>
     //   <li>German: <pre><code>Ich h&auml;tte gerne ein &lt;phoneme alphabet=&quot;ipa&quot; ph=&quot;&#712;ba&#618;&#643;pi&#720;l&quot;&gt;Beispiel&lt;/phoneme&gt; bitte</code></pre></li>
+    // </ul>
+    // <p><b>4b. Arpabet phonemes (glow model only)</b> - the glow model controls pronunciation with
+    // Arpabet phonemes, supplied through the same SSML <code>&lt;phoneme&gt;</code> element but with
+    // <code>alphabet=&quot;arpabet&quot;</code>. The ARPAbet transcription goes in the <code>ph</code>
+    // attribute and the written word between the tags (the phonemes are <b>not</b> written in curly
+    // braces <code>{}</code> in the request text):</p>
+    // <ul>
+    //   <li>English: <pre><code>Please say &lt;phoneme alphabet=&quot;arpabet&quot; ph=&quot;T EH1 S T&quot;&gt;test&lt;/phoneme&gt; out loud</code></pre></li>
+    //   <li>German: <pre><code>Ich sage &lt;phoneme alphabet=&quot;arpabet&quot; ph=&quot;T EH1 S T&quot;&gt;test&lt;/phoneme&gt; laut</code></pre></li>
+    // </ul>
+    // <p><b>4c. qwen3-tts has no phonemes - use the verbalized form instead</b> - the qwen3-tts models
+    // do <b>not</b> support Arpabet or IPA phonemes; the <code>&lt;phoneme&gt;</code> element and its
+    // <code>ph</code> string are ignored. Instead, to have a special text (symbols, codes,
+    // abbreviations, ...) spoken correctly, pass its <b>verbalization</b>: the plain, written-out spoken
+    // form of the text in the target language. For example, to have <code>A-7+8*</code> pronounced
+    // correctly:</p>
+    // <ul>
+    //   <li>English: <pre><code>ai dash seven plus eight asterisk</code></pre></li>
+    //   <li>German: <pre><code>ah bindestrich sieben plus acht sternchen</code></pre></li>
     // </ul>
     //
     // <p><b>5. Voice control for qwen3-tts (emotion / style / prosody)</b></p>
