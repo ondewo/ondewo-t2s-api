@@ -78,6 +78,10 @@ service Text2Speech {
 
     // <p>Retrieves a list of custom phonemizers based on specific requirements.</p>
     rpc ListCustomPhonemizer(ListCustomPhonemizerRequest) returns (ListCustomPhonemizerResponse);
+
+    // <p>Clones a voice based on a sample audio of the speaker and its transcription.
+    // The cloned voice can afterwards be used for synthesis by referencing the given speaker name.</p>
+    rpc VoiceCloning(VoiceCloningRequest) returns (google.protobuf.Empty);
 }
 
 // <p>Represents a Synthesize Request.</p>
@@ -1347,5 +1351,31 @@ message CreateCustomPhonemizerRequest {
 
     // Repeated field of Map messages representing word-to-phoneme mappings.
     repeated Map maps = 2;
+
+}
+
+///////////////////
+// VOICE CLONING //
+///////////////////
+
+// <p>VoiceCloningRequest message represents the request for cloning a voice.</p>
+// <p>A VoiceCloningRequest contains a sample audio of the speaker to be cloned together with
+// its transcription and the information about the speaker and the model to use for cloning.</p>
+message VoiceCloningRequest {
+
+    // Required. The sample audio of the speaker whose voice should be cloned.
+    bytes sample_audio = 1;
+
+    // Required. The transcription of the sample audio.
+    string transcription = 2;
+
+    // Required. The name of the speaker to associate with the cloned voice.
+    string speaker_name = 3;
+
+    // Required. The language of the speaker in the sample audio.
+    string speaker_language = 4;
+
+    // Required. The name of the model used for voice cloning.
+    string model_name = 5;
 
 }
