@@ -78,6 +78,8 @@
                       
                         <li><a href="#ondewo.t2s.Text2Speech.ListCustomPhonemizer" class="title-badge method">ListCustomPhonemizer</a></li>
                       
+                        <li><a href="#ondewo.t2s.Text2Speech.VoiceCloning" class="title-badge method">VoiceCloning</a></li>
+                      
                       </ul>
                       
                     </li>
@@ -317,6 +319,10 @@
                       </li>
                     
                       <li>
+                        <a href="#ondewo.t2s.VoiceCloningRequest" class="title-badge message">VoiceCloningRequest</a>
+                      </li>
+                    
+                      <li>
                         <a href="#ondewo.t2s.VoiceSettings" class="title-badge message">VoiceSettings</a>
                       </li>
                     
@@ -484,6 +490,13 @@ Returns an Empty response upon successful deletion.</p>
           <pre>rpc ListCustomPhonemizer (<a href="#ondewo.t2s.ListCustomPhonemizerRequest">ListCustomPhonemizerRequest</a>) returns (<a href="#ondewo.t2s.ListCustomPhonemizerResponse">ListCustomPhonemizerResponse)</a></pre>
 
           <p>Retrieves a list of custom phonemizers based on specific requirements.</p>
+        
+          <h4 id="ondewo.t2s.Text2Speech.VoiceCloning" class="title-badge method">VoiceCloning</h4>
+
+          <pre>rpc VoiceCloning (<a href="#ondewo.t2s.VoiceCloningRequest">VoiceCloningRequest</a>) returns (<a href="#google.protobuf.Empty">.google.protobuf.Empty)</a></pre>
+
+          <p>Clones a voice based on a sample audio of the speaker and its transcription.
+The cloned voice can afterwards be used for synthesis by referencing the given speaker name.</p>
         
 
         
@@ -1824,7 +1837,15 @@ this specific request and will not update the pipeline. </p></td>
                   <td>instruction</td>
                   <td><a href="#string">string</a></td>
                   <td>optional</td>
-                  <td><p>Optional. Define an instruction or prompt to be passed to the TTS/LLM backend for this request. </p></td>
+                  <td><p>Optional. Define an instruction or prompt to be passed to the TTS/LLM backend for this request.
+
+<p>This field is only honored by the <b>qwen3-tts-voicedesign</b> model, where it is a
+natural-language description of the target voice to design, e.g.
+<pre><code>a calm female voice with a slight British accent</code></pre></p>
+<p>It is ignored by every other pipeline, including the qwen3-tts CustomVoice and base models and
+the local vits / glow-tts models. To control the delivery / emotion of the qwen3-tts CustomVoice
+model, embed the control tags in the request text instead (see <code>SynthesizeRequest.text</code>),
+not via this field.</p> </p></td>
                 </tr>
               
             </tbody>
@@ -1978,21 +1999,129 @@ All the properties according to the input text in SynthesizeRequest can be also 
                   <td><a href="#string">string</a></td>
                   <td></td>
                   <td><p>Required. Represents the text that will be transformed to speech.
-Synthesize text:
+
+<p>The text may be plain text, or it may embed SSML markup, phonemes and voice-control tags to
+shape how it is spoken. The sections below list every supported form with a copy-paste example.
+Which forms take effect depends on the pipeline (model) selected via
+<code>RequestConfig.t2s_pipeline_id</code>; unsupported tags are stripped and the plain text is
+still spoken.</p>
+
+<p><b>1. Plain text</b></p>
 <ul>
   <li>Simple text: <pre><code>Hello, how are you?</code></pre></li>
 </ul>
-Examples to modulate the voice based on SSML tags and Arpabet phonemes:
+
+<p><b>2. SSML <code>&lt;say-as&gt;</code> tags (local vits / qwen3-tts and cloud providers)</b></p>
+<p>Rewrites the enclosed text into its spoken form (spelled out letters, digits, symbols, ...).
+Supported by the local normalization pipeline and forwarded to the cloud providers.</p>
 <ul>
-  <li>SSML Tag Phone: <pre><code>&lt;say-as interpret-as=&quot;phone&quot;&gt;+12354321&lt;/say-as&gt;</code></pre></li>
-  <li>SSML Tag Email: <pre><code>&lt;say-as interpret-as=&quot;email&quot;&gt;voices@ondewo.com&lt;/say-as&gt;</code></pre></li>
-  <li>SSML Tag URL: <pre><code>&lt;say-as interpret-as=&quot;url&quot;&gt;ondewo.com/en/&lt;/say-as&gt;</code></pre></li>
-  <li>SSML Tag Spell: <pre><code>&lt;say-as interpret-as=&quot;spell&quot;&gt;AP732&lt;/say-as&gt;</code></pre></li>
-  <li>SSML Tag Spell With Names: <pre><code>&lt;say-as interpret-as=&quot;spell-with-names&quot;&gt;AHO32&lt;/say-as&gt;</code></pre></li>
-  <li>SSML Tag Callsigns Short: <pre><code>&lt;say-as interpret-as=&quot;callsign-short&quot;&gt;AUA439&lt;/say-as&gt;</code></pre></li>
-  <li>SSML Tag Callsigns Long: <pre><code>&lt;say-as interpret-as=&quot;callsign-long&quot;&gt;AAL439&lt;/say-as&gt;</code></pre></li>
-  <li>SSML Tag Break Tag: <pre><code>I am going to take a 2 seconds break &lt;break time=&quot;2.0&quot;/&gt; done</code></pre></li>
-  <li>Arpabet Phonemes: <pre><code>Hello I am {AE2 L EH0 G Z AE1 N D R AH0}</code></pre></li>
+  <li>Phone: <pre><code>&lt;say-as interpret-as=&quot;phone&quot;&gt;+12354321&lt;/say-as&gt;</code></pre></li>
+  <li>Email: <pre><code>&lt;say-as interpret-as=&quot;email&quot;&gt;voices@ondewo.com&lt;/say-as&gt;</code></pre></li>
+  <li>URL: <pre><code>&lt;say-as interpret-as=&quot;url&quot;&gt;ondewo.com/en/&lt;/say-as&gt;</code></pre></li>
+  <li>Spell (spell out each character): <pre><code>&lt;say-as interpret-as=&quot;spell&quot;&gt;AP732&lt;/say-as&gt;</code></pre></li>
+  <li>Spell with names (e.g. &quot;A like Anton&quot;): <pre><code>&lt;say-as interpret-as=&quot;spell-with-names&quot;&gt;AHO32&lt;/say-as&gt;</code></pre></li>
+  <li>Callsigns short: <pre><code>&lt;say-as interpret-as=&quot;callsign-short&quot;&gt;AUA439&lt;/say-as&gt;</code></pre></li>
+  <li>Callsigns long: <pre><code>&lt;say-as interpret-as=&quot;callsign-long&quot;&gt;AAL439&lt;/say-as&gt;</code></pre></li>
+</ul>
+
+<p><b>3. Pauses / breaks</b></p>
+<ul>
+  <li>Break tag (seconds): <pre><code>I am going to take a 2 seconds break &lt;break time=&quot;2.0&quot;/&gt; done</code></pre></li>
+  <li>Break tag (milliseconds, cloud providers): <pre><code>please wait &lt;break time=&quot;500ms&quot;/&gt; done</code></pre></li>
+</ul>
+
+<p><b>4. Phonemes / pronunciation control</b></p>
+<p>The phoneme alphabet depends exclusively on the model type:</p>
+<p><b>4a. IPA phonemes (vits and cloud providers only)</b> - the vits models and the cloud
+providers (Amazon Polly, Microsoft Azure and Google Cloud TTS) control pronunciation with the SSML
+<code>&lt;phoneme&gt;</code> element using the IPA alphabet (<code>alphabet=&quot;ipa&quot;</code>).
+The IPA string goes in the <code>ph</code> attribute and the written word between the tags:</p>
+<ul>
+  <li>English: <pre><code>I would like a &lt;phoneme alphabet=&quot;ipa&quot; ph=&quot;t&#601;&#712;me&#618;to&#650;&quot;&gt;tomato&lt;/phoneme&gt; please</code></pre></li>
+  <li>German: <pre><code>Ich h&auml;tte gerne ein &lt;phoneme alphabet=&quot;ipa&quot; ph=&quot;&#712;ba&#618;&#643;pi&#720;l&quot;&gt;Beispiel&lt;/phoneme&gt; bitte</code></pre></li>
+</ul>
+<p><b>4b. Arpabet phonemes (glow model only)</b> - the glow model controls pronunciation with
+Arpabet phonemes, supplied through the same SSML <code>&lt;phoneme&gt;</code> element but with
+<code>alphabet=&quot;arpabet&quot;</code>. The ARPAbet transcription goes in the <code>ph</code>
+attribute and the written word between the tags (the phonemes are <b>not</b> written in curly
+braces <code>{}</code> in the request text):</p>
+<ul>
+  <li>English: <pre><code>Please say &lt;phoneme alphabet=&quot;arpabet&quot; ph=&quot;T EH1 S T&quot;&gt;test&lt;/phoneme&gt; out loud</code></pre></li>
+  <li>German: <pre><code>Ich sage &lt;phoneme alphabet=&quot;arpabet&quot; ph=&quot;T EH1 S T&quot;&gt;test&lt;/phoneme&gt; laut</code></pre></li>
+</ul>
+<p><b>4c. qwen3-tts has no phonemes - use the verbalized form instead</b> - the qwen3-tts models
+do <b>not</b> support Arpabet or IPA phonemes; the <code>&lt;phoneme&gt;</code> element and its
+<code>ph</code> string are ignored. Instead, to have a special text (symbols, codes,
+abbreviations, ...) spoken correctly, pass its <b>verbalization</b>: the plain, written-out spoken
+form of the text in the target language. For example, to have <code>A-7+8*</code> pronounced
+correctly:</p>
+<ul>
+  <li>English: <pre><code>ai dash seven plus eight asterisk</code></pre></li>
+  <li>German: <pre><code>ah bindestrich sieben plus acht sternchen</code></pre></li>
+</ul>
+
+<p><b>5. Voice control for qwen3-tts (emotion / style / prosody)</b></p>
+<p>These ONDEWO-namespaced tags are compiled into the model instruction and stripped from the
+spoken text, so the transcription stays the plain sentence while the delivery changes. They only
+take effect on the qwen3-tts <b>CustomVoice</b> model; on the base and voicedesign models they are
+stripped and a warning is logged.</p>
+<ul>
+  <li>Style - one of the five primary styles <code>apologetic</code>, <code>calm</code>,
+    <code>empathetic</code>, <code>firm</code>, <code>lively</code>, or one of the accepted
+    synonyms <code>cheerful</code> / <code>happy</code> / <code>joyful</code>,
+    <code>sad</code> / <code>sorrowful</code>, <code>angry</code> / <code>furious</code>,
+    <code>excited</code>, <code>serious</code>, <code>tender</code> / <code>gentle</code>.
+    An unknown name falls back to <code>neutral</code> and a warning is logged:
+    <pre><code>&lt;ondewo:style name=&quot;calm&quot;&gt;please stay calm everything will be fine&lt;/ondewo:style&gt;</code></pre></li>
+  <li>Emphasis - selects the intensity tier of the chosen style: <code>strong</code> (intense),
+    <code>moderate</code> (the default when no emphasis is given) or <code>reduced</code> /
+    <code>none</code> (mild):
+    <pre><code>&lt;ondewo:style name=&quot;firm&quot;&gt;&lt;emphasis level=&quot;strong&quot;&gt;listen carefully&lt;/emphasis&gt;&lt;/ondewo:style&gt;</code></pre></li>
+  <li>Prosody - <code>rate</code> (<code>x-slow</code>/<code>slow</code>/<code>medium</code>/<code>fast</code>/<code>x-fast</code>
+    or a percentage such as <code>+20%</code>/<code>-20%</code>/<code>120%</code>),
+    <code>pitch</code> (<code>x-low</code>/<code>low</code>/<code>medium</code>/<code>high</code>/<code>x-high</code>,
+    a semitone offset such as <code>+4st</code>/<code>-4st</code> or a percentage such as
+    <code>+10%</code>/<code>-10%</code>) and
+    <code>volume</code> (<code>silent</code>/<code>x-soft</code>/<code>soft</code>/<code>medium</code>/<code>loud</code>/<code>x-loud</code>
+    or a decibel offset such as <code>+6dB</code>/<code>-6dB</code>):
+    <pre><code>&lt;prosody rate=&quot;slow&quot; pitch=&quot;+4st&quot; volume=&quot;loud&quot;&gt;hello there&lt;/prosody&gt;</code></pre></li>
+  <li>Nested combination (style + emphasis + prosody):
+    <pre><code>&lt;ondewo:style name=&quot;calm&quot;&gt;&lt;emphasis level=&quot;moderate&quot;&gt;&lt;prosody rate=&quot;slow&quot; pitch=&quot;low&quot; volume=&quot;soft&quot;&gt;hello there&lt;/prosody&gt;&lt;/emphasis&gt;&lt;/ondewo:style&gt;</code></pre></li>
+  <li>Free-form instruction (CustomVoice only) - describe the delivery in natural language in the
+    <code>instruction</code> attribute. The attribute value is used verbatim as the model
+    instruction and takes precedence over the style / emphasis / prosody tags; the wrapped inner
+    text is kept as the spoken text and it should be always in English:
+    <pre><code>&lt;ondewo:instruct instruction=&quot;speak slowly in a warm and reassuring tone&quot;&gt;hello there&lt;/ondewo:instruct&gt;</code></pre></li>
+  <li>Inline audio tags (CustomVoice only) - emotional expressions / sound effects in square
+    brackets. They are compiled into the instruction and stripped from the spoken text. The
+    supported tags are:
+    <ul>
+      <li>Voice-related: <code>[laughs]</code>, <code>[laughs harder]</code>,
+        <code>[starts laughing]</code>, <code>[wheezing]</code>, <code>[whispers]</code>,
+        <code>[sighs]</code>, <code>[exhales]</code>, <code>[sarcastic]</code>,
+        <code>[curious]</code>, <code>[excited]</code>, <code>[crying]</code>,
+        <code>[snorts]</code>, <code>[mischievously]</code></li>
+      <li>Sound effects: <code>[gunshot]</code>, <code>[applause]</code>,
+        <code>[clapping]</code>, <code>[explosion]</code>, <code>[swallows]</code>,
+        <code>[gulps]</code></li>
+      <li>Unique and special: <code>[sings]</code>, <code>[woo]</code>, <code>[fart]</code></li>
+      <li>Accent (variable form): <code>[strong &lt;accent&gt; accent]</code>, e.g.
+        <code>[strong French accent]</code></li>
+    </ul>
+    <pre><code>[whispers] hello there</code></pre></li>
+</ul>
+<p>See also <code>RequestConfig.instruction</code> for supplying the instruction / voice
+description directly instead of embedding it in the text.</p>
+
+<p><b>6. Provider-specific SSML (cloud pipelines only)</b></p>
+<p>Each cloud provider documents its own SSML vocabulary; use the elements matching the provider
+behind the selected pipeline. Standard <code>&lt;prosody&gt;</code>, <code>&lt;emphasis&gt;</code>
+and <code>&lt;break&gt;</code> are common to all three.</p>
+<ul>
+  <li>Google Cloud TTS: <pre><code>&lt;google:style name=&quot;calm&quot;&gt;please stay calm everything will be fine&lt;/google:style&gt;</code></pre></li>
+  <li>Microsoft Azure: <pre><code>&lt;mstts:express-as style=&quot;cheerful&quot;&gt;please stay calm everything will be fine&lt;/mstts:express-as&gt;</code></pre></li>
+  <li>Amazon Polly (whispered): <pre><code>&lt;amazon:effect name=&quot;whispered&quot;&gt;please stay calm everything will be fine&lt;/amazon:effect&gt;</code></pre></li>
+  <li>Amazon Polly (soft phonation): <pre><code>&lt;amazon:effect phonation=&quot;soft&quot;&gt;please stay calm everything will be fine&lt;/amazon:effect&gt;</code></pre></li>
 </ul> </p></td>
                 </tr>
               
@@ -3052,6 +3181,58 @@ It is in the range [0.0, 1.0]. </p></td>
                   <td><a href="#int64">int64</a></td>
                   <td></td>
                   <td><p>The port of the Triton inference server which servers the model. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.VoiceCloningRequest" class="title-badge message">VoiceCloningRequest</h3>
+        <p><p>VoiceCloningRequest message represents the request for cloning a voice.</p></p><p><p>A VoiceCloningRequest contains a sample audio of the speaker to be cloned together with</p><p>its transcription and the information about the speaker and the model to use for cloning.</p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>sample_audio</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>Required. The sample audio of the speaker whose voice should be cloned. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>transcription</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Required. The transcription of the sample audio. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>speaker_name</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Required. The name of the speaker to associate with the cloned voice. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>speaker_language</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Required. The language of the speaker in the sample audio. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>model_name</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Required. The name of the model used for voice cloning. </p></td>
                 </tr>
               
             </tbody>
