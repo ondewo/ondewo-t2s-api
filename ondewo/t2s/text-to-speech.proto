@@ -156,24 +156,48 @@ message SynthesizeRequest {
     // take effect on the qwen3-tts <b>CustomVoice</b> model; on the base and voicedesign models they are
     // stripped and a warning is logged.</p>
     // <ul>
-    //   <li>Style - one of <code>apologetic</code>, <code>calm</code>, <code>empathetic</code>,
-    //     <code>firm</code>, <code>lively</code>:
+    //   <li>Style - one of the five primary styles <code>apologetic</code>, <code>calm</code>,
+    //     <code>empathetic</code>, <code>firm</code>, <code>lively</code>, or one of the accepted
+    //     synonyms <code>cheerful</code> / <code>happy</code> / <code>joyful</code>,
+    //     <code>sad</code> / <code>sorrowful</code>, <code>angry</code> / <code>furious</code>,
+    //     <code>excited</code>, <code>serious</code>, <code>tender</code> / <code>gentle</code>.
+    //     An unknown name falls back to <code>neutral</code> and a warning is logged:
     //     <pre><code>&lt;ondewo:style name=&quot;calm&quot;&gt;please stay calm everything will be fine&lt;/ondewo:style&gt;</code></pre></li>
-    //   <li>Emphasis - selects the intensity tier (<code>reduced</code> / <code>moderate</code> /
-    //     <code>strong</code>) of the chosen style:
+    //   <li>Emphasis - selects the intensity tier of the chosen style: <code>strong</code> (intense),
+    //     <code>moderate</code> (the default when no emphasis is given) or <code>reduced</code> /
+    //     <code>none</code> (mild):
     //     <pre><code>&lt;ondewo:style name=&quot;firm&quot;&gt;&lt;emphasis level=&quot;strong&quot;&gt;listen carefully&lt;/emphasis&gt;&lt;/ondewo:style&gt;</code></pre></li>
-    //   <li>Prosody - <code>rate</code> (<code>x-slow</code>/<code>slow</code>/<code>fast</code>/<code>x-fast</code>),
-    //     <code>pitch</code> (<code>x-low</code>/<code>low</code>/<code>high</code>/<code>x-high</code> or a
-    //     semitone offset such as <code>+4st</code>/<code>-4st</code>) and
-    //     <code>volume</code> (<code>x-soft</code>/<code>soft</code>/<code>loud</code>/<code>x-loud</code>):
+    //   <li>Prosody - <code>rate</code> (<code>x-slow</code>/<code>slow</code>/<code>medium</code>/<code>fast</code>/<code>x-fast</code>
+    //     or a percentage such as <code>+20%</code>/<code>-20%</code>/<code>120%</code>),
+    //     <code>pitch</code> (<code>x-low</code>/<code>low</code>/<code>medium</code>/<code>high</code>/<code>x-high</code>,
+    //     a semitone offset such as <code>+4st</code>/<code>-4st</code> or a percentage such as
+    //     <code>+10%</code>/<code>-10%</code>) and
+    //     <code>volume</code> (<code>silent</code>/<code>x-soft</code>/<code>soft</code>/<code>medium</code>/<code>loud</code>/<code>x-loud</code>
+    //     or a decibel offset such as <code>+6dB</code>/<code>-6dB</code>):
     //     <pre><code>&lt;prosody rate=&quot;slow&quot; pitch=&quot;+4st&quot; volume=&quot;loud&quot;&gt;hello there&lt;/prosody&gt;</code></pre></li>
     //   <li>Nested combination (style + emphasis + prosody):
     //     <pre><code>&lt;ondewo:style name=&quot;calm&quot;&gt;&lt;emphasis level=&quot;moderate&quot;&gt;&lt;prosody rate=&quot;slow&quot; pitch=&quot;low&quot; volume=&quot;soft&quot;&gt;hello there&lt;/prosody&gt;&lt;/emphasis&gt;&lt;/ondewo:style&gt;</code></pre></li>
-    //   <li>Free-form instruction (CustomVoice only) - describe the delivery in natural language:
-    //     <pre><code>&lt;ondewo:instruct&gt;speak slowly in a warm and reassuring tone&lt;/ondewo:instruct&gt;hello there</code></pre></li>
+    //   <li>Free-form instruction (CustomVoice only) - describe the delivery in natural language in the
+    //     <code>instruction</code> attribute. The attribute value is used verbatim as the model
+    //     instruction and takes precedence over the style / emphasis / prosody tags; the wrapped inner
+    //     text is kept as the spoken text and it should be always in English:
+    //     <pre><code>&lt;ondewo:instruct instruction=&quot;speak slowly in a warm and reassuring tone&quot;&gt;hello there&lt;/ondewo:instruct&gt;</code></pre></li>
     //   <li>Inline audio tags (CustomVoice only) - emotional expressions / sound effects in square
-    //     brackets, e.g. <code>[whispers]</code>, <code>[laughs]</code>. They are compiled into the
-    //     instruction and stripped from the spoken text:
+    //     brackets. They are compiled into the instruction and stripped from the spoken text. The
+    //     supported tags are:
+    //     <ul>
+    //       <li>Voice-related: <code>[laughs]</code>, <code>[laughs harder]</code>,
+    //         <code>[starts laughing]</code>, <code>[wheezing]</code>, <code>[whispers]</code>,
+    //         <code>[sighs]</code>, <code>[exhales]</code>, <code>[sarcastic]</code>,
+    //         <code>[curious]</code>, <code>[excited]</code>, <code>[crying]</code>,
+    //         <code>[snorts]</code>, <code>[mischievously]</code></li>
+    //       <li>Sound effects: <code>[gunshot]</code>, <code>[applause]</code>,
+    //         <code>[clapping]</code>, <code>[explosion]</code>, <code>[swallows]</code>,
+    //         <code>[gulps]</code></li>
+    //       <li>Unique and special: <code>[sings]</code>, <code>[woo]</code>, <code>[fart]</code></li>
+    //       <li>Accent (variable form): <code>[strong &lt;accent&gt; accent]</code>, e.g.
+    //         <code>[strong French accent]</code></li>
+    //     </ul>
     //     <pre><code>[whispers] hello there</code></pre></li>
     // </ul>
     // <p>See also <code>RequestConfig.instruction</code> for supplying the instruction / voice
