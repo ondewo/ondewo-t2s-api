@@ -2,6 +2,22 @@
 
 *****************
 
+## Release ONDEWO T2S API 6.4.0
+
+### New Features
+
+* [OND232-835](https://ondewo.atlassian.net/browse/OND232-835) Add VoiceCloning endpoint to clone a voice based on a
+  sample audio of the speaker and its transcription. Currently, only the qwen model is supported for voice cloning.
+
+### Improvements
+
+* [OND232-835](https://ondewo.atlassian.net/browse/OND232-835) Add documentation regarding how to work with SSML in
+  qwen3-tts
+* [OND232-835](https://ondewo.atlassian.net/browse/OND232-835) Add documentation about how to control phonemes for
+  different models
+
+*****************
+
 ## Release ONDEWO T2S API 6.3.0
 
 ### Bug Fixes
