@@ -15,7 +15,7 @@ fail_fast: false
 
 repos:
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.17.1
+    rev: v2.1.0
     hooks:
       - id: mypy  # Run mypy type checker; note: runs with flag --missing-imports
         args: [ --config-file=mypy.ini ]
@@ -41,7 +41,7 @@ repos:
         args: [ --max-line-length=120, --in-place ]
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: check-added-large-files  # Prevent giant files from being committed
         args: [ maxkb=1024 ]
@@ -69,7 +69,7 @@ repos:
       - id: flake8
 
   - repo: https://github.com/milin/giticket
-    rev: v1.4
+    rev: '1.92'
     hooks:
       - id: giticket  # Prepend the commit message with the JIRA ticket
         args: [ '--regex=(?:(?:feature|bugfix|support|hotfix)/)?(OND[0-9]{3}-[0-9]{1,5})[_-][\w-]+',
