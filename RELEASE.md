@@ -2,6 +2,18 @@
 
 *****************
 
+## Release ONDEWO T2S API 6.4.1
+
+### Improvements
+
+* Hardened the client release pipeline for reliability and reproducibility (no API/proto changes):
+  * The proto-compiler regenerated the clients' root `package.json` on every release, dropping the CI test scripts — now durably preserved via a `.ci-package.json` merge (`restore_ci_test_setup`).
+  * `remove_npm_script` no longer crashes when `npm/package.json` is absent and strips scripts from the `npm/` copy instead of the repo root (keeps CI scripts intact).
+  * `release_all_clients` fails loudly on a real client-release error instead of masking it as "already released" (`set -o pipefail` on the piped sub-make + a marker to distinguish skip from failure).
+  * Release recipes no longer echo secrets (`@` on docker/gh/twine/credential sub-make lines).
+
+*****************
+
 ## Release ONDEWO T2S API 6.4.0
 
 ### New Features
