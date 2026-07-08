@@ -193,12 +193,12 @@ unrelease: build_utils_docker_image unrelease_to_github_via_docker_image ## Undo
 	@echo "Unrelease of ${ONDEWO_T2S_API_VERSION} complete"
 
 release_all_clients: ## Release all T2S Clients
-	@make release_python_client || (echo "Already released ${ONDEWO_T2S_API_VERSION} of Python Client")
-	@make release_nodejs_client || (echo "Already released ${ONDEWO_T2S_API_VERSION} of Nodejs Client")
-	@make release_typescript_client || (echo "Already released ${ONDEWO_T2S_API_VERSION} of Typescript Client")
-	@make release_angular_client || (echo "Already released ${ONDEWO_T2S_API_VERSION} of Angular Client")
-	@make release_js_client || (echo "Already released ${ONDEWO_T2S_API_VERSION} of JS Client")
-	@echo "End releasing all clients"
+	@rm -f .already_released_marker; make release_python_client || { [ -f .already_released_marker ] && echo "SKIP: Python client already released ${ONDEWO_T2S_API_VERSION}" || { echo "FAILED: Python client did not release - aborting"; exit 1; }; }
+	@rm -f .already_released_marker; make release_nodejs_client || { [ -f .already_released_marker ] && echo "SKIP: Nodejs client already released ${ONDEWO_T2S_API_VERSION}" || { echo "FAILED: Nodejs client did not release - aborting"; exit 1; }; }
+	@rm -f .already_released_marker; make release_typescript_client || { [ -f .already_released_marker ] && echo "SKIP: Typescript client already released ${ONDEWO_T2S_API_VERSION}" || { echo "FAILED: Typescript client did not release - aborting"; exit 1; }; }
+	@rm -f .already_released_marker; make release_angular_client || { [ -f .already_released_marker ] && echo "SKIP: Angular client already released ${ONDEWO_T2S_API_VERSION}" || { echo "FAILED: Angular client did not release - aborting"; exit 1; }; }
+	@rm -f .already_released_marker; make release_js_client || { [ -f .already_released_marker ] && echo "SKIP: JS client already released ${ONDEWO_T2S_API_VERSION}" || { echo "FAILED: JS client did not release - aborting"; exit 1; }; }
+	@rm -f .already_released_marker; echo "End releasing all clients"
 
 GENERIC_CLIENT?=
 RELEASEMD?=
@@ -219,7 +219,7 @@ release_client:
 	@echo ${GENERIC_RELEASE_NOTES} > temp-notes && perl -i -pe 's/\\//g' temp-notes && perl -i -pe 's/REPONAME/${UPPER_REPO_NAME}/g' temp-notes
 	git clone ${GENERIC_CLIENT}
 # Check if Client is already uptodate with API Version
-	@! git -C ${REPO_DIR} branch -a | grep -q ${ONDEWO_T2S_API_VERSION} || (echo "Already Released ${ONDEWO_T2S_API_VERSION} \n\n\n"  && rm -rf ${REPO_DIR} && rm -f temp-notes && exit 1)
+	@! git -C ${REPO_DIR} branch -a | grep -q ${ONDEWO_T2S_API_VERSION} || (echo "Already Released ${ONDEWO_T2S_API_VERSION} \n\n\n"  && touch .already_released_marker && rm -rf ${REPO_DIR} && rm -f temp-notes && exit 1)
 
 # Change Version Number and RELEASE NOTES
 	cd ${REPO_DIR} && perl -i -ne 'print; if(/Release History/){open(F,"../temp-notes");print <F>;close F}' ${RELEASEMD}
