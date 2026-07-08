@@ -2,6 +2,14 @@
 
 *****************
 
+## Release ONDEWO T2S API 6.4.2
+
+### Improvements
+
+* Completed release-pipeline hardening (no API/proto changes): the JS clients' `src/package.json` was missing the `undici` runtime dependency required by the Keycloak auth helper, so the proto-compiler regenerated it away on release — now declared in `src`. Validation release confirming a clean end-to-end client release.
+
+*****************
+
 ## Release ONDEWO T2S API 6.4.1
 
 ### Improvements
