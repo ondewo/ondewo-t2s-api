@@ -860,14 +860,14 @@ The cloned voice can afterwards be used for synthesis by referencing the given s
                   <td>triton_server_host</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>The host of the Triton inference server which servers the model. </p></td>
+                  <td><p>The host of the Triton inference server which serves the model. </p></td>
                 </tr>
               
                 <tr>
                   <td>triton_server_port</td>
                   <td><a href="#int64">int64</a></td>
                   <td></td>
-                  <td><p>The port of the Triton inference server which servers the model. </p></td>
+                  <td><p>The port of the Triton inference server which serves the model. </p></td>
                 </tr>
               
             </tbody>
@@ -950,14 +950,14 @@ The cloned voice can afterwards be used for synthesis by referencing the given s
                   <td>triton_server_host</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>The host of the Triton inference server which servers the model. </p></td>
+                  <td><p>The host of the Triton inference server which serves the model. </p></td>
                 </tr>
               
                 <tr>
                   <td>triton_server_port</td>
                   <td><a href="#int64">int64</a></td>
                   <td></td>
-                  <td><p>The port of the Triton inference server which servers the model. </p></td>
+                  <td><p>The port of the Triton inference server which serves the model. </p></td>
                 </tr>
               
             </tbody>
@@ -1387,14 +1387,14 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
                   <td>triton_server_host</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>The host of the Triton inference server which servers the model. </p></td>
+                  <td><p>The host of the Triton inference server which serves the model. </p></td>
                 </tr>
               
                 <tr>
                   <td>triton_server_port</td>
                   <td><a href="#int64">int64</a></td>
                   <td></td>
-                  <td><p>The port of the Triton inference server which servers the model. </p></td>
+                  <td><p>The port of the Triton inference server which serves the model. </p></td>
                 </tr>
               
             </tbody>
@@ -1418,7 +1418,8 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
                   <td>type</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>The type of mel-to-audio inference. </p></td>
+                  <td><p>The type of mel-to-audio inference (vocoder), selecting which of the settings below is applied
+(mb_melgan_triton, hifi_gan or hifi_gan_triton). </p></td>
                 </tr>
               
                 <tr>
@@ -1721,7 +1722,7 @@ pipelines with the specifications received in the ListT2sPipelinesRequest. </p><
                   <td></td>
                   <td><p>Optional. This parameter is used for time stretching which is the process of
 changing the speed or duration of an audio.
-It should be much more than 1.0. O is not a valid number for this variable.
+It should be much more than 1.0. 0 is not a valid number for this variable.
 The default value is 1. </p></td>
                 </tr>
               
@@ -1925,7 +1926,7 @@ All the properties according to the input text in SynthesizeRequest can be also 
                   <td>audio_uuid</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>Required. Represents the pipeline id of the model configuration that will be used. </p></td>
+                  <td><p>Required. The unique identifier (UUID) assigned to the generated audio. </p></td>
                 </tr>
               
                 <tr>
@@ -1939,14 +1940,14 @@ All the properties according to the input text in SynthesizeRequest can be also 
                   <td>generation_time</td>
                   <td><a href="#float">float</a></td>
                   <td></td>
-                  <td><p>Required. Time to generate audio. </p></td>
+                  <td><p>Required. Time taken to generate the audio, in seconds. </p></td>
                 </tr>
               
                 <tr>
                   <td>audio_length</td>
                   <td><a href="#float">float</a></td>
                   <td></td>
-                  <td><p>Required. Audio length. </p></td>
+                  <td><p>Required. Length (duration) of the generated audio, in seconds. </p></td>
                 </tr>
               
                 <tr>
@@ -1974,7 +1975,7 @@ All the properties according to the input text in SynthesizeRequest can be also 
                   <td>sample_rate</td>
                   <td><a href="#float">float</a></td>
                   <td></td>
-                  <td><p>Optional. Value of sampling rate </p></td>
+                  <td><p>Optional. Sampling rate of the generated audio, in Hertz (Hz). </p></td>
                 </tr>
               
             </tbody>
@@ -2153,7 +2154,7 @@ and <code>&lt;break&gt;</code> are common to all three.</p>
                   <td>audio_uuid</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>Required. Represents the pipeline id of the model configuration that will be used. </p></td>
+                  <td><p>Required. The unique identifier (UUID) assigned to the generated audio. </p></td>
                 </tr>
               
                 <tr>
@@ -2167,14 +2168,14 @@ and <code>&lt;break&gt;</code> are common to all three.</p>
                   <td>generation_time</td>
                   <td><a href="#float">float</a></td>
                   <td></td>
-                  <td><p>Required. Time to generate audio. </p></td>
+                  <td><p>Required. Time taken to generate the audio, in seconds. </p></td>
                 </tr>
               
                 <tr>
                   <td>audio_length</td>
                   <td><a href="#float">float</a></td>
                   <td></td>
-                  <td><p>Required. Audio length. </p></td>
+                  <td><p>Required. Length (duration) of the generated audio, in seconds. </p></td>
                 </tr>
               
                 <tr>
@@ -2202,7 +2203,7 @@ and <code>&lt;break&gt;</code> are common to all three.</p>
                   <td>sample_rate</td>
                   <td><a href="#float">float</a></td>
                   <td></td>
-                  <td><p>Optional. Value of sampling rate </p></td>
+                  <td><p>Optional. Sampling rate of the generated audio, in Hertz (Hz). </p></td>
                 </tr>
               
             </tbody>
@@ -2306,7 +2307,7 @@ and <code>&lt;break&gt;</code> are common to all three.</p>
                   <td>speaker_sex</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>The speaker's sex or gender. </p></td>
                 </tr>
               
                 <tr>
@@ -2382,21 +2383,23 @@ and <code>&lt;break&gt;</code> are common to all three.</p>
                   <td>type</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>The type of inference. </p></td>
+                  <td><p>The type of inference, selecting which of the settings below is applied:
+composite_inference (two-stage text-to-mel then mel-to-audio) or
+single_inference (single-stage text-to-audio). </p></td>
                 </tr>
               
                 <tr>
                   <td>composite_inference</td>
                   <td><a href="#ondewo.t2s.CompositeInference">CompositeInference</a></td>
                   <td></td>
-                  <td><p>Composite inference settings. </p></td>
+                  <td><p>Composite (two-stage) inference settings, used when type selects composite inference. </p></td>
                 </tr>
               
                 <tr>
                   <td>single_inference</td>
                   <td><a href="#ondewo.t2s.SingleInference">SingleInference</a></td>
                   <td></td>
-                  <td><p>Single inference settings. </p></td>
+                  <td><p>Single (one-stage) inference settings, used when type selects single inference. </p></td>
                 </tr>
               
                 <tr>
@@ -2843,7 +2846,10 @@ It is in the range [0.0, 1.0]. </p></td>
                   <td>type</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>The type of text-to-audio inference. </p></td>
+                  <td><p>The type of text-to-audio inference, selecting which of the settings below is applied:
+a local model (vits, vits_triton) or a cloud / neural service (t2s_cloud_service_elevenlabs,
+t2s_cloud_service_amazon, t2s_cloud_service_google, t2s_cloud_service_microsoft,
+qwen3_tts_custom_voice, qwen3_tts_base). </p></td>
                 </tr>
               
                 <tr>
@@ -2923,7 +2929,8 @@ It is in the range [0.0, 1.0]. </p></td>
                   <td>type</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>The type of text-to-mel inference. </p></td>
+                  <td><p>The type of text-to-mel inference, selecting which of the settings below is applied
+(glow_tts or glow_tts_triton). </p></td>
                 </tr>
               
                 <tr>
@@ -2982,7 +2989,7 @@ It is in the range [0.0, 1.0]. </p></td>
                   <td>inference</td>
                   <td><a href="#ondewo.t2s.T2SInference">T2SInference</a></td>
                   <td></td>
-                  <td><p>Required. Defines he inference of the pipeline representation. </p></td>
+                  <td><p>Required. Defines the inference of the pipeline representation. </p></td>
                 </tr>
               
                 <tr>
@@ -3173,14 +3180,14 @@ It is in the range [0.0, 1.0]. </p></td>
                   <td>triton_server_host</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>The host of the Triton inference server which servers the model. </p></td>
+                  <td><p>The host of the Triton inference server which serves the model. </p></td>
                 </tr>
               
                 <tr>
                   <td>triton_server_port</td>
                   <td><a href="#int64">int64</a></td>
                   <td></td>
-                  <td><p>The port of the Triton inference server which servers the model. </p></td>
+                  <td><p>The port of the Triton inference server which serves the model. </p></td>
                 </tr>
               
             </tbody>

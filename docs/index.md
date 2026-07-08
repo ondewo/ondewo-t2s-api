@@ -231,8 +231,8 @@
 | max_text_length | [int64](#int64) |  | The maximum text length allowed. |
 | param_config_path | [string](#string) |  | The path to the parameter configuration. |
 | triton_model_name | [string](#string) |  | The name of the Triton model. |
-| triton_server_host | [string](#string) |  | The host of the Triton inference server which servers the model. |
-| triton_server_port | [int64](#int64) |  | The port of the Triton inference server which servers the model. |
+| triton_server_host | [string](#string) |  | The host of the Triton inference server which serves the model. |
+| triton_server_port | [int64](#int64) |  | The port of the Triton inference server which serves the model. |
 
 
 
@@ -267,8 +267,8 @@
 | ----- | ---- | ----- | ----------- |
 | config_path | [string](#string) |  | The path to the HiFiGan Triton configuration. |
 | triton_model_name | [string](#string) |  | The name of the Triton model. |
-| triton_server_host | [string](#string) |  | The host of the Triton inference server which servers the model. |
-| triton_server_port | [int64](#int64) |  | The port of the Triton inference server which servers the model. |
+| triton_server_host | [string](#string) |  | The host of the Triton inference server which serves the model. |
+| triton_server_port | [int64](#int64) |  | The port of the Triton inference server which serves the model. |
 
 
 
@@ -490,8 +490,8 @@
 | config_path | [string](#string) |  | The path to the MbMelgan Triton configuration. |
 | stats_path | [string](#string) |  | The path to the MbMelgan statistics. |
 | triton_model_name | [string](#string) |  | The name of the Triton model. |
-| triton_server_host | [string](#string) |  | The host of the Triton inference server which servers the model. |
-| triton_server_port | [int64](#int64) |  | The port of the Triton inference server which servers the model. |
+| triton_server_host | [string](#string) |  | The host of the Triton inference server which serves the model. |
+| triton_server_port | [int64](#int64) |  | The port of the Triton inference server which serves the model. |
 
 
 
@@ -506,7 +506,7 @@
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| type | [string](#string) |  | The type of mel-to-audio inference. |
+| type | [string](#string) |  | The type of mel-to-audio inference (vocoder), selecting which of the settings below is applied (mb_melgan_triton, hifi_gan or hifi_gan_triton). |
 | mb_melgan_triton | [MbMelganTriton](#ondewo.t2s.MbMelganTriton) |  | MbMelgan Triton inference settings. |
 | hifi_gan | [HiFiGan](#ondewo.t2s.HiFiGan) |  | HiFiGan inference settings. |
 | hifi_gan_triton | [HiFiGanTriton](#ondewo.t2s.HiFiGanTriton) |  | HiFiGan Triton inference settings. |
@@ -630,7 +630,7 @@
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | t2s_pipeline_id | [string](#string) |  | Required. Represents the pipeline id of the model configuration that will be used. |
-| length_scale | [float](#float) |  | Optional. This parameter is used for time stretching which is the process of changing the speed or duration of an audio. It should be much more than 1.0. O is not a valid number for this variable. The default value is 1. |
+| length_scale | [float](#float) |  | Optional. This parameter is used for time stretching which is the process of changing the speed or duration of an audio. It should be much more than 1.0. 0 is not a valid number for this variable. The default value is 1. |
 | noise_scale | [float](#float) |  | Optional. Defines the noise in the generated audio. It should be between 0.0 and 1. The default value is 0.0 |
 | sample_rate | [int32](#int32) |  | Optional. Defines the sample rate of the generated wav file. The default value is 22050. |
 | pcm | [Pcm](#ondewo.t2s.Pcm) |  | Optional. Defines the pulse-code modulation of the wav file. The default value is PCM_16. |
@@ -700,14 +700,14 @@ all other properties of this generated audio.</p>
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| audio_uuid | [string](#string) |  | Required. Represents the pipeline id of the model configuration that will be used. |
+| audio_uuid | [string](#string) |  | Required. The unique identifier (UUID) assigned to the generated audio. |
 | audio | [bytes](#bytes) |  | Required. Generated file with the parameters described in request. |
-| generation_time | [float](#float) |  | Required. Time to generate audio. |
-| audio_length | [float](#float) |  | Required. Audio length. |
+| generation_time | [float](#float) |  | Required. Time taken to generate the audio, in seconds. |
+| audio_length | [float](#float) |  | Required. Length (duration) of the generated audio, in seconds. |
 | text | [string](#string) |  | Required. Text from which audio was generated. |
 | config | [RequestConfig](#ondewo.t2s.RequestConfig) |  | Required. Configuration from which audio was generated. |
 | normalized_text | [string](#string) |  | Optional. Normalized text. |
-| sample_rate | [float](#float) |  | Optional. Value of sampling rate |
+| sample_rate | [float](#float) |  | Optional. Sampling rate of the generated audio, in Hertz (Hz). |
 
 
 
@@ -754,14 +754,14 @@ all other properties of this generated audio.</p>
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| audio_uuid | [string](#string) |  | Required. Represents the pipeline id of the model configuration that will be used. |
+| audio_uuid | [string](#string) |  | Required. The unique identifier (UUID) assigned to the generated audio. |
 | audio | [bytes](#bytes) |  | Required. Generated file with the parameters described in request. |
-| generation_time | [float](#float) |  | Required. Time to generate audio. |
-| audio_length | [float](#float) |  | Required. Audio length. |
+| generation_time | [float](#float) |  | Required. Time taken to generate the audio, in seconds. |
+| audio_length | [float](#float) |  | Required. Length (duration) of the generated audio, in seconds. |
 | text | [string](#string) |  | Required. Text from which audio was generated. |
 | config | [RequestConfig](#ondewo.t2s.RequestConfig) |  | Required. Configuration from which audio was generated. |
 | normalized_text | [string](#string) |  | Optional. Normalized text. |
-| sample_rate | [float](#float) |  | Optional. Value of sampling rate |
+| sample_rate | [float](#float) |  | Optional. Sampling rate of the generated audio, in Hertz (Hz). |
 
 
 
@@ -799,7 +799,7 @@ all other properties of this generated audio.</p>
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | language | [string](#string) |  | The language supported by the service. |
-| speaker_sex | [string](#string) |  |  |
+| speaker_sex | [string](#string) |  | The speaker's sex or gender. |
 | pipeline_owner | [string](#string) |  | The owner of the text-to-speech pipeline. |
 | comments | [string](#string) |  | Additional comments or notes. |
 | speaker_name | [string](#string) |  | The name of the speaker. |
@@ -833,9 +833,9 @@ all other properties of this generated audio.</p>
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| type | [string](#string) |  | The type of inference. |
-| composite_inference | [CompositeInference](#ondewo.t2s.CompositeInference) |  | Composite inference settings. |
-| single_inference | [SingleInference](#ondewo.t2s.SingleInference) |  | Single inference settings. |
+| type | [string](#string) |  | The type of inference, selecting which of the settings below is applied: composite_inference (two-stage text-to-mel then mel-to-audio) or single_inference (single-stage text-to-audio). |
+| composite_inference | [CompositeInference](#ondewo.t2s.CompositeInference) |  | Composite (two-stage) inference settings, used when type selects composite inference. |
+| single_inference | [SingleInference](#ondewo.t2s.SingleInference) |  | Single (one-stage) inference settings, used when type selects single inference. |
 | caching | [Caching](#ondewo.t2s.Caching) |  | Caching settings. |
 
 
@@ -1027,7 +1027,7 @@ all other properties of this generated audio.</p>
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| type | [string](#string) |  | The type of text-to-audio inference. |
+| type | [string](#string) |  | The type of text-to-audio inference, selecting which of the settings below is applied: a local model (vits, vits_triton) or a cloud / neural service (t2s_cloud_service_elevenlabs, t2s_cloud_service_amazon, t2s_cloud_service_google, t2s_cloud_service_microsoft, qwen3_tts_custom_voice, qwen3_tts_base). |
 | vits | [Vits](#ondewo.t2s.Vits) |  | Vits inference settings. |
 | vits_triton | [VitsTriton](#ondewo.t2s.VitsTriton) |  | Vits Triton inference settings. |
 | t2s_cloud_service_elevenlabs | [T2sCloudServiceElevenLabs](#ondewo.t2s.T2sCloudServiceElevenLabs) |  | ElevenLabs cloud service inference settings. |
@@ -1050,7 +1050,7 @@ all other properties of this generated audio.</p>
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| type | [string](#string) |  | The type of text-to-mel inference. |
+| type | [string](#string) |  | The type of text-to-mel inference, selecting which of the settings below is applied (glow_tts or glow_tts_triton). |
 | glow_tts | [GlowTTS](#ondewo.t2s.GlowTTS) |  | GlowTTS inference settings. |
 | glow_tts_triton | [GlowTTSTriton](#ondewo.t2s.GlowTTSTriton) |  | GlowTTS Triton inference settings. |
 
@@ -1070,7 +1070,7 @@ all other properties of this generated audio.</p>
 | id | [string](#string) |  | Required. Defines the id of the pipeline. |
 | description | [T2SDescription](#ondewo.t2s.T2SDescription) |  | Required. Defines the description of the pipeline representation. |
 | active | [bool](#bool) |  | Required. Defines if the pipeline is active or inactive. |
-| inference | [T2SInference](#ondewo.t2s.T2SInference) |  | Required. Defines he inference of the pipeline representation. |
+| inference | [T2SInference](#ondewo.t2s.T2SInference) |  | Required. Defines the inference of the pipeline representation. |
 | normalization | [T2SNormalization](#ondewo.t2s.T2SNormalization) |  | Required. Defines the normalization process of the pipeline representation. |
 | postprocessing | [Postprocessing](#ondewo.t2s.Postprocessing) |  | Required. Defines the postprocessing process of the pipeline representation. |
 
@@ -1132,8 +1132,8 @@ all other properties of this generated audio.</p>
 | max_text_length | [int64](#int64) |  | The maximum text length allowed. |
 | param_config_path | [string](#string) |  | The path to the parameter configuration. |
 | triton_model_name | [string](#string) |  | The name of the Triton model. |
-| triton_server_host | [string](#string) |  | The host of the Triton inference server which servers the model. |
-| triton_server_port | [int64](#int64) |  | The port of the Triton inference server which servers the model. |
+| triton_server_host | [string](#string) |  | The host of the Triton inference server which serves the model. |
+| triton_server_port | [int64](#int64) |  | The port of the Triton inference server which serves the model. |
 
 
 
