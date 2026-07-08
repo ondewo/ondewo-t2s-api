@@ -255,7 +255,7 @@ message RequestConfig {
     oneof oneof_length_scale {
         // Optional. This parameter is used for time stretching which is the process of
         // changing the speed or duration of an audio.
-        // It should be much more than 1.0. O is not a valid number for this variable.
+        // It should be much more than 1.0. 0 is not a valid number for this variable.
         // The default value is 1.
         float length_scale = 2;
     }
@@ -472,16 +472,16 @@ enum AudioFormat {
 // <p>A Synthesize Response contains the generated audio, requested text and all other properties of this generated audio.</p>
 message SynthesizeResponse {
 
-    // Required. Represents the pipeline id of the model configuration that will be used.
+    // Required. The unique identifier (UUID) assigned to the generated audio.
     string audio_uuid = 1;
 
     // Required. Generated file with the parameters described in request.
     bytes audio = 2;
 
-    // Required. Time to generate audio.
+    // Required. Time taken to generate the audio, in seconds.
     float generation_time = 3;
 
-    // Required. Audio length.
+    // Required. Length (duration) of the generated audio, in seconds.
     float audio_length = 4;
 
     // Required. Text from which audio was generated.
@@ -493,7 +493,7 @@ message SynthesizeResponse {
     // Optional. Normalized text.
     string normalized_text = 7;
 
-    // Optional. Value of sampling rate
+    // Optional. Sampling rate of the generated audio, in Hertz (Hz).
     float sample_rate = 8;
 
 }
@@ -503,16 +503,16 @@ message SynthesizeResponse {
 // all other properties of this generated audio.</p>
 message StreamingSynthesizeResponse {
 
-    // Required. Represents the pipeline id of the model configuration that will be used.
+    // Required. The unique identifier (UUID) assigned to the generated audio.
     string audio_uuid = 1;
 
     // Required. Generated file with the parameters described in request.
     bytes audio = 2;
 
-    // Required. Time to generate audio.
+    // Required. Time taken to generate the audio, in seconds.
     float generation_time = 3;
 
-    // Required. Audio length.
+    // Required. Length (duration) of the generated audio, in seconds.
     float audio_length = 4;
 
     // Required. Text from which audio was generated.
@@ -524,7 +524,7 @@ message StreamingSynthesizeResponse {
     // Optional. Normalized text.
     string normalized_text = 7;
 
-    // Optional. Value of sampling rate
+    // Optional. Sampling rate of the generated audio, in Hertz (Hz).
     float sample_rate = 8;
 
 }
@@ -723,7 +723,7 @@ message Text2SpeechConfig {
     // Required. Defines if the pipeline is active or inactive.
     bool active = 3;
 
-    // Required. Defines he inference of the pipeline representation.
+    // Required. Defines the inference of the pipeline representation.
     T2SInference inference = 4;
 
     // Required. Defines the normalization process of the pipeline representation.
@@ -742,7 +742,6 @@ message T2SDescription {
     string language = 1;
 
     // The speaker's sex or gender.
-
     string speaker_sex = 2;
 
     // The owner of the text-to-speech pipeline.
@@ -762,13 +761,15 @@ message T2SDescription {
 // <p>T2SInference message is used to specify the text-to-speech inference settings.</p>
 message T2SInference {
 
-    // The type of inference.
+    // The type of inference, selecting which of the settings below is applied:
+    // composite_inference (two-stage text-to-mel then mel-to-audio) or
+    // single_inference (single-stage text-to-audio).
     string type = 1;
 
-    // Composite inference settings.
+    // Composite (two-stage) inference settings, used when type selects composite inference.
     CompositeInference composite_inference = 2;
 
-    // Single inference settings.
+    // Single (one-stage) inference settings, used when type selects single inference.
     SingleInference single_inference = 3;
 
     // Caching settings.
@@ -797,7 +798,8 @@ message SingleInference {
 // <p>Text2Mel message contains settings for text-to-mel inference.</p>
 message Text2Mel {
 
-    // The type of text-to-mel inference.
+    // The type of text-to-mel inference, selecting which of the settings below is applied
+    // (glow_tts or glow_tts_triton).
     string type = 1;
 
     // GlowTTS inference settings.
@@ -811,7 +813,10 @@ message Text2Mel {
 // <p>Text2Audio message contains settings for text-to-audio inference.</p>
 message Text2Audio {
 
-    // The type of text-to-audio inference.
+    // The type of text-to-audio inference, selecting which of the settings below is applied:
+    // a local model (vits, vits_triton) or a cloud / neural service (t2s_cloud_service_elevenlabs,
+    // t2s_cloud_service_amazon, t2s_cloud_service_google, t2s_cloud_service_microsoft,
+    // qwen3_tts_custom_voice, qwen3_tts_base).
     string type = 1;
 
     // Vits inference settings.
@@ -890,10 +895,10 @@ message GlowTTSTriton {
     // The name of the Triton model.
     string triton_model_name = 7;
 
-    // The host of the Triton inference server which servers the model.
+    // The host of the Triton inference server which serves the model.
     string triton_server_host = 8;
 
-    // The port of the Triton inference server which servers the model.
+    // The port of the Triton inference server which serves the model.
     int64 triton_server_port = 9;
 
 }
@@ -948,10 +953,10 @@ message VitsTriton {
     // The name of the Triton model.
     string triton_model_name = 7;
 
-    // The host of the Triton inference server which servers the model.
+    // The host of the Triton inference server which serves the model.
     string triton_server_host = 8;
 
-    // The port of the Triton inference server which servers the model.
+    // The port of the Triton inference server which serves the model.
     int64 triton_server_port = 9;
 
 }
@@ -1083,7 +1088,8 @@ message Qwen3TtsBase {
 // <p>Mel2Audio message contains settings for mel-to-audio inference.</p>
 message Mel2Audio {
 
-    // The type of mel-to-audio inference.
+    // The type of mel-to-audio inference (vocoder), selecting which of the settings below is applied
+    // (mb_melgan_triton, hifi_gan or hifi_gan_triton).
     string type = 1;
 
     // MbMelgan Triton inference settings.
@@ -1123,10 +1129,10 @@ message HiFiGanTriton {
     // The name of the Triton model.
     string triton_model_name = 2;
 
-    // The host of the Triton inference server which servers the model.
+    // The host of the Triton inference server which serves the model.
     string triton_server_host = 3;
 
-    // The port of the Triton inference server which servers the model.
+    // The port of the Triton inference server which serves the model.
     int64 triton_server_port = 4;
 
 }
@@ -1143,10 +1149,10 @@ message MbMelganTriton {
     // The name of the Triton model.
     string triton_model_name = 3;
 
-    // The host of the Triton inference server which servers the model.
+    // The host of the Triton inference server which serves the model.
     string triton_server_host = 4;
 
-    // The port of the Triton inference server which servers the model.
+    // The port of the Triton inference server which serves the model.
     int64 triton_server_port = 5;
 
 }
