@@ -105,7 +105,7 @@ clean_docs_builder: ## Remove the cloned protoc-gen-doc-action repo and Docker i
 	@echo "✓ Cleanup complete"
 
 TEST:
-	@echo "----------------------------------------------\nGITHUB_GH_TOKEN\n----------------------------------------------\n${GITHUB_GH_TOKEN}\n"
+	@echo "----------------------------------------------\nGITHUB_GH_TOKEN\n----------------------------------------------\n$(if $(GITHUB_GH_TOKEN),<set>,<unset>)\n"
 	@echo "----------------------------------------------\nCURRENT_RELEASE_NOTES\n----------------------------------------------\n${CURRENT_RELEASE_NOTES}\n"
 
 githubio_logic_pre:
