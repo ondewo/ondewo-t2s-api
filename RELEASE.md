@@ -2,6 +2,14 @@
 
 *****************
 
+## Release ONDEWO T2S API 6.5.0
+
+### Improvements
+
+* Repository tooling modernization across the ONDEWO client SDK ecosystem (no API/proto changes): the Python clients migrated to a single `pyproject.toml` with **uv** + **ruff** + **mypy** (dropping `setup.py`/`.flake8`/`mypy.ini`/`requirements*.txt`); every Makefile now drives the uv-managed virtualenv (`setup_developer_environment_locally` bootstraps uv + installs all dev dependencies), with new `ruff`/`ruff_fix`/`ruff_format`/`mypy` targets and the legacy `flake8`/conda targets removed. Pre-commit hooks were upgraded to their latest releases and extended (markdownlint-cli2, ruff, mypy, pre-commit-hooks, uv-lock, giticket, conventional-commits) and run across all repositories. Automated release commits now use `--no-verify` so dev hooks never gate a release. Validation release exercising the full client release pipeline end-to-end.
+
+*****************
+
 ## Release ONDEWO T2S API 6.4.2
 
 ### Improvements
