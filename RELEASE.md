@@ -2,6 +2,14 @@
 
 *****************
 
+## Release ONDEWO T2S API 6.6.0
+
+### Improvements
+
+* **Try run of the CI/CD release flow.** This is a test release exercising the end-to-end release pipeline (API GitHub release + parallel client SDK releases). No API/proto changes. It also validates the newly parallelized `release_all_clients`, where each client SDK (python/nodejs/typescript/angular/js) is released independently and a failure in one client does not abort the others.
+
+*****************
+
 ## Release ONDEWO T2S API 6.5.0
 
 ### Improvements
