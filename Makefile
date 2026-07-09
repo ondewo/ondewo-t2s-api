@@ -192,13 +192,28 @@ unrelease: build_utils_docker_image unrelease_to_github_via_docker_image ## Undo
 	-git fetch --prune
 	@echo "Unrelease of ${ONDEWO_T2S_API_VERSION} complete"
 
-release_all_clients: ## Release all T2S Clients
-	@rm -f .already_released_marker; make release_python_client || { [ -f .already_released_marker ] && echo "SKIP: Python client already released ${ONDEWO_T2S_API_VERSION}" || { echo "FAILED: Python client did not release - aborting"; exit 1; }; }
-	@rm -f .already_released_marker; make release_nodejs_client || { [ -f .already_released_marker ] && echo "SKIP: Nodejs client already released ${ONDEWO_T2S_API_VERSION}" || { echo "FAILED: Nodejs client did not release - aborting"; exit 1; }; }
-	@rm -f .already_released_marker; make release_typescript_client || { [ -f .already_released_marker ] && echo "SKIP: Typescript client already released ${ONDEWO_T2S_API_VERSION}" || { echo "FAILED: Typescript client did not release - aborting"; exit 1; }; }
-	@rm -f .already_released_marker; make release_angular_client || { [ -f .already_released_marker ] && echo "SKIP: Angular client already released ${ONDEWO_T2S_API_VERSION}" || { echo "FAILED: Angular client did not release - aborting"; exit 1; }; }
-	@rm -f .already_released_marker; make release_js_client || { [ -f .already_released_marker ] && echo "SKIP: JS client already released ${ONDEWO_T2S_API_VERSION}" || { echo "FAILED: JS client did not release - aborting"; exit 1; }; }
-	@rm -f .already_released_marker; echo "End releasing all clients"
+CLIENTS := python nodejs typescript angular js
+
+release_all_clients: ## Release all clients IN PARALLEL; one failing client does not abort the others
+	@echo "Releasing all clients in parallel for ${ONDEWO_T2S_API_VERSION} ..."; \
+	rm -f .already_released_marker-* .client_status-*; \
+	for c in $(CLIENTS); do \
+		( if make release_$${c}_client > release_run_$${c}.log 2>&1; then echo RELEASED > .client_status-$$c; \
+		  elif [ -f .already_released_marker-$$c ]; then echo SKIP > .client_status-$$c; \
+		  else echo FAILED > .client_status-$$c; fi ) & \
+	done; \
+	wait; \
+	echo ""; echo "=============== CLIENT RELEASE SUMMARY (${ONDEWO_T2S_API_VERSION}) ==============="; \
+	failed=0; \
+	for c in $(CLIENTS); do \
+		s=$$(cat .client_status-$$c 2>/dev/null || echo NO_STATUS); \
+		echo "  $$c : $$s"; \
+		if [ "$$s" = FAILED ] || [ "$$s" = NO_STATUS ]; then failed=1; echo "      -> see release_run_$$c.log"; fi; \
+	done; \
+	echo "==============================================================="; \
+	rm -f .already_released_marker-* .client_status-*; \
+	if [ "$$failed" = 1 ]; then echo "RESULT: one or more clients FAILED (the others released independently)."; exit 1; fi; \
+	echo "RESULT: all clients released or already up-to-date."
 
 GENERIC_CLIENT?=
 RELEASEMD?=
@@ -216,13 +231,13 @@ release_client:
 	rm -rf ${REPO_DIR}
 	rm -f build_log_${REPO_NAME}.txt
 
-	@echo ${GENERIC_RELEASE_NOTES} > temp-notes && perl -i -pe 's/\\//g' temp-notes && perl -i -pe 's/REPONAME/${UPPER_REPO_NAME}/g' temp-notes
+	@echo ${GENERIC_RELEASE_NOTES} > temp-notes-${REPO_NAME} && perl -i -pe 's/\\//g' temp-notes-${REPO_NAME} && perl -i -pe 's/REPONAME/${UPPER_REPO_NAME}/g' temp-notes-${REPO_NAME}
 	git clone ${GENERIC_CLIENT}
 # Check if Client is already uptodate with API Version
-	@! git -C ${REPO_DIR} branch -a | grep -q ${ONDEWO_T2S_API_VERSION} || (echo "Already Released ${ONDEWO_T2S_API_VERSION} \n\n\n"  && touch .already_released_marker && rm -rf ${REPO_DIR} && rm -f temp-notes && exit 1)
+	@! git -C ${REPO_DIR} branch -a | grep -q ${ONDEWO_T2S_API_VERSION} || (echo "Already Released ${ONDEWO_T2S_API_VERSION} \n\n\n"  && touch .already_released_marker-${REPO_NAME} && rm -rf ${REPO_DIR} && rm -f temp-notes-${REPO_NAME} && exit 1)
 
 # Change Version Number and RELEASE NOTES
-	cd ${REPO_DIR} && perl -i -ne 'print; if(/Release History/){open(F,"../temp-notes");print <F>;close F}' ${RELEASEMD}
+	cd ${REPO_DIR} && perl -i -ne 'print; if(/Release History/){open(F,"../temp-notes-${REPO_NAME}");print <F>;close F}' ${RELEASEMD}
 	cd ${REPO_DIR} && head -20 ${RELEASEMD}
 	cd ${REPO_DIR} && perl -i -pe 's/ONDEWO_T2S_VERSION.*=.*/ONDEWO_T2S_VERSION=${ONDEWO_T2S_API_VERSION}/' Makefile
 	cd ${REPO_DIR} && perl -i -pe 's|ONDEWO_PROTO_COMPILER_GIT_BRANCH.*=.*|ONDEWO_PROTO_COMPILER_GIT_BRANCH=tags/${PROTO_COMPILER}|' Makefile
@@ -233,7 +248,7 @@ release_client:
 	make -C ${REPO_DIR} TEST
 # Remove everything from Release
 	sudo rm -rf ${REPO_DIR}
-	rm -f temp-notes
+	rm -f temp-notes-${REPO_NAME}
 
 PYTHON_CLIENT="git@github.com:ondewo/ondewo-t2s-client-python.git"
 
