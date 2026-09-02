@@ -160,3 +160,67 @@ Pre-commit here uses only the language-agnostic hooks — **markdownlint-cli2, p
 
 - **markdownlint MD053 is disabled** (its auto-fix deletes `[comment]: <>` reference-definition markers).
 - **markdownlint RELEASE.md reformatting is content-safe**: it only strips trailing whitespace and adds blank lines around headings — the `## Release … <VERSION>` headings and `*****` separators that `ondewo_release` greps for remain intact. (Confirmed: the 6.5.0 release notes sliced correctly after the reformat.)
+
+## GitHub Actions — the documentation workflow is a required gate
+
+`.github/workflows/generate-doc-and-deploy.yaml` ("Generate API Documentation") is the only CI this repository has,
+and it is a **required gate, not advisory**: it runs on every push and every pull request against `master` (plus
+manual `workflow_dispatch`), and its last step writes generated documentation back into `master`. Treat a red run as
+a blocked merge.
+
+**The file is `.yaml`, not `.yml`** — a `.github/workflows/*.yml` glob matches nothing here and reads as "this repo
+has no CI".
+
+The single job (`generate-doc-and-deploy`, `ubuntu-latest`) declares exactly three steps:
+
+1. **`Checkout 🛎️`** — `actions/checkout@v5` with `submodules: true`. There is no `.gitmodules`, so the submodule
+   flag is a no-op today; do not read it as evidence that a submodule exists.
+2. **`Generate documentation from ONDEWO proto files 🔧`** — `ondewo/ondewo-protoc-gen-doc-action@master`, a Docker
+   action built `FROM pseudomuto/protoc-gen-doc`. Once per output format it runs
+   `protoc -I. -Igoogleapis --doc_opt=/resources/templates/<format>.tmpl,index.<format> --doc_out=docs` over
+   `$(find ondewo -name '*.proto' | sort)`.
+3. **`Deploy 🚀`** — `JamesIves/github-pages-deploy-action@v4` with `branch: master`, `folder: docs`,
+   `target-folder: docs`, guarded by `if: ${{ !env.ACT }}` so a local `act` run skips it.
+
+### Reproducing it locally
+
+`make build_docs` **is** step 2 — same action repository, same image, same arguments — so use it rather than
+approximating:
+
+```bash
+make build_docs               # clone + docker build + docker run, exactly as CI does
+git diff --exit-code docs/    # THE gate: regenerated docs must match what is committed
+make clean_docs_builder
+```
+
+Three fidelity rules, each of which silently changes the result if broken:
+
+- **Build the image from `ondewo/ondewo-protoc-gen-doc-action@master`; never substitute a locally installed `protoc`
+  plus `protoc-gen-doc`.** The output is rendered by that repository's `resources/templates/{html,md}.tmpl`, so a
+  stock protoc-gen-doc emits different Markdown and HTML and the `git diff` above degenerates into noise that hides
+  a genuinely stale `docs/`.
+- **Pass exactly `html,md index`.** The workflow supplies no `with:` block, so `action.yaml`'s defaults
+  (`formats: html,md`, `filename: index`) are what CI actually uses.
+- **Keep `--user "$(id -u):$(id -g)"` on the `docker run`.** CI runs the container as root and then throws the runner
+  away; locally, dropping it leaves root-owned files in your `docs/` that you cannot subsequently rewrite.
+
+### Sharp edges found while actually running this
+
+- **The gate is convergence, not exit status.** Step 2 exits `0` whatever the proto contains — what a reviewer
+  catches is `docs/` disagreeing with `ondewo/t2s/text-to-speech.proto`. Always finish with
+  `git diff --exit-code docs/`.
+- **A stale `docs/` makes CI commit to `master`.** Step 3 pushes the regenerated folder back as
+  `Deploying to master from @ ondewo/ondewo-t2s-api@<sha> 🚀`. Those commits are **authored as the human who pushed**,
+  not as a bot, so searching history for a bot account will not find them. Regenerate and commit `docs/` in the same
+  commit as any `.proto` change, and CI is left with nothing to write.
+- **`googleapis: warning: directory does not exist.`, printed once per format, is expected and benign.** The action's
+  entrypoint hardcodes `-Igoogleapis` and this repository has no such directory; the proto imports only
+  `google/protobuf/empty.proto` and `google/protobuf/struct.proto`, which ship inside protoc. Adding a
+  `google/api/*` import would turn that warning into a hard failure with no include path available to satisfy it.
+- **`make build_docs` clones into `.tmp-protoc-gen-doc-action/`, which is not in `.gitignore`**, so it lingers as an
+  untracked directory. `make clean_docs_builder` removes it — do not `git add -A` in between.
+- **The action is pinned to a moving ref (`@master`).** Generated documentation can therefore change with no commit
+  in this repository at all, so an unexplained `docs/` diff may be an upstream template change rather than your edit.
+- **There is no Python gate here** — no `pyproject.toml`, no `uv.lock`, no ruff, mypy, pytest or coverage threshold.
+  Do not go hunting for a `uv run --frozen …` equivalent; the pre-commit hooks (markdownlint, hygiene, giticket,
+  conventional-pre-commit) are language-agnostic and are **not** part of this workflow.
