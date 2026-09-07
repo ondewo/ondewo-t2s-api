@@ -14,7 +14,7 @@ fail_fast: false
 repos:
 
   - repo: https://github.com/DavidAnson/markdownlint-cli2
-    rev: v0.23.0
+    rev: v0.23.2
     hooks:
       - id: markdownlint-cli2
 
@@ -33,16 +33,21 @@ repos:
       - id: trailing-whitespace
       - id: end-of-file-fixer
 
-  - repo: https://github.com/milin/giticket
-    rev: '1.92'
-    hooks:
-      - id: giticket
-        args: [ '--regex=(?:(?:feature|bugfix|support|hotfix)/)?(OND[0-9]{3}-[0-9]{1,5})[_-][\w-]+',
-                '--format=[{ticket}] {commit_msg}',
-                '--mode=regex_match' ]
-
+  # Must run BEFORE giticket: it validates the subject the author wrote. giticket then prepends
+  # "[<TICKET>] ", which conventional-pre-commit has no way to tolerate (it has no ticket-prefix
+  # option), so with the order reversed every commit on a branch matching giticket's regex is
+  # rejected — giticket rewrites the message and the next hook fails it for the rewrite. Same order
+  # as ondewo-nlu-api and ondewo-cai.
   - repo: https://github.com/compilerla/conventional-pre-commit
     rev: v4.4.0
     hooks:
       - id: conventional-pre-commit
         stages: [ commit-msg ]
+
+  - repo: https://github.com/milin/giticket
+    rev: '1.92'
+    hooks:
+      - id: giticket  # Prepend the commit message with the JIRA ticket
+        args: [ '--regex=(?:(?:feature|bugfix|support|hotfix)/)?(OND[0-9]{3}-[0-9]{1,5})[_-][\w-]+',
+                '--format=[{ticket}] {commit_msg}',
+                '--mode=regex_match' ]
