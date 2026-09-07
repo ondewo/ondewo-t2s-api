@@ -22,8 +22,12 @@ ONDEWO_T2S_API_VERSION=6.6.0
 # You need to setup an access token at https://github.com/settings/tokens - permissions are important
 GITHUB_GH_TOKEN?=ENTER_YOUR_TOKEN_HERE
 
+# Terminate on the ***** separator that delimits release entries, NOT on /\*\*/ — that matched the first
+# markdown **bold** span inside the entry and silently truncated the notes there, with no error from
+# `gh release create -n "$(CURRENT_RELEASE_NOTES)"`. It only ever looked correct by accident: 6.6.0's single
+# bold line happens to be its last content line.
 CURRENT_RELEASE_NOTES=`cat RELEASE.md \
-	| perl -ne 'print if /Release ONDEWO T2S API ${ONDEWO_T2S_API_VERSION}/../\*\*/'`
+	| perl -ne 'print if /Release ONDEWO T2S API ${ONDEWO_T2S_API_VERSION}/../^\*{5}/'`
 
 GH_REPO="https://github.com/ondewo/ondewo-t2s-api"
 DEVOPS_ACCOUNT_GIT="ondewo-devops-accounts"
@@ -217,9 +221,15 @@ release_all_clients: ## Release all clients IN PARALLEL; one failing client does
 
 GENERIC_CLIENT?=
 RELEASEMD?=
+# The section heading is driven by GENERIC_RELEASE_SECTION so a breaking API release does not publish five
+# client majors under "Improvements". On a major bump, override it and describe the break:
+#   make release_all_clients GENERIC_RELEASE_SECTION='Breaking Changes' \
+#     GENERIC_RELEASE_EXTRA='* <what broke> \n'
+GENERIC_RELEASE_SECTION?=Improvements
+GENERIC_RELEASE_EXTRA?=
 GENERIC_RELEASE_NOTES="\n***************** \n\\\#\\\# Release ONDEWO T2S REPONAME Client ${ONDEWO_T2S_API_VERSION} \n \
-	\n\\\#\\\#\\\# Improvements \n \
-	* Tracking API Version [${ONDEWO_T2S_API_VERSION}](https://github.com/ondewo/ondewo-t2s-api/releases/tag/${ONDEWO_T2S_API_VERSION}) ( [Documentation](https://ondewo.github.io/ondewo-t2s-api/) ) \n"
+	\n\\\#\\\#\\\# ${GENERIC_RELEASE_SECTION} \n \
+	* Tracking API Version [${ONDEWO_T2S_API_VERSION}](https://github.com/ondewo/ondewo-t2s-api/releases/tag/${ONDEWO_T2S_API_VERSION}) ( [Documentation](https://ondewo.github.io/ondewo-t2s-api/) ) \n ${GENERIC_RELEASE_EXTRA}"
 
 release_client:
 	$(eval REPO_NAME:= $(shell echo ${GENERIC_CLIENT} | cut -c 41- | cut -d '.' -f 1))
@@ -237,7 +247,19 @@ release_client:
 	@! git -C ${REPO_DIR} branch -a | grep -q ${ONDEWO_T2S_API_VERSION} || (echo "Already Released ${ONDEWO_T2S_API_VERSION} \n\n\n"  && touch .already_released_marker-${REPO_NAME} && rm -rf ${REPO_DIR} && rm -f temp-notes-${REPO_NAME} && exit 1)
 
 # Change Version Number and RELEASE NOTES
-	cd ${REPO_DIR} && perl -i -ne 'print; if(/Release History/){open(F,"../temp-notes-${REPO_NAME}");print <F>;close F}' ${RELEASEMD}
+# Only insert the generated boilerplate when the client does not already document this version. A client
+# whose RELEASE.md was written by hand ahead of the release would otherwise get a SECOND
+# "Release ONDEWO T2S <Name> Client <VERSION>" heading, which buries the curated entry (the notes slice
+# takes the FIRST match) and trips markdownlint MD025/MD024 — neither of which auto-fixes, so the client's
+# own pre-commit fails the build and the release aborts.
+# The [[:space:]]*$$ tail is not cosmetic: the generated boilerplate emits the heading with a trailing space,
+# so the committed headings in the nodejs/typescript/angular/js clients all carry one. Anchoring on a bare $$
+# (as ondewo-nlu-api does) matches only the python client and lets the guard fail open for the other four.
+	cd ${REPO_DIR} && if grep -qE "^#+ Release ONDEWO T2S ${UPPER_REPO_NAME} Client ${ONDEWO_T2S_API_VERSION}[[:space:]]*$$" ${RELEASEMD}; then \
+		echo "${RELEASEMD} already documents ${ONDEWO_T2S_API_VERSION} - keeping the curated entry, not inserting the generated notes"; \
+	else \
+		perl -i -ne 'print; if(/Release History/){open(F,"../temp-notes-${REPO_NAME}");print <F>;close F}' ${RELEASEMD}; \
+	fi
 	cd ${REPO_DIR} && head -20 ${RELEASEMD}
 	cd ${REPO_DIR} && perl -i -pe 's/ONDEWO_T2S_VERSION.*=.*/ONDEWO_T2S_VERSION=${ONDEWO_T2S_API_VERSION}/' Makefile
 	cd ${REPO_DIR} && perl -i -pe 's|ONDEWO_PROTO_COMPILER_GIT_BRANCH.*=.*|ONDEWO_PROTO_COMPILER_GIT_BRANCH=tags/${PROTO_COMPILER}|' Makefile
