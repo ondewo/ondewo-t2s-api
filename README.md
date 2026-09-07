@@ -150,7 +150,7 @@ release, override the heading and describe the break:
 
 ```bash
 make release_all_clients GENERIC_RELEASE_SECTION='Breaking Changes' \
-  GENERIC_RELEASE_EXTRA='* <what broke> \n'
+  GENERIC_RELEASE_EXTRA='* <what broke>\n'
 ```
 
 If a client's `RELEASE.md` already documents the version being released, the generated boilerplate is

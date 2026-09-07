@@ -162,13 +162,15 @@ they are already at their ceiling:
    `## Release ONDEWO T2S <Name> Client <VERSION>` heading, which buries the curated entry (the notes slice
    takes the first match) and trips the client's own markdownlint MD024/MD025 — neither auto-fixes, so the
    client's pre-commit aborts the release.
-   The guard's regex ends `[[:space:]]*$$`, **not** the bare `$$` that `ondewo-nlu-api` uses: the generated
-   heading is emitted with a trailing space, so the committed headings in the nodejs / typescript / angular /
-   js clients all carry one, and a bare `$$` matches only the python client — i.e. it fails open for four of
-   the five.
+   The guard's regex ends `[[:space:]]*$$`, **not** the bare `$$` that `ondewo-nlu-api` uses. This is
+   defensive: the boilerplate used to emit the heading with a trailing space, and a bare `$$` cannot match
+   such a heading, so the guard fails open on any entry still carrying one. Measured on `origin/master`,
+   no T2S client RELEASE.md currently has one — but `ondewo-nlu-client-nodejs` and `-typescript` still do.
+   `GENERIC_RELEASE_NOTES` no longer emits the space, and `[[:space:]]*` matches the new headings equally,
+   so the tolerant tail costs nothing and stays.
 3. **`GENERIC_RELEASE_SECTION` / `GENERIC_RELEASE_EXTRA`** drive the client release-note heading, so a
    breaking API bump does not publish five client majors under "Improvements":
-   `make release_all_clients GENERIC_RELEASE_SECTION='Breaking Changes' GENERIC_RELEASE_EXTRA='* … \n'`.
+   `make release_all_clients GENERIC_RELEASE_SECTION='Breaking Changes' GENERIC_RELEASE_EXTRA='* …\n'`.
 
 Verify any change to these with `make TEST` (prints the sliced notes, masks the token) and
 `make -n release_client GENERIC_CLIENT=… RELEASEMD=…` — the dry run expands the whole recipe without cloning

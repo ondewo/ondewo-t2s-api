@@ -202,12 +202,17 @@ RELEASEMD?=
 # The section heading is driven by GENERIC_RELEASE_SECTION so a breaking API release does not publish five
 # client majors under "Improvements". On a major bump, override it and describe the break:
 #   make release_all_clients GENERIC_RELEASE_SECTION='Breaking Changes' \
-#     GENERIC_RELEASE_EXTRA='* <what broke> \n'
+#     GENERIC_RELEASE_EXTRA='* <what broke>\n'
 GENERIC_RELEASE_SECTION?=Improvements
 GENERIC_RELEASE_EXTRA?=
-GENERIC_RELEASE_NOTES="\n***************** \n\\\#\\\# Release ONDEWO T2S REPONAME Client ${ONDEWO_T2S_API_VERSION} \n \
-	\n\\\#\\\#\\\# ${GENERIC_RELEASE_SECTION} \n \
-	* Tracking API Version [${ONDEWO_T2S_API_VERSION}](https://github.com/ondewo/ondewo-t2s-api/releases/tag/${ONDEWO_T2S_API_VERSION}) ( [Documentation](https://ondewo.github.io/ondewo-t2s-api/) ) \n ${GENERIC_RELEASE_EXTRA}"
+# Emitted markdownlint-clean, and deliberately on ONE line. Every ` \n` used to leave a trailing space on
+# each generated line and a leading space on the list item, and make's line continuation collapses
+# `\<newline><tab>` into yet another space, so the inserted entry tripped MD009/MD007/MD022/MD012/MD032 in EVERY client
+# and the first pre-commit run of every release reported `Failed - files were modified by this hook`. It
+# self-healed on the re-run, but it also emitted the heading WITH a trailing space, which is the only reason
+# the duplicate-entry guard below needs its `[[:space:]]*$$` tail. Keep this byte-identical to what
+# markdownlint normalises to: no trailing spaces, a blank line around the heading and around the list.
+GENERIC_RELEASE_NOTES=\n*****************\n\n\\\#\\\# Release ONDEWO T2S REPONAME Client ${ONDEWO_T2S_API_VERSION}\n\n\\\#\\\#\\\# ${GENERIC_RELEASE_SECTION}\n\n* Tracking API Version [${ONDEWO_T2S_API_VERSION}](https://github.com/ondewo/ondewo-t2s-api/releases/tag/${ONDEWO_T2S_API_VERSION}) ( [Documentation](https://ondewo.github.io/ondewo-t2s-api/) )\n${GENERIC_RELEASE_EXTRA}
 
 release_client:
 	$(eval REPO_NAME:= $(shell echo ${GENERIC_CLIENT} | cut -c 41- | cut -d '.' -f 1))
@@ -219,7 +224,13 @@ release_client:
 	rm -rf ${REPO_DIR}
 	rm -f build_log_${REPO_NAME}.txt
 
-	@echo ${GENERIC_RELEASE_NOTES} > temp-notes-${REPO_NAME} && perl -i -pe 's/\\//g' temp-notes-${REPO_NAME} && perl -i -pe 's/REPONAME/${UPPER_REPO_NAME}/g' temp-notes-${REPO_NAME}
+	@# printf '%b', not echo: echo appends a newline of its own on top of the trailing \n, which left a
+	@# second blank line before the previous entry's separator (markdownlint MD012 used to eat it).
+	@# Read the value through the environment (line 1 is a bare `export`) instead of interpolating it into
+	@# the command text: it used to carry its own double quotes, so a backtick in GENERIC_RELEASE_EXTRA was
+	@# command-substituted by the shell - '* `FooResponse` is renamed to `BarResponse`.' silently became
+	@# '* is renamed to .' plus two 'not found' errors on stderr.
+	@printf '%b' "$$GENERIC_RELEASE_NOTES" > temp-notes-${REPO_NAME} && perl -i -pe 's/\\//g' temp-notes-${REPO_NAME} && perl -i -pe 's/REPONAME/${UPPER_REPO_NAME}/g' temp-notes-${REPO_NAME}
 	git clone ${GENERIC_CLIENT}
 # Check if Client is already uptodate with API Version
 	@! git -C ${REPO_DIR} branch -a | grep -q ${ONDEWO_T2S_API_VERSION} || (echo "Already Released ${ONDEWO_T2S_API_VERSION} \n\n\n"  && touch .already_released_marker-${REPO_NAME} && rm -rf ${REPO_DIR} && rm -f temp-notes-${REPO_NAME} && exit 1)
@@ -230,9 +241,10 @@ release_client:
 # "Release ONDEWO T2S <Name> Client <VERSION>" heading, which buries the curated entry (the notes slice
 # takes the FIRST match) and trips markdownlint MD025/MD024 — neither of which auto-fixes, so the client's
 # own pre-commit fails the build and the release aborts.
-# The [[:space:]]*$$ tail is not cosmetic: the generated boilerplate emits the heading with a trailing space,
-# so the committed headings in the nodejs/typescript/angular/js clients all carry one. Anchoring on a bare $$
-# (as ondewo-nlu-api does) matches only the python client and lets the guard fail open for the other four.
+# The [[:space:]]*$$ tail is defensive, and kept deliberately. The boilerplate used to emit the heading with a
+# trailing space, which a bare $$ (as ondewo-nlu-api uses) cannot match - so the guard would fail open on any
+# entry still carrying one. Measured on origin/master today, no T2S client RELEASE.md has such a heading, but
+# ondewo-nlu-client-nodejs and -typescript still do, so the tolerant tail costs nothing and closes that hole.
 	cd ${REPO_DIR} && if grep -qE "^#+ Release ONDEWO T2S ${UPPER_REPO_NAME} Client ${ONDEWO_T2S_API_VERSION}[[:space:]]*$$" ${RELEASEMD}; then \
 		echo "${RELEASEMD} already documents ${ONDEWO_T2S_API_VERSION} - keeping the curated entry, not inserting the generated notes"; \
 	else \
