@@ -230,7 +230,12 @@ release_client:
 	@# the command text: it used to carry its own double quotes, so a backtick in GENERIC_RELEASE_EXTRA was
 	@# command-substituted by the shell - '* `FooResponse` is renamed to `BarResponse`.' silently became
 	@# '* is renamed to .' plus two 'not found' errors on stderr.
-	@printf '%b' "$$GENERIC_RELEASE_NOTES" > temp-notes-${REPO_NAME} && perl -i -pe 's/\\//g' temp-notes-${REPO_NAME} && perl -i -pe 's/REPONAME/${UPPER_REPO_NAME}/g' temp-notes-${REPO_NAME}
+	@# The final perl normalises the file to exactly ONE trailing newline. printf '%b' emits no newline of
+	@# its own, so a GENERIC_RELEASE_EXTRA that does not end in \n leaves the notes without a final newline;
+	@# the insert below then has its last list item swallow the blank line before the next ***** separator,
+	@# and markdownlint has to apply an MD032/blanks-around-lists fix - the exact
+	@# `files were modified by this hook` first-run failure the one-line notes were written to remove.
+	@printf '%b' "$$GENERIC_RELEASE_NOTES" > temp-notes-${REPO_NAME} && perl -i -pe 's/\\//g' temp-notes-${REPO_NAME} && perl -i -pe 's/REPONAME/${UPPER_REPO_NAME}/g' temp-notes-${REPO_NAME} && perl -0777 -i -pe 's/\n*\z/\n/' temp-notes-${REPO_NAME}
 	git clone ${GENERIC_CLIENT}
 # Check if Client is already uptodate with API Version
 	@! git -C ${REPO_DIR} branch -a | grep -q ${ONDEWO_T2S_API_VERSION} || (echo "Already Released ${ONDEWO_T2S_API_VERSION} \n\n\n"  && touch .already_released_marker-${REPO_NAME} && rm -rf ${REPO_DIR} && rm -f temp-notes-${REPO_NAME} && exit 1)
