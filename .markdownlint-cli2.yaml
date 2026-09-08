@@ -18,8 +18,13 @@ config:
   MD041: false
   # MD045 image-alt-text: the branding header uses <img> logos / social icons.
   MD045: false
-globs:
-  - "*.md"
 ignores:
   # Generated API documentation produced by the "Generate API Documentation" CI.
   - "docs/**"
+
+# NOTE: no `globs:` here, deliberately. markdownlint-cli2 processes its config globs IN ADDITION to the
+# filenames pre-commit passes it. pre-commit splits the markdown files across several concurrent hook
+# processes, so a root-level `globs: ['*.md']` made EVERY batch also lint (and, with fix:true, REWRITE) the
+# root *.md files - two processes writing RELEASE.md at once, which can corrupt it. Measured on this repo:
+# with globs, a 2-file batch reported "Linting: 5 files"; without, "Linting: 2 files", while the total set
+# still covers every markdown file exactly once (pre-commit passes them all via types: [markdown]).
