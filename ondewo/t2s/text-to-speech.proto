@@ -197,9 +197,15 @@ message SynthesizeRequest {
     // behind the selected pipeline. Standard <code>&lt;prosody&gt;</code>, <code>&lt;emphasis&gt;</code>
     // and <code>&lt;break&gt;</code> are common to all three.</p>
     // <ul>
-    //   <li>Google Cloud TTS: <pre><code>&lt;google:style name=&quot;calm&quot;&gt;please stay calm everything will be fine&lt;/google:style&gt;</code></pre></li>
-    //   <li>Microsoft Azure: <pre><code>&lt;mstts:express-as style=&quot;cheerful&quot;&gt;please stay calm everything will be fine&lt;/mstts:express-as&gt;</code></pre></li>
-    //   <li>Amazon Polly (whispered): <pre><code>&lt;amazon:effect name=&quot;whispered&quot;&gt;please stay calm everything will be fine&lt;/amazon:effect&gt;</code></pre></li>
+    //   <li>Google Cloud TTS: <pre><code>&lt;google:style name=&quot;calm&quot;&gt;please stay calm everything will be fine&lt;/google:style&gt;</code></pre>
+    //     More information:
+    //     <a href="https://docs.cloud.google.com/text-to-speech/docs/ssml#styles">Google Cloud TTS - SSML styles</a></li>
+    //   <li>Microsoft Azure: <pre><code>&lt;mstts:express-as style=&quot;cheerful&quot;&gt;please stay calm everything will be fine&lt;/mstts:express-as&gt;</code></pre>
+    //     More information:
+    //     <a href="https://learn.microsoft.com/en-us/azure/ai-services/speech-service/speech-synthesis-markup-voice">Microsoft Azure - speech synthesis markup, voice and speaking styles</a></li>
+    //   <li>Amazon Polly (whispered): <pre><code>&lt;amazon:effect name=&quot;whispered&quot;&gt;please stay calm everything will be fine&lt;/amazon:effect&gt;</code></pre>
+    //     More information:
+    //     <a href="https://docs.aws.amazon.com/polly/latest/dg/whispered-tag.html">Amazon Polly - whispered speech with amazon:effect</a></li>
     //   <li>Amazon Polly (soft phonation): <pre><code>&lt;amazon:effect phonation=&quot;soft&quot;&gt;please stay calm everything will be fine&lt;/amazon:effect&gt;</code></pre></li>
     // </ul>
     string text = 1;
