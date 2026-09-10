@@ -189,10 +189,16 @@ message SynthesizeRequest {
     // <p>A style is rendered by the voice, not by the markup, and no voice renders all of them. The
     // table below lists what each qwen3-tts speaker supports; the speaker is fixed by the pipeline
     // selected through <code>RequestConfig.t2s_pipeline_id</code>.</p>
-    // <p>The requested style is <b>not</b> validated against this table. Asking a voice for a style it
-    // does not render is accepted, the instruction is sent and the audio is returned normally - the
-    // delivery simply does not change, and nothing is reported. Treat the table as guidance for
-    // choosing a voice, not as a list of values the server enforces.</p>
+    // <p><b>The server does not check your request against this table.</b> If you ask a voice for a
+    // style it cannot render, the request still succeeds: audio is returned, no error is raised and
+    // nothing is written to the log. The only symptom is that the voice sounds exactly as it would
+    // have without the style. Use the table to choose a suitable voice <i>before</i> sending the
+    // request.</p>
+    // <p>This is not the same as writing a style name that does not exist, which <b>is</b> reported:
+    // <code>&lt;ondewo:style name=&quot;bored&quot;&gt;</code> logs a warning and falls back to no
+    // style, because <code>bored</code> is outside the vocabulary listed further above. The silent
+    // case is a name that is in the vocabulary but beyond what the selected voice can do, for example
+    // <code>excited</code> on <code>dylan</code>.</p>
     // <table>
     //   <tr><th>Voice</th><th>apologetic</th><th>calm</th><th>empathetic</th><th>firm</th><th>cheerful</th><th>sad</th><th>excited</th><th>angry</th></tr>
     //   <tr><td>aiden</td><td>-</td><td>-</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>-</td><td>-</td></tr>
