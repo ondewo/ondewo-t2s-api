@@ -226,6 +226,34 @@ message SynthesizeRequest {
     //     and <code>furious</code> for <code>angry</code>.</li>
     // </ul>
     //
+    // <p><b>Prosody supported per voice</b></p>
+    // <p>Rate and volume are limited per voice in the same way, and the same caveat applies: the server
+    // does not check this table either, so asking for a step a voice cannot render succeeds silently
+    // and leaves the delivery unchanged. Only the two steps of each dimension are listed -
+    // <code>medium</code> (equally <code>default</code>) is available on every voice, because it means
+    // &quot;leave this dimension alone&quot; and sends no instruction at all.</p>
+    // <table>
+    //   <tr><th>Voice</th><th>rate slow</th><th>rate fast</th><th>volume soft</th><th>volume loud</th></tr>
+    //   <tr><td>aiden</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+    //   <tr><td>dylan</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>-</td></tr>
+    //   <tr><td>eric</td><td>&#10003;</td><td>-</td><td>&#10003;</td><td>-</td></tr>
+    //   <tr><td>ono_anna</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+    //   <tr><td>ryan</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+    //   <tr><td>sohee</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+    //   <tr><td>uncle_fu</td><td>-</td><td>-</td><td>&#10003;</td><td>&#10003;</td></tr>
+    //   <tr><td>vivian</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>-</td></tr>
+    // </table>
+    // <p>Notes on the table:</p>
+    // <ul>
+    //   <li><code>uncle_fu</code> does not respond to <code>rate</code> at all - change its pace by
+    //     rewriting the text, or pick another voice.</li>
+    //   <li><code>dylan</code> renders no style but does respond to <code>rate</code> and to
+    //     <code>volume=&quot;soft&quot;</code>, so <code>&lt;prosody&gt;</code> is the only delivery
+    //     control that works on it.</li>
+    //   <li><code>ono_anna</code>, <code>ryan</code>, <code>sohee</code> and <code>aiden</code> render
+    //     every step of both dimensions.</li>
+    // </ul>
+    //
     // <p>Every control is positional - it colours exactly the text it wraps - and a delivery change may
     // only land on a <b>sentence boundary</b>. Markup wrapping part of a sentence is widened to the
     // whole sentence, because a sentence fragment sent as a complete utterance makes the model
