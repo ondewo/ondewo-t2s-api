@@ -189,6 +189,11 @@ message SynthesizeRequest {
     // <p>A style is rendered by the voice, not by the markup, and no voice renders all of them. The
     // table below lists what each qwen3-tts speaker supports; the speaker is fixed by the pipeline
     // selected through <code>RequestConfig.t2s_pipeline_id</code>.</p>
+    // <p>The table applies to <b>both</b> ways of asking for a style. The
+    // <code>&lt;ondewo:style name=&quot;calm&quot;&gt;</code> element and the inline
+    // <code>[calm]</code> tag compile to the very same instruction, so they are limited by the voice
+    // in exactly the same way - switching from one spelling to the other never makes a style work
+    // that the voice cannot render.</p>
     // <p><b>The server does not check your request against this table.</b> If you ask a voice for a
     // style it cannot render, the request still succeeds: audio is returned, no error is raised and
     // nothing is written to the log. The only symptom is that the voice sounds exactly as it would
