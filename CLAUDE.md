@@ -289,3 +289,91 @@ Three fidelity rules, each of which silently changes the result if broken:
 - **The pre-commit hooks are not part of this workflow.** Nothing in CI runs markdownlint, giticket or
   conventional-pre-commit; a red `uvx pre-commit run --all-files` is therefore invisible to GitHub and has to
   be caught locally.
+
+## Releasing: preflight and the traps that have actually bitten
+
+Written after a release program across every ONDEWO client in one session. Each item below
+cost real time or a broken artefact; every statement is derived from THIS repo's Makefile.
+
+### Before you touch the version, check the released tag is in `master`
+
+Releases here are cut from a `release/<version>` branch and are **not always merged back**, so
+`master` can be missing work that is already published — and because a later version number
+sorts above the unmerged one, a consumer upgrading silently loses it. The ondewo-nlu-client-python
+7.1.0 release was exactly this: it shipped from a `master` that had never seen 7.0.5's
+offline-token hand-off, so PyPI's newest release was a regression against its predecessor.
+
+```bash
+latest=$(git tag --sort=-v:refname | head -1)
+git merge-base --is-ancestor "$latest" master && echo "in master" || echo "NOT in master -- merge first"
+```
+
+A fast-forward (`git merge --ff-only <tag>`) is the common case. A true merge needs care: resolve
+metadata toward `master` and keep BOTH release-note sections, newest first — a reader upgrading
+from the older line still needs the older entry.
+
+### The release notes are sliced by an EXACTLY-CASED heading
+
+`CURRENT_RELEASE_NOTES` slices `RELEASE.md` with a perl range. In THIS repo the opening
+pattern is, verbatim:
+
+```text
+Release ONDEWO T2S API ${ONDEWO_T2S_API_VERSION}
+```
+
+So the heading of a new entry must read exactly `## Release ONDEWO T2S API <version>`. **This wording is
+not consistent across the ONDEWO repos** — some say `... <Name> Client`, some `... Client
+<Name>` with the words reversed, the API repos say `... API` with no `Client` at all, and the
+casing varies (`Js`, `Nodejs`, `Typescript`, `Survey`). Do not carry a heading over from a
+sibling repo. Copy the PREVIOUS entry in this file and change only the version, or read the
+pattern above out of the Makefile.
+
+A heading that does not match yields an **empty slice**, and the GitHub release is then
+created with empty notes or fails outright. Verify before releasing:
+
+```bash
+grep -c '^## Release ONDEWO T2S API ' RELEASE.md     # must be >= 1 for your new version
+```
+
+### Where the release notes live
+
+This repo does NOT regenerate the root `RELEASE.md` from `src/`, so the root file is the one
+the release reads. Keep `src/RELEASE.md` in step by hand if it exists.
+
+### Publish order decides how a partial failure is recovered
+
+`make release` in this repo runs:
+
+
+The **npm publish happens LAST**. So a failure before it means nothing shipped, but the
+branch, tag and GitHub release may already exist — and `spc` will then refuse a re-run. Recover
+by running only the remaining step, not the whole target.
+
+### Verify against the registry, with the REAL package name
+
+This package publishes as **`<see package.json name>`**, which is not always the repository name — the JS client
+publishes as `@ondewo/ondewo-nlu-client-js` (doubled `ondewo`), so a lookup by repo name returns
+a 404 that reads like a failed release. Check the name in the manifest first, then:
+
+```bash
+npm view <see package.json name> versions --json
+```
+
+**An npm publish can be STAGED but not yet served.** Immediately after a publish the registry may
+answer 404 for the new version while refusing a re-publish with
+`409 Cannot publish over previously staged version`. That is not a failure and the version is
+not burned — wait and re-check before bumping to a new number.
+
+### The release prints credentials — read the log BEFORE you scrub it
+
+`make ondewo_release` clones `ondewo-devops-accounts` and passes the registry and GitHub tokens on
+the make command line, so they are echoed into the console and into any transcript capturing it.
+This is a known and accepted property of the shared release path: do **not** re-plumb the recipe.
+Redirect the run to a file, read it through a filter, and shred the file afterwards — and read it
+**before** shredding, or a genuine failure is lost with the secrets:
+
+```bash
+umask 077; make ondewo_release > /tmp/rel.log 2>&1; echo "RC=$?"
+grep -avE 'TOKEN|PASSWORD|USERNAME|_authToken' /tmp/rel.log | tail -20   # read FIRST
+shred -u /tmp/rel.log; rm -rf ondewo-devops-accounts                     # then scrub
+```
