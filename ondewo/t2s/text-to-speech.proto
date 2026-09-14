@@ -150,56 +150,121 @@ message SynthesizeRequest {
     //   <li>German: <pre><code>ah bindestrich sieben plus acht sternchen</code></pre></li>
     // </ul>
     //
-    // <p><b>5. Voice control for qwen3-tts (emotion / style / prosody)</b></p>
+    // <p><b>5. Voice control for qwen3-tts (style / prosody)</b></p>
     // <p>These ONDEWO-namespaced tags are compiled into the model instruction and stripped from the
     // spoken text, so the transcription stays the plain sentence while the delivery changes. They only
     // take effect on the qwen3-tts <b>CustomVoice</b> model; on the base and voicedesign models they are
-    // stripped and a warning is logged.</p>
+    // stripped from the text without changing the delivery.</p>
+    // <p>qwen3-tts is steered by a natural-language instruction rather than by numeric parameters, so
+    // every dimension has exactly <b>one step per direction</b> and the values listed below are the
+    // whole vocabulary. Any other value is reported in the server log and then ignored.</p>
     // <ul>
-    //   <li>Style - one of the five primary styles <code>apologetic</code>, <code>calm</code>,
-    //     <code>empathetic</code>, <code>firm</code>, <code>lively</code>, or one of the accepted
-    //     synonyms <code>cheerful</code> / <code>happy</code> / <code>joyful</code>,
+    //   <li>Style - one of the four primary styles <code>apologetic</code>, <code>calm</code>,
+    //     <code>empathetic</code>, <code>firm</code>, or one of the accepted synonyms
+    //     <code>cheerful</code> / <code>happy</code> / <code>joyful</code>,
     //     <code>sad</code> / <code>sorrowful</code>, <code>angry</code> / <code>furious</code>,
-    //     <code>excited</code>, <code>serious</code>, <code>tender</code> / <code>gentle</code>.
-    //     An unknown name falls back to <code>neutral</code> and a warning is logged:
+    //     <code>excited</code>. An unknown name falls back to
+    //     <code>neutral</code>, which adds no style at all, and a warning is logged:
     //     <pre><code>&lt;ondewo:style name=&quot;calm&quot;&gt;please stay calm everything will be fine&lt;/ondewo:style&gt;</code></pre></li>
-    //   <li>Emphasis - selects the intensity tier of the chosen style: <code>strong</code> (intense),
-    //     <code>moderate</code> (the default when no emphasis is given) or <code>reduced</code> /
-    //     <code>none</code> (mild):
-    //     <pre><code>&lt;ondewo:style name=&quot;firm&quot;&gt;&lt;emphasis level=&quot;strong&quot;&gt;listen carefully&lt;/emphasis&gt;&lt;/ondewo:style&gt;</code></pre></li>
-    //   <li>Prosody - <code>rate</code> (<code>x-slow</code>/<code>slow</code>/<code>medium</code>/<code>fast</code>/<code>x-fast</code>
-    //     or a percentage such as <code>+20%</code>/<code>-20%</code>/<code>120%</code>),
-    //     <code>pitch</code> (<code>x-low</code>/<code>low</code>/<code>medium</code>/<code>high</code>/<code>x-high</code>,
-    //     a semitone offset such as <code>+4st</code>/<code>-4st</code> or a percentage such as
-    //     <code>+10%</code>/<code>-10%</code>) and
-    //     <code>volume</code> (<code>silent</code>/<code>x-soft</code>/<code>soft</code>/<code>medium</code>/<code>loud</code>/<code>x-loud</code>
-    //     or a decibel offset such as <code>+6dB</code>/<code>-6dB</code>):
-    //     <pre><code>&lt;prosody rate=&quot;slow&quot; pitch=&quot;+4st&quot; volume=&quot;loud&quot;&gt;hello there&lt;/prosody&gt;</code></pre></li>
-    //   <li>Nested combination (style + emphasis + prosody):
-    //     <pre><code>&lt;ondewo:style name=&quot;calm&quot;&gt;&lt;emphasis level=&quot;moderate&quot;&gt;&lt;prosody rate=&quot;slow&quot; pitch=&quot;low&quot; volume=&quot;soft&quot;&gt;hello there&lt;/prosody&gt;&lt;/emphasis&gt;&lt;/ondewo:style&gt;</code></pre></li>
+    //   <li>Prosody - <code>rate</code> (<code>slow</code> / <code>medium</code> / <code>fast</code>)
+    //     and <code>volume</code> (<code>soft</code> / <code>medium</code> / <code>loud</code>), where
+    //     <code>medium</code> means &quot;leave it alone&quot; and adds nothing.
+    //     <pre><code>&lt;prosody rate=&quot;slow&quot; volume=&quot;loud&quot;&gt;hello there&lt;/prosody&gt;</code></pre></li>
+    //   <li>Nested combination (style + prosody):
+    //     <pre><code>&lt;ondewo:style name=&quot;calm&quot;&gt;&lt;prosody rate=&quot;slow&quot; volume=&quot;soft&quot;&gt;hello there&lt;/prosody&gt;&lt;/ondewo:style&gt;</code></pre></li>
     //   <li>Free-form instruction (CustomVoice only) - describe the delivery in natural language in the
     //     <code>instruction</code> attribute. The attribute value is used verbatim as the model
-    //     instruction and takes precedence over the style / emphasis / prosody tags; the wrapped inner
-    //     text is kept as the spoken text and it should be always in English:
+    //     instruction and takes precedence over the style / prosody tags; the wrapped inner text is kept
+    //     as the spoken text and the instruction should always be written in English:
     //     <pre><code>&lt;ondewo:instruct instruction=&quot;speak slowly in a warm and reassuring tone&quot;&gt;hello there&lt;/ondewo:instruct&gt;</code></pre></li>
-    //   <li>Inline audio tags (CustomVoice only) - emotional expressions / sound effects in square
-    //     brackets. They are compiled into the instruction and stripped from the spoken text. The
-    //     supported tags are:
-    //     <ul>
-    //       <li>Voice-related: <code>[laughs]</code>, <code>[laughs harder]</code>,
-    //         <code>[starts laughing]</code>, <code>[wheezing]</code>, <code>[whispers]</code>,
-    //         <code>[sighs]</code>, <code>[exhales]</code>, <code>[sarcastic]</code>,
-    //         <code>[curious]</code>, <code>[excited]</code>, <code>[crying]</code>,
-    //         <code>[snorts]</code>, <code>[mischievously]</code></li>
-    //       <li>Sound effects: <code>[gunshot]</code>, <code>[applause]</code>,
-    //         <code>[clapping]</code>, <code>[explosion]</code>, <code>[swallows]</code>,
-    //         <code>[gulps]</code></li>
-    //       <li>Unique and special: <code>[sings]</code>, <code>[woo]</code>, <code>[fart]</code></li>
-    //       <li>Accent (variable form): <code>[strong &lt;accent&gt; accent]</code>, e.g.
-    //         <code>[strong French accent]</code></li>
-    //     </ul>
-    //     <pre><code>[whispers] hello there</code></pre></li>
+    //   <li>Inline style tags (CustomVoice only) - the same style vocabulary written positionally in
+    //     square brackets, so <code>[calm] hello there</code> and the
+    //     <code>&lt;ondewo:style name=&quot;calm&quot;&gt;</code> element compile to the identical
+    //     instruction. Such a tag applies to everything that follows it until another tag or the
+    //     <code>[Neutral]</code> reset replaces it.
+    //     <pre><code>[excited] we shipped it. it works. [calm] now let us review.</code></pre></li>
     // </ul>
+    //
+    // <p><b>Styles supported per voice</b></p>
+    // <p>A style is rendered by the voice, not by the markup, and no voice renders all of them. The
+    // table below lists what each qwen3-tts speaker supports; the speaker is fixed by the pipeline
+    // selected through <code>RequestConfig.t2s_pipeline_id</code>.</p>
+    // <p>The table applies to <b>both</b> ways of asking for a style. The
+    // <code>&lt;ondewo:style name=&quot;calm&quot;&gt;</code> element and the inline
+    // <code>[calm]</code> tag compile to the very same instruction, so they are limited by the voice
+    // in exactly the same way - switching from one spelling to the other never makes a style work
+    // that the voice cannot render.</p>
+    // <p><b>The server does not check your request against this table.</b> If you ask a voice for a
+    // style it cannot render, the request still succeeds: audio is returned, no error is raised and
+    // nothing is written to the log. The only symptom is that the voice sounds exactly as it would
+    // have without the style. Use the table to choose a suitable voice <i>before</i> sending the
+    // request.</p>
+    // <p>This is not the same as writing a style name that does not exist, which <b>is</b> reported:
+    // <code>&lt;ondewo:style name=&quot;bored&quot;&gt;</code> logs a warning and falls back to no
+    // style, because <code>bored</code> is outside the vocabulary listed further above. The silent
+    // case is a name that is in the vocabulary but beyond what the selected voice can do, for example
+    // <code>excited</code> on <code>dylan</code>.</p>
+    // <table>
+    //   <tr><th>Voice</th><th>apologetic</th><th>calm</th><th>empathetic</th><th>firm</th><th>cheerful</th><th>sad</th><th>excited</th><th>angry</th></tr>
+    //   <tr><td>aiden</td><td>-</td><td>-</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>-</td><td>-</td></tr>
+    //   <tr><td>dylan</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+    //   <tr><td>eric</td><td>-</td><td>-</td><td>-</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>-</td><td>-</td></tr>
+    //   <tr><td>ono_anna</td><td>-</td><td>-</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>-</td></tr>
+    //   <tr><td>ryan</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>-</td></tr>
+    //   <tr><td>serena</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+    //   <tr><td>sohee</td><td>-</td><td>-</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>-</td><td>-</td></tr>
+    //   <tr><td>uncle_fu</td><td>-</td><td>-</td><td>-</td><td>&#10003;</td><td>&#10003;</td><td>-</td><td>-</td><td>&#10003;</td></tr>
+    //   <tr><td>vivian</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>-</td></tr>
+    // </table>
+    // <p>Notes on the table:</p>
+    // <ul>
+    //   <li><code>dylan</code> and <code>serena</code> render no style at all - use them for neutral
+    //     delivery only, and see the prosody table below for what little can still be varied on
+    //     them.</li>
+    //   <li><code>ryan</code> and <code>vivian</code> cover the widest range, so they are the safest
+    //     choice when the style is chosen at runtime rather than fixed in advance.</li>
+    //   <li>A synonym behaves exactly like its primary name, so <code>happy</code> / <code>joyful</code>
+    //     work wherever <code>cheerful</code> does, as do <code>sorrowful</code> for <code>sad</code>
+    //     and <code>furious</code> for <code>angry</code>.</li>
+    // </ul>
+    //
+    // <p><b>Prosody supported per voice</b></p>
+    // <p>Rate and volume are limited per voice in the same way, and the same caveat applies: the server
+    // does not check this table either, so asking for a step a voice cannot render succeeds silently
+    // and leaves the delivery unchanged. Only the two steps of each dimension are listed -
+    // <code>medium</code> (equally <code>default</code>) is available on every voice, because it means
+    // &quot;leave this dimension alone&quot; and sends no instruction at all.</p>
+    // <table>
+    //   <tr><th>Voice</th><th>rate slow</th><th>rate fast</th><th>volume soft</th><th>volume loud</th></tr>
+    //   <tr><td>aiden</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+    //   <tr><td>dylan</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>-</td></tr>
+    //   <tr><td>eric</td><td>&#10003;</td><td>-</td><td>&#10003;</td><td>-</td></tr>
+    //   <tr><td>ono_anna</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+    //   <tr><td>ryan</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+    //   <tr><td>serena</td><td>&#10003;</td><td>-</td><td>-</td><td>-</td></tr>
+    //   <tr><td>sohee</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+    //   <tr><td>uncle_fu</td><td>-</td><td>-</td><td>&#10003;</td><td>&#10003;</td></tr>
+    //   <tr><td>vivian</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>-</td></tr>
+    // </table>
+    // <p>Notes on the table:</p>
+    // <ul>
+    //   <li><code>uncle_fu</code> does not respond to <code>rate</code> at all - change its pace by
+    //     rewriting the text, or pick another voice.</li>
+    //   <li><code>dylan</code> renders no style but does respond to <code>rate</code> and to
+    //     <code>volume=&quot;soft&quot;</code>, so <code>&lt;prosody&gt;</code> is the only delivery
+    //     control that works on it.</li>
+    //   <li><code>serena</code> is the most constrained voice: <code>rate=&quot;slow&quot;</code> is the
+    //     one control it responds to, and no style, no <code>rate=&quot;fast&quot;</code> and no volume
+    //     step has any effect. Treat it as a fixed delivery that can only be slowed down.</li>
+    //   <li><code>ono_anna</code>, <code>ryan</code>, <code>sohee</code> and <code>aiden</code> render
+    //     every step of both dimensions.</li>
+    // </ul>
+    //
+    // <p>Every control is positional - it colours exactly the text it wraps - and a delivery change may
+    // only land on a <b>sentence boundary</b>. Markup wrapping part of a sentence is widened to the
+    // whole sentence, because a sentence fragment sent as a complete utterance makes the model
+    // hallucinate. Each delivery change also costs one additional inference call, so marking up whole
+    // sentences, or leaving the text unmarked, synthesises fastest.</p>
     // <p>See also <code>RequestConfig.instruction</code> for supplying the instruction / voice
     // description directly instead of embedding it in the text.</p>
     //
@@ -208,9 +273,15 @@ message SynthesizeRequest {
     // behind the selected pipeline. Standard <code>&lt;prosody&gt;</code>, <code>&lt;emphasis&gt;</code>
     // and <code>&lt;break&gt;</code> are common to all three.</p>
     // <ul>
-    //   <li>Google Cloud TTS: <pre><code>&lt;google:style name=&quot;calm&quot;&gt;please stay calm everything will be fine&lt;/google:style&gt;</code></pre></li>
-    //   <li>Microsoft Azure: <pre><code>&lt;mstts:express-as style=&quot;cheerful&quot;&gt;please stay calm everything will be fine&lt;/mstts:express-as&gt;</code></pre></li>
-    //   <li>Amazon Polly (whispered): <pre><code>&lt;amazon:effect name=&quot;whispered&quot;&gt;please stay calm everything will be fine&lt;/amazon:effect&gt;</code></pre></li>
+    //   <li>Google Cloud TTS: <pre><code>&lt;google:style name=&quot;calm&quot;&gt;please stay calm everything will be fine&lt;/google:style&gt;</code></pre>
+    //     More information:
+    //     <a href="https://docs.cloud.google.com/text-to-speech/docs/ssml#styles">Google Cloud TTS - SSML styles</a></li>
+    //   <li>Microsoft Azure: <pre><code>&lt;mstts:express-as style=&quot;cheerful&quot;&gt;please stay calm everything will be fine&lt;/mstts:express-as&gt;</code></pre>
+    //     More information:
+    //     <a href="https://learn.microsoft.com/en-us/azure/ai-services/speech-service/speech-synthesis-markup-voice">Microsoft Azure - speech synthesis markup, voice and speaking styles</a></li>
+    //   <li>Amazon Polly (whispered): <pre><code>&lt;amazon:effect name=&quot;whispered&quot;&gt;please stay calm everything will be fine&lt;/amazon:effect&gt;</code></pre>
+    //     More information:
+    //     <a href="https://docs.aws.amazon.com/polly/latest/dg/whispered-tag.html">Amazon Polly - whispered speech with amazon:effect</a></li>
     //   <li>Amazon Polly (soft phonation): <pre><code>&lt;amazon:effect phonation=&quot;soft&quot;&gt;please stay calm everything will be fine&lt;/amazon:effect&gt;</code></pre></li>
     // </ul>
     string text = 1;
