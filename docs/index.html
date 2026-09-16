@@ -2026,9 +2026,17 @@ Supported by the local normalization pipeline and forwarded to the cloud provide
 </ul>
 
 <p><b>3. Pauses / breaks</b></p>
+<p>Inserts a pause of the given duration into the spoken text. Supported by the local pipelines and
+forwarded to the cloud providers. The duration is written either with a unit -
+<code>ms</code> for milliseconds, <code>s</code> for seconds - or as a bare number, which is read as
+<b>seconds</b>: <code>&lt;break time=&quot;0.5&quot;/&gt;</code> is half a second. A bare number is
+therefore never milliseconds; <code>&lt;break time=&quot;2000&quot;/&gt;</code> asks for 2000 seconds and
+is rejected with an error - write <code>&lt;break time=&quot;2000ms&quot;/&gt;</code> instead. A single
+break may not be longer than 60 seconds.</p>
 <ul>
-  <li>Break tag (seconds): <pre><code>I am going to take a 2 seconds break &lt;break time=&quot;2.0&quot;/&gt; done</code></pre></li>
-  <li>Break tag (milliseconds, cloud providers): <pre><code>please wait &lt;break time=&quot;500ms&quot;/&gt; done</code></pre></li>
+  <li>Milliseconds: <pre><code>Welcome to our service. &lt;break time=&quot;500ms&quot;/&gt; How can I help you today?</code></pre></li>
+  <li>Seconds: <pre><code>Please hold the line. &lt;break time=&quot;2s&quot;/&gt; Thank you for waiting.</code></pre></li>
+  <li>Seconds without a unit: <pre><code>Let me check that for you. &lt;break time=&quot;1.5&quot;/&gt; I found your booking.</code></pre></li>
 </ul>
 
 <p><b>4. Phonemes / pronunciation control</b></p>
