@@ -1,0 +1,21 @@
+name: Release credential hygiene
+
+# Release credentials must never reach a process command line (/proc/<pid>/cmdline is world-readable)
+# or the console. The check is stdlib-only Python over the Makefile and these workflows.
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  release-credentials-off-argv:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Check Makefile and workflows for credentials on argv
+        run: python3 scripts/check_release_credentials_hygiene.py
