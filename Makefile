@@ -17,7 +17,7 @@ export
 
 # MUST BE THE SAME AS API in Mayor and Minor Version Number
 # example: API 2.9.0 --> Client 2.9.X
-ONDEWO_T2S_API_VERSION=6.6.0
+ONDEWO_T2S_API_VERSION=6.7.0
 
 # You need to setup an access token at https://github.com/settings/tokens - permissions are important
 GITHUB_GH_TOKEN?=ENTER_YOUR_TOKEN_HERE
@@ -176,6 +176,13 @@ unrelease: build_utils_docker_image unrelease_to_github_via_docker_image ## Undo
 
 CLIENTS := python nodejs typescript angular js
 
+# The ondewo-proto-compiler every client is built with, pinned EXACTLY and written into each client's
+# ONDEWO_PROTO_COMPILER_GIT_BRANCH as tags/<version>. It used to be "the first tag the GitHub API
+# returned": unauthenticated (60 requests/hour, so a rate-limited run wrote an empty `tags/`), in an
+# undocumented order, and any new compiler tag silently moved every client's pin mid-release. Move it
+# deliberately.
+ONDEWO_PROTO_COMPILER_VERSION=5.17.0
+
 release_all_clients: ## Release all clients IN PARALLEL; one failing client does not abort the others
 	@echo "Releasing all clients in parallel for ${ONDEWO_T2S_API_VERSION} ..."; \
 	rm -f .already_released_marker-* .client_status-*; \
@@ -218,8 +225,6 @@ release_client:
 	$(eval REPO_NAME:= $(shell echo ${GENERIC_CLIENT} | cut -c 41- | cut -d '.' -f 1))
 	$(eval REPO_DIR:= $(shell echo "ondewo-t2s-client-${REPO_NAME}"))
 	$(eval UPPER_REPO_NAME:= $(shell echo ${REPO_NAME} | perl -pe 's/.*/\u$$&/'))
-# Get newest Proto-Compiler Version
-	$(eval PROTO_COMPILER:= $(shell curl https://api.github.com/repos/ondewo/ondewo-proto-compiler/tags | grep "\"name\"" | head -1 | cut -d '"' -f 4))
 # Clone Repo
 	rm -rf ${REPO_DIR}
 	rm -f build_log_${REPO_NAME}.txt
@@ -257,7 +262,7 @@ release_client:
 	fi
 	cd ${REPO_DIR} && head -20 ${RELEASEMD}
 	cd ${REPO_DIR} && perl -i -pe 's/ONDEWO_T2S_VERSION.*=.*/ONDEWO_T2S_VERSION=${ONDEWO_T2S_API_VERSION}/' Makefile
-	cd ${REPO_DIR} && perl -i -pe 's|ONDEWO_PROTO_COMPILER_GIT_BRANCH.*=.*|ONDEWO_PROTO_COMPILER_GIT_BRANCH=tags/${PROTO_COMPILER}|' Makefile
+	cd ${REPO_DIR} && perl -i -pe 's|ONDEWO_PROTO_COMPILER_GIT_BRANCH.*=.*|ONDEWO_PROTO_COMPILER_GIT_BRANCH=tags/${ONDEWO_PROTO_COMPILER_VERSION}|' Makefile
 	cd ${REPO_DIR} && perl -i -pe 's|T2S_API_GIT_BRANCH.*=.*|T2S_API_GIT_BRANCH=tags/${ONDEWO_T2S_API_VERSION}|' Makefile && head -30 Makefile
 
 # Build new code
