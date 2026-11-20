@@ -72,12 +72,14 @@ clarifying questions come before implementation rather than after mistakes.
 
 ## No Python, no tests, no coverage gate
 
-`git ls-files` returns **16 files**: one `.proto`, three generated files under `docs/`, five Markdown docs,
-the `Makefile`, `Dockerfile.utils`, `install_nvm.sh`, `LICENSE`, two config files and one workflow. There is
-no `pyproject.toml`, no `uv.lock`, no `package.json`, no `.py`/`.ts`/`.js` file and no test directory, so the
-fleet-wide loguru/docstring/pytest conventions have nothing to apply to here and the honest answer to "what
-is the coverage?" is **not applicable — there is no executable code**. Do not invent a coverage gate, and do
-not go looking for a `uv run --frozen …` equivalent.
+`git ls-files` returns **21 files**: one `.proto`, three generated files under `docs/`, five Markdown docs,
+the `Makefile`, `Dockerfile.utils`, `install_nvm.sh`, `LICENSE`, three config files, two workflows and the
+release tooling under `scripts/` (two bash scripts and two stdlib-only Python scripts: the credential-hygiene
+check and `test_release_driver.py`, the driver's tests). There is no `pyproject.toml`, no `uv.lock`, no
+`package.json` and no API code, so the fleet-wide loguru/pytest conventions have nothing to apply to here and
+the honest answer to "what is the coverage?" is **not applicable**: the only tests are the release driver's,
+run by `python3 scripts/test_release_driver.py`. Do not invent a coverage gate, and do not go looking for a
+`uv run --frozen …` equivalent.
 
 The one convergence check that does exist is `git diff --exit-code docs/` after `make build_docs` (below).
 
@@ -104,7 +106,17 @@ The one convergence check that does exist is `git diff --exit-code docs/` after 
 
 ## Client-release orchestration (`release_all_clients`)
 
-- It **fails loudly** on a genuine client-release error: the piped sub-make runs under `bash -c 'set -o pipefail; make -C … | tee …'` (a plain sh pipe returns tee's 0 and masks failures), and a **marker file** distinguishes an "already released" SKIP from a real FAILURE (make flattens recipe exit codes to 2, so the code alone can't tell them apart). Do not regress either.
+- All eleven clients (`CLIENTS`: python nodejs typescript angular js cpp csharp go java php rust) go through
+  `scripts/release_client.sh`, ported from ondewo-sip-api; `README.md` § "Automatic Release Process - Clients"
+  has the state tables. `python3 scripts/test_release_driver.py` pins them against fake clients.
+- **No T2S client implements `release_preflight` / `release_verify` yet**, so every one is a LEGACY client:
+  released through its own `ondewo_release` exactly as before, verified by the tag on origin plus the
+  published GitHub release (`CLIENT_GITHUB_API_PREFIX`). Do not make the driver require the contract until
+  the client repos carry it, or every T2S client becomes unreleasable. A client with ONE of the two targets fails.
+- It **fails loudly** on a genuine client-release error: `ondewo_release` runs under `set -o pipefail` into
+  `tee`, and **marker files** (`.already_released_marker-`, `.incomplete_marker-`, `.unknown_marker-<client>`,
+  written only when `release_all_clients` sets `CLIENT_STATUS_MARKERS=yes`) tell SKIP / INCOMPLETE / UNKNOWN
+  apart from FAILED, because make flattens recipe exit codes to 2. Do not regress either.
 - Every token-bearing recipe line is `@`-prefixed so make never echoes a secret — `docker run -e <TOKEN>`, `echo $(TOKEN) | gh auth`, `twine … -p${PYPI_PASSWORD}`, and the credential sub-make `make release $(info)` (which expands the token at runtime and is easy to miss).
 
 ## Pre-commit (language-agnostic hook set)
@@ -157,29 +169,29 @@ they are already at their ceiling:
    `gh release create -n "$(CURRENT_RELEASE_NOTES)"` reports no error for a short body. Proven: append a
    bullet after 6.6.0's `* **Try run of the CI/CD release flow.**` line and the old pattern drops it while
    the new one keeps it through the `*****` separator.
-2. **`release_client` inserts the generated boilerplate only when the client does not already document the
+2. **`scripts/release_client.sh` inserts the generated boilerplate only when the client does not already document the
    version.** Without that guard, a client whose `RELEASE.md` was curated by hand gets a second
    `## Release ONDEWO T2S <Name> Client <VERSION>` heading, which buries the curated entry (the notes slice
    takes the first match) and trips the client's own markdownlint MD024/MD025 — neither auto-fixes, so the
    client's pre-commit aborts the release.
-   The guard's regex ends `[[:space:]]*$$`, **not** the bare `$$` that `ondewo-nlu-api` uses. This is
+   The guard's regex ends `[ \t]*$`, **not** the bare `$` that `ondewo-nlu-api` uses. This is
    defensive: the boilerplate used to emit the heading with a trailing space, and a bare `$$` cannot match
    such a heading, so the guard fails open on any entry still carrying one. Measured on `origin/master`,
    no T2S client RELEASE.md currently has one — but `ondewo-nlu-client-nodejs` and `-typescript` still do.
-   `GENERIC_RELEASE_NOTES` no longer emits the space, and `[[:space:]]*` matches the new headings equally,
+   `GENERIC_RELEASE_NOTES` no longer emits the space, and `[ \t]*` matches the new headings equally,
    so the tolerant tail costs nothing and stays.
 3. **`GENERIC_RELEASE_SECTION` / `GENERIC_RELEASE_EXTRA`** drive the client release-note heading, so a
-   breaking API bump does not publish five client majors under "Improvements":
+   breaking API bump does not publish eleven client majors under "Improvements":
    `make release_all_clients GENERIC_RELEASE_SECTION='Breaking Changes' GENERIC_RELEASE_EXTRA='* …\n'`.
 
 Verify any change to these with `make TEST` (prints the sliced notes, masks the token) and
-`make -n release_client GENERIC_CLIENT=… RELEASEMD=…` — the dry run expands the whole recipe without cloning
-anything.
+`python3 scripts/test_release_driver.py`, which runs the real Makefile and scripts against fake client
+repositories. `make -n release_all_clients` prints only the wrapper line and clones nothing.
 
 ## Proto-compiler: no submodule here, and no pin to bump
 
 There is no `.gitmodules` and no `ONDEWO_PROTO_COMPILER_GIT_BRANCH` variable in this repo — those live in the
-five client repos. What this repo does is _push_ a version into them: `release_client` rewrites the cloned
+eleven client repos. What this repo does is _push_ a version into them: `scripts/release_client.sh` rewrites the cloned
 client's `ONDEWO_PROTO_COMPILER_GIT_BRANCH=tags/${ONDEWO_PROTO_COMPILER_VERSION}`, where
 `ONDEWO_PROTO_COMPILER_VERSION` is pinned EXACTLY in the `Makefile` (5.17.0 since API 6.7.0). It used to be
 `curl https://api.github.com/repos/ondewo/ondewo-proto-compiler/tags | … | head -1`, i.e. whatever tag GitHub's
