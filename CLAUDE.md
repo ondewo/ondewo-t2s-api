@@ -174,20 +174,17 @@ they are already at their ceiling:
 
 Verify any change to these with `make TEST` (prints the sliced notes, masks the token) and
 `make -n release_client GENERIC_CLIENT=… RELEASEMD=…` — the dry run expands the whole recipe without cloning
-anything. Note the dry run still executes `release_client`'s `$(eval … $(shell curl …))` (see below).
+anything.
 
 ## Proto-compiler: no submodule here, and no pin to bump
 
 There is no `.gitmodules` and no `ONDEWO_PROTO_COMPILER_GIT_BRANCH` variable in this repo — those live in the
-five client repos. What this repo does is _push_ a version into them: `release_client` runs
-
-```make
-$(eval PROTO_COMPILER:= $(shell curl https://api.github.com/repos/ondewo/ondewo-proto-compiler/tags | grep "\"name\"" | head -1 | cut -d '"' -f 4))
-```
-
-and rewrites the cloned client's `ONDEWO_PROTO_COMPILER_GIT_BRANCH=tags/${PROTO_COMPILER}`. It resolves to
-**5.14.0** today (verified against the live API, whose listing comes back newest-first). It is a `head -1` of
-GitHub's tag listing, not a semver sort, so an out-of-band tag would be picked up blindly.
+five client repos. What this repo does is _push_ a version into them: `release_client` rewrites the cloned
+client's `ONDEWO_PROTO_COMPILER_GIT_BRANCH=tags/${ONDEWO_PROTO_COMPILER_VERSION}`, where
+`ONDEWO_PROTO_COMPILER_VERSION` is pinned EXACTLY in the `Makefile` (5.17.0 since API 6.7.0). It used to be
+`curl https://api.github.com/repos/ondewo/ondewo-proto-compiler/tags | … | head -1`, i.e. whatever tag GitHub's
+unauthenticated listing returned first, so a new compiler tag silently moved every client mid-release. Move the
+pin deliberately.
 
 Bumping the compiler is therefore a **client-repo** change (move the submodule gitlink to the tag's peeled
 commit + set that Makefile variable) and it never regenerates stubs on its own. Do not write "regenerated
@@ -344,7 +341,6 @@ the release reads. Keep `src/RELEASE.md` in step by hand if it exists.
 
 `make release` in this repo runs:
 
-
 The **npm publish happens LAST**. So a failure before it means nothing shipped, but the
 branch, tag and GitHub release may already exist — and `spc` will then refuse a re-run. Recover
 by running only the remaining step, not the whole target.
@@ -424,7 +420,6 @@ cat RELEASE.md | perl -ne 'print if /<the exact heading> <version>/../^\*{5}/' |
 GitHub's release API returned 500 twice in one session, leaving the registry and the tag correct and
 **no release object at all** (nlu-client-js and -angular 7.1.1); `gh release create` after the fact
 repairs it without touching the artefact.
-
 
 ```bash
 git tag --list <version> ; gh release view <version> --json body --jq '.body|length'

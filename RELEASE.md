@@ -2,6 +2,18 @@
 
 *****************
 
+## Release ONDEWO T2S API 6.7.0
+
+### Breaking Changes
+
+* The client SDKs are generated with ondewo-proto-compiler 5.17.0 (protoc 35.1), pinned explicitly in the `Makefile` as `ONDEWO_PROTO_COMPILER_VERSION` instead of "the first tag the GitHub API returned". No API/proto changes. The generated code raises the runtime floors of every client:
+  * Python: `protobuf>=7.35.1,<8` and `grpcio>=1.85.1`, `requires-python >=3.10` (protobuf 7 requires Python >= 3.10). Every `_pb2.py` carries `# Protobuf Python Version: 7.35.1` and every `_pb2_grpc.py` `GRPC_GENERATED_VERSION = '1.85.1'`, and both refuse an older runtime at import. The `.pyi` files come from mypy-protobuf 5.1.0.
+  * js, typescript: grpc-web 2.1.1 (`protoc-gen-grpc-web` 2.1.1), `google-protobuf ^4.0.3`. grpc-web 2.1.1 limits a response to 4 MB by default: a client that receives more must set `maxReceiveMessageSize`.
+  * Angular: grpc-web 2.1.1 as an EXACT direct dependency plus `"overrides": { "grpc-web": "$grpc-web" }` (`@ngx-grpc/grpc-web-client` still declares the peer `grpc-web ^1.2.1`), `@ngx-grpc/*` `~3.1.2`, `google-protobuf ~3.21.4`. Every app installing the angular client needs the same `overrides`.
+  * Nodejs: `@grpc/grpc-js` 1.14.7 and `google-protobuf` 3.21.4.
+
+*****************
+
 ## Release ONDEWO T2S API 6.6.0
 
 ### Improvements
