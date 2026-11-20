@@ -124,7 +124,11 @@ origin_has_ref() {
 # ONDEWO_T2S_API_VERSION=..., ...) to its children BOTH in MAKEFLAGS and as an environment variable, and
 # a client Makefile that reads one with `?=` would silently take the driver's value. So the client make
 # starts without MAKEFLAGS and without each variable named in it.
-driver_variables=(MAKEFLAGS MFLAGS MAKELEVEL MAKEOVERRIDES RELEASE_NOTES_TEMPLATE CLIENT_GITHUB_API_PREFIX CLIENT_STATUS_MARKERS)
+# GH_TOKEN / GITHUB_TOKEN of the caller's shell are dropped as well: a legacy client logs gh in with its own
+# GITHUB_GH_TOKEN (`gh auth login --with-token`), and gh refuses that login while GH_TOKEN is set ("The value of
+# the GH_TOKEN environment variable is being used for authentication") - which failed the C++ 6.7.0 release
+# after its branch and tag were already pushed.
+driver_variables=(MAKEFLAGS MFLAGS MAKELEVEL MAKEOVERRIDES RELEASE_NOTES_TEMPLATE CLIENT_GITHUB_API_PREFIX CLIENT_STATUS_MARKERS GH_TOKEN GITHUB_TOKEN)
 if [[ "${MAKEFLAGS:-}" == *"-- "* ]]; then
     while read -r variable; do
         driver_variables+=("${variable}")

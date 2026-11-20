@@ -516,6 +516,20 @@ class TestReleaseClient(DriverFixture):
             self.assertNotIn(leaked, env, f"{leaked} leaked into the client release")
 
 
+    def test_the_callers_gh_token_does_not_reach_the_client(self) -> None:
+        # gh refuses `gh auth login --with-token` while GH_TOKEN is set, so a legacy client's release would fail
+        # at its GitHub release, after its branch and tag are already on origin.
+        self.make_client("python", "Python")
+        self.env = {**self.env, "GH_TOKEN": "caller-token", "GITHUB_TOKEN": "caller-token"}
+        result = self.run_make("release_python_client")
+        self.assertEqual(result.returncode, 0, result.stdout)
+        env: Dict[str, str] = dict(
+            line.split("=", 1) for line in (self.control / "python.env").read_text(encoding="utf-8").splitlines() if "=" in line
+        )
+        self.assertNotIn("GH_TOKEN", env)
+        self.assertNotIn("GITHUB_TOKEN", env)
+
+
     def test_the_client_clone_and_make_are_not_under_the_drivers_private_umask(self) -> None:
         # A client builds docker images from its checkout and runs them as the caller's uid; a 0600 checkout
         # made the php proto-compiler entrypoint unreadable there (5.5.2). release_all_clients sets umask 077.
