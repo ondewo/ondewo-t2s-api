@@ -2,9 +2,14 @@ name: Release credential hygiene
 
 # Release credentials must never reach a process command line (/proc/<pid>/cmdline is world-readable)
 # or the console. The check is stdlib-only Python over the Makefile and these workflows.
+#
+# The second step runs the client-release driver against fake client repositories (scripts/test_release_driver.py):
+# SKIP only for a verified release, INCOMPLETE/FAILED for a half-finished one, preflight before any release, cleanup
+# on every exit path, the pinned proto compiler and anchored version matches. Needs git, make and perl only.
 on:
   push:
-    branches: [ master ]
+    # release/** as well: a release is cut from release/<version>, and that is the Makefile that runs.
+    branches: [ master, 'release/**' ]
   pull_request:
     branches: [ master ]
   workflow_dispatch:
@@ -19,3 +24,5 @@ jobs:
       - uses: actions/checkout@v5
       - name: Check Makefile and workflows for credentials on argv
         run: python3 scripts/check_release_credentials_hygiene.py
+      - name: Test the client-release driver
+        run: python3 scripts/test_release_driver.py -v
