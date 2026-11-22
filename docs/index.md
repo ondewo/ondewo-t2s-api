@@ -64,6 +64,7 @@
     - [VoiceCloningRequest](#ondewo.t2s.VoiceCloningRequest)
     - [VoiceSettings](#ondewo.t2s.VoiceSettings)
     - [Wiener](#ondewo.t2s.Wiener)
+    - [WordTiming](#ondewo.t2s.WordTiming)
   
     - [AudioFormat](#ondewo.t2s.AudioFormat)
     - [Pcm](#ondewo.t2s.Pcm)
@@ -708,6 +709,9 @@ all other properties of this generated audio.</p>
 | config | [RequestConfig](#ondewo.t2s.RequestConfig) |  | Required. Configuration from which audio was generated. |
 | normalized_text | [string](#string) |  | Optional. Normalized text. |
 | sample_rate | [float](#float) |  | Optional. Sampling rate of the generated audio, in Hertz (Hz). |
+| text_start_char | [int32](#int32) | optional | Optional. Unicode code point offset into StreamingSynthesizeRequest.text (the text exactly as received, markup included) where the text this response's audio speaks starts. Unset when the server could not align it. Code points, not UTF-16 code units: a JavaScript client must convert. |
+| text_end_char | [int32](#int32) | optional | Optional. Exclusive end offset of the spoken text, same unit and same text as text_start_char. Set if and only if text_start_char is set. |
+| word_timings | [WordTiming](#ondewo.t2s.WordTiming) | repeated | Optional. Timing of every word spoken in this response's audio, in playback order. Empty when the voice reports no durations (cloud voices, a model exported without durations, a cache hit). |
 
 
 
@@ -1198,6 +1202,26 @@ its transcription and the information about the speaker and the model to use for
 | iterations | [int64](#int64) |  | The number of iterations. |
 | alpha | [float](#float) |  | The alpha value. |
 | thresh | [float](#float) |  | The threshold value. |
+
+
+
+
+
+
+<a name="ondewo.t2s.WordTiming"></a>
+
+### WordTiming
+<p>WordTiming message is used to report when one word is spoken inside a StreamingSynthesizeResponse's
+audio.</p>
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| word | [string](#string) |  | The word as spoken (its normalized form). |
+| start_time_in_s | [float](#float) |  | Start of the word, in seconds from the start of THIS response's audio. |
+| end_time_in_s | [float](#float) |  | End of the word, in seconds from the start of THIS response's audio. |
+| text_start_char | [int32](#int32) | optional | Optional. Unicode code point offset into StreamingSynthesizeRequest.text where the word starts. Unset when the word could not be mapped 1:1 onto the request text. |
+| text_end_char | [int32](#int32) | optional | Optional. Exclusive end offset of the word, same unit and text. Set if and only if text_start_char is set. |
 
 
 

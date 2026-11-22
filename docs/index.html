@@ -330,6 +330,10 @@
                         <a href="#ondewo.t2s.Wiener" class="title-badge message">Wiener</a>
                       </li>
                     
+                      <li>
+                        <a href="#ondewo.t2s.WordTiming" class="title-badge message">WordTiming</a>
+                      </li>
+                    
                   </ul>
                   
                   
@@ -1978,6 +1982,31 @@ All the properties according to the input text in SynthesizeRequest can be also 
                   <td><p>Optional. Sampling rate of the generated audio, in Hertz (Hz). </p></td>
                 </tr>
               
+                <tr>
+                  <td>text_start_char</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td>optional</td>
+                  <td><p>Optional. Unicode code point offset into StreamingSynthesizeRequest.text (the text exactly as received,
+markup included) where the text this response's audio speaks starts. Unset when the server could not
+align it. Code points, not UTF-16 code units: a JavaScript client must convert. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>text_end_char</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td>optional</td>
+                  <td><p>Optional. Exclusive end offset of the spoken text, same unit and same text as text_start_char.
+Set if and only if text_start_char is set. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>word_timings</td>
+                  <td><a href="#ondewo.t2s.WordTiming">WordTiming</a></td>
+                  <td>repeated</td>
+                  <td><p>Optional. Timing of every word spoken in this response's audio, in playback order. Empty when the voice
+reports no durations (cloud voices, a model exported without durations, a cache hit). </p></td>
+                </tr>
+              
             </tbody>
           </table>
 
@@ -3416,6 +3445,59 @@ qwen3_tts_custom_voice, qwen3_tts_base). </p></td>
                   <td><a href="#float">float</a></td>
                   <td></td>
                   <td><p>The threshold value. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ondewo.t2s.WordTiming" class="title-badge message">WordTiming</h3>
+        <p><p>WordTiming message is used to report when one word is spoken inside a StreamingSynthesizeResponse's</p><p>audio.</p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>word</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>The word as spoken (its normalized form). </p></td>
+                </tr>
+              
+                <tr>
+                  <td>start_time_in_s</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p>Start of the word, in seconds from the start of THIS response's audio. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>end_time_in_s</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p>End of the word, in seconds from the start of THIS response's audio. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>text_start_char</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td>optional</td>
+                  <td><p>Optional. Unicode code point offset into StreamingSynthesizeRequest.text where the word starts. Unset when
+the word could not be mapped 1:1 onto the request text. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>text_end_char</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td>optional</td>
+                  <td><p>Optional. Exclusive end offset of the word, same unit and text. Set if and only if text_start_char is set. </p></td>
                 </tr>
               
             </tbody>
