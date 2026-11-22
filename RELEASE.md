@@ -2,6 +2,14 @@
 
 *****************
 
+## Release ONDEWO T2S API 6.8.0
+
+### New Features
+
+* `StreamingSynthesizeResponse` reports which part of the request text its audio speaks: `text_start_char` / `text_end_char` (fields 9/10, proto3 `optional`, Unicode code points into `StreamingSynthesizeRequest.text` as received) and `word_timings` (field 11, new message `WordTiming`: the word, its start and end in seconds inside that response's audio, and optionally its code point span). All three are response-only and additive; no request message changed, so request-keyed caches are unaffected. A server that cannot align a chunk leaves the fields unset, and `word_timings` stays empty for voices that report no durations.
+
+*****************
+
 ## Release ONDEWO T2S API 6.7.0
 
 ### Breaking Changes
