@@ -40,6 +40,11 @@ jobs:
       #     mkdir -p docs
       #     protoc -I. -Igoogleapis --doc_opt=markdown,nlu.md --doc_out=docs $(find ondewo -name '*.proto' | sort)
 
+      - name: Check that the published proto descriptions render as paragraphs
+        # protoc-gen-doc's `p` filter starts a paragraph at every newline of a file/service/message/enum
+        # description; see doc_rendering/README.md.
+        run: make doc_rendering_check
+
       - name: Generate documentation from ONDEWO proto files 🔧
         uses: ondewo/ondewo-protoc-gen-doc-action@master
 

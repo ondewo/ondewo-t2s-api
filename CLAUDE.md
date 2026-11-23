@@ -72,16 +72,23 @@ clarifying questions come before implementation rather than after mistakes.
 
 ## No Python, no tests, no coverage gate
 
-`git ls-files` returns **21 files**: one `.proto`, three generated files under `docs/`, five Markdown docs,
-the `Makefile`, `Dockerfile.utils`, `install_nvm.sh`, `LICENSE`, three config files, two workflows and the
+`git ls-files` returns **24 files**: one `.proto`, three generated files under `docs/`, five Markdown docs,
+the `Makefile`, `Dockerfile.utils`, `install_nvm.sh`, `LICENSE`, three config files, two workflows, the
 release tooling under `scripts/` (two bash scripts and two stdlib-only Python scripts: the credential-hygiene
-check and `test_release_driver.py`, the driver's tests). There is no `pyproject.toml`, no `uv.lock`, no
+check and `test_release_driver.py`, the driver's tests) and `doc_rendering/` (a stdlib-only reflow script, its
+tests and a README). There is no `pyproject.toml`, no `uv.lock`, no
 `package.json` and no API code, so the fleet-wide loguru/pytest conventions have nothing to apply to here and
 the honest answer to "what is the coverage?" is **not applicable**: the only tests are the release driver's,
-run by `python3 scripts/test_release_driver.py`. Do not invent a coverage gate, and do not go looking for a
-`uv run --frozen …` equivalent.
+run by `python3 scripts/test_release_driver.py`, and the reflow script's (`python3 -m pytest doc_rendering`).
+Do not invent a coverage gate, and do not go looking for a `uv run --frozen …` equivalent.
 
 The one convergence check that does exist is `git diff --exit-code docs/` after `make build_docs` (below).
+
+**A file, service, message or enum description is one paragraph per source line.** protoc-gen-doc renders them
+with `{{p .Description}}`, which starts a new paragraph at every newline, so a description wrapped at 120
+characters is published broken mid-sentence (field, enum-value and method comments are inserted raw and wrap
+freely). `make doc_rendering_check` enforces it (the `Generate API Documentation` workflow and `make release` run
+it), `make doc_rendering_fix` reflows; rules and the `&#10;` convention inside `<pre>`: `doc_rendering/README.md`.
 
 ## Git Commits
 
@@ -219,26 +226,29 @@ and it is a **required gate, not advisory**: it runs on every push and every pul
 manual `workflow_dispatch`), and its last step writes generated documentation back into `master`. Treat a red run as
 a blocked merge.
 
-**The workflow declares no `run:` blocks** — all three steps are `uses:` — so "run the CI commands locally"
-means building and running the Docker action yourself (see below), not copying shell out of the YAML.
+**The workflow declares one `run:` block**, `make doc_rendering_check`; the other three steps are `uses:`, so
+"run the CI commands locally" means that check plus building and running the Docker action yourself (see below),
+not copying shell out of the YAML.
 
 **The file is `.yaml`, not `.yml`** — a `.github/workflows/*.yml` glob matches nothing here and reads as "this repo
 has no CI".
 
-The single job (`generate-doc-and-deploy`, `ubuntu-latest`) declares exactly three steps:
+The single job (`generate-doc-and-deploy`, `ubuntu-latest`) declares exactly four steps:
 
 1. **`Checkout 🛎️`** — `actions/checkout@v5` with `submodules: true`. There is no `.gitmodules`, so the submodule
    flag is a no-op today; do not read it as evidence that a submodule exists.
-2. **`Generate documentation from ONDEWO proto files 🔧`** — `ondewo/ondewo-protoc-gen-doc-action@master`, a Docker
+2. **`Check that the published proto descriptions render as paragraphs`** — `make doc_rendering_check` (see
+   "A file, service, message or enum description is one paragraph per source line" above).
+3. **`Generate documentation from ONDEWO proto files 🔧`** — `ondewo/ondewo-protoc-gen-doc-action@master`, a Docker
    action built `FROM pseudomuto/protoc-gen-doc`. Once per output format it runs
    `protoc -I. -Igoogleapis --doc_opt=/resources/templates/<format>.tmpl,index.<format> --doc_out=docs` over
    `$(find ondewo -name '*.proto' | sort)`.
-3. **`Deploy 🚀`** — `JamesIves/github-pages-deploy-action@v4` with `branch: master`, `folder: docs`,
+4. **`Deploy 🚀`** — `JamesIves/github-pages-deploy-action@v4` with `branch: master`, `folder: docs`,
    `target-folder: docs`, guarded by `if: ${{ !env.ACT }}` so a local `act` run skips it.
 
 ### Reproducing it locally
 
-`make build_docs` **is** step 2 — same action repository, same image, same arguments — so use it rather than
+`make build_docs` **is** step 3 — same action repository, same image, same arguments — so use it rather than
 approximating:
 
 ```bash
@@ -248,7 +258,7 @@ make clean_docs_builder
 ```
 
 To prove the gate against a _clean_ tree — so an uncommitted edit cannot fake a green run — generate from a
-`git archive` export instead. This is the form last run here; step 2 exited 0 and all three files came back
+`git archive` export instead. This is the form last run here; step 3 exited 0 and all three files came back
 byte-identical:
 
 ```bash
@@ -279,10 +289,10 @@ Three fidelity rules, each of which silently changes the result if broken:
 
 ### Sharp edges found while actually running this
 
-- **The gate is convergence, not exit status.** Step 2 exits `0` whatever the proto contains — what a reviewer
+- **The gate is convergence, not exit status.** Step 3 exits `0` whatever the proto contains — what a reviewer
   catches is `docs/` disagreeing with `ondewo/t2s/text-to-speech.proto`. Always finish with
   `git diff --exit-code docs/`.
-- **A stale `docs/` makes CI commit to `master`.** Step 3 pushes the regenerated folder back as
+- **A stale `docs/` makes CI commit to `master`.** Step 4 pushes the regenerated folder back as
   `Deploying to master from @ ondewo/ondewo-t2s-api@<sha> 🚀`. Those commits are **authored as the human who pushed**,
   not as a bot, so searching history for a bot account will not find them. Regenerate and commit `docs/` in the same
   commit as any `.proto` change, and CI is left with nothing to write.

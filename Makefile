@@ -86,6 +86,15 @@ build_docs: ## Build documentation locally using the same Docker image as CI/CD
 	@echo "✓ Documentation generated in docs/ directory"
 	@echo "  Open docs/index.html in your browser to view"
 
+# protoc-gen-doc renders file, service, message and enum descriptions with `{{p .Description}}`, which starts a
+# new paragraph at EVERY newline: a description wrapped across source lines renders broken mid-sentence on the
+# published page. These descriptions keep one paragraph per source line (doc_rendering/README.md).
+doc_rendering_check: ## Check that every p-rendered proto description keeps one paragraph per source line
+	@python3 doc_rendering/reflow_proto_docs.py --check ondewo/t2s/*.proto
+
+doc_rendering_fix: ## Reflow the p-rendered proto descriptions to one paragraph per source line
+	@python3 doc_rendering/reflow_proto_docs.py ondewo/t2s/*.proto
+
 clean_docs_builder: ## Remove the cloned protoc-gen-doc-action repo and Docker image
 	@echo "Cleaning up documentation builder..."
 	@rm -rf .tmp-protoc-gen-doc-action
@@ -156,7 +165,7 @@ update_githubio:
 # bare form on 4.3. Nothing in this makefile is written to be parallel-safe, so it costs nothing.
 .NOTPARALLEL:
 
-release: create_release_branch create_release_tag build_and_release_to_github_via_docker ## Automate the entire release process
+release: doc_rendering_check create_release_branch create_release_tag build_and_release_to_github_via_docker ## Automate the entire release process
 	@echo "Release Finished"
 
 create_release_branch: ## Create Release Branch and push it to origin
